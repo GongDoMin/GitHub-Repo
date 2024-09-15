@@ -24,4 +24,16 @@ internal class TokenApiDataSourceImpl @Inject constructor(
             updatedAt = ZonedDateTime.now()
         )
     }
+
+    override suspend fun refreshToken(refreshToken: String): TokenModel {
+        val response = gitHubAuthService.refreshToken(refreshToken = refreshToken)
+
+        return TokenModel(
+            accessToken = response.accessToken,
+            refreshToken = response.refreshToken,
+            expiresInSeconds = response.expiresIn,
+            refreshTokenExpiresInSeconds = response.refreshTokenExpiresIn,
+            updatedAt = ZonedDateTime.now()
+        )
+    }
 }

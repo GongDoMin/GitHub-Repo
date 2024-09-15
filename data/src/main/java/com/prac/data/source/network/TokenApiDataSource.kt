@@ -6,4 +6,6 @@ internal interface TokenApiDataSource {
     suspend fun getToken(
         code: String
     ) : TokenModel
+
+    suspend fun refreshToken(refreshToken: String) : TokenModel
 }
