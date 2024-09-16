@@ -27,6 +27,22 @@ internal class TokenRepositoryImpl @Inject constructor(
         return token.accessToken.isNotEmpty()
     }
 
+    override fun getAccessToken(): String {
+        return tokenLocalDataSource.getToken().accessToken
+    }
+
+    override fun getRefreshToken(): String {
+        return tokenLocalDataSource.getToken().refreshToken
+    }
+
+    override fun getAccessTokenIsExpired(): Boolean {
+        return tokenLocalDataSource.getToken().isExpired
+    }
+
+    override fun getRefreshTokenIsExpired(): Boolean {
+        return tokenLocalDataSource.getToken().isRefreshTokenExpired
+    }
+
     private suspend fun setToken(token: TokenModel) {
         tokenLocalDataSource.setToken(
             TokenLocalDto(
