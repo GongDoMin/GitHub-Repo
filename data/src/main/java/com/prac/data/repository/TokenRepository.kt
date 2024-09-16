@@ -11,6 +11,8 @@ interface TokenRepository {
      * This methods is intended for internal use by the interceptor and should not be called from the ViewModel.
      */
 
+    suspend fun refreshToken(refreshToken: String) : Result<Unit>
+
     fun getAccessToken() : String
 
     fun getRefreshToken() : String

@@ -27,6 +27,17 @@ internal class TokenRepositoryImpl @Inject constructor(
         return token.accessToken.isNotEmpty()
     }
 
+    override suspend fun refreshToken(refreshToken: String): Result<Unit> {
+        return try {
+            val model = tokenApiDataSource.refreshToken(refreshToken)
+            setToken(model)
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     override fun getAccessToken(): String {
         return tokenLocalDataSource.getToken().accessToken
     }
