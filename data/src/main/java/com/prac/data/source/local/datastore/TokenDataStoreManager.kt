@@ -121,4 +121,12 @@ internal class TokenDataStoreManager(
         }
     }
 
+    suspend fun clearToken() {
+        mContext.tokenDataStore.updateData { pref ->
+            pref.toBuilder()
+                .clear()
+                .build()
+        }
+    }
+
 }
