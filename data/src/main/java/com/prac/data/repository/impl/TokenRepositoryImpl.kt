@@ -32,8 +32,8 @@ internal class TokenRepositoryImpl @Inject constructor(
             TokenLocalDto(
                 token.accessToken,
                 token.refreshToken,
-                token.expiresInMinute,
-                token.refreshTokenExpiresInMinute,
+                token.expiresInSeconds,
+                token.refreshTokenExpiresInSeconds,
                 token.updatedAt
             )
         )

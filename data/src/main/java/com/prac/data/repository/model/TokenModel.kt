@@ -5,7 +5,7 @@ import java.time.ZonedDateTime
 internal data class TokenModel(
     val accessToken: String,
     val refreshToken: String,
-    val expiresInMinute: Int,
-    val refreshTokenExpiresInMinute: Int,
+    val expiresInSeconds: Int,
+    val refreshTokenExpiresInSeconds: Int,
     val updatedAt: ZonedDateTime
 )

@@ -19,8 +19,8 @@ internal class TokenApiDataSourceImpl @Inject constructor(
         return TokenModel(
             accessToken = response.accessToken,
             refreshToken = response.refreshToken,
-            expiresInMinute = response.expiresIn,
-            refreshTokenExpiresInMinute = response.refreshTokenExpiresIn,
+            expiresInSeconds = response.expiresIn,
+            refreshTokenExpiresInSeconds = response.refreshTokenExpiresIn,
             updatedAt = ZonedDateTime.now()
         )
     }
