@@ -2,18 +2,18 @@ package com.prac.data.repository.impl
 
 import com.prac.data.repository.TokenRepository
 import com.prac.data.repository.model.TokenModel
-import com.prac.data.source.network.TokenApiDataSource
+import com.prac.data.source.network.AuthApiDataSource
 import com.prac.data.source.local.TokenLocalDataSource
 import com.prac.data.source.local.datastore.TokenLocalDto
 import javax.inject.Inject
 
 internal class TokenRepositoryImpl @Inject constructor(
     private val tokenLocalDataSource: TokenLocalDataSource,
-    private val tokenApiDataSource: TokenApiDataSource
+    private val authApiDataSource: AuthApiDataSource
 ) : TokenRepository {
     override suspend fun getTokenApi(code: String): Result<Unit> {
         try {
-            val model = tokenApiDataSource.authorizeOAuth(code)
+            val model = authApiDataSource.authorizeOAuth(code)
             setToken(model)
 
             return Result.success(Unit)
@@ -32,7 +32,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 
     override suspend fun refreshToken(refreshToken: String): Result<Unit> {
         return try {
-            val model = tokenApiDataSource.refreshAccessToken(refreshToken)
+            val model = authApiDataSource.refreshAccessToken(refreshToken)
             setToken(model)
 
             Result.success(Unit)

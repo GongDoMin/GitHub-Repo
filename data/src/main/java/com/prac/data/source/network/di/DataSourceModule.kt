@@ -3,13 +3,13 @@ package com.prac.data.source.network.di
 import com.prac.data.source.local.datastore.TokenDataStoreManager
 import com.prac.data.source.network.RepoApiDataSource
 import com.prac.data.source.network.RepoStarApiDataSource
-import com.prac.data.source.network.TokenApiDataSource
+import com.prac.data.source.network.AuthApiDataSource
 import com.prac.data.source.local.TokenLocalDataSource
 import com.prac.data.source.network.service.GitHubService
 import com.prac.data.source.network.service.GitHubAuthService
 import com.prac.data.source.network.impl.RepoApiDataSourceImpl
 import com.prac.data.source.network.impl.RepoStarApiDataSourceImpl
-import com.prac.data.source.network.impl.TokenApiDataSourceImpl
+import com.prac.data.source.network.impl.AuthApiDataSourceImpl
 import com.prac.data.source.local.impl.TokenLocalDataSourceImpl
 import dagger.Module
 import dagger.Provides
@@ -20,10 +20,10 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 internal class DataSourceModule {
     @Provides
-    fun provideTokenApiDataSource(
+    fun provideAuthApiDataSource(
         gitHubAuthService: GitHubAuthService
-    ): TokenApiDataSource =
-        TokenApiDataSourceImpl(gitHubAuthService)
+    ): AuthApiDataSource =
+        AuthApiDataSourceImpl(gitHubAuthService)
 
     @Provides
     fun provideTokenLocalDataSource(
