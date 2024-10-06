@@ -2,7 +2,6 @@ package com.prac.githubrepo.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.prac.data.exception.GitHubApiException
 import com.prac.data.repository.TokenRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -71,15 +70,8 @@ class LoginViewModel @Inject constructor(
             tokenRepository.authorizeOAuth(code = code)
                 .onSuccess {
                     setEvent(Event.Success)
-                }.onFailure { throwable ->
-                    when (throwable) {
-                        is GitHubApiException.NetworkException, is GitHubApiException.UnAuthorizedException -> {
-                            setUiState(UiState.Error(throwable.message ?: "로그인을 실패했습니다."))
-                        }
-                        else -> {
-                            setUiState(UiState.Error("알 수 없는 에러가 발생했습니다."))
-                        }
-                    }
+                }.onFailure {
+                    setUiState(UiState.Error("로그인을 실패했습니다."))
                 }
         }
     }
