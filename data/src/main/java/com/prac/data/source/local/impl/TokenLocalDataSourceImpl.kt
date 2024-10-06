@@ -25,7 +25,7 @@ internal class TokenLocalDataSourceImpl @Inject constructor(
         tokenDataStoreManager.saveTokenData(token)
     }
 
-    override suspend fun getToken(): TokenLocalDto {
-        return tokenDataStoreManager.getToken()
+    override fun getToken(): TokenLocalDto {
+        return cachedToken.get()
     }
 }
