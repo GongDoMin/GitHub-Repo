@@ -21,6 +21,7 @@ import com.prac.githubrepo.main.detail.DetailActivity.Companion.REPO_NAME
 import com.prac.githubrepo.main.detail.DetailActivity.Companion.USER_NAME
 import com.prac.githubrepo.main.request.StarStateRequestBuilder
 import kotlinx.coroutines.flow.collectLatest
+import java.io.IOException
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -81,12 +82,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun CombinedLoadStates.handleLoadStates() {
-        if (source.refresh is LoadState.Error || source.refresh is LoadState.Loading) {
-            viewModel.updateLoadState(source.refresh)
+        if (refresh is LoadState.Error) {
+            if ((refresh as LoadState.Error).error !is IOException) {
+                // TODO 로그아웃 예정
+                return
+            }
+            viewModel.updateLoadState(refresh)
+        }
+
+        if (refresh is LoadState.Loading) {
+            viewModel.updateLoadState(refresh)
             return
         }
 
-        viewModel.updateLoadState(source.append)
+        if (append is LoadState.Error) {
+             if ((append as LoadState.Error).error !is IOException) {
+                // TODO 로그아웃 예정
+                return
+            }
+            viewModel.updateLoadState(append)
+        }
+
+        viewModel.updateLoadState(append)
     }
 
     private suspend fun UiState.handleUiState() {
