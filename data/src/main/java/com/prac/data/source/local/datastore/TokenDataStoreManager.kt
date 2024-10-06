@@ -78,6 +78,20 @@ internal class TokenDataStoreManager(
                             .clearIsLoggedIn()
                             .build()
                     }
+                },
+                object : DataMigration<Token> {
+                    override suspend fun cleanUp() {}
+
+                    override suspend fun shouldMigrate(currentData: Token): Boolean {
+                        return (currentData.accessTokenExpiresInMinute > 0) || (currentData.refreshTokenExpiresInMinute > 0)
+                    }
+
+                    override suspend fun migrate(currentData: Token): Token {
+                        return currentData.toBuilder()
+                            .clearAccessTokenExpiresInMinute()
+                            .clearRefreshTokenExpiresInMinute()
+                            .build()
+                    }
                 }
             )
         }
@@ -88,8 +102,8 @@ internal class TokenDataStoreManager(
             pref.toBuilder()
                 .setAccessToken(token.accessToken)
                 .setRefreshToken(token.refreshToken)
-                .setAccessTokenExpiresInMinute(token.expiresInMinute)
-                .setRefreshTokenExpiresInMinute(token.refreshTokenExpiresInMinute)
+                .setAccessTokenExpiresInSeconds(token.expiresInMinute)
+                .setRefreshTokenExpiresInSeconds(token.refreshTokenExpiresInMinute)
                 .setAccessTokenUpdatedAt(token.updatedAt.toInstant().toEpochMilli())
                 .build()
         }
@@ -100,8 +114,8 @@ internal class TokenDataStoreManager(
             TokenLocalDto(
                 accessToken = it.accessToken,
                 refreshToken = it.refreshToken,
-                expiresInMinute = it.accessTokenExpiresInMinute,
-                refreshTokenExpiresInMinute = it.refreshTokenExpiresInMinute,
+                expiresInMinute = it.accessTokenExpiresInSeconds,
+                refreshTokenExpiresInMinute = it.refreshTokenExpiresInSeconds,
                 updatedAt = Instant.ofEpochMilli(it.accessTokenUpdatedAt).atZone(ZoneId.systemDefault())
             )
         }
