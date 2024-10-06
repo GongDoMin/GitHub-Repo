@@ -102,8 +102,8 @@ internal class TokenDataStoreManager(
             pref.toBuilder()
                 .setAccessToken(token.accessToken)
                 .setRefreshToken(token.refreshToken)
-                .setAccessTokenExpiresInSeconds(token.expiresInMinute)
-                .setRefreshTokenExpiresInSeconds(token.refreshTokenExpiresInMinute)
+                .setAccessTokenExpiresInSeconds(token.expiresInSeconds)
+                .setRefreshTokenExpiresInSeconds(token.refreshTokenExpiresInSeconds)
                 .setAccessTokenUpdatedAt(token.updatedAt.toInstant().toEpochMilli())
                 .build()
         }
@@ -114,8 +114,8 @@ internal class TokenDataStoreManager(
             TokenLocalDto(
                 accessToken = it.accessToken,
                 refreshToken = it.refreshToken,
-                expiresInMinute = it.accessTokenExpiresInSeconds,
-                refreshTokenExpiresInMinute = it.refreshTokenExpiresInSeconds,
+                expiresInSeconds = it.accessTokenExpiresInSeconds,
+                refreshTokenExpiresInSeconds = it.refreshTokenExpiresInSeconds,
                 updatedAt = Instant.ofEpochMilli(it.accessTokenUpdatedAt).atZone(ZoneId.systemDefault())
             )
         }

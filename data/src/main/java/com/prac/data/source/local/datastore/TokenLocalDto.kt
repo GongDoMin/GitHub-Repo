@@ -5,13 +5,13 @@ import java.time.ZonedDateTime
 internal data class TokenLocalDto(
     val accessToken: String,
     val refreshToken: String,
-    val expiresInMinute: Int,
-    val refreshTokenExpiresInMinute: Int,
+    val expiresInSeconds: Int,
+    val refreshTokenExpiresInSeconds: Int,
     val updatedAt: ZonedDateTime
 ) {
     val isExpired: Boolean
-        get() = updatedAt.plusMinutes(expiresInMinute.toLong()).isBefore(ZonedDateTime.now())
+        get() = updatedAt.plusMinutes(expiresInSeconds.toLong()).isBefore(ZonedDateTime.now())
 
     val isRefreshTokenExpired: Boolean
-        get() = updatedAt.plusMinutes(refreshTokenExpiresInMinute.toLong()).isBefore(ZonedDateTime.now())
+        get() = updatedAt.plusMinutes(refreshTokenExpiresInSeconds.toLong()).isBefore(ZonedDateTime.now())
 }
