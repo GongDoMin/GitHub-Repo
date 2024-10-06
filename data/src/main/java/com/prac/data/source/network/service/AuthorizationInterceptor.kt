@@ -16,14 +16,15 @@ internal class AuthorizationInterceptor @Inject constructor(
             synchronized(this) {
                 if (tokenRepository.getAccessTokenIsExpired()) {
                     if (tokenRepository.getRefreshTokenIsExpired()) {
-                        // Token 정보 초기화 및 return refreshTokenExpired Request
+                        runBlocking {
+                            tokenRepository.clearToken()
+                        }
                     }
 
                     runBlocking {
                         tokenRepository.refreshToken(tokenRepository.getRefreshToken())
                             .onFailure {
-                                // 잘못된 RefreshToken 또는 인터넷 연결 불안정
-                                // Token 정보 초기화
+                                tokenRepository.clearToken()
                             }
                     }
                 }
