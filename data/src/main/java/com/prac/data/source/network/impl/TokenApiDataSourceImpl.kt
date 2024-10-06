@@ -12,9 +12,7 @@ internal class TokenApiDataSourceImpl @Inject constructor(
     override suspend fun getToken(
         code: String
     ): TokenModel {
-        val response = gitHubAuthService.getAccessTokenApi(
-            code = code
-        )
+        val response = gitHubAuthService.authorizeOAuth(code = code)
 
         return TokenModel(
             accessToken = response.accessToken,

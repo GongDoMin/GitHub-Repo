@@ -8,7 +8,7 @@ import retrofit2.http.Query
 
 internal interface GitHubAuthService {
     @POST("login/oauth/access_token")
-    suspend fun getAccessTokenApi(
+    suspend fun authorizeOAuth(
         @Header("Accept") accept: String = "application/json",
         @Query("client_id") clientID: String = BuildConfig.CLIENT_ID,
         @Query("client_secret") clientSecret: String = BuildConfig.CLIENT_SECRET,
