@@ -12,7 +12,31 @@ internal class AuthorizationInterceptor @Inject constructor(
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        return chain.proceed(chain.request())
+        if (tokenRepository.getAccessTokenIsExpired()) {
+            synchronized(this) {
+                if (tokenRepository.getAccessTokenIsExpired()) {
+                    if (tokenRepository.getRefreshTokenIsExpired()) {
+                        // Token 정보 초기화 및 return refreshTokenExpired Request
+                    }
+
+                    runBlocking {
+                        tokenRepository.refreshToken(tokenRepository.getRefreshToken())
+                            .onFailure {
+                                // 잘못된 RefreshToken 또는 인터넷 연결 불안정
+                                // Token 정보 초기화
+                            }
+                    }
+                }
+            }
+        }
+
+        val accessToken = tokenRepository.getAccessToken()
+
+        val request = chain.request().newBuilder()
+            .addHeader(AUTHORIZATION, "$AUTHORIZATION_TYPE $accessToken")
+            .build()
+
+        return chain.proceed(request)
     }
 
     companion object {
