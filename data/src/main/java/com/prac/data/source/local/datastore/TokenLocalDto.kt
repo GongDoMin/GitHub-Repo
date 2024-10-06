@@ -10,8 +10,8 @@ internal data class TokenLocalDto(
     val updatedAt: ZonedDateTime
 ) {
     val isExpired: Boolean
-        get() = updatedAt.plusMinutes(expiresInSeconds.toLong()).isBefore(ZonedDateTime.now())
+        get() = updatedAt.plusSeconds(expiresInSeconds.toLong()).isBefore(ZonedDateTime.now())
 
     val isRefreshTokenExpired: Boolean
-        get() = updatedAt.plusMinutes(refreshTokenExpiresInSeconds.toLong()).isBefore(ZonedDateTime.now())
+        get() = updatedAt.plusSeconds(refreshTokenExpiresInSeconds.toLong()).isBefore(ZonedDateTime.now())
 }
