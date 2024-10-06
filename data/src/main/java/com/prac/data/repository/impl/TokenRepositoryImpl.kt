@@ -13,7 +13,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 ) : TokenRepository {
     override suspend fun getTokenApi(code: String): Result<Unit> {
         try {
-            val model = tokenApiDataSource.getToken(code)
+            val model = tokenApiDataSource.authorizeOAuth(code)
             setToken(model)
 
             return Result.success(Unit)

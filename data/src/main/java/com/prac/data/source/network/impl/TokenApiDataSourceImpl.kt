@@ -9,9 +9,7 @@ import javax.inject.Inject
 internal class TokenApiDataSourceImpl @Inject constructor(
     private val gitHubAuthService: GitHubAuthService
 ) : TokenApiDataSource {
-    override suspend fun getToken(
-        code: String
-    ): TokenModel {
+    override suspend fun authorizeOAuth(code: String): TokenModel {
         val response = gitHubAuthService.authorizeOAuth(code = code)
 
         return TokenModel(
