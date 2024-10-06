@@ -34,4 +34,11 @@ internal class TokenLocalDataSourceImpl @Inject constructor(
     private fun updateToken(newToken: TokenLocalDto) {
         cachedToken.set(newToken)
     }
+
+    override suspend fun clearToken() {
+        tokenDataStoreManager.clearToken()
+
+        val token = tokenDataStoreManager.getToken()
+        cachedToken.set(token)
+    }
 }

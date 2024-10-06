@@ -7,6 +7,8 @@ interface TokenRepository {
 
     suspend fun isLoggedIn() : Boolean
 
+    suspend fun clearToken()
+
     /**
      * This methods is intended for internal use by the interceptor and should not be called from the ViewModel.
      */

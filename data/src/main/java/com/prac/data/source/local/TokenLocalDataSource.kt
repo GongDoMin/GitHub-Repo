@@ -6,4 +6,6 @@ internal interface TokenLocalDataSource {
     suspend fun setToken(token: TokenLocalDto)
 
     fun getToken(): TokenLocalDto
+
+    suspend fun clearToken()
 }
