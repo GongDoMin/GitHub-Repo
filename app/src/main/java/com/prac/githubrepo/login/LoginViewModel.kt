@@ -3,7 +3,6 @@ package com.prac.githubrepo.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.prac.data.exception.GitHubApiException
-import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -69,7 +68,7 @@ class LoginViewModel @Inject constructor(
 
             setUiState(UiState.Loading)
 
-            tokenRepository.getTokenApi(code = code)
+            tokenRepository.authorizeOAuth(code = code)
                 .onSuccess {
                     setEvent(Event.Success)
                 }.onFailure { throwable ->
