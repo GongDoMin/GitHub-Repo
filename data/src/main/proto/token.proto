@@ -7,7 +7,9 @@ message Token {
   string access_token = 1;
   string refresh_token = 2;
   bool is_logged_in = 3 [deprecated = true];
-  int32 access_token_expires_in_minute = 4;
-  int32 refresh_token_expires_in_minute = 5;
-  int64 access_token_updated_at = 6;
+  int32 access_token_expires_in_minute = 4 [deprecated = true];
+  int32 refresh_token_expires_in_minute = 5 [deprecated = true];
+  int32 access_token_expires_in_seconds = 6;
+  int32 refresh_token_expires_in_seconds = 7;
+  int64 access_token_updated_at = 8;
 }
