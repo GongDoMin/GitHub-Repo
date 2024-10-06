@@ -32,7 +32,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 
     override suspend fun refreshToken(refreshToken: String): Result<Unit> {
         return try {
-            val model = tokenApiDataSource.refreshToken(refreshToken)
+            val model = tokenApiDataSource.refreshAccessToken(refreshToken)
             setToken(model)
 
             Result.success(Unit)

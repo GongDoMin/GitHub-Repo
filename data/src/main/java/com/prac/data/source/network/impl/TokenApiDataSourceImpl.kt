@@ -21,7 +21,7 @@ internal class TokenApiDataSourceImpl @Inject constructor(
         )
     }
 
-    override suspend fun refreshToken(refreshToken: String): TokenModel {
+    override suspend fun refreshAccessToken(refreshToken: String): TokenModel {
         val response = gitHubAuthService.refreshAccessToken(refreshToken = refreshToken)
 
         return TokenModel(
