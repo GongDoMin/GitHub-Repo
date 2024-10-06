@@ -1,5 +1,6 @@
 package com.prac.data.source.local.impl
 
+import com.prac.data.repository.model.TokenModel
 import com.prac.data.source.local.datastore.TokenDataStoreManager
 import com.prac.data.source.local.TokenLocalDataSource
 import com.prac.data.source.local.datastore.TokenLocalDto
@@ -23,9 +24,14 @@ internal class TokenLocalDataSourceImpl @Inject constructor(
 
     override suspend fun setToken(token: TokenLocalDto) {
         tokenDataStoreManager.saveTokenData(token)
+        updateToken(token)
     }
 
     override fun getToken(): TokenLocalDto {
         return cachedToken.get()
+    }
+
+    private fun updateToken(newToken: TokenLocalDto) {
+        cachedToken.set(newToken)
     }
 }
