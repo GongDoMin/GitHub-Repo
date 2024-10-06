@@ -4,6 +4,7 @@ import com.prac.data.repository.TokenRepository
 import com.prac.data.repository.model.TokenModel
 import com.prac.data.source.network.TokenApiDataSource
 import com.prac.data.source.local.TokenLocalDataSource
+import com.prac.data.source.local.datastore.TokenLocalDto
 import javax.inject.Inject
 
 internal class TokenRepositoryImpl @Inject constructor(
@@ -27,6 +28,14 @@ internal class TokenRepositoryImpl @Inject constructor(
     }
 
     private suspend fun setToken(token: TokenModel) {
-        tokenLocalDataSource.setToken(token)
+        tokenLocalDataSource.setToken(
+            TokenLocalDto(
+                token.accessToken,
+                token.refreshToken,
+                token.expiresInMinute,
+                token.refreshTokenExpiresInMinute,
+                token.updatedAt
+            )
+        )
     }
 }

@@ -1,9 +1,9 @@
 package com.prac.data.source.local
 
-import com.prac.data.repository.model.TokenModel
+import com.prac.data.source.local.datastore.TokenLocalDto
 
 internal interface TokenLocalDataSource {
-    suspend fun setToken(token: TokenModel)
+    suspend fun setToken(token: TokenLocalDto)
 
-    suspend fun getToken(): TokenModel
+    suspend fun getToken(): TokenLocalDto
 }
