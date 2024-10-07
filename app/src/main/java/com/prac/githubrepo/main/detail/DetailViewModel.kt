@@ -13,7 +13,9 @@ import com.prac.githubrepo.main.backoff.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -40,8 +42,22 @@ class DetailViewModel @Inject constructor(
         ) : UiState()
     }
 
+    sealed class SideEffect {
+        data object BasicDialogDismiss : SideEffect() // IOException, 404 에러의 alert dialog 가 dismiss 되는 경우
+        data object LogoutDialogDismiss : SideEffect()
+    }
+
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
     val uiState: Flow<UiState> = _uiState.asStateFlow()
+
+    private val _sideEffect = MutableSharedFlow<SideEffect>()
+    val sideEffect = _sideEffect.asSharedFlow()
+
+    fun setSideEffect(sideEffect: SideEffect) {
+        viewModelScope.launch {
+            _sideEffect.emit(sideEffect)
+        }
+    }
 
     fun getRepository(userName: String?, repoName: String?) {
         if (_uiState.value != UiState.Idle) return
