@@ -15,7 +15,9 @@ import com.bumptech.glide.Glide
 import com.prac.data.entity.RepoDetailEntity
 import com.prac.githubrepo.R
 import com.prac.githubrepo.databinding.ActivityDetailBinding
+import com.prac.githubrepo.login.LoginActivity
 import com.prac.githubrepo.main.detail.DetailViewModel.UiState
+import com.prac.githubrepo.main.detail.DetailViewModel.SideEffect
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -42,6 +44,14 @@ class DetailActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
                     it.handleUiState()
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.sideEffect.collect {
+                    it.handleSideEffect()
                 }
             }
         }
@@ -79,6 +89,20 @@ class DetailActivity : AppCompatActivity() {
                         finish()
                     }
                     .show()
+            }
+        }
+    }
+
+    private fun SideEffect.handleSideEffect() {
+        when (this) {
+            is SideEffect.BasicDialogDismiss -> {
+                finish()
+            }
+            is SideEffect.LogoutDialogDismiss -> {
+                val intent = Intent(this@DetailActivity, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+                startActivity(intent)
             }
         }
     }
