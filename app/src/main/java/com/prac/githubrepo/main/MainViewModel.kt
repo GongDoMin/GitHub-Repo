@@ -80,6 +80,8 @@ class MainViewModel @Inject constructor(
 
                                 return@onFailure
                             }
+
+                            logout()
                         }
                     }
                 }
@@ -109,6 +111,8 @@ class MainViewModel @Inject constructor(
 
                                 return@onFailure
                             }
+
+                            logout()
                         }
                     }
                 }
