@@ -1,6 +1,6 @@
 package com.prac.githubrepo.main
 
-import android.content.Intent
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -12,15 +12,15 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.prac.data.entity.RepoEntity
+import com.prac.githubrepo.R
 import com.prac.githubrepo.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import com.prac.githubrepo.main.MainViewModel.UiState
 import com.prac.githubrepo.main.detail.DetailActivity
-import com.prac.githubrepo.main.detail.DetailActivity.Companion.REPO_NAME
-import com.prac.githubrepo.main.detail.DetailActivity.Companion.USER_NAME
 import com.prac.githubrepo.main.request.StarStateRequestBuilder
 import kotlinx.coroutines.flow.collectLatest
+import java.io.IOException
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -81,18 +81,46 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun CombinedLoadStates.handleLoadStates() {
-        if (source.refresh is LoadState.Error || source.refresh is LoadState.Loading) {
-            viewModel.updateLoadState(source.refresh)
+        if (refresh is LoadState.Error) {
+            if ((refresh as LoadState.Error).error !is IOException) {
+                viewModel.logout()
+                return
+            }
+            viewModel.updateLoadState(refresh)
+        }
+
+        if (refresh is LoadState.Loading) {
+            viewModel.updateLoadState(refresh)
             return
         }
 
-        viewModel.updateLoadState(source.append)
+        if (append is LoadState.Error) {
+             if ((append as LoadState.Error).error !is IOException) {
+                viewModel.logout()
+                return
+            }
+            viewModel.updateLoadState(append)
+        }
+
+        viewModel.updateLoadState(append)
     }
 
     private suspend fun UiState.handleUiState() {
         when (this) {
             is UiState.Idle -> { }
-            is UiState.ShowPagingData -> {
+            is UiState.Content -> {
+                if (dialogMessage.isNotEmpty()) {
+                    AlertDialog.Builder(this@MainActivity)
+                        .setMessage(dialogMessage)
+                        .setPositiveButton(R.string.check) { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .setOnDismissListener {
+
+                        }
+                        .show()
+                }
+
                 this.loadState?.let { retryFooterAdapter.loadState = it }
 
                 mainAdapter.submitData(this.repositories)
