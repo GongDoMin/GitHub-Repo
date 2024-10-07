@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
     private fun CombinedLoadStates.handleLoadStates() {
         if (refresh is LoadState.Error) {
             if ((refresh as LoadState.Error).error !is IOException) {
-                // TODO 로그아웃 예정
+                viewModel.logout()
                 return
             }
             viewModel.updateLoadState(refresh)
@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
 
         if (append is LoadState.Error) {
              if ((append as LoadState.Error).error !is IOException) {
-                // TODO 로그아웃 예정
+                viewModel.logout()
                 return
             }
             viewModel.updateLoadState(append)
