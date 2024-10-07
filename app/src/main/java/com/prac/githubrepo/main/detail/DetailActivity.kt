@@ -14,6 +14,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.prac.data.entity.RepoDetailEntity
 import com.prac.githubrepo.R
+import com.prac.githubrepo.constants.CONNECTION_FAIL
+import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.databinding.ActivityDetailBinding
 import com.prac.githubrepo.login.LoginActivity
 import com.prac.githubrepo.main.detail.DetailViewModel.UiState
@@ -86,7 +88,7 @@ class DetailActivity : AppCompatActivity() {
                         dialog.dismiss()
                     }
                     .setOnDismissListener {
-                        finish()
+                        handleDialogMessage(errorMessage)
                     }
                     .show()
             }
@@ -135,6 +137,15 @@ class DetailActivity : AppCompatActivity() {
             if (repoDetailEntity.isStarred == true) viewModel.setSideEffect(SideEffect.UnStarClick(repoDetailEntity))
             else viewModel.setSideEffect(SideEffect.StarClick(repoDetailEntity))
         }
+    }
+
+    private fun handleDialogMessage(dialogMessage: String) {
+        if (dialogMessage == CONNECTION_FAIL || dialogMessage == INVALID_REPOSITORY) {
+            viewModel.setSideEffect(SideEffect.BasicDialogDismiss)
+            return
+        }
+
+        viewModel.setSideEffect(SideEffect.LogoutDialogDismiss)
     }
 
     companion object {
