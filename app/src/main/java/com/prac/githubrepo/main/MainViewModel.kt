@@ -40,6 +40,8 @@ class MainViewModel @Inject constructor(
 
     sealed class SideEffect {
         data object LogoutDialogDismiss : SideEffect()
+
+        data object StarDialogDismiss : SideEffect()
     }
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
