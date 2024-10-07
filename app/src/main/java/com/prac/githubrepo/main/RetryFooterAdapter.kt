@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.databinding.ItemRetryFooterBinding
 
 class RetryFooterAdapter(
@@ -22,7 +23,7 @@ class RetryFooterAdapter(
 
         private fun LoadState.setErrorMessage() {
             if (this is LoadState.Error) {
-                binding.tvErrorMessage.text = this.error.localizedMessage
+                binding.tvErrorMessage.text = CONNECTION_FAIL
             }
 
             binding.tvErrorMessage.isVisible = this is LoadState.Error
