@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.prac.data.entity.RepoEntity
 import com.prac.githubrepo.R
+import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.databinding.ActivityMainBinding
 import com.prac.githubrepo.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -127,7 +128,7 @@ class MainActivity : AppCompatActivity() {
                             dialog.dismiss()
                         }
                         .setOnDismissListener {
-
+                            handleDialogMessage(dialogMessage)
                         }
                         .show()
                 }
@@ -149,5 +150,14 @@ class MainActivity : AppCompatActivity() {
             }
             is SideEffect.StarDialogDismiss -> { }
         }
+    }
+
+    private fun handleDialogMessage(dialogMessage: String) {
+        if (dialogMessage == INVALID_TOKEN) {
+            viewModel.setSideEffect(SideEffect.LogoutDialogDismiss)
+            return
+        }
+
+        viewModel.setSideEffect(SideEffect.StarDialogDismiss)
     }
 }
