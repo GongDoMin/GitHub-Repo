@@ -3,6 +3,8 @@ package com.prac.githubrepo.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.prac.data.repository.TokenRepository
+import com.prac.githubrepo.constants.CONNECTION_FAIL
+import com.prac.githubrepo.constants.LOGIN_FAIL
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -11,6 +13,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -71,7 +74,14 @@ class LoginViewModel @Inject constructor(
                 .onSuccess {
                     setEvent(Event.Success)
                 }.onFailure {
-                    setUiState(UiState.Error("로그인을 실패했습니다."))
+                    when (it) {
+                        is IOException -> {
+                            setUiState(UiState.Error(errorMessage = CONNECTION_FAIL))
+                        }
+                        else -> {
+                            setUiState(UiState.Error(errorMessage = LOGIN_FAIL))
+                        }
+                    }
                 }
         }
     }
