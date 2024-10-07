@@ -10,7 +10,6 @@ import androidx.datastore.migrations.SharedPreferencesMigration
 import androidx.datastore.migrations.SharedPreferencesView
 import com.google.protobuf.InvalidProtocolBufferException
 import com.prac.data.datastore.Token
-import com.prac.data.repository.model.TokenModel
 import kotlinx.coroutines.flow.first
 import java.io.InputStream
 import java.io.OutputStream
@@ -79,32 +78,54 @@ internal class TokenDataStoreManager(
                             .clearIsLoggedIn()
                             .build()
                     }
+                },
+                object : DataMigration<Token> {
+                    override suspend fun cleanUp() {}
+
+                    override suspend fun shouldMigrate(currentData: Token): Boolean {
+                        return (currentData.accessTokenExpiresInMinute > 0) || (currentData.refreshTokenExpiresInMinute > 0)
+                    }
+
+                    override suspend fun migrate(currentData: Token): Token {
+                        return currentData.toBuilder()
+                            .clearAccessTokenExpiresInMinute()
+                            .clearRefreshTokenExpiresInMinute()
+                            .build()
+                    }
                 }
             )
         }
     )
 
-    suspend fun saveTokenData(token: TokenModel) {
+    suspend fun saveTokenData(token: TokenLocalDto) {
         mContext.tokenDataStore.updateData { pref ->
             pref.toBuilder()
                 .setAccessToken(token.accessToken)
                 .setRefreshToken(token.refreshToken)
-                .setAccessTokenExpiresInMinute(token.expiresInMinute)
-                .setRefreshTokenExpiresInMinute(token.refreshTokenExpiresInMinute)
+                .setAccessTokenExpiresInSeconds(token.expiresInSeconds)
+                .setRefreshTokenExpiresInSeconds(token.refreshTokenExpiresInSeconds)
                 .setAccessTokenUpdatedAt(token.updatedAt.toInstant().toEpochMilli())
                 .build()
         }
     }
 
-    suspend fun getToken(): TokenModel {
+    suspend fun getToken(): TokenLocalDto {
         return mContext.tokenDataStore.data.first().let {
-            TokenModel(
+            TokenLocalDto(
                 accessToken = it.accessToken,
                 refreshToken = it.refreshToken,
-                expiresInMinute = it.accessTokenExpiresInMinute,
-                refreshTokenExpiresInMinute = it.refreshTokenExpiresInMinute,
+                expiresInSeconds = it.accessTokenExpiresInSeconds,
+                refreshTokenExpiresInSeconds = it.refreshTokenExpiresInSeconds,
                 updatedAt = Instant.ofEpochMilli(it.accessTokenUpdatedAt).atZone(ZoneId.systemDefault())
             )
+        }
+    }
+
+    suspend fun clearToken() {
+        mContext.tokenDataStore.updateData { pref ->
+            pref.toBuilder()
+                .clear()
+                .build()
         }
     }
 

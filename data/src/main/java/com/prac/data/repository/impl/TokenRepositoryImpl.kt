@@ -4,6 +4,7 @@ import com.prac.data.repository.TokenRepository
 import com.prac.data.repository.model.TokenModel
 import com.prac.data.source.network.TokenApiDataSource
 import com.prac.data.source.local.TokenLocalDataSource
+import com.prac.data.source.local.datastore.TokenLocalDto
 import javax.inject.Inject
 
 internal class TokenRepositoryImpl @Inject constructor(
@@ -22,11 +23,49 @@ internal class TokenRepositoryImpl @Inject constructor(
     }
 
     override suspend fun isLoggedIn(): Boolean {
-        val token = tokenLocalDataSource.getToken()
-        return token.accessToken.isNotEmpty()
+        return getAccessToken().isNotEmpty()
+    }
+
+    override suspend fun clearToken() {
+        tokenLocalDataSource.clearToken()
+    }
+
+    override suspend fun refreshToken(refreshToken: String): Result<Unit> {
+        return try {
+            val model = tokenApiDataSource.refreshToken(refreshToken)
+            setToken(model)
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override fun getAccessToken(): String {
+        return tokenLocalDataSource.getToken().accessToken
+    }
+
+    override fun getRefreshToken(): String {
+        return tokenLocalDataSource.getToken().refreshToken
+    }
+
+    override fun getAccessTokenIsExpired(): Boolean {
+        return tokenLocalDataSource.getToken().isExpired
+    }
+
+    override fun getRefreshTokenIsExpired(): Boolean {
+        return tokenLocalDataSource.getToken().isRefreshTokenExpired
     }
 
     private suspend fun setToken(token: TokenModel) {
-        tokenLocalDataSource.setToken(token)
+        tokenLocalDataSource.setToken(
+            TokenLocalDto(
+                token.accessToken,
+                token.refreshToken,
+                token.expiresInSeconds,
+                token.refreshTokenExpiresInSeconds,
+                token.updatedAt
+            )
+        )
     }
 }
