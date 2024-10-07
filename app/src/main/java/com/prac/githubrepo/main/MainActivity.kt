@@ -38,9 +38,7 @@ class MainActivity : AppCompatActivity() {
             starStateRequestBuilderFactory.create(this.lifecycleScope),
             object : MainAdapter.OnRepositoryClickListener {
                 override fun clickRepository(repoEntity: RepoEntity) {
-                    val intent = DetailActivity.createIntent(this@MainActivity, repoEntity.owner.login, repoEntity.name)
-
-                    startActivity(intent)
+                    viewModel.setSideEffect(SideEffect.RepositoryClick(repoEntity))
                 }
 
                 override fun star(repoEntity: RepoEntity) {
@@ -157,7 +155,11 @@ class MainActivity : AppCompatActivity() {
                 viewModel.unStarRepository(repoEntity)
             }
 
-            is SideEffect.RepositoryClick -> { }
+            is SideEffect.RepositoryClick -> {
+                val intent = DetailActivity.createIntent(this@MainActivity, repoEntity.owner.login, repoEntity.name)
+
+                startActivity(intent)
+            }
         }
     }
 
