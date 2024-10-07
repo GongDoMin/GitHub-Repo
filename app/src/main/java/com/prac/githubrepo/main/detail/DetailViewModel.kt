@@ -92,7 +92,7 @@ class DetailViewModel @Inject constructor(
                                 return@onFailure
                             }
 
-                            // TODO 로그아웃
+                            logout()
                         }
                     }
                 }
