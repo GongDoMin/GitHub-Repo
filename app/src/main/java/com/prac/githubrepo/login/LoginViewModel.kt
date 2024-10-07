@@ -2,8 +2,9 @@ package com.prac.githubrepo.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.prac.data.exception.GitHubApiException
 import com.prac.data.repository.TokenRepository
+import com.prac.githubrepo.constants.CONNECTION_FAIL
+import com.prac.githubrepo.constants.LOGIN_FAIL
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -71,13 +73,13 @@ class LoginViewModel @Inject constructor(
             tokenRepository.authorizeOAuth(code = code)
                 .onSuccess {
                     setEvent(Event.Success)
-                }.onFailure { throwable ->
-                    when (throwable) {
-                        is GitHubApiException.NetworkException, is GitHubApiException.UnAuthorizedException -> {
-                            setUiState(UiState.Error(throwable.message ?: "로그인을 실패했습니다."))
+                }.onFailure {
+                    when (it) {
+                        is IOException -> {
+                            setUiState(UiState.Error(errorMessage = CONNECTION_FAIL))
                         }
                         else -> {
-                            setUiState(UiState.Error("알 수 없는 에러가 발생했습니다."))
+                            setUiState(UiState.Error(errorMessage = LOGIN_FAIL))
                         }
                     }
                 }
