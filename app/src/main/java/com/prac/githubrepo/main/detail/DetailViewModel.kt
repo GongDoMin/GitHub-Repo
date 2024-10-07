@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.prac.data.entity.RepoDetailEntity
 import com.prac.data.repository.RepoRepository
+import com.prac.githubrepo.constants.CONNECTION_FAIL
+import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.main.backoff.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -72,8 +74,23 @@ class DetailViewModel @Inject constructor(
                     }
                 }
                 .onFailure { throwable ->
-                    _uiState.update {
-                        UiState.Error(throwable.message.toString())
+                    when (throwable) {
+                        is IOException -> {
+                            _uiState.update {
+                                UiState.Error(errorMessage = CONNECTION_FAIL)
+                            }
+                        }
+                        else -> {
+                            if (throwable.message?.contains("404") == true) {
+                                _uiState.update {
+                                    UiState.Error(errorMessage = INVALID_REPOSITORY)
+                                }
+
+                                return@onFailure
+                            }
+
+                            // TODO 로그아웃
+                        }
                     }
                 }
         }
