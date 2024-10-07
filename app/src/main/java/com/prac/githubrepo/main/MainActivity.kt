@@ -149,6 +149,7 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
             is SideEffect.StarDialogDismiss -> { }
+            is SideEffect.StarClick -> { }
         }
     }
 

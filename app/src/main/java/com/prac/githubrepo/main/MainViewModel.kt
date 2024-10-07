@@ -40,8 +40,8 @@ class MainViewModel @Inject constructor(
 
     sealed class SideEffect {
         data object LogoutDialogDismiss : SideEffect()
-
         data object StarDialogDismiss : SideEffect()
+        data class StarClick(val repoEntity: RepoEntity) : SideEffect()
     }
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
