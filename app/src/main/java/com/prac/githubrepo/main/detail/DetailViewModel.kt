@@ -58,7 +58,7 @@ class DetailViewModel @Inject constructor(
 
                         // Room 에서 repoDetailEntity.id 값이 없을 경우에 null 을 반환한다.
                         if (stargazersCount == null) {
-                            _uiState.update { UiState.Error("존재하지 않는 레파지토리입니다.") }
+                            _uiState.update { UiState.Error(errorMessage = INVALID_REPOSITORY) }
                             return@collect
                         }
 
