@@ -27,7 +27,7 @@ class DetailViewModel @Inject constructor(
 
         data object Loading : UiState()
 
-        data class ShowRepository(
+        data class Content(
             val repository : RepoDetailEntity
         ) : UiState()
 
@@ -69,7 +69,7 @@ class DetailViewModel @Inject constructor(
                         }
 
                         _uiState.update {
-                            UiState.ShowRepository(repoDetailEntity.copy(isStarred = isStarred, stargazersCount = stargazersCount))
+                            UiState.Content(repoDetailEntity.copy(isStarred = isStarred, stargazersCount = stargazersCount))
                         }
                     }
                 }
