@@ -13,7 +13,9 @@ import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.main.backoff.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -36,8 +38,25 @@ class MainViewModel @Inject constructor(
         ) : UiState()
     }
 
+    sealed class SideEffect {
+        data object LogoutDialogDismiss : SideEffect()
+        data object StarDialogDismiss : SideEffect()
+        data class StarClick(val repoEntity: RepoEntity) : SideEffect()
+        data class UnStarClick(val repoEntity: RepoEntity) : SideEffect()
+        data class RepositoryClick(val repoEntity: RepoEntity) : SideEffect()
+    }
+
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
     val uiState = _uiState.asStateFlow()
+
+    private val _sideEffect = MutableSharedFlow<SideEffect>()
+    val sideEffect = _sideEffect.asSharedFlow()
+
+    fun setSideEffect(sideEffect: SideEffect) {
+        viewModelScope.launch {
+            _sideEffect.emit(sideEffect)
+        }
+    }
 
     private fun getRepositories() {
         viewModelScope.launch {

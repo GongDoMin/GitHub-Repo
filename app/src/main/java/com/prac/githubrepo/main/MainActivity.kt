@@ -1,6 +1,7 @@
 package com.prac.githubrepo.main
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -13,10 +14,13 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.prac.data.entity.RepoEntity
 import com.prac.githubrepo.R
+import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.databinding.ActivityMainBinding
+import com.prac.githubrepo.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import com.prac.githubrepo.main.MainViewModel.UiState
+import com.prac.githubrepo.main.MainViewModel.SideEffect
 import com.prac.githubrepo.main.detail.DetailActivity
 import com.prac.githubrepo.main.request.StarStateRequestBuilder
 import kotlinx.coroutines.flow.collectLatest
@@ -34,17 +38,15 @@ class MainActivity : AppCompatActivity() {
             starStateRequestBuilderFactory.create(this.lifecycleScope),
             object : MainAdapter.OnRepositoryClickListener {
                 override fun clickRepository(repoEntity: RepoEntity) {
-                    val intent = DetailActivity.createIntent(this@MainActivity, repoEntity.owner.login, repoEntity.name)
-
-                    startActivity(intent)
+                    viewModel.setSideEffect(SideEffect.RepositoryClick(repoEntity))
                 }
 
                 override fun star(repoEntity: RepoEntity) {
-                    viewModel.starRepository(repoEntity)
+                    viewModel.setSideEffect(SideEffect.StarClick(repoEntity))
                 }
 
                 override fun unStar(repoEntity: RepoEntity) {
-                    viewModel.unStarRepository(repoEntity)
+                    viewModel.setSideEffect(SideEffect.UnStarClick(repoEntity))
                 }
             }
         )
@@ -75,6 +77,14 @@ class MainActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collectLatest {
                     it.handleUiState()
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.sideEffect.collect {
+                    it.handleSideEffect()
                 }
             }
         }
@@ -116,7 +126,7 @@ class MainActivity : AppCompatActivity() {
                             dialog.dismiss()
                         }
                         .setOnDismissListener {
-
+                            handleDialogMessage(dialogMessage)
                         }
                         .show()
                 }
@@ -126,5 +136,39 @@ class MainActivity : AppCompatActivity() {
                 mainAdapter.submitData(this.repositories)
             }
         }
+    }
+
+    private fun SideEffect.handleSideEffect() {
+        when (this) {
+            is SideEffect.LogoutDialogDismiss -> {
+                val intent = Intent(this@MainActivity, LoginActivity::class.java)
+                startActivity(intent)
+
+                finish()
+            }
+            is SideEffect.StarDialogDismiss -> { }
+            is SideEffect.StarClick -> {
+                viewModel.starRepository(repoEntity)
+            }
+
+            is SideEffect.UnStarClick -> {
+                viewModel.unStarRepository(repoEntity)
+            }
+
+            is SideEffect.RepositoryClick -> {
+                val intent = DetailActivity.createIntent(this@MainActivity, repoEntity.owner.login, repoEntity.name)
+
+                startActivity(intent)
+            }
+        }
+    }
+
+    private fun handleDialogMessage(dialogMessage: String) {
+        if (dialogMessage == INVALID_TOKEN) {
+            viewModel.setSideEffect(SideEffect.LogoutDialogDismiss)
+            return
+        }
+
+        viewModel.setSideEffect(SideEffect.StarDialogDismiss)
     }
 }
