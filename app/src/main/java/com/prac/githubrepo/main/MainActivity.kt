@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun unStar(repoEntity: RepoEntity) {
-                    viewModel.unStarRepository(repoEntity)
+                    viewModel.setSideEffect(SideEffect.UnStarClick(repoEntity))
                 }
             }
         )
@@ -153,7 +153,9 @@ class MainActivity : AppCompatActivity() {
                 viewModel.starRepository(repoEntity)
             }
 
-            is SideEffect.UnStarClick -> { }
+            is SideEffect.UnStarClick -> {
+                viewModel.unStarRepository(repoEntity)
+            }
         }
     }
 
