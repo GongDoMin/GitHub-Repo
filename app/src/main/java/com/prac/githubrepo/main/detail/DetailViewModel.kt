@@ -8,6 +8,7 @@ import com.prac.data.repository.TokenRepository
 import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN
+import com.prac.githubrepo.main.MainViewModel
 import com.prac.githubrepo.main.backoff.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -113,7 +114,17 @@ class DetailViewModel @Inject constructor(
                             )
                         }
                         else -> {
-                            // TODO Show Error Message
+                            if (it.message?.contains("404") == true) {
+                                repoRepository.unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
+
+                                _uiState.update {
+                                    UiState.Error(errorMessage = INVALID_REPOSITORY)
+                                }
+
+                                return@onFailure
+                            }
+
+                            logout()
                         }
                     }
                 }
