@@ -132,8 +132,8 @@ class DetailActivity : AppCompatActivity() {
 
     private fun setOnStarClickListener(repoDetailEntity: RepoDetailEntity) {
         binding.ivStar.setOnClickListener {
-            if (repoDetailEntity.isStarred == true) viewModel.unStarRepository(repoDetailEntity)
-            else viewModel.starRepository(repoDetailEntity)
+            if (repoDetailEntity.isStarred == true) viewModel.setSideEffect(SideEffect.UnStarClick(repoDetailEntity))
+            else viewModel.setSideEffect(SideEffect.StarClick(repoDetailEntity))
         }
     }
 
