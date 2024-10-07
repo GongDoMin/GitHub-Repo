@@ -61,7 +61,7 @@ class DetailActivity : AppCompatActivity() {
             is UiState.Loading -> {
                 binding.includeProgressBar.root.isVisible = true
             }
-            is UiState.ShowRepository -> {
+            is UiState.Content -> {
                 binding.includeProgressBar.root.isVisible = false
 
                 bindRepositoryDetail(this.repository)

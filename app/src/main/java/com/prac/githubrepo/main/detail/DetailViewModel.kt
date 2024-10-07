@@ -4,6 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.prac.data.entity.RepoDetailEntity
 import com.prac.data.repository.RepoRepository
+import com.prac.data.repository.TokenRepository
+import com.prac.githubrepo.constants.CONNECTION_FAIL
+import com.prac.githubrepo.constants.INVALID_REPOSITORY
+import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.main.backoff.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     private val repoRepository: RepoRepository,
+    private val tokenRepository: TokenRepository,
     private val backOffWorkManager: BackOffWorkManager
 ) : ViewModel() {
     sealed class UiState {
@@ -25,7 +30,7 @@ class DetailViewModel @Inject constructor(
 
         data object Loading : UiState()
 
-        data class ShowRepository(
+        data class Content(
             val repository : RepoDetailEntity
         ) : UiState()
 
@@ -56,7 +61,7 @@ class DetailViewModel @Inject constructor(
 
                         // Room 에서 repoDetailEntity.id 값이 없을 경우에 null 을 반환한다.
                         if (stargazersCount == null) {
-                            _uiState.update { UiState.Error("존재하지 않는 레파지토리입니다.") }
+                            _uiState.update { UiState.Error(errorMessage = INVALID_REPOSITORY) }
                             return@collect
                         }
 
@@ -67,13 +72,28 @@ class DetailViewModel @Inject constructor(
                         }
 
                         _uiState.update {
-                            UiState.ShowRepository(repoDetailEntity.copy(isStarred = isStarred, stargazersCount = stargazersCount))
+                            UiState.Content(repoDetailEntity.copy(isStarred = isStarred, stargazersCount = stargazersCount))
                         }
                     }
                 }
                 .onFailure { throwable ->
-                    _uiState.update {
-                        UiState.Error(throwable.message.toString())
+                    when (throwable) {
+                        is IOException -> {
+                            _uiState.update {
+                                UiState.Error(errorMessage = CONNECTION_FAIL)
+                            }
+                        }
+                        else -> {
+                            if (throwable.message?.contains("404") == true) {
+                                _uiState.update {
+                                    UiState.Error(errorMessage = INVALID_REPOSITORY)
+                                }
+
+                                return@onFailure
+                            }
+
+                            logout()
+                        }
                     }
                 }
         }
@@ -118,6 +138,17 @@ class DetailViewModel @Inject constructor(
                         }
                     }
                 }
+        }
+    }
+
+    private fun logout() {
+        viewModelScope.launch {
+            tokenRepository.clearToken()
+            backOffWorkManager.clearWork()
+
+            _uiState.update {
+                UiState.Error(errorMessage = INVALID_TOKEN)
+            }
         }
     }
 }
