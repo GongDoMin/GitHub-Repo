@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun star(repoEntity: RepoEntity) {
-                    viewModel.starRepository(repoEntity)
+                    viewModel.setSideEffect(SideEffect.StarClick(repoEntity))
                 }
 
                 override fun unStar(repoEntity: RepoEntity) {
@@ -149,7 +149,9 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
             is SideEffect.StarDialogDismiss -> { }
-            is SideEffect.StarClick -> { }
+            is SideEffect.StarClick -> {
+                viewModel.starRepository(repoEntity)
+            }
         }
     }
 
