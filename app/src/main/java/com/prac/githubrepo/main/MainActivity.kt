@@ -1,5 +1,6 @@
 package com.prac.githubrepo.main
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +12,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.prac.data.entity.RepoEntity
+import com.prac.githubrepo.R
 import com.prac.githubrepo.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -107,6 +109,18 @@ class MainActivity : AppCompatActivity() {
         when (this) {
             is UiState.Idle -> { }
             is UiState.Content -> {
+                if (dialogMessage.isNotEmpty()) {
+                    AlertDialog.Builder(this@MainActivity)
+                        .setMessage(dialogMessage)
+                        .setPositiveButton(R.string.check) { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .setOnDismissListener {
+
+                        }
+                        .show()
+                }
+
                 this.loadState?.let { retryFooterAdapter.loadState = it }
 
                 mainAdapter.submitData(this.repositories)

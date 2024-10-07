@@ -27,7 +27,8 @@ class MainViewModel @Inject constructor(
 
         data class Content(
             val repositories : PagingData<RepoEntity>,
-            val loadState: LoadState? = null
+            val loadState: LoadState? = null,
+            val dialogMessage: String = ""
         ) : UiState()
     }
 
