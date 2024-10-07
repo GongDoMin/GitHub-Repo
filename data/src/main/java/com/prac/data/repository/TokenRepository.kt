@@ -1,7 +1,7 @@
 package com.prac.data.repository
 
 interface TokenRepository {
-    suspend fun getTokenApi(
+    suspend fun authorizeOAuth(
         code: String
     ) : Result<Unit>
 
