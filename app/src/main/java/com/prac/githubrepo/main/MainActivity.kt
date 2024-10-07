@@ -1,6 +1,5 @@
 package com.prac.githubrepo.main
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -17,8 +16,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import com.prac.githubrepo.main.MainViewModel.UiState
 import com.prac.githubrepo.main.detail.DetailActivity
-import com.prac.githubrepo.main.detail.DetailActivity.Companion.REPO_NAME
-import com.prac.githubrepo.main.detail.DetailActivity.Companion.USER_NAME
 import com.prac.githubrepo.main.request.StarStateRequestBuilder
 import kotlinx.coroutines.flow.collectLatest
 import java.io.IOException
@@ -109,7 +106,7 @@ class MainActivity : AppCompatActivity() {
     private suspend fun UiState.handleUiState() {
         when (this) {
             is UiState.Idle -> { }
-            is UiState.ShowPagingData -> {
+            is UiState.Content -> {
                 this.loadState?.let { retryFooterAdapter.loadState = it }
 
                 mainAdapter.submitData(this.repositories)

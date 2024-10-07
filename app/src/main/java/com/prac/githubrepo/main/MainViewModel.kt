@@ -25,7 +25,7 @@ class MainViewModel @Inject constructor(
     sealed class UiState {
         data object Idle : UiState()
 
-        data class ShowPagingData(
+        data class Content(
             val repositories : PagingData<RepoEntity>,
             val loadState: LoadState? = null
         ) : UiState()
@@ -39,16 +39,16 @@ class MainViewModel @Inject constructor(
             if (_uiState.value != UiState.Idle) return@launch
 
             repoRepository.getRepositories().cachedIn(viewModelScope).collect { pagingData ->
-                _uiState.update { UiState.ShowPagingData(pagingData) }
+                _uiState.update { UiState.Content(pagingData) }
             }
         }
     }
 
     fun updateLoadState(loadState: LoadState) {
-        if (_uiState.value !is UiState.ShowPagingData) return
+        if (_uiState.value !is UiState.Content) return
 
         _uiState.update {
-            (it as UiState.ShowPagingData).copy(loadState = loadState)
+            (it as UiState.Content).copy(loadState = loadState)
         }
     }
 
