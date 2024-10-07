@@ -152,6 +152,8 @@ class MainActivity : AppCompatActivity() {
             is SideEffect.StarClick -> {
                 viewModel.starRepository(repoEntity)
             }
+
+            is SideEffect.UnStarClick -> { }
         }
     }
 
