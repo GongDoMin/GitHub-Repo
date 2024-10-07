@@ -104,6 +104,12 @@ class DetailActivity : AppCompatActivity() {
 
                 startActivity(intent)
             }
+            is SideEffect.StarClick -> {
+                viewModel.starRepository(repoDetailEntity)
+            }
+            is SideEffect.UnStarClick -> {
+                viewModel.unStarRepository(repoDetailEntity)
+            }
         }
     }
 

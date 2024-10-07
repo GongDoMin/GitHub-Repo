@@ -45,6 +45,8 @@ class DetailViewModel @Inject constructor(
     sealed class SideEffect {
         data object BasicDialogDismiss : SideEffect() // IOException, 404 에러의 alert dialog 가 dismiss 되는 경우
         data object LogoutDialogDismiss : SideEffect()
+        data class StarClick(val repoDetailEntity: RepoDetailEntity) : SideEffect()
+        data class UnStarClick(val repoDetailEntity: RepoDetailEntity) : SideEffect()
     }
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
