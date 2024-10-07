@@ -1,6 +1,7 @@
 package com.prac.githubrepo.main
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -14,9 +15,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.prac.data.entity.RepoEntity
 import com.prac.githubrepo.R
 import com.prac.githubrepo.databinding.ActivityMainBinding
+import com.prac.githubrepo.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import com.prac.githubrepo.main.MainViewModel.UiState
+import com.prac.githubrepo.main.MainViewModel.SideEffect
 import com.prac.githubrepo.main.detail.DetailActivity
 import com.prac.githubrepo.main.request.StarStateRequestBuilder
 import kotlinx.coroutines.flow.collectLatest
@@ -78,6 +81,14 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.sideEffect.collect {
+                    it.handleSideEffect()
+                }
+            }
+        }
     }
 
     private fun CombinedLoadStates.handleLoadStates() {
@@ -124,6 +135,17 @@ class MainActivity : AppCompatActivity() {
                 this.loadState?.let { retryFooterAdapter.loadState = it }
 
                 mainAdapter.submitData(this.repositories)
+            }
+        }
+    }
+
+    private fun SideEffect.handleSideEffect() {
+        when (this) {
+            is SideEffect.LogoutDialogDismiss -> {
+                val intent = Intent(this@MainActivity, LoginActivity::class.java)
+                startActivity(intent)
+
+                finish()
             }
         }
     }
