@@ -7,6 +7,8 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.prac.data.entity.RepoEntity
 import com.prac.data.repository.RepoRepository
+import com.prac.data.repository.TokenRepository
+import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.main.backoff.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repoRepository: RepoRepository,
+    private val tokenRepository: TokenRepository,
     private val backOffWorkManager: BackOffWorkManager
 ): ViewModel() {
     sealed class UiState {
@@ -94,6 +97,18 @@ class MainViewModel @Inject constructor(
                 }
         }
     }
+
+    fun logout() {
+        viewModelScope.launch {
+            tokenRepository.clearToken()
+            backOffWorkManager.clearWork()
+
+            _uiState.update {
+                (it as UiState.Content).copy(dialogMessage = INVALID_TOKEN)
+            }
+        }
+    }
+
 
     init {
         getRepositories()
