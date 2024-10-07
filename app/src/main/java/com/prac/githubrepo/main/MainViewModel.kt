@@ -8,6 +8,7 @@ import androidx.paging.cachedIn
 import com.prac.data.entity.RepoEntity
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
+import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.main.backoff.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -70,7 +71,17 @@ class MainViewModel @Inject constructor(
                             )
                         }
                         else -> {
-                            // TODO Show Error Message
+                            if (it.message?.contains("404") == true) {
+                                repoRepository.unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
+
+                                _uiState.update {
+                                    (it as UiState.Content).copy(dialogMessage = INVALID_REPOSITORY)
+                                }
+
+                                return@onFailure
+                            }
+
+                            logout()
                         }
                     }
                 }
@@ -91,7 +102,17 @@ class MainViewModel @Inject constructor(
                             )
                         }
                         else -> {
-                            // TODO Show Error Message
+                            if (it.message?.contains("404") == true) {
+                                repoRepository.starLocalRepository(repoEntity.id, repoEntity.stargazersCount)
+
+                                _uiState.update {
+                                    (it as UiState.Content).copy(dialogMessage = INVALID_REPOSITORY)
+                                }
+
+                                return@onFailure
+                            }
+
+                            logout()
                         }
                     }
                 }
