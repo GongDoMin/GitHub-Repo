@@ -145,7 +145,17 @@ class DetailViewModel @Inject constructor(
                             )
                         }
                         else -> {
-                            // TODO Show Error Message
+                            if (it.message?.contains("404") == true) {
+                                repoRepository.starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
+
+                                _uiState.update {
+                                    UiState.Error(errorMessage = INVALID_REPOSITORY)
+                                }
+
+                                return@onFailure
+                            }
+
+                            logout()
                         }
                     }
                 }
