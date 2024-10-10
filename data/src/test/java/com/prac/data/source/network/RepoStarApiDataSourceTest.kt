@@ -40,4 +40,14 @@ class RepoStarApiDataSourceTest {
 
         verify(gitHubService).starRepository(userName, repoName)
     }
+
+    @Test
+    fun unStarRepository_callGitHubService() = runTest {
+        val userName = "testUser"
+        val repoName = "testRepo"
+
+        repoStarApiDataSource.unStarRepository(userName, repoName)
+
+        verify(gitHubService).unStarRepository(userName, repoName)
+    }
 }
