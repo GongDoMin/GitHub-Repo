@@ -30,4 +30,14 @@ class RepoStarApiDataSourceTest {
 
         verify(gitHubService).checkRepositoryIsStarred("GongDoMin", repoName)
     }
+
+    @Test
+    fun starRepository_callGitHubService() = runTest {
+        val userName = "testUser"
+        val repoName = "testRepo"
+
+        repoStarApiDataSource.starRepository(userName, repoName)
+
+        verify(gitHubService).starRepository(userName, repoName)
+    }
 }
