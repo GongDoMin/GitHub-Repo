@@ -2,9 +2,12 @@ package com.prac.data.source.network
 
 import com.prac.data.source.network.impl.RepoStarApiDataSourceImpl
 import com.prac.data.source.network.service.GitHubService
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
@@ -17,5 +20,14 @@ class RepoStarApiDataSourceTest {
     @Before
     fun setUp() {
         repoStarApiDataSource = RepoStarApiDataSourceImpl(gitHubService)
+    }
+
+    @Test
+    fun checkRepositoryIsStarred_callGitHubService() = runTest {
+        val repoName = "testRepo"
+
+        repoStarApiDataSource.checkRepositoryIsStarred(repoName)
+
+        verify(gitHubService).checkRepositoryIsStarred("GongDoMin", repoName)
     }
 }
