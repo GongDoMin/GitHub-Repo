@@ -36,4 +36,18 @@ internal class AuthApiDataSourceTest {
         assertEquals(result.expiresInSeconds, tokenDto.expiresIn)
         assertEquals(result.refreshTokenExpiresInSeconds, tokenDto.refreshTokenExpiresIn)
     }
+
+    @Test
+    fun refreshAccessToken_tokenPassedToDataSource() = runTest {
+        val refreshToken = "refreshToken"
+        val tokenDto = TokenDto("newAccessToken", 3600, "newRefreshToken", 3600, "Bearer")
+        whenever(gitHubAuthService.refreshAccessToken(refreshToken = refreshToken)).thenReturn(tokenDto)
+
+        val result = authApiDataSource.refreshAccessToken(refreshToken)
+
+        assertEquals(result.accessToken, tokenDto.accessToken)
+        assertEquals(result.refreshToken, tokenDto.refreshToken)
+        assertEquals(result.expiresInSeconds, tokenDto.expiresIn)
+        assertEquals(result.refreshTokenExpiresInSeconds, tokenDto.refreshTokenExpiresIn)
+    }
 }
