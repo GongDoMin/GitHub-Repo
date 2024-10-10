@@ -27,6 +27,7 @@ internal class RepositoryModule {
         TokenRepositoryImpl(tokenLocalDataSource, authApiDataSource)
 
     @Provides
+    @Singleton
     fun provideRepoRepository(
         repoApiDataSource: RepoApiDataSource,
         repoStarApiDataSource: RepoStarApiDataSource,
