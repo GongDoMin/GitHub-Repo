@@ -26,6 +26,7 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
+
     buildTypes {
         debug {
             isMinifyEnabled = false
@@ -63,11 +64,18 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.androidx.junit.ktx)
     testImplementation(libs.junit)
+    testImplementation(libs.androidx.junit)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    androidTestImplementation(libs.androidx.runner)
+    androidTestImplementation(libs.androidx.rules)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.jetbrains.kotlinx.coroutines)
+    implementation(libs.jetbrains.kotlinx.coroutines.test)
 
     implementation(libs.dagger.hilt.android)
     kapt(libs.dagger.hilt.compiler)
@@ -90,6 +98,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.paging)
     kapt(libs.androidx.room.compiler)
+    androidTestImplementation(libs.androidx.room.testing)
 }
 
 protobuf {
