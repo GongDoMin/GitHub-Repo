@@ -67,14 +67,13 @@ internal class RepoRepositoryImpl @Inject constructor(
     }
 
     override suspend fun isStarred(id: Int, repoName: String) {
-        val result = repoStarApiDataSource.checkRepositoryIsStarred(repoName)
+        try {
+            repoStarApiDataSource.checkRepositoryIsStarred(repoName)
 
-        if (result) {
             repositoryDatabase.repositoryDao().updateStarState(id, true)
-            return
+        } catch (e: Exception) {
+            repositoryDatabase.repositoryDao().updateStarState(id, false)
         }
-
-        repositoryDatabase.repositoryDao().updateStarState(id, false)
     }
 
     override suspend fun starRepository(userName: String, repoName: String): Result<Unit> {
