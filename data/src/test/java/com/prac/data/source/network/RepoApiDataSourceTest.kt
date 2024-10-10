@@ -1,6 +1,7 @@
 package com.prac.data.source.network
 
 import com.prac.data.source.network.dto.OwnerDto
+import com.prac.data.source.network.dto.RepoDetailDto
 import com.prac.data.source.network.dto.RepoDto
 import com.prac.data.source.network.impl.RepoApiDataSourceImpl
 import com.prac.data.source.network.service.GitHubService
@@ -46,5 +47,22 @@ class RepoApiDataSourceTest {
             assertEquals(result[it].stargazersCount, repositoriesDto[it].stargazersCount)
             assertEquals(result[it].updatedAt, repositoriesDto[it].updatedAt)
         }
+    }
+
+    @Test
+    fun getRepository_repositoryPassedToDataSource() = runTest {
+        val repositoryDto = RepoDetailDto(0, "test1", OwnerDto("test1", "test1"), 0, 0)
+        val userName = "test"
+        val repoName = "test"
+        whenever(gitHubService.getRepo(userName, repoName)).thenReturn(repositoryDto)
+
+        val result = repoApiDatasource.getRepository(userName, repoName)
+
+        assertEquals(result.id, repositoryDto.id)
+        assertEquals(result.name, repositoryDto.name)
+        assertEquals(result.owner.login, repositoryDto.owner.login)
+        assertEquals(result.owner.avatarUrl, repositoryDto.owner.avatarUrl)
+        assertEquals(result.stargazersCount, repositoryDto.stargazersCount)
+        assertEquals(result.forksCount, repositoryDto.forksCount)
     }
 }
