@@ -107,6 +107,43 @@ internal class RepoRepositoryTest {
         assertFalse((result as RemoteMediator.MediatorResult.Success).endOfPaginationReached)
     }
 
+    @OptIn(ExperimentalPagingApi::class)
+    @Test
+    fun load_withRefresh_returnSuccessResult_and_endOfPaginationReachedIsTrue() = runTest {
+        val loadSize = 5
+        val page = 1
+        val pagingState = PagingState<Int, Repository>(
+            pages = listOf(),
+            anchorPosition = null,
+            config = PagingConfig(pageSize = pageLoadSize, enablePlaceholders = false),
+            leadingPlaceholderCount = 0
+        )
+        val repositoriesDto = getRepoDtoListForPage(page, loadSize)
+        val prevKey = null // page 가 1 이기 때문에 prevKey 는 null
+        val nextKey = null // loadSize 가 5 이기 때문에 nextKey 는 null
+        repoApiDataSource.thenRepoDtoList(repositoriesDto)
+
+        val result = repoRepository.load(LoadType.REFRESH, pagingState)
+
+        val roomRepositories = (repositoryDao.getRepositories().load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = pageLoadSize,
+                placeholdersEnabled = false
+            )
+        ) as? PagingSource.LoadResult.Page)?.data
+        assertEquals(roomRepositories?.size, repositoriesDto.size)
+        repositoriesDto.indices.forEach {
+            assertEquals(roomRepositories?.get(it)?.id, repositoriesDto[it].id)
+            val remoteKey = remoteKeyDao.remoteKey(repositoriesDto[it].id)
+            assertEquals(remoteKey?.repoId, repositoriesDto[it].id)
+            assertEquals(remoteKey?.prevKey, prevKey)
+            assertEquals(remoteKey?.nextKey, nextKey)
+        }
+        assertTrue(result is RemoteMediator.MediatorResult.Success)
+        assertTrue((result as RemoteMediator.MediatorResult.Success).endOfPaginationReached)
+    }
+
     private class MockRepoApiDataSource : RepoApiDataSource {
 
         private lateinit var throwable: Throwable
