@@ -252,6 +252,16 @@ internal class RepoRepositoryTest {
         assertEquals(roomRepository?.isStarred, false)
     }
 
+    @Test
+    fun starRepository_returnSuccessResult() = runTest {
+        val userName = "test"
+        val repoName = "test"
+
+        val result = repoRepository.starRepository(userName, repoName)
+
+        assertTrue(result.isSuccess)
+    }
+
     private class MockRepoApiDataSource : RepoApiDataSource {
 
         private lateinit var throwable: Throwable
