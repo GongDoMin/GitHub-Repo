@@ -75,43 +75,11 @@ class DetailViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             repoRepository.getRepository(userName, repoName)
-                .onSuccess { repoDetailEntity ->
-                    repoRepository.getStarStateAndStarCount(repoDetailEntity.id).collect { pair ->
-                        val isStarred = pair.first
-                        val stargazersCount = pair.second
-
-                        // Room 에서 repoDetailEntity.id 값이 없을 경우에 null 을 반환한다.
-                        if (stargazersCount == null) {
-                            _uiState.update { UiState.Error(errorMessage = INVALID_REPOSITORY) }
-                            return@collect
-                        }
-
-                        // List 화면에서 Star Check 가 완료되기 전에 사용자가 Detail 화면으로 넘어온 경우 null 을 반환한다.
-                        if (isStarred == null) {
-                            repoRepository.isStarred(repoDetailEntity.id, repoDetailEntity.name)
-                            return@collect
-                        }
-
-                        _uiState.update {
-                            UiState.Content(repoDetailEntity.copy(isStarred = isStarred, stargazersCount = stargazersCount))
-                        }
-                    }
+                .onSuccess {
+                    handleGetRepositorySuccess(it)
                 }
                 .onFailure {
-                    when (it) {
-                        is RepositoryException.NetworkError -> {
-                            _uiState.update { UiState.Error(errorMessage = CONNECTION_FAIL) }
-                        }
-                        is RepositoryException.AuthorizationError -> {
-                            logout()
-                        }
-                        is RepositoryException.NotFoundRepository -> {
-                            _uiState.update { UiState.Error(errorMessage = INVALID_REPOSITORY) }
-                        }
-                        else -> {
-                            _uiState.update { UiState.Error(errorMessage = UNKNOWN) }
-                        }
-                    }
+                    handleGetRepositoryFailure(it)
                 }
         }
     }
@@ -185,6 +153,47 @@ class DetailViewModel @Inject constructor(
 
             _uiState.update {
                 UiState.Error(errorMessage = INVALID_TOKEN)
+            }
+        }
+    }
+
+    private suspend fun handleGetRepositorySuccess(repoDetailEntity: RepoDetailEntity) {
+        repoRepository.getStarStateAndStarCount(repoDetailEntity.id).collect { pair ->
+            val isStarred = pair.first
+            val stargazersCount = pair.second
+
+            // Room 에서 repoDetailEntity.id 값이 없을 경우에 null 을 반환한다.
+            if (stargazersCount == null) {
+                _uiState.update { UiState.Error(errorMessage = INVALID_REPOSITORY) }
+                return@collect
+            }
+
+            // List 화면에서 Star Check 가 완료되기 전에 사용자가 Detail 화면으로 넘어온 경우 null 을 반환한다.
+            if (isStarred == null) {
+                repoRepository.isStarred(repoDetailEntity.id, repoDetailEntity.name)
+                return@collect
+            }
+
+            _uiState.update {
+                UiState.Content(repoDetailEntity.copy(isStarred = isStarred, stargazersCount = stargazersCount))
+            }
+        }
+    }
+
+
+    private fun handleGetRepositoryFailure(t: Throwable) {
+        when (t) {
+            is RepositoryException.NetworkError -> {
+                _uiState.update { UiState.Error(errorMessage = CONNECTION_FAIL) }
+            }
+            is RepositoryException.AuthorizationError -> {
+                logout()
+            }
+            is RepositoryException.NotFoundRepository -> {
+                _uiState.update { UiState.Error(errorMessage = INVALID_REPOSITORY) }
+            }
+            else -> {
+                _uiState.update { UiState.Error(errorMessage = UNKNOWN) }
             }
         }
     }
