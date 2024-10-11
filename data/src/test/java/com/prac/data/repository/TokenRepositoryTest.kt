@@ -99,4 +99,14 @@ class TokenRepositoryTest {
         verify(tokenLocalDataSource, never()).setToken(any())
         assertTrue(result.isFailure)
     }
+
+    @Test
+    fun isLoggedIn_accessTokenExist_returnsTrue() = runTest {
+        val token = TokenLocalDto("accessToken", "refreshToken", 3600, 3600, ZonedDateTime.now())
+        whenever(tokenLocalDataSource.getToken()).thenReturn(token)
+
+        val isLoggedIn = tokenRepository.isLoggedIn()
+
+        assertTrue(isLoggedIn)
+    }
 }
