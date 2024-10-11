@@ -131,4 +131,14 @@ class TokenRepositoryTest {
 
         assertEquals(token.accessToken, accessToken)
     }
+
+    @Test
+    fun getRefreshToken_returnTokenFromDataSource() = runTest {
+        val token = TokenLocalDto("accessToken", "refreshToken", 3600, 3600, ZonedDateTime.now())
+        whenever(tokenLocalDataSource.getToken()).thenReturn(token)
+
+        val refreshToken = tokenRepository.getRefreshToken()
+
+        assertEquals(token.refreshToken, refreshToken)
+    }
 }
