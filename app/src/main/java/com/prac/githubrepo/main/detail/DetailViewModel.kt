@@ -3,11 +3,13 @@ package com.prac.githubrepo.main.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.prac.data.entity.RepoDetailEntity
+import com.prac.data.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN
+import com.prac.githubrepo.constants.UNKNOWN
 import com.prac.githubrepo.main.MainViewModel
 import com.prac.githubrepo.main.backoff.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -95,23 +97,19 @@ class DetailViewModel @Inject constructor(
                         }
                     }
                 }
-                .onFailure { throwable ->
-                    when (throwable) {
-                        is IOException -> {
-                            _uiState.update {
-                                UiState.Error(errorMessage = CONNECTION_FAIL)
-                            }
+                .onFailure {
+                    when (it) {
+                        is RepositoryException.NetworkError -> {
+                            _uiState.update { UiState.Error(errorMessage = CONNECTION_FAIL) }
+                        }
+                        is RepositoryException.AuthorizationError -> {
+                            logout()
+                        }
+                        is RepositoryException.NotFoundRepository -> {
+                            _uiState.update { UiState.Error(errorMessage = INVALID_REPOSITORY) }
                         }
                         else -> {
-                            if (throwable.message?.contains("404") == true) {
-                                _uiState.update {
-                                    UiState.Error(errorMessage = INVALID_REPOSITORY)
-                                }
-
-                                return@onFailure
-                            }
-
-                            logout()
+                            _uiState.update { UiState.Error(errorMessage = UNKNOWN) }
                         }
                     }
                 }
