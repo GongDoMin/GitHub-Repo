@@ -49,6 +49,18 @@ class RepositoryDaoTest {
     }
 
     @Test
+    fun getRepository_withExistingId_returnsRepository() = runTest {
+        val repositories = makeRepositories()
+        val index = 0
+        val id = repositories[index].id
+        repositoryDao.insertRepositories(repositories)
+
+        val result = repositoryDao.getRepository(id).first()
+
+        assertEquals(repositories[index], result)
+    }
+
+    @Test
     fun getRepository_withNonExistingId_returnsNull() = runTest {
         val repositories = makeRepositories()
         val id = repositories.maxOf { it.id } + 1
