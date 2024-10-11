@@ -13,6 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.whenever
 import java.time.Instant
 import java.time.ZoneId
+import java.time.ZonedDateTime
 
 @RunWith(MockitoJUnitRunner::class)
 internal class TokenLocalDataSourceTest {
@@ -43,5 +44,25 @@ internal class TokenLocalDataSourceTest {
 
         assertTrue(result.accessToken.isEmpty())
         assertTrue(result.refreshToken.isEmpty())
+    }
+
+    @Test
+    fun getCachedToken_returnTokenWhenDataStoreIsNotEmpty() = runTest {
+        whenever(tokenDataStoreManager.getToken())
+            .thenReturn(
+                TokenLocalDto(
+                    "accessToken",
+                    "refreshToken",
+                    3600,
+                    3600,
+                    Instant.ofEpochMilli(ZonedDateTime.now().toInstant().toEpochMilli()).atZone(ZoneId.systemDefault())
+                )
+            )
+        tokenLocalDataSource = TokenLocalDataSourceImpl(tokenDataStoreManager)
+
+        val result = tokenLocalDataSource.getToken()
+
+        assertTrue(result.accessToken.isNotEmpty())
+        assertTrue(result.refreshToken.isNotEmpty())
     }
 }
