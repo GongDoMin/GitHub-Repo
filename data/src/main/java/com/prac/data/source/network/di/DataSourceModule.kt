@@ -1,10 +1,11 @@
 package com.prac.data.source.network.di
 
-import com.prac.data.source.local.datastore.TokenDataStoreManager
+import com.prac.data.source.local.datastore.TokenDataStoreManagerImpl
 import com.prac.data.source.network.RepoApiDataSource
 import com.prac.data.source.network.RepoStarApiDataSource
 import com.prac.data.source.network.AuthApiDataSource
 import com.prac.data.source.local.TokenLocalDataSource
+import com.prac.data.source.local.datastore.TokenDataStoreManager
 import com.prac.data.source.network.service.GitHubService
 import com.prac.data.source.network.service.GitHubAuthService
 import com.prac.data.source.network.impl.RepoApiDataSourceImpl

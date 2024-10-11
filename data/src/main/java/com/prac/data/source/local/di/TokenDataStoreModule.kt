@@ -2,6 +2,7 @@ package com.prac.data.source.local.di
 
 import android.content.Context
 import com.prac.data.source.local.datastore.TokenDataStoreManager
+import com.prac.data.source.local.datastore.TokenDataStoreManagerImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,6 +16,6 @@ internal class TokenDataStoreModule {
     @Provides
     @Singleton
     fun provideTokenDataStoreManager(@ApplicationContext context: Context) : TokenDataStoreManager {
-        return TokenDataStoreManager(context)
+        return TokenDataStoreManagerImpl(context)
     }
 }
