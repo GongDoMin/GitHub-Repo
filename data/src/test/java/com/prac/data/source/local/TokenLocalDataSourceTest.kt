@@ -5,6 +5,7 @@ import com.prac.data.source.local.datastore.TokenLocalDto
 import com.prac.data.source.local.impl.TokenLocalDataSourceImpl
 import kotlinx.coroutines.test.runTest
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -64,5 +65,19 @@ internal class TokenLocalDataSourceTest {
 
         assertTrue(result.accessToken.isNotEmpty())
         assertTrue(result.refreshToken.isNotEmpty())
+    }
+
+    @Test
+    fun setToken_updateCacheAndReturnCorrectToken() = runTest {
+        val token = TokenLocalDto("accessToken", "refreshToken", 3600, 3600, ZonedDateTime.now())
+        tokenLocalDataSource = TokenLocalDataSourceImpl(tokenDataStoreManager)
+        tokenLocalDataSource.setToken(token)
+        whenever(tokenDataStoreManager.getToken()).thenReturn(token)
+
+        val cacheResult = tokenLocalDataSource.getToken()
+        val dataStoreResult = tokenDataStoreManager.getToken()
+
+        assertEquals(cacheResult, token)
+        assertEquals(dataStoreResult, token)
     }
 }
