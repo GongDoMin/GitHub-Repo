@@ -87,4 +87,16 @@ class TokenRepositoryTest {
             )
         assertTrue(result.isSuccess)
     }
+
+    @Test
+    fun refreshToken_returnFailure() = runTest {
+        val refreshToken = "refreshToken"
+        val exception = RuntimeException()
+        whenever(authApiDataSource.refreshAccessToken(refreshToken)).thenThrow(exception)
+
+        val result = tokenRepository.refreshToken(refreshToken)
+
+        verify(tokenLocalDataSource, never()).setToken(any())
+        assertTrue(result.isFailure)
+    }
 }
