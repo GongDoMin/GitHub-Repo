@@ -121,27 +121,7 @@ class DetailViewModel @Inject constructor(
 
             repoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name)
                 .onFailure {
-                    when (it) {
-                        is IOException -> {
-                            backOffWorkManager.addWork(
-                                uniqueID = "star_${repoDetailEntity.id}",
-                                work = { repoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name) }
-                            )
-                        }
-                        else -> {
-                            if (it.message?.contains("404") == true) {
-                                repoRepository.starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
-
-                                _uiState.update {
-                                    UiState.Error(errorMessage = INVALID_REPOSITORY)
-                                }
-
-                                return@onFailure
-                            }
-
-                            logout()
-                        }
-                    }
+                    handleUnStarRepositoryFailure(it, repoDetailEntity)
                 }
         }
     }
@@ -180,7 +160,6 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-
     private fun handleGetRepositoryFailure(t: Throwable) {
         when (t) {
             is RepositoryException.NetworkError -> {
@@ -190,6 +169,28 @@ class DetailViewModel @Inject constructor(
                 logout()
             }
             is RepositoryException.NotFoundRepository -> {
+                _uiState.update { UiState.Error(errorMessage = INVALID_REPOSITORY) }
+            }
+            else -> {
+                _uiState.update { UiState.Error(errorMessage = UNKNOWN) }
+            }
+        }
+    }
+
+    private suspend fun handleUnStarRepositoryFailure(t: Throwable, repoDetailEntity: RepoDetailEntity) {
+        when (t) {
+            is RepositoryException.NetworkError -> {
+                backOffWorkManager.addWork(
+                    uniqueID = "star_${repoDetailEntity.id}",
+                    work = { repoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name) }
+                )
+            }
+            is RepositoryException.AuthorizationError -> {
+                logout()
+            }
+            is RepositoryException.NotFoundRepository -> {
+                repoRepository.starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
+
                 _uiState.update { UiState.Error(errorMessage = INVALID_REPOSITORY) }
             }
             else -> {
