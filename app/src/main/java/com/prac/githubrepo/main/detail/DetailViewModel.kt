@@ -90,27 +90,7 @@ class DetailViewModel @Inject constructor(
 
             repoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name)
                 .onFailure {
-                    when (it) {
-                        is IOException -> {
-                            backOffWorkManager.addWork(
-                                uniqueID = "star_${repoDetailEntity.id}",
-                                work = { repoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name) }
-                            )
-                        }
-                        else -> {
-                            if (it.message?.contains("404") == true) {
-                                repoRepository.unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
-
-                                _uiState.update {
-                                    UiState.Error(errorMessage = INVALID_REPOSITORY)
-                                }
-
-                                return@onFailure
-                            }
-
-                            logout()
-                        }
-                    }
+                    handleStarRepositoryFailure(it, repoDetailEntity)
                 }
         }
     }
@@ -169,6 +149,28 @@ class DetailViewModel @Inject constructor(
                 logout()
             }
             is RepositoryException.NotFoundRepository -> {
+                _uiState.update { UiState.Error(errorMessage = INVALID_REPOSITORY) }
+            }
+            else -> {
+                _uiState.update { UiState.Error(errorMessage = UNKNOWN) }
+            }
+        }
+    }
+
+    private suspend fun handleStarRepositoryFailure(t: Throwable, repoDetailEntity: RepoDetailEntity) {
+        when (t) {
+            is RepositoryException.NetworkError -> {
+                backOffWorkManager.addWork(
+                    uniqueID = "star_${repoDetailEntity.id}",
+                    work = { repoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name) }
+                )
+            }
+            is RepositoryException.AuthorizationError -> {
+                logout()
+            }
+            is RepositoryException.NotFoundRepository -> {
+                repoRepository.unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
+
                 _uiState.update { UiState.Error(errorMessage = INVALID_REPOSITORY) }
             }
             else -> {
