@@ -199,6 +199,30 @@ internal class RepoRepositoryTest {
         }
     }
 
+    @OptIn(ExperimentalPagingApi::class)
+    @Test
+    fun load_returnsFailureResult() = runTest {
+        val pagingState = PagingState<Int, Repository>(
+            pages = listOf(),
+            anchorPosition = null,
+            config = PagingConfig(pageSize = pageLoadSize, enablePlaceholders = false),
+            leadingPlaceholderCount = 0
+        )
+        repoApiDataSource.thenThrow(Exception())
+
+        val result = repoRepository.load(LoadType.REFRESH, pagingState)
+
+        val roomRepositories = (repositoryDao.getRepositories().load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = pageLoadSize,
+                placeholdersEnabled = false
+            )
+        ) as? PagingSource.LoadResult.Page)?.data
+        assertEquals(roomRepositories?.size, 0)
+        assertTrue(result is RemoteMediator.MediatorResult.Error)
+    }
+
     private class MockRepoApiDataSource : RepoApiDataSource {
 
         private lateinit var throwable: Throwable
