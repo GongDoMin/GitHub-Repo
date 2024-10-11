@@ -8,9 +8,11 @@ import com.prac.data.source.local.room.dao.RepositoryDao
 import com.prac.data.source.local.room.database.RepositoryDatabase
 import com.prac.data.source.local.room.entity.Owner
 import com.prac.data.source.local.room.entity.Repository
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,6 +46,17 @@ class RepositoryDaoTest {
             PagingSource.LoadParams.Refresh(key = null, loadSize = 10, placeholdersEnabled = false)
         ) as? PagingSource.LoadResult.Page)?.data
         assertEquals(result, repositories)
+    }
+
+    @Test
+    fun getRepository_withNonExistingId_returnsNull() = runTest {
+        val repositories = makeRepositories()
+        val id = repositories.maxOf { it.id } + 1
+        repositoryDao.insertRepositories(repositories)
+
+        val result = repositoryDao.getRepository(id).first()
+
+        assertNull(result)
     }
 
     private fun makeRepositories() =
