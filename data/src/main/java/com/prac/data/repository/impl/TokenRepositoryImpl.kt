@@ -49,6 +49,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 
             Result.success(Unit)
         } catch (e: Exception) {
+            // 예외 발생 시 로그아웃 처리할 것이라서 따로 처리를 하지 않는다.
             Result.failure(e)
         }
     }
