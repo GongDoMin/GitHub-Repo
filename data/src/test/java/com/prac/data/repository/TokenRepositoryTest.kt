@@ -173,4 +173,15 @@ class TokenRepositoryTest {
 
         assertFalse(refreshTokenIsExpired)
     }
+
+    @Test
+    fun getRefreshTokenIsExpired_returnsTrueFromDataSource() = runTest {
+        val token = TokenLocalDto("accessToken", "refreshToken", 0, 0, ZonedDateTime.now())
+        whenever(tokenLocalDataSource.getToken()).thenReturn(token)
+        Thread.sleep(1500)
+
+        val refreshTokenIsExpired = tokenRepository.getRefreshTokenIsExpired()
+
+        assertTrue(refreshTokenIsExpired)
+    }
 }
