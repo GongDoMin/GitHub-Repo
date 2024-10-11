@@ -5,12 +5,16 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.prac.data.entity.RepoDetailEntity
 import com.prac.data.entity.RepoEntity
+import com.prac.data.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN
+import com.prac.githubrepo.constants.UNKNOWN
 import com.prac.githubrepo.main.backoff.BackOffWorkManager
+import com.prac.githubrepo.main.detail.DetailViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -82,27 +86,7 @@ class MainViewModel @Inject constructor(
 
             repoRepository.starRepository(repoEntity.owner.login, repoEntity.name)
                 .onFailure {
-                    when (it) {
-                        is IOException -> {
-                            backOffWorkManager.addWork(
-                                uniqueID = "star_${repoEntity.id}",
-                                work = { repoRepository.starRepository(repoEntity.owner.login, repoEntity.name) }
-                            )
-                        }
-                        else -> {
-                            if (it.message?.contains("404") == true) {
-                                repoRepository.unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
-
-                                _uiState.update {
-                                    (it as UiState.Content).copy(dialogMessage = INVALID_REPOSITORY)
-                                }
-
-                                return@onFailure
-                            }
-
-                            logout()
-                        }
-                    }
+                    handleStarRepositoryFailure(it, repoEntity)
                 }
         }
     }
@@ -145,6 +129,28 @@ class MainViewModel @Inject constructor(
 
             _uiState.update {
                 (it as UiState.Content).copy(dialogMessage = INVALID_TOKEN)
+            }
+        }
+    }
+
+    private suspend fun handleStarRepositoryFailure(t: Throwable, repoEntity: RepoEntity) {
+        when (t) {
+            is RepositoryException.NetworkError -> {
+                backOffWorkManager.addWork(
+                    uniqueID = "star_${repoEntity.id}",
+                    work = { repoRepository.starRepository(repoEntity.owner.login, repoEntity.name) }
+                )
+            }
+            is RepositoryException.AuthorizationError -> {
+                logout()
+            }
+            is RepositoryException.NotFoundRepository -> {
+                repoRepository.unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
+
+                _uiState.update { (it as UiState.Content).copy(dialogMessage = INVALID_REPOSITORY) }
+            }
+            else -> {
+                _uiState.update { (it as UiState.Content).copy(dialogMessage = UNKNOWN) }
             }
         }
     }
