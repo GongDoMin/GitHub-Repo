@@ -9,9 +9,11 @@ import com.prac.data.source.local.room.entity.RemoteKey
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 class RemoteKeyDaoTest {
@@ -41,6 +43,14 @@ class RemoteKeyDaoTest {
         val result = remoteKeyDao.remoteKey(remoteKeys[index].repoId)
 
         assertEquals(result, remoteKeys[index])
+    }
+
+    @Test
+    fun remoteKey_nonExistingId_returnNull() = runTest {
+
+        val result = remoteKeyDao.remoteKey(Random.nextInt(100))
+
+        assertNull(result)
     }
 
     private fun makeRemoteKeys() =
