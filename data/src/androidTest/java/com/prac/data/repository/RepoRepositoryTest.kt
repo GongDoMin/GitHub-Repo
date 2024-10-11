@@ -35,6 +35,40 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 internal class RepoRepositoryTest {
 
+    private val context = InstrumentationRegistry.getInstrumentation().targetContext
+
+    private lateinit var repoApiDataSource: MockRepoApiDataSource
+    private lateinit var repoStarApiDataSource: MockRepoStarApiDataSource
+
+    private lateinit var repositoryDatabase: RepositoryDatabase
+    private lateinit var remoteKeyDao: RemoteKeyDao
+    private lateinit var repositoryDao: RepositoryDao
+
+    private lateinit var repoRepository: RepoRepository
+
+    private val pageLoadSize = 10
+    private val totalPage = 3
+
+    @Before
+    fun setUp() {
+        repoApiDataSource = MockRepoApiDataSource()
+        repoStarApiDataSource = MockRepoStarApiDataSource()
+
+        repositoryDatabase = Room.inMemoryDatabaseBuilder(context, RepositoryDatabase::class.java)
+            .build()
+        remoteKeyDao = repositoryDatabase.remoteKeyDao()
+        repositoryDao = repositoryDatabase.repositoryDao()
+
+        repoRepository = RepoRepositoryImpl(repoApiDataSource, repoStarApiDataSource, repositoryDatabase)
+    }
+
+    @After
+    fun tearDown() = runTest {
+        repositoryDatabase.repositoryDao().clearRepositories()
+        repositoryDatabase.remoteKeyDao().clearRemoteKeys()
+        repositoryDatabase.close()
+    }
+
     private class MockRepoApiDataSource : RepoApiDataSource {
 
         private lateinit var throwable: Throwable
