@@ -5,6 +5,7 @@ import com.prac.data.repository.model.TokenModel
 import com.prac.data.source.local.TokenLocalDataSource
 import com.prac.data.source.local.datastore.TokenLocalDto
 import com.prac.data.source.network.AuthApiDataSource
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -150,5 +151,16 @@ class TokenRepositoryTest {
         val accessTokenIsExpired = tokenRepository.getAccessTokenIsExpired()
 
         assertFalse(accessTokenIsExpired)
+    }
+
+    @Test
+    fun getAccessTokenIsExpired_returnsTrueFromDataSource() = runTest {
+        val token = TokenLocalDto("accessToken", "refreshToken", 1, 1, ZonedDateTime.now())
+        whenever(tokenLocalDataSource.getToken()).thenReturn(token)
+        Thread.sleep(1500)
+
+        val accessTokenIsExpired = tokenRepository.getAccessTokenIsExpired()
+
+        assertTrue(accessTokenIsExpired)
     }
 }
