@@ -6,6 +6,7 @@ import com.prac.data.source.local.TokenLocalDataSource
 import com.prac.data.source.local.datastore.TokenLocalDto
 import com.prac.data.source.network.AuthApiDataSource
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -119,5 +120,15 @@ class TokenRepositoryTest {
         val isLoggedIn = tokenRepository.isLoggedIn()
 
         assertFalse(isLoggedIn)
+    }
+
+    @Test
+    fun getAccessToken_returnTokenFromDataSource() = runTest {
+        val token = TokenLocalDto("accessToken", "refreshToken", 3600, 3600, ZonedDateTime.now())
+        whenever(tokenLocalDataSource.getToken()).thenReturn(token)
+
+        val accessToken = tokenRepository.getAccessToken()
+
+        assertEquals(token.accessToken, accessToken)
     }
 }
