@@ -2,9 +2,11 @@ package com.prac.githubrepo.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.prac.data.exception.AuthException
 import com.prac.data.repository.TokenRepository
 import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.LOGIN_FAIL
+import com.prac.githubrepo.constants.UNKNOWN
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -75,11 +77,14 @@ class LoginViewModel @Inject constructor(
                     setEvent(Event.Success)
                 }.onFailure {
                     when (it) {
-                        is IOException -> {
+                        is AuthException.NetworkError -> {
                             setUiState(UiState.Error(errorMessage = CONNECTION_FAIL))
                         }
-                        else -> {
+                        is AuthException.AuthorizationError -> {
                             setUiState(UiState.Error(errorMessage = LOGIN_FAIL))
+                        }
+                        else -> {
+                            setUiState(UiState.Error(errorMessage = UNKNOWN))
                         }
                     }
                 }
@@ -93,5 +98,4 @@ class LoginViewModel @Inject constructor(
             if (tokenRepository.isLoggedIn()) setEvent(Event.Success)
         }
     }
-
 }

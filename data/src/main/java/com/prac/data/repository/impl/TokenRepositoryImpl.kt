@@ -1,10 +1,13 @@
 package com.prac.data.repository.impl
 
+import com.prac.data.exception.AuthException
 import com.prac.data.repository.TokenRepository
 import com.prac.data.repository.model.TokenModel
 import com.prac.data.source.network.AuthApiDataSource
 import com.prac.data.source.local.TokenLocalDataSource
 import com.prac.data.source.local.datastore.TokenLocalDto
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 internal class TokenRepositoryImpl @Inject constructor(
@@ -12,13 +15,22 @@ internal class TokenRepositoryImpl @Inject constructor(
     private val authApiDataSource: AuthApiDataSource
 ) : TokenRepository {
     override suspend fun authorizeOAuth(code: String): Result<Unit> {
-        try {
+        return try {
             val model = authApiDataSource.authorizeOAuth(code)
             setToken(model)
 
-            return Result.success(Unit)
+            Result.success(Unit)
+        } catch (e: HttpException) {
+            Result.failure(AuthException.AuthorizationError())
         } catch (e: Exception) {
-            return Result.failure(e)
+            when (e) {
+                is IOException -> {
+                    Result.failure(AuthException.NetworkError())
+                }
+                else -> {
+                    Result.failure(AuthException.UnKnownError())
+                }
+            }
         }
     }
 
