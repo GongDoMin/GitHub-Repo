@@ -309,6 +309,22 @@ internal class RepoRepositoryTest {
         assertEquals(roomRepository?.stargazersCount, repositoriesDto[index].stargazersCount + 1)
     }
 
+    @Test
+    fun unStarLocalRepository_updatesStarStateAndCount() = runTest {
+        val page = 1
+        val loadSize = 10
+        val index = 0
+        val repositoriesDto = getRepoDtoListForPage(page, loadSize)
+        repositoryDatabase.repositoryDao().insertRepositories(repositoriesDto.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount + 1, it.updatedAt, true) })
+
+        repoRepository.unStarLocalRepository(repositoriesDto[index].id, repositoriesDto[index].stargazersCount)
+
+        val roomRepository = repositoryDao.getRepository(repositoriesDto[index].id).first()
+        assertEquals(roomRepository?.isStarred, false)
+        assertEquals(roomRepository?.stargazersCount, repositoriesDto[index].stargazersCount)
+    }
+
+
     private class MockRepoApiDataSource : RepoApiDataSource {
 
         private lateinit var throwable: Throwable
