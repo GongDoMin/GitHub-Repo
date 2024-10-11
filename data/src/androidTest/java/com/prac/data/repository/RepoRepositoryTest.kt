@@ -350,6 +350,15 @@ internal class RepoRepositoryTest {
         assertTrue(result.isSuccess)
     }
 
+    @Test
+    fun getRepository_returnFailureResult() = runTest {
+        repoApiDataSource.thenThrow(Exception())
+
+        val result = repoRepository.getRepository("test", "test")
+
+        assertTrue(result.isFailure)
+    }
+
     private class MockRepoApiDataSource : RepoApiDataSource {
 
         private lateinit var throwable: Throwable
