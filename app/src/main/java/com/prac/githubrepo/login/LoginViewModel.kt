@@ -76,17 +76,7 @@ class LoginViewModel @Inject constructor(
                 .onSuccess {
                     setEvent(Event.Success)
                 }.onFailure {
-                    when (it) {
-                        is AuthException.NetworkError -> {
-                            setUiState(UiState.Error(errorMessage = CONNECTION_FAIL))
-                        }
-                        is AuthException.AuthorizationError -> {
-                            setUiState(UiState.Error(errorMessage = LOGIN_FAIL))
-                        }
-                        else -> {
-                            setUiState(UiState.Error(errorMessage = UNKNOWN))
-                        }
-                    }
+                    handleLoginError(it)
                 }
         }
     }
@@ -96,6 +86,20 @@ class LoginViewModel @Inject constructor(
             if (uiState.value != UiState.Idle) return@launch
 
             if (tokenRepository.isLoggedIn()) setEvent(Event.Success)
+        }
+    }
+
+    private fun handleLoginError(t: Throwable) {
+        when (t) {
+            is AuthException.NetworkError -> {
+                setUiState(UiState.Error(errorMessage = CONNECTION_FAIL))
+            }
+            is AuthException.AuthorizationError -> {
+                setUiState(UiState.Error(errorMessage = LOGIN_FAIL))
+            }
+            else -> {
+                setUiState(UiState.Error(errorMessage = UNKNOWN))
+            }
         }
     }
 }
