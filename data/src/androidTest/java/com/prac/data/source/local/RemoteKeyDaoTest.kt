@@ -64,6 +64,17 @@ class RemoteKeyDaoTest {
         assertEquals(remoteKeys[index], result)
     }
 
+    @Test
+    fun clearRemoteKeys_clearAllRemoteKeys() = runTest {
+        val remoteKeys = makeRemoteKeys()
+        remoteKeyDao.insertRemoteKeys(remoteKeys)
+
+        remoteKeyDao.clearRemoteKeys()
+
+        val retrievedRemoteKey = remoteKeyDao.remoteKey(remoteKeys[0].repoId)
+        assertNull(retrievedRemoteKey)
+    }
+
     private fun makeRemoteKeys() =
         listOf(
             RemoteKey(repoId = 0, prevKey = null, nextKey = 2),
