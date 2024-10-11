@@ -86,7 +86,7 @@ internal class RepoRepositoryImpl @Inject constructor(
 
             Result.success(Unit)
         } catch (e: Exception) {
-            Result.failure(e)
+            handleRepositoryError(e)
         }
     }
 
@@ -96,7 +96,7 @@ internal class RepoRepositoryImpl @Inject constructor(
 
             Result.success(Unit)
         } catch (e: Exception) {
-            Result.failure(e)
+            handleRepositoryError(e)
         }
     }
 
