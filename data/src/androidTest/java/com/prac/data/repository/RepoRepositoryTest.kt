@@ -273,6 +273,16 @@ internal class RepoRepositoryTest {
         assertTrue(result.isFailure)
     }
 
+    @Test
+    fun unStarRepository_returnSuccessResult() = runTest {
+        val userName = "test"
+        val repoName = "test"
+
+        val result = repoRepository.unStarRepository(userName, repoName)
+
+        assertTrue(result.isSuccess)
+    }
+
     private class MockRepoApiDataSource : RepoApiDataSource {
 
         private lateinit var throwable: Throwable
