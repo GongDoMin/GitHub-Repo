@@ -144,6 +144,61 @@ internal class RepoRepositoryTest {
         assertTrue((result as RemoteMediator.MediatorResult.Success).endOfPaginationReached)
     }
 
+    @OptIn(ExperimentalPagingApi::class)
+    @Test
+    fun load_multipleTimes_returnSuccessResult() = runTest {
+        val totalRepoDtoList: MutableList<RepoDto> = mutableListOf()
+
+        repeat(totalPage) { page ->
+            val loadSize = 10
+            val pagingState = PagingState(
+                pages = listOf(PagingSource.LoadResult.Page(
+                    data = totalRepoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, null) },
+                    prevKey = 0,
+                    nextKey = 0
+                    )
+                ),
+                anchorPosition = null,
+                config = PagingConfig(pageSize = pageLoadSize, enablePlaceholders = false),
+                leadingPlaceholderCount = 0
+            )
+            val prevKey = if (page == 0) null else page
+            val nextKey = page + 2
+            val repositoriesDto = getRepoDtoListForPage(page, loadSize)
+            totalRepoDtoList.addAll(repositoriesDto)
+            repoApiDataSource.thenRepoDtoList(repositoriesDto)
+            val loadParams =
+                if (page == 0)
+                    PagingSource.LoadParams.Refresh(
+                        key = page,
+                        loadSize = pageLoadSize,
+                        placeholdersEnabled = false
+                    )
+                else
+                    PagingSource.LoadParams.Append(
+                        key = pageLoadSize * page,
+                        loadSize = pageLoadSize,
+                        placeholdersEnabled = false
+                    )
+
+            val result = repoRepository.load(
+                if (page == 0) LoadType.REFRESH else LoadType.APPEND,
+                pagingState
+            )
+
+            val roomRepositories = (repositoryDao.getRepositories().load(loadParams) as? PagingSource.LoadResult.Page)
+            assertEquals(roomRepositories?.data?.size, pageLoadSize)
+            roomRepositories?.data?.indices?.forEach {
+                assertEquals(roomRepositories.data[it].id, repositoriesDto[it].id)
+                val remoteKey = remoteKeyDao.remoteKey(roomRepositories.data[it].id)
+                assertEquals(remoteKey?.repoId, repositoriesDto[it].id)
+                assertEquals(remoteKey?.prevKey, prevKey)
+                assertEquals(remoteKey?.nextKey, nextKey)
+            }
+            assertTrue(result is RemoteMediator.MediatorResult.Success)
+        }
+    }
+
     private class MockRepoApiDataSource : RepoApiDataSource {
 
         private lateinit var throwable: Throwable
