@@ -69,6 +69,44 @@ internal class RepoRepositoryTest {
         repositoryDatabase.close()
     }
 
+    @OptIn(ExperimentalPagingApi::class)
+    @Test
+    fun load_withRefresh_returnSuccessResult_and_endOfPaginationReachedIsFalse() = runTest {
+        val loadSize = 10
+        val page = 1
+        val pagingState = PagingState<Int, Repository>(
+            pages = listOf(),
+            anchorPosition = null,
+            config = PagingConfig(pageSize = pageLoadSize, enablePlaceholders = false),
+            leadingPlaceholderCount = 0
+        )
+        val repoDtoList = getRepoDtoListForPage(page, loadSize)
+        val prevKey = null // page 가 1 이기 때문에 prevKey 는 null
+        val nextKey = page + 1 // loadSize 가 10 이기 때문에 nextKey 는 page + 1
+        repoApiDataSource.thenRepoDtoList(repoDtoList)
+
+        val result = repoRepository.load(LoadType.REFRESH, pagingState)
+
+        val roomRepositories = (repositoryDao.getRepositories()
+            .load(
+                PagingSource.LoadParams.Refresh(
+                    key = null,
+                    loadSize = pageLoadSize,
+                    placeholdersEnabled = false
+                )
+            ) as? PagingSource.LoadResult.Page)?.data
+        assertEquals(roomRepositories?.size, repoDtoList.size)
+        repoDtoList.indices.forEach {
+            assertEquals(roomRepositories?.get(it)?.id, repoDtoList[it].id)
+            val remoteKey = remoteKeyDao.remoteKey(repoDtoList[it].id)
+            assertEquals(remoteKey?.repoId, repoDtoList[it].id)
+            assertEquals(remoteKey?.prevKey, prevKey)
+            assertEquals(remoteKey?.nextKey, nextKey)
+        }
+        assertTrue(result is RemoteMediator.MediatorResult.Success)
+        assertFalse((result as RemoteMediator.MediatorResult.Success).endOfPaginationReached)
+    }
+
     private class MockRepoApiDataSource : RepoApiDataSource {
 
         private lateinit var throwable: Throwable
@@ -139,4 +177,13 @@ internal class RepoRepositoryTest {
             }
         }
     }
+
+    private fun getRepoDtoListForPage(page : Int, loadSize: Int) : List<RepoDto> =
+        mutableListOf<RepoDto>().apply {
+            repeat(loadSize) {
+                add(
+                    RepoDto(it + (10 * page), "test ${it + (10 * page)}", OwnerDto("login ${it + (10 * page)}", "avatarUrl ${it + (10 * page)}"), 0, "2022-01-01")
+                )
+            }
+        }
 }
