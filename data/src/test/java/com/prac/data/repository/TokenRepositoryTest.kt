@@ -6,6 +6,7 @@ import com.prac.data.source.local.TokenLocalDataSource
 import com.prac.data.source.local.datastore.TokenLocalDto
 import com.prac.data.source.network.AuthApiDataSource
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -108,5 +109,15 @@ class TokenRepositoryTest {
         val isLoggedIn = tokenRepository.isLoggedIn()
 
         assertTrue(isLoggedIn)
+    }
+
+    @Test
+    fun isLoggedIn_accessTokenDoesNotExist_returnsFalse() = runTest {
+        val token = TokenLocalDto("", "", 0, 0, ZonedDateTime.now())
+        whenever(tokenLocalDataSource.getToken()).thenReturn(token)
+
+        val isLoggedIn = tokenRepository.isLoggedIn()
+
+        assertFalse(isLoggedIn)
     }
 }
