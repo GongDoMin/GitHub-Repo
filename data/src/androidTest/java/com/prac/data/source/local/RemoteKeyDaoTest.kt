@@ -53,6 +53,17 @@ class RemoteKeyDaoTest {
         assertNull(result)
     }
 
+    @Test
+    fun insertRemoteKeys_insertItemsIntoDatabase() = runTest {
+        val index = 0
+        val remoteKeys = makeRemoteKeys()
+
+        remoteKeyDao.insertRemoteKeys(remoteKeys)
+
+        val result = remoteKeyDao.remoteKey(remoteKeys[index].repoId)
+        assertEquals(remoteKeys[index], result)
+    }
+
     private fun makeRemoteKeys() =
         listOf(
             RemoteKey(repoId = 0, prevKey = null, nextKey = 2),
