@@ -66,4 +66,25 @@ class TokenRepositoryTest {
         verify(tokenLocalDataSource, never()).setToken(any())
         assertTrue(result.isFailure)
     }
+
+    @Test
+    fun refreshToken_updateDataStoreAndReturnSuccess() = runTest {
+        val refreshToken = "RefreshToken"
+        val token = TokenModel("accessToken", "refreshToken", 3600, 3600, ZonedDateTime.now())
+        whenever(authApiDataSource.refreshAccessToken(refreshToken)).thenReturn(token)
+
+        val result = tokenRepository.refreshToken(refreshToken)
+
+        verify(tokenLocalDataSource)
+            .setToken(
+                TokenLocalDto(
+                    token.accessToken,
+                    token.refreshToken,
+                    token.expiresInSeconds,
+                    token.refreshTokenExpiresInSeconds,
+                    token.updatedAt
+                )
+            )
+        assertTrue(result.isSuccess)
+    }
 }
