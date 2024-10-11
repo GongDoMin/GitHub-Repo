@@ -12,6 +12,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.any
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import java.time.ZonedDateTime
@@ -51,5 +53,17 @@ class TokenRepositoryTest {
                 )
             )
         assertTrue(result.isSuccess)
+    }
+
+    @Test
+    fun authorizeOAuth_returnFailure() = runTest {
+        val code = "testCode"
+        val exception = RuntimeException()
+        whenever(authApiDataSource.authorizeOAuth(code)).thenThrow(exception)
+
+        val result = tokenRepository.authorizeOAuth(code)
+
+        verify(tokenLocalDataSource, never()).setToken(any())
+        assertTrue(result.isFailure)
     }
 }
