@@ -5,8 +5,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.prac.data.source.local.room.dao.RemoteKeyDao
 import com.prac.data.source.local.room.database.RepositoryDatabase
+import com.prac.data.source.local.room.entity.RemoteKey
+import kotlinx.coroutines.test.runTest
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
@@ -27,4 +31,21 @@ class RemoteKeyDaoTest {
     fun tearDown() {
         repositoryDatabase.close()
     }
+
+    @Test
+    fun remoteKey_existingId_returnCorrectRemoteKey() = runTest {
+        val index = 0
+        val remoteKeys = makeRemoteKeys()
+        remoteKeyDao.insertRemoteKeys(remoteKeys)
+
+        val result = remoteKeyDao.remoteKey(remoteKeys[index].repoId)
+
+        assertEquals(result, remoteKeys[index])
+    }
+
+    private fun makeRemoteKeys() =
+        listOf(
+            RemoteKey(repoId = 0, prevKey = null, nextKey = 2),
+            RemoteKey(repoId = 1, prevKey = null, nextKey = 2),
+        )
 }
