@@ -115,6 +115,18 @@ class RepositoryDaoTest {
         assertEquals(updatedRepository?.stargazersCount, updatedCount)
     }
 
+    @Test
+    fun clearRepositories_clearDatabase() = runTest {
+        val repositories = makeRepositories()
+        repositoryDao.insertRepositories(repositories)
+
+        repositoryDao.clearRepositories()
+
+        val result = (repositoryDao.getRepositories().load(
+            PagingSource.LoadParams.Refresh(key = null, loadSize = 10, placeholdersEnabled = false)
+        ) as? PagingSource.LoadResult.Page)?.data
+        assertEquals(result?.size, 0)
+    }
 
     private fun makeRepositories() =
         listOf(
