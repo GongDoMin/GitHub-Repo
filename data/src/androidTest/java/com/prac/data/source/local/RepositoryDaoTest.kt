@@ -87,6 +87,20 @@ class RepositoryDaoTest {
         assertEquals(result?.stargazersCount, updatedCount)
     }
 
+    @Test
+    fun updateStarState_updateRepositoryCorrectly() = runTest {
+        val repositories = makeRepositories()
+        val index = 0
+        val id = repositories[index].id
+        val isStarred = true
+        repositoryDao.insertRepositories(repositories)
+
+        repositoryDao.updateStarState(id, isStarred)
+
+        val result = repositoryDao.getRepository(id).first()
+        assertEquals(result?.isStarred, isStarred)
+    }
+
     private fun makeRepositories() =
         listOf(
             Repository(1, "repo1", Owner("test1", "test1"), 0, "test1", false),
