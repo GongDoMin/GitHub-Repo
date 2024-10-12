@@ -63,12 +63,15 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(project(":data"))
 
     implementation(libs.jetbrains.kotlinx.coroutines)
+    implementation(libs.jetbrains.kotlinx.coroutines.test)
 
     implementation(libs.glide)
 
