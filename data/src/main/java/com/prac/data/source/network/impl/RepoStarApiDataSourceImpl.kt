@@ -7,13 +7,8 @@ import javax.inject.Inject
 internal class RepoStarApiDataSourceImpl @Inject constructor(
     private val gitHubService: GitHubService
 ): RepoStarApiDataSource {
-    override suspend fun checkRepositoryIsStarred(repoName: String) : Boolean {
-        return try {
-            gitHubService.checkRepositoryIsStarred("GongDoMin", repoName)
-            true
-        } catch (e: Exception) {
-            false
-        }
+    override suspend fun checkRepositoryIsStarred(repoName: String) {
+        gitHubService.checkRepositoryIsStarred("GongDoMin", repoName)
     }
 
     override suspend fun starRepository(userName: String, repoName: String) {
