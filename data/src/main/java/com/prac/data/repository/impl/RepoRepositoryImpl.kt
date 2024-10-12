@@ -11,6 +11,8 @@ import androidx.room.withTransaction
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoDetailEntity
 import com.prac.data.entity.RepoEntity
+import com.prac.data.exception.AuthException
+import com.prac.data.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.source.local.room.database.RepositoryDatabase
 import com.prac.data.source.local.room.entity.Owner
@@ -20,6 +22,8 @@ import com.prac.data.source.network.RepoApiDataSource
 import com.prac.data.source.network.RepoStarApiDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 internal class RepoRepositoryImpl @Inject constructor(
@@ -58,7 +62,7 @@ internal class RepoRepositoryImpl @Inject constructor(
                 )
             )
         } catch (e: Exception) {
-            Result.failure(e)
+            handleRepositoryError(e)
         }
     }
 
@@ -82,7 +86,7 @@ internal class RepoRepositoryImpl @Inject constructor(
 
             Result.success(Unit)
         } catch (e: Exception) {
-            Result.failure(e)
+            handleRepositoryError(e)
         }
     }
 
@@ -92,7 +96,7 @@ internal class RepoRepositoryImpl @Inject constructor(
 
             Result.success(Unit)
         } catch (e: Exception) {
-            Result.failure(e)
+            handleRepositoryError(e)
         }
     }
 
@@ -170,6 +174,20 @@ internal class RepoRepositoryImpl @Inject constructor(
             ?.let { repo ->
                 repositoryDatabase.remoteKeyDao().remoteKey(repo.id)
             }
+    }
+
+    private fun <T> handleRepositoryError(e: Exception): Result<T> {
+        return when (e) {
+            is HttpException -> {
+                when (e.code()) {
+                    401 -> Result.failure(RepositoryException.AuthorizationError())
+                    404 -> Result.failure(RepositoryException.NotFoundRepository())
+                    else -> Result.failure(AuthException.UnKnownError())
+                }
+            }
+            is IOException -> Result.failure(RepositoryException.NetworkError())
+            else -> Result.failure(AuthException.UnKnownError())
+        }
     }
 
     companion object {
