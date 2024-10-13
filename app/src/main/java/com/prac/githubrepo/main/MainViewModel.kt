@@ -2,6 +2,7 @@ package com.prac.githubrepo.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -72,7 +74,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun updateLoadState(loadState: LoadState) {
+    private fun updateLoadState(loadState: LoadState) {
         if (_uiState.value !is UiState.Content) return
 
         _uiState.update {
@@ -102,7 +104,32 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun logout() {
+    fun handleLoadStates(combinedLoadStates: CombinedLoadStates) {
+        if (combinedLoadStates.refresh is LoadState.Error) {
+            if ((combinedLoadStates.refresh as LoadState.Error).error !is IOException) {
+                logout()
+                return
+            }
+            updateLoadState(combinedLoadStates.refresh)
+        }
+
+        if (combinedLoadStates.refresh is LoadState.Loading) {
+            updateLoadState(combinedLoadStates.refresh)
+            return
+        }
+
+        if (combinedLoadStates.append is LoadState.Error) {
+            if ((combinedLoadStates.append as LoadState.Error).error !is IOException) {
+                logout()
+                return
+            }
+            updateLoadState(combinedLoadStates.append)
+        }
+
+        updateLoadState(combinedLoadStates.append)
+    }
+
+    private fun logout() {
         viewModelScope.launch {
             tokenRepository.clearToken()
             backOffWorkManager.clearWork()
