@@ -26,11 +26,12 @@ class FakeBackOffWorkManager : BackOffWorkManager {
 
         removeWork(uniqueID)
         _delayTimesMap.remove(uniqueID)
+        val maxTimes = times.coerceAtMost(5)
 
         var currentDelay = initialDelay
 
         val job = scope.launch {
-            repeat(times) {
+            repeat(maxTimes) {
                 work()
                     .onSuccess {
                         removeWork(uniqueID)
