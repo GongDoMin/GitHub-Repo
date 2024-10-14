@@ -1,7 +1,6 @@
 package com.prac.githubrepo.main
 
 import androidx.paging.PagingData
-import app.cash.turbine.test
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.data.exception.CommonException
@@ -77,6 +76,17 @@ class MainViewModelTest {
 
         verify(repoRepository).starLocalRepository(repoEntity.id, repoEntity.stargazersCount + 1)
         verify(repoRepository).starRepository(repoEntity.owner.login, repoEntity.name)
+    }
+
+    @Test
+    fun unStarRepository_success_callStarLocalAndRemoteRepository() = runTest {
+        val repoEntity = makeRepoEntity()
+
+        mainViewModel.unStarRepository(repoEntity)
+        advanceUntilIdle()
+
+        verify(repoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount - 1)
+        verify(repoRepository).unStarRepository(repoEntity.owner.login, repoEntity.name)
     }
 
     @Test
