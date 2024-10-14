@@ -12,6 +12,7 @@ import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import java.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BackOffWorkManagerTest {
@@ -90,6 +91,31 @@ class BackOffWorkManagerTest {
         Assert.assertNotEquals(fRetryTimes, fMaxRetryTimes)
         assertEquals(sRetryTimes, sMaxRetryTimes)
         assertEquals(backOffWorkManager.getDelayTimes(uniqueID), sDelayTimes)
+    }
+
+    @Test
+    fun addWork_stopRetrying_onNonIOException() = runTest {
+        var retryTimes = 0
+        val maxRetryTimes = 3
+        val delayTimes = 7_000L // 1초 -> 2초 -> 4초 = 7초
+        val uniqueID = "testID"
+        backOffWorkManager.setScope(this)
+
+        backOffWorkManager.addWork(
+            uniqueID = uniqueID,
+            work = {
+                if (retryTimes < maxRetryTimes) {
+                    retryTimes++
+                    Result.failure<Unit>(CommonException.NetworkError())
+                } else {
+                    Result.failure<Unit>(IllegalArgumentException()) // IOException 이 아닌 다른 에러
+                }
+            }
+        )
+
+        advanceUntilIdle()
+        assertEquals(retryTimes, maxRetryTimes)
+        assertEquals(backOffWorkManager.getDelayTimes(uniqueID), delayTimes)
     }
 
     class FakeBackOffWorkManager : BackOffWorkManager {
