@@ -3,13 +3,12 @@ package com.prac.githubrepo.login
 import com.prac.data.exception.CommonException
 import com.prac.data.repository.TokenRepository
 import com.prac.githubrepo.constants.CONNECTION_FAIL
-import com.prac.githubrepo.main.MainViewModel
+import com.prac.githubrepo.constants.LOGIN_FAIL
 import com.prac.githubrepo.util.StandardTestDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -67,5 +66,20 @@ class LoginViewModelTest {
         val uiState = loginViewModel.uiState.first()
         assertTrue(uiState is LoginViewModel.UiState.Error)
         assertEquals((uiState as LoginViewModel.UiState.Error).errorMessage, CONNECTION_FAIL)
+    }
+
+    @Test
+    fun loginWithGitHub_authorizationError() = runTest {
+        val code = "code"
+        whenever(tokenRepository.isLoggedIn()).thenReturn(false)
+        loginViewModel = LoginViewModel(tokenRepository, standardTestDispatcherRule.testDispatcher)
+        whenever(tokenRepository.authorizeOAuth(code)).thenReturn(Result.failure(CommonException.AuthorizationError()))
+
+        loginViewModel.loginWithGitHub(code)
+        advanceUntilIdle()
+
+        val uiState = loginViewModel.uiState.first()
+        assertTrue(uiState is LoginViewModel.UiState.Error)
+        assertEquals((uiState as LoginViewModel.UiState.Error).errorMessage, LOGIN_FAIL)
     }
 }
