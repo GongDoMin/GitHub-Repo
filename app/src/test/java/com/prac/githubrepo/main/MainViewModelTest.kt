@@ -4,8 +4,10 @@ import androidx.paging.PagingData
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.data.exception.CommonException
+import com.prac.data.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
+import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.util.FakeBackOffWorkManager
 import com.prac.githubrepo.util.StandardTestDispatcherRule
@@ -106,6 +108,21 @@ class MainViewModelTest {
         Assert.assertTrue(uiState is MainViewModel.UiState.Content)
         Assert.assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, INVALID_TOKEN)
         verify(tokenRepository).clearToken()
+    }
+
+    @Test
+    fun starRepository_repositoryIsNotFoundError_updateUiStateDialogMessage() = runTest {
+        val repoEntity = makeRepoEntity()
+        whenever(repoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
+            .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
+
+        mainViewModel.starRepository(repoEntity)
+        advanceUntilIdle()
+
+        val uiState = mainViewModel.uiState.value
+        Assert.assertTrue(uiState is MainViewModel.UiState.Content)
+        Assert.assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, INVALID_REPOSITORY)
+        verify(repoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
     }
 
     private fun makeRepoEntity() =
