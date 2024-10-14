@@ -193,6 +193,21 @@ class DetailViewModelTest {
         verify(tokenRepository).clearToken()
     }
 
+    @Test
+    fun unStarRepository_authorizationError_updateUiStateDialogMessage() = runTest {
+        val repoDetailEntity = makeRepoDetailEntity()
+        whenever(repoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
+            .thenReturn(Result.failure(CommonException.AuthorizationError()))
+
+        detailViewMock.unStarRepository(repoDetailEntity)
+        advanceUntilIdle()
+
+        val uiState = detailViewMock.uiState.value
+        assertTrue(uiState is DetailViewModel.UiState.Error)
+        assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, INVALID_TOKEN)
+        verify(tokenRepository).clearToken()
+    }
+
     private fun makeRepoDetailEntity() =
         RepoDetailEntity(
             id = 1,
