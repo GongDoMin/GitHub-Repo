@@ -107,14 +107,12 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun logout() {
-        viewModelScope.launch {
-            tokenRepository.clearToken()
-            backOffWorkManager.clearWork()
+    private suspend fun logout() {
+        tokenRepository.clearToken()
+        backOffWorkManager.clearWork()
 
-            _uiState.update {
-                UiState.Error(errorMessage = INVALID_TOKEN)
-            }
+        _uiState.update {
+            UiState.Error(errorMessage = INVALID_TOKEN)
         }
     }
 
@@ -141,7 +139,7 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun handleGetRepositoryFailure(t: Throwable) {
+    private suspend fun handleGetRepositoryFailure(t: Throwable) {
         when (t) {
             is CommonException.NetworkError -> {
                 _uiState.update { UiState.Error(errorMessage = CONNECTION_FAIL) }
