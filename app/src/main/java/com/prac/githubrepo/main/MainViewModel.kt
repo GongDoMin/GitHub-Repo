@@ -107,7 +107,9 @@ class MainViewModel @Inject constructor(
     fun handleLoadStates(combinedLoadStates: CombinedLoadStates) {
         if (combinedLoadStates.refresh is LoadState.Error) {
             if ((combinedLoadStates.refresh as LoadState.Error).error !is IOException) {
-                logout()
+                viewModelScope.launch(ioDispatcher) {
+                    logout()
+                }
                 return
             }
             updateLoadState(combinedLoadStates.refresh)
@@ -120,7 +122,9 @@ class MainViewModel @Inject constructor(
 
         if (combinedLoadStates.append is LoadState.Error) {
             if ((combinedLoadStates.append as LoadState.Error).error !is IOException) {
-                logout()
+                viewModelScope.launch(ioDispatcher) {
+                    logout()
+                }
                 return
             }
             updateLoadState(combinedLoadStates.append)
@@ -129,14 +133,12 @@ class MainViewModel @Inject constructor(
         updateLoadState(combinedLoadStates.append)
     }
 
-    private fun logout() {
-        viewModelScope.launch {
-            tokenRepository.clearToken()
-            backOffWorkManager.clearWork()
+    private suspend fun logout() {
+        tokenRepository.clearToken()
+        backOffWorkManager.clearWork()
 
-            _uiState.update {
-                (it as UiState.Content).copy(dialogMessage = INVALID_TOKEN)
-            }
+        _uiState.update {
+            (it as UiState.Content).copy(dialogMessage = INVALID_TOKEN)
         }
     }
 
