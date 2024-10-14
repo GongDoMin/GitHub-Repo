@@ -53,7 +53,7 @@ class DetailViewModel @Inject constructor(
     }
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
-    val uiState: Flow<UiState> = _uiState.asStateFlow()
+    val uiState = _uiState.asStateFlow()
 
     private val _sideEffect = MutableSharedFlow<SideEffect>()
     val sideEffect = _sideEffect.asSharedFlow()
