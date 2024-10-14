@@ -170,6 +170,21 @@ class MainViewModelTest {
         verify(repoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
     }
 
+    @Test
+    fun unStarRepository_repositoryIsNotFoundError_updateUiStateDialogMessage() = runTest {
+        val repoEntity = makeRepoEntity()
+        whenever(repoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
+            .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
+
+        mainViewModel.unStarRepository(repoEntity)
+        advanceUntilIdle()
+
+        val uiState = mainViewModel.uiState.value
+        Assert.assertTrue(uiState is MainViewModel.UiState.Content)
+        Assert.assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, INVALID_REPOSITORY)
+        verify(repoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun starRepository_unKnownError_updateUiStateDialogMessage() = runTest {
