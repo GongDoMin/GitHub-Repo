@@ -60,7 +60,7 @@ class LoginViewModel @Inject constructor(
         _uiState.update { uiState }
     }
 
-    fun setEvent(event: Event) {
+    private fun setEvent(event: Event) {
         viewModelScope.launch {
             _event.emit(event)
         }
