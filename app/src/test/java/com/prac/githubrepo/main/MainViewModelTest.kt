@@ -108,6 +108,24 @@ class MainViewModelTest {
     }
 
     @Test
+    fun unStarRepository_networkError_callMultipleTimesRemoteRepository() = runTest {
+        backOffWork.setScope(this)
+        val repoEntity = makeRepoEntity()
+        val uniqueID = "star_${repoEntity.id}"
+        val callApiTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
+        val delayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
+        whenever(repoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
+            .thenReturn(Result.failure(CommonException.NetworkError()))
+
+        mainViewModel.unStarRepository(repoEntity)
+        advanceUntilIdle()
+
+        verify(repoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount - 1)
+        verify(repoRepository, times(callApiTimes)).unStarRepository(repoEntity.owner.login, repoEntity.name)
+        Assert.assertEquals(backOffWork.getDelayTimes(uniqueID), delayTimes)
+    }
+
+    @Test
     fun starRepository_authorizationError_updateUiStateDialogMessage() = runTest {
         val repoEntity = makeRepoEntity()
         whenever(repoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
