@@ -19,6 +19,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -65,6 +66,19 @@ class DetailViewModelTest {
         val expectedValue = makeExpectedValue(starStateAndCount.first, starStateAndCount.second)
         assertTrue(uiState is DetailViewModel.UiState.Content)
         assertEquals((uiState as DetailViewModel.UiState.Content).repository, expectedValue)
+    }
+
+    @Test
+    fun getRepository_invalidInput_updatesUiStateToError() = runTest {
+        val userName = null
+        val repoName = null
+
+        detailViewMock.getRepository(userName, repoName)
+        advanceUntilIdle()
+
+        val uiState = detailViewMock.uiState.value
+        assertTrue(uiState is DetailViewModel.UiState.Error)
+        assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, "잘못된 접근입니다.")
     }
 
     private fun makeRepoDetailEntity() =
