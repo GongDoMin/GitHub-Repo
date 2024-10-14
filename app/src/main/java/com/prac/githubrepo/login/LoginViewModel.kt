@@ -2,7 +2,7 @@ package com.prac.githubrepo.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.prac.data.exception.AuthException
+import com.prac.data.exception.CommonException
 import com.prac.data.repository.TokenRepository
 import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.LOGIN_FAIL
@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -91,10 +90,10 @@ class LoginViewModel @Inject constructor(
 
     private fun handleLoginError(t: Throwable) {
         when (t) {
-            is AuthException.NetworkError -> {
+            is CommonException.NetworkError -> {
                 setUiState(UiState.Error(errorMessage = CONNECTION_FAIL))
             }
-            is AuthException.AuthorizationError -> {
+            is CommonException.AuthorizationError -> {
                 setUiState(UiState.Error(errorMessage = LOGIN_FAIL))
             }
             else -> {

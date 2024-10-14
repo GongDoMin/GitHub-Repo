@@ -1,5 +1,6 @@
 package com.prac.githubrepo.main.di
 
+import com.prac.data.exception.CommonException
 import com.prac.githubrepo.main.backoff.BackOffWorkManager
 import dagger.Module
 import dagger.Provides
@@ -46,7 +47,7 @@ class BackOffModule {
                                 return@launch
                             }
                             .onFailure {
-                                if (it !is IOException) {
+                                if (it !is CommonException) {
                                     cancelAndRemoveJob(uniqueID)
                                     return@launch
                                 }

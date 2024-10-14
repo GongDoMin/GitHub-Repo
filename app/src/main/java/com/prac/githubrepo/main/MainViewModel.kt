@@ -6,6 +6,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.prac.data.entity.RepoEntity
+import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
@@ -21,7 +22,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -113,13 +113,13 @@ class MainViewModel @Inject constructor(
 
     private suspend fun handleStarRepositoryFailure(t: Throwable, repoEntity: RepoEntity) {
         when (t) {
-            is RepositoryException.NetworkError -> {
+            is CommonException.NetworkError -> {
                 backOffWorkManager.addWork(
                     uniqueID = "star_${repoEntity.id}",
                     work = { repoRepository.starRepository(repoEntity.owner.login, repoEntity.name) }
                 )
             }
-            is RepositoryException.AuthorizationError -> {
+            is CommonException.AuthorizationError -> {
                 logout()
             }
             is RepositoryException.NotFoundRepository -> {
@@ -135,13 +135,13 @@ class MainViewModel @Inject constructor(
 
     private suspend fun handleUnStarRepositoryFailure(t: Throwable, repoEntity: RepoEntity) {
         when (t) {
-            is RepositoryException.NetworkError -> {
+            is CommonException.NetworkError -> {
                 backOffWorkManager.addWork(
                     uniqueID = "star_${repoEntity.id}",
                     work = { repoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name) }
                 )
             }
-            is RepositoryException.AuthorizationError -> {
+            is CommonException.AuthorizationError -> {
                 logout()
             }
             is RepositoryException.NotFoundRepository -> {

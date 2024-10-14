@@ -1,11 +1,11 @@
 package com.prac.data.repository.impl
 
-import com.prac.data.exception.AuthException
+import com.prac.data.exception.CommonException
 import com.prac.data.repository.TokenRepository
 import com.prac.data.repository.model.TokenModel
-import com.prac.data.source.network.AuthApiDataSource
 import com.prac.data.source.local.TokenLocalDataSource
 import com.prac.data.source.local.datastore.TokenLocalDto
+import com.prac.data.source.network.AuthApiDataSource
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
@@ -21,14 +21,14 @@ internal class TokenRepositoryImpl @Inject constructor(
 
             Result.success(Unit)
         } catch (e: HttpException) {
-            Result.failure(AuthException.AuthorizationError())
+            Result.failure(CommonException.AuthorizationError())
         } catch (e: Exception) {
             when (e) {
                 is IOException -> {
-                    Result.failure(AuthException.NetworkError())
+                    Result.failure(CommonException.NetworkError())
                 }
                 else -> {
-                    Result.failure(AuthException.UnKnownError())
+                    Result.failure(CommonException.UnKnownError())
                 }
             }
         }
