@@ -3,10 +3,12 @@ package com.prac.githubrepo.main
 import androidx.paging.PagingData
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
+import com.prac.data.exception.CommonException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.githubrepo.util.FakeBackOffWorkManager
 import com.prac.githubrepo.util.StandardTestDispatcherRule
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -18,9 +20,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(MockitoJUnitRunner::class)
 class MainViewModelTest {
 
@@ -68,6 +72,24 @@ class MainViewModelTest {
 
         verify(repoRepository).starLocalRepository(repoEntity.id, repoEntity.stargazersCount + 1)
         verify(repoRepository).starRepository(repoEntity.owner.login, repoEntity.name)
+    }
+
+    @Test
+    fun starRepository_networkError_callMultipleTimesRemoteRepository() = runTest {
+        backOffWork.setScope(this)
+        val repoEntity = makeRepoEntity()
+        val uniqueID = "star_${repoEntity.id}"
+        val callApiTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
+        val delayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
+        whenever(repoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
+            .thenReturn(Result.failure(CommonException.NetworkError()))
+
+        mainViewModel.starRepository(repoEntity)
+        advanceUntilIdle()
+
+        verify(repoRepository).starLocalRepository(repoEntity.id, repoEntity.stargazersCount + 1)
+        verify(repoRepository, times(callApiTimes)).starRepository(repoEntity.owner.login, repoEntity.name)
+        Assert.assertEquals(backOffWork.getDelayTimes(uniqueID), delayTimes)
     }
 
     private fun makeRepoEntity() =
