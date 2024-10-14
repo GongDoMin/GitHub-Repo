@@ -115,6 +115,19 @@ class DetailViewModelTest {
         verify(tokenRepository).clearToken()
     }
 
+    @Test
+    fun starRepository_success_callStarLocalAndRemoteRepository() = runTest {
+        val repoDetailEntity = makeRepoDetailEntity()
+        whenever(repoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
+            .thenReturn(Result.success(Unit))
+
+        detailViewMock.starRepository(repoDetailEntity)
+        advanceUntilIdle()
+
+        verify(repoRepository).starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount + 1)
+        verify(repoRepository).starRepository(repoDetailEntity.owner.login, repoDetailEntity.name)
+    }
+
     private fun makeRepoDetailEntity() =
         RepoDetailEntity(
             id = 1,
