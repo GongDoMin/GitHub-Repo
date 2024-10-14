@@ -178,6 +178,21 @@ class DetailViewModelTest {
         assertEquals(backOffWork.getDelayTimes(uniqueID), delayTimes)
     }
 
+    @Test
+    fun starRepository_authorizationError_updateUiStateToError() = runTest {
+        val repoDetailEntity = makeRepoDetailEntity()
+        whenever(repoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
+            .thenReturn(Result.failure(CommonException.AuthorizationError()))
+
+        detailViewMock.starRepository(repoDetailEntity)
+        advanceUntilIdle()
+
+        val uiState = detailViewMock.uiState.value
+        assertTrue(uiState is DetailViewModel.UiState.Error)
+        assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, INVALID_TOKEN)
+        verify(tokenRepository).clearToken()
+    }
+
     private fun makeRepoDetailEntity() =
         RepoDetailEntity(
             id = 1,
