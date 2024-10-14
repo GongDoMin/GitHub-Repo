@@ -6,6 +6,7 @@ import com.prac.data.exception.CommonException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.githubrepo.constants.CONNECTION_FAIL
+import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.util.FakeBackOffWorkManager
 import com.prac.githubrepo.util.StandardTestDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -96,6 +97,22 @@ class DetailViewModelTest {
         val uiState = detailViewMock.uiState.value
         assertTrue(uiState is DetailViewModel.UiState.Error)
         assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, CONNECTION_FAIL)
+    }
+
+    @Test
+    fun getRepository_authorizationError_updatesUiStateToError() = runTest {
+        val userName = "test"
+        val repoName = "test"
+        whenever(repoRepository.getRepository(userName, repoName))
+            .thenReturn(Result.failure(CommonException.AuthorizationError()))
+
+        detailViewMock.getRepository(userName, repoName)
+        advanceUntilIdle()
+
+        val uiState = detailViewMock.uiState.value
+        assertTrue(uiState is DetailViewModel.UiState.Error)
+        assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, INVALID_TOKEN)
+        verify(tokenRepository).clearToken()
     }
 
     private fun makeRepoDetailEntity() =
