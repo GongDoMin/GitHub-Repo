@@ -128,6 +128,19 @@ class DetailViewModelTest {
         verify(repoRepository).starRepository(repoDetailEntity.owner.login, repoDetailEntity.name)
     }
 
+    @Test
+    fun unStarRepository_success_callStarLocalAndRemoteRepository() = runTest {
+        val repoDetailEntity = makeRepoDetailEntity()
+        whenever(repoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
+            .thenReturn(Result.success(Unit))
+
+        detailViewMock.unStarRepository(repoDetailEntity)
+        advanceUntilIdle()
+
+        verify(repoRepository).unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount - 1)
+        verify(repoRepository).unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name)
+    }
+
     private fun makeRepoDetailEntity() =
         RepoDetailEntity(
             id = 1,
