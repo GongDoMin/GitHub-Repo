@@ -3,6 +3,7 @@ package com.prac.githubrepo.main.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.prac.data.entity.RepoDetailEntity
+import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
@@ -10,10 +11,10 @@ import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.constants.UNKNOWN
-import com.prac.githubrepo.main.MainViewModel
-import com.prac.githubrepo.main.backoff.BackOffWorkManager
+import com.prac.githubrepo.di.IODispatcher
+import com.prac.githubrepo.util.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,14 +22,14 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     private val repoRepository: RepoRepository,
     private val tokenRepository: TokenRepository,
-    private val backOffWorkManager: BackOffWorkManager
+    private val backOffWorkManager: BackOffWorkManager,
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     sealed class UiState {
         data object Idle : UiState()
@@ -52,7 +53,7 @@ class DetailViewModel @Inject constructor(
     }
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
-    val uiState: Flow<UiState> = _uiState.asStateFlow()
+    val uiState = _uiState.asStateFlow()
 
     private val _sideEffect = MutableSharedFlow<SideEffect>()
     val sideEffect = _sideEffect.asSharedFlow()
@@ -73,7 +74,7 @@ class DetailViewModel @Inject constructor(
             return
         }
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             repoRepository.getRepository(userName, repoName)
                 .onSuccess {
                     handleGetRepositorySuccess(it)
@@ -85,7 +86,7 @@ class DetailViewModel @Inject constructor(
     }
 
     fun starRepository(repoDetailEntity: RepoDetailEntity) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             repoRepository.starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount + 1)
 
             repoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name)
@@ -96,7 +97,7 @@ class DetailViewModel @Inject constructor(
     }
 
     fun unStarRepository(repoDetailEntity: RepoDetailEntity) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             repoRepository.unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount - 1)
 
             repoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name)
@@ -106,14 +107,12 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun logout() {
-        viewModelScope.launch {
-            tokenRepository.clearToken()
-            backOffWorkManager.clearWork()
+    private suspend fun logout() {
+        tokenRepository.clearToken()
+        backOffWorkManager.clearWork()
 
-            _uiState.update {
-                UiState.Error(errorMessage = INVALID_TOKEN)
-            }
+        _uiState.update {
+            UiState.Error(errorMessage = INVALID_TOKEN)
         }
     }
 
@@ -140,12 +139,12 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun handleGetRepositoryFailure(t: Throwable) {
+    private suspend fun handleGetRepositoryFailure(t: Throwable) {
         when (t) {
-            is RepositoryException.NetworkError -> {
+            is CommonException.NetworkError -> {
                 _uiState.update { UiState.Error(errorMessage = CONNECTION_FAIL) }
             }
-            is RepositoryException.AuthorizationError -> {
+            is CommonException.AuthorizationError -> {
                 logout()
             }
             is RepositoryException.NotFoundRepository -> {
@@ -159,13 +158,13 @@ class DetailViewModel @Inject constructor(
 
     private suspend fun handleStarRepositoryFailure(t: Throwable, repoDetailEntity: RepoDetailEntity) {
         when (t) {
-            is RepositoryException.NetworkError -> {
+            is CommonException.NetworkError -> {
                 backOffWorkManager.addWork(
                     uniqueID = "star_${repoDetailEntity.id}",
                     work = { repoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name) }
                 )
             }
-            is RepositoryException.AuthorizationError -> {
+            is CommonException.AuthorizationError -> {
                 logout()
             }
             is RepositoryException.NotFoundRepository -> {
@@ -174,6 +173,8 @@ class DetailViewModel @Inject constructor(
                 _uiState.update { UiState.Error(errorMessage = INVALID_REPOSITORY) }
             }
             else -> {
+                repoRepository.unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
+
                 _uiState.update { UiState.Error(errorMessage = UNKNOWN) }
             }
         }
@@ -181,13 +182,13 @@ class DetailViewModel @Inject constructor(
 
     private suspend fun handleUnStarRepositoryFailure(t: Throwable, repoDetailEntity: RepoDetailEntity) {
         when (t) {
-            is RepositoryException.NetworkError -> {
+            is CommonException.NetworkError -> {
                 backOffWorkManager.addWork(
                     uniqueID = "star_${repoDetailEntity.id}",
                     work = { repoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name) }
                 )
             }
-            is RepositoryException.AuthorizationError -> {
+            is CommonException.AuthorizationError -> {
                 logout()
             }
             is RepositoryException.NotFoundRepository -> {
@@ -196,6 +197,8 @@ class DetailViewModel @Inject constructor(
                 _uiState.update { UiState.Error(errorMessage = INVALID_REPOSITORY) }
             }
             else -> {
+                repoRepository.starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
+
                 _uiState.update { UiState.Error(errorMessage = UNKNOWN) }
             }
         }
