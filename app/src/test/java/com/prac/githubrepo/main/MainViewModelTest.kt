@@ -7,10 +7,13 @@ import com.prac.data.repository.TokenRepository
 import com.prac.githubrepo.util.FakeBackOffWorkManager
 import com.prac.githubrepo.util.StandardTestDispatcherRule
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.After
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
@@ -41,5 +44,14 @@ class MainViewModelTest {
     fun tearDown() {
         backOffWork.clearWork()
         backOffWork.clearDelayTimes()
+    }
+
+    @Test
+    fun getRepositories_updateUiStateToContent() = runTest {
+        advanceUntilIdle()
+
+        val result = mainViewModel.uiState.value
+
+        Assert.assertTrue(result is MainViewModel.UiState.Content)
     }
 }
