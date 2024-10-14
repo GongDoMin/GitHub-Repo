@@ -256,6 +256,21 @@ class DetailViewModelTest {
         verify(repoRepository).unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
     }
 
+    @Test
+    fun unStarRepository_unKnownError_updateUiStateToError() = runTest {
+        val repoDetailEntity = makeRepoDetailEntity()
+        whenever(repoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
+            .thenReturn(Result.failure(CommonException.UnKnownError()))
+
+        detailViewMock.unStarRepository(repoDetailEntity)
+        advanceUntilIdle()
+
+        val uiState = detailViewMock.uiState.value
+        assertTrue(uiState is DetailViewModel.UiState.Error)
+        assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, UNKNOWN)
+        verify(repoRepository).starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
+    }
+
     private fun makeRepoDetailEntity() =
         RepoDetailEntity(
             id = 1,
