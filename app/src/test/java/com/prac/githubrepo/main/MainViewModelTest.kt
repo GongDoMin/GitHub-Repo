@@ -1,6 +1,7 @@
 package com.prac.githubrepo.main
 
 import androidx.paging.PagingData
+import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
@@ -17,6 +18,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 @RunWith(MockitoJUnitRunner::class)
@@ -54,4 +56,28 @@ class MainViewModelTest {
 
         Assert.assertTrue(result is MainViewModel.UiState.Content)
     }
+
+    @Test
+    fun starRepository_success_callStarLocalAndRemoteRepository() = runTest {
+        val repoEntity = makeRepoEntity()
+        whenever(repoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
+            .thenReturn(Result.success(Unit))
+
+        mainViewModel.starRepository(repoEntity)
+        advanceUntilIdle()
+
+        verify(repoRepository).starLocalRepository(repoEntity.id, repoEntity.stargazersCount + 1)
+        verify(repoRepository).starRepository(repoEntity.owner.login, repoEntity.name)
+    }
+
+    private fun makeRepoEntity() =
+        RepoEntity(
+            id = 1,
+            name = "name",
+            owner = OwnerEntity(login = "login", avatarUrl = "avatarUrl"),
+            stargazersCount = 10,
+            updatedAt = "updatedAt",
+            isStarred = null
+        )
+
 }
