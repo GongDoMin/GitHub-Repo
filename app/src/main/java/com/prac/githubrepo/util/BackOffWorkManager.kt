@@ -1,4 +1,4 @@
-package com.prac.githubrepo.main.backoff
+package com.prac.githubrepo.util
 
 interface BackOffWorkManager {
     fun addWork(
