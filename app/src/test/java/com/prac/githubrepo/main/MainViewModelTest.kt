@@ -6,6 +6,7 @@ import com.prac.data.entity.RepoEntity
 import com.prac.data.exception.CommonException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
+import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.util.FakeBackOffWorkManager
 import com.prac.githubrepo.util.StandardTestDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -90,6 +91,21 @@ class MainViewModelTest {
         verify(repoRepository).starLocalRepository(repoEntity.id, repoEntity.stargazersCount + 1)
         verify(repoRepository, times(callApiTimes)).starRepository(repoEntity.owner.login, repoEntity.name)
         Assert.assertEquals(backOffWork.getDelayTimes(uniqueID), delayTimes)
+    }
+
+    @Test
+    fun starRepository_authorizationError_updateUiStateDialogMessage() = runTest {
+        val repoEntity = makeRepoEntity()
+        whenever(repoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
+            .thenReturn(Result.failure(CommonException.AuthorizationError()))
+
+        mainViewModel.starRepository(repoEntity)
+        advanceUntilIdle()
+
+        val uiState = mainViewModel.uiState.value
+        Assert.assertTrue(uiState is MainViewModel.UiState.Content)
+        Assert.assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, INVALID_TOKEN)
+        verify(tokenRepository).clearToken()
     }
 
     private fun makeRepoEntity() =
