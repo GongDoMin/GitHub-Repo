@@ -3,9 +3,11 @@ package com.prac.githubrepo.main.detail
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoDetailEntity
 import com.prac.data.exception.CommonException
+import com.prac.data.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.githubrepo.constants.CONNECTION_FAIL
+import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.util.FakeBackOffWorkManager
 import com.prac.githubrepo.util.StandardTestDispatcherRule
@@ -194,7 +196,7 @@ class DetailViewModelTest {
     }
 
     @Test
-    fun unStarRepository_authorizationError_updateUiStateDialogMessage() = runTest {
+    fun unStarRepository_authorizationError_updateUiStateToError() = runTest {
         val repoDetailEntity = makeRepoDetailEntity()
         whenever(repoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(CommonException.AuthorizationError()))
@@ -206,6 +208,21 @@ class DetailViewModelTest {
         assertTrue(uiState is DetailViewModel.UiState.Error)
         assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, INVALID_TOKEN)
         verify(tokenRepository).clearToken()
+    }
+
+    @Test
+    fun starRepository_repositoryIsNotFoundError_updateUiStateToError() = runTest {
+        val repoDetailEntity = makeRepoDetailEntity()
+        whenever(repoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
+            .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
+
+        detailViewMock.starRepository(repoDetailEntity)
+        advanceUntilIdle()
+
+        val uiState = detailViewMock.uiState.value
+        assertTrue(uiState is DetailViewModel.UiState.Error)
+        assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, INVALID_REPOSITORY)
+        verify(repoRepository).unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
     }
 
     private fun makeRepoDetailEntity() =
