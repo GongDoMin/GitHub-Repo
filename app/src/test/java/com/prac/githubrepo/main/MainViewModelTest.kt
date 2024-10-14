@@ -141,6 +141,21 @@ class MainViewModelTest {
     }
 
     @Test
+    fun unStarRepository_authorizationError_updateUiStateDialogMessage() = runTest {
+        val repoEntity = makeRepoEntity()
+        whenever(repoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
+            .thenReturn(Result.failure(CommonException.AuthorizationError()))
+
+        mainViewModel.unStarRepository(repoEntity)
+        advanceUntilIdle()
+
+        val uiState = mainViewModel.uiState.value
+        Assert.assertTrue(uiState is MainViewModel.UiState.Content)
+        Assert.assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, INVALID_TOKEN)
+        verify(tokenRepository).clearToken()
+    }
+
+    @Test
     fun starRepository_repositoryIsNotFoundError_updateUiStateDialogMessage() = runTest {
         val repoEntity = makeRepoEntity()
         whenever(repoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
