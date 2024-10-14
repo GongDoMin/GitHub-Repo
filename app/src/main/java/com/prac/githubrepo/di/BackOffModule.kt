@@ -1,7 +1,7 @@
-package com.prac.githubrepo.main.di
+package com.prac.githubrepo.di
 
 import com.prac.data.exception.CommonException
-import com.prac.githubrepo.main.backoff.BackOffWorkManager
+import com.prac.githubrepo.util.BackOffWorkManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,9 +12,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.io.IOException
 import javax.inject.Singleton
-import kotlin.math.pow
 
 @Module
 @InstallIn(SingletonComponent::class)

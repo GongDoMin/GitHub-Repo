@@ -7,7 +7,9 @@ import com.prac.data.repository.TokenRepository
 import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.LOGIN_FAIL
 import com.prac.githubrepo.constants.UNKNOWN
+import com.prac.githubrepo.di.IODispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val tokenRepository: TokenRepository
+    private val tokenRepository: TokenRepository,
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
     sealed class UiState {
         data object Idle : UiState()
@@ -43,10 +46,10 @@ class LoginViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
     val uiState = _uiState.asStateFlow()
 
-    private val _event = MutableSharedFlow<Event>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    private val _event = MutableSharedFlow<Event>()
     val event = _event.asSharedFlow()
 
-    private val _sideEffect = MutableSharedFlow<SideEffect>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    private val _sideEffect = MutableSharedFlow<SideEffect>()
     val sideEffect = _sideEffect.asSharedFlow()
 
     init {
@@ -57,16 +60,20 @@ class LoginViewModel @Inject constructor(
         _uiState.update { uiState }
     }
 
-    fun setEvent(event: Event) {
-        _event.tryEmit(event)
+    private fun setEvent(event: Event) {
+        viewModelScope.launch {
+            _event.emit(event)
+        }
     }
 
     fun setSideEffect(sideEffect: SideEffect) {
-        _sideEffect.tryEmit(sideEffect)
+        viewModelScope.launch {
+            _sideEffect.emit(sideEffect)
+        }
     }
 
     fun loginWithGitHub(code: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             if (uiState.value != UiState.Idle) return@launch
 
             setUiState(UiState.Loading)
@@ -81,7 +88,7 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun checkAutoLogin() {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             if (uiState.value != UiState.Idle) return@launch
 
             if (tokenRepository.isLoggedIn()) setEvent(Event.Success)
