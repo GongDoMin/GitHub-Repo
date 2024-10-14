@@ -2,8 +2,10 @@ package com.prac.githubrepo.main.detail
 
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoDetailEntity
+import com.prac.data.exception.CommonException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
+import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.util.FakeBackOffWorkManager
 import com.prac.githubrepo.util.StandardTestDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -79,6 +81,21 @@ class DetailViewModelTest {
         val uiState = detailViewMock.uiState.value
         assertTrue(uiState is DetailViewModel.UiState.Error)
         assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, "잘못된 접근입니다.")
+    }
+
+    @Test
+    fun getRepository_networkError_updatesUiStateToError() = runTest {
+        val userName = "test"
+        val repoName = "test"
+        whenever(repoRepository.getRepository(userName, repoName))
+            .thenReturn(Result.failure(CommonException.NetworkError()))
+
+        detailViewMock.getRepository(userName, repoName)
+        advanceUntilIdle()
+
+        val uiState = detailViewMock.uiState.value
+        assertTrue(uiState is DetailViewModel.UiState.Error)
+        assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, CONNECTION_FAIL)
     }
 
     private fun makeRepoDetailEntity() =
