@@ -22,6 +22,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
@@ -139,6 +140,24 @@ class DetailViewModelTest {
 
         verify(repoRepository).unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount - 1)
         verify(repoRepository).unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name)
+    }
+
+    @Test
+    fun starRepository_networkError_callMultipleTimesRemoteRepository() = runTest {
+        backOffWork.setScope(this)
+        val repoDetailEntity = makeRepoDetailEntity()
+        val uniqueID = "star_${repoDetailEntity.id}"
+        val callApiTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
+        val delayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
+        whenever(repoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
+            .thenReturn(Result.failure(CommonException.NetworkError()))
+
+        detailViewMock.starRepository(repoDetailEntity)
+        advanceUntilIdle()
+
+        verify(repoRepository).starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount + 1)
+        verify(repoRepository, times(callApiTimes)).starRepository(repoDetailEntity.owner.login, repoDetailEntity.name)
+        assertEquals(backOffWork.getDelayTimes(uniqueID), delayTimes)
     }
 
     private fun makeRepoDetailEntity() =
