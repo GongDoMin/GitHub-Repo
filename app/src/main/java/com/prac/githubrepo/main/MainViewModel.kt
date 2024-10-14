@@ -157,6 +157,8 @@ class MainViewModel @Inject constructor(
                 _uiState.update { (it as UiState.Content).copy(dialogMessage = INVALID_REPOSITORY) }
             }
             else -> {
+                repoRepository.unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
+
                 _uiState.update { (it as UiState.Content).copy(dialogMessage = UNKNOWN) }
             }
         }
@@ -179,6 +181,8 @@ class MainViewModel @Inject constructor(
                 _uiState.update { (it as UiState.Content).copy(dialogMessage = INVALID_REPOSITORY) }
             }
             else -> {
+                repoRepository.starLocalRepository(repoEntity.id, repoEntity.stargazersCount)
+
                 _uiState.update { (it as UiState.Content).copy(dialogMessage = UNKNOWN) }
             }
         }
