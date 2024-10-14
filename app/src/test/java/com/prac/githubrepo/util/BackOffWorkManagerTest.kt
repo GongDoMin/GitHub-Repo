@@ -8,10 +8,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.After
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BackOffWorkManagerTest {
@@ -51,6 +51,45 @@ class BackOffWorkManagerTest {
 
         assertEquals(retryTimes, maxRetryTimes)
         assertEquals(backOffWorkManager.getDelayTimes(uniqueID), delayTimes)
+    }
+
+    @Test
+    fun addWork_cancelExistingWork_whenNewWorkIsAdded() = runTest {
+        var fRetryTimes = 0
+        val fMaxRetryTimes = 3
+        val uniqueID = "testID"
+        backOffWorkManager.setScope(this)
+        backOffWorkManager.addWork(
+            uniqueID = uniqueID,
+            work = {
+                if (fRetryTimes < fMaxRetryTimes) {
+                    fRetryTimes++
+                    Result.failure<Unit>(CommonException.NetworkError())
+                } else {
+                    Result.success("success")
+                }
+            }
+        )
+        var sRetryTimes = 0
+        val sMaxRetryTimes = 4
+        val sDelayTimes = 15_000L // 1초 -> 2초 -> 4초 -> 8초 = 15초
+
+        backOffWorkManager.addWork(
+            uniqueID = uniqueID,
+            work = {
+                if (sRetryTimes < sMaxRetryTimes) {
+                    sRetryTimes++
+                    Result.failure<Unit>(CommonException.NetworkError())
+                } else {
+                    Result.success("success")
+                }
+            }
+        )
+        advanceUntilIdle()
+
+        Assert.assertNotEquals(fRetryTimes, fMaxRetryTimes)
+        assertEquals(sRetryTimes, sMaxRetryTimes)
+        assertEquals(backOffWorkManager.getDelayTimes(uniqueID), sDelayTimes)
     }
 
     class FakeBackOffWorkManager : BackOffWorkManager {
