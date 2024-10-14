@@ -11,7 +11,7 @@ import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.constants.UNKNOWN
-import com.prac.githubrepo.main.backoff.BackOffWorkManager
+import com.prac.githubrepo.util.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
