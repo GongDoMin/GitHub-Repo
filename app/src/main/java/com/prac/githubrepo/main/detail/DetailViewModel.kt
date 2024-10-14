@@ -173,6 +173,8 @@ class DetailViewModel @Inject constructor(
                 _uiState.update { UiState.Error(errorMessage = INVALID_REPOSITORY) }
             }
             else -> {
+                repoRepository.unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
+
                 _uiState.update { UiState.Error(errorMessage = UNKNOWN) }
             }
         }
@@ -195,6 +197,8 @@ class DetailViewModel @Inject constructor(
                 _uiState.update { UiState.Error(errorMessage = INVALID_REPOSITORY) }
             }
             else -> {
+                repoRepository.starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
+
                 _uiState.update { UiState.Error(errorMessage = UNKNOWN) }
             }
         }
