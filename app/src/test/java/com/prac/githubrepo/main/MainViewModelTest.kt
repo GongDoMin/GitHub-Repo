@@ -201,6 +201,22 @@ class MainViewModelTest {
         verify(repoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun unStarRepository_unKnownError_updateUiStateDialogMessage() = runTest {
+        val repoEntity = makeRepoEntity()
+        whenever(repoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
+            .thenReturn(Result.failure(CommonException.UnKnownError()))
+
+        mainViewModel.unStarRepository(repoEntity)
+        advanceUntilIdle()
+
+        val uiState = mainViewModel.uiState.value
+        Assert.assertTrue(uiState is MainViewModel.UiState.Content)
+        Assert.assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, UNKNOWN)
+        verify(repoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
+    }
+
     private fun makeRepoEntity() =
         RepoEntity(
             id = 1,
