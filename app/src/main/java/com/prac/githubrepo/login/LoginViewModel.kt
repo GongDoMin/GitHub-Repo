@@ -46,10 +46,10 @@ class LoginViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
     val uiState = _uiState.asStateFlow()
 
-    private val _event = MutableSharedFlow<Event>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    private val _event = MutableSharedFlow<Event>()
     val event = _event.asSharedFlow()
 
-    private val _sideEffect = MutableSharedFlow<SideEffect>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    private val _sideEffect = MutableSharedFlow<SideEffect>()
     val sideEffect = _sideEffect.asSharedFlow()
 
     init {
@@ -61,11 +61,15 @@ class LoginViewModel @Inject constructor(
     }
 
     fun setEvent(event: Event) {
-        _event.tryEmit(event)
+        viewModelScope.launch {
+            _event.emit(event)
+        }
     }
 
     fun setSideEffect(sideEffect: SideEffect) {
-        _sideEffect.tryEmit(sideEffect)
+        viewModelScope.launch {
+            _sideEffect.emit(sideEffect)
+        }
     }
 
     fun loginWithGitHub(code: String) {
