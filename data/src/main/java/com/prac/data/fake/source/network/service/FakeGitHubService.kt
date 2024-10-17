@@ -5,14 +5,14 @@ import com.prac.data.source.network.dto.RepoDto
 import com.prac.data.source.network.service.GitHubService
 
 internal class FakeGitHubService(
-    private val repos: List<RepoDto>
+    private val repoList: List<RepoDto>
 ) : GitHubService {
     override suspend fun getRepos(userName: String, perPage: Int, page: Int): List<RepoDto> {
-        return repos
+        return repoList
     }
 
     override suspend fun getRepo(userName: String, repoName: String): RepoDetailDto {
-        val repository = repos.find {
+        val repository = repoList.find {
             it.name == repoName && it.owner.login == userName
         }
 
@@ -30,14 +30,14 @@ internal class FakeGitHubService(
     }
 
     override suspend fun checkRepositoryIsStarred(userName: String, repoName: String) {
-        TODO("Not yet implemented")
+        throw NotImplementedError("this method is not supported in FakeGitHubService")
     }
 
     override suspend fun starRepository(userName: String, repoName: String) {
-        TODO("Not yet implemented")
+        throw NotImplementedError("this method is not supported in FakeGitHubService")
     }
 
     override suspend fun unStarRepository(userName: String, repoName: String) {
-        TODO("Not yet implemented")
+        throw NotImplementedError("this method is not supported in FakeGitHubService")
     }
 }

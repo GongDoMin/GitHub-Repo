@@ -15,7 +15,7 @@ class RepoApiDataSourceTest {
     private lateinit var gitHubService: GitHubService
     private lateinit var repoApiDatasource: RepoApiDataSource
 
-    private val repos = listOf(
+    private val repoList = listOf(
         RepoDto(0, "test1", OwnerDto("test1", "test1"), 0, "test1"),
         RepoDto(1, "test2", OwnerDto("test2", "test2"), 0, "test1"),
         RepoDto(2, "test3", OwnerDto("test3", "test3"), 0, "test1"),
@@ -24,7 +24,7 @@ class RepoApiDataSourceTest {
 
     @Before
     fun setUp() {
-        gitHubService = FakeGitHubService(repos)
+        gitHubService = FakeGitHubService(repoList)
         repoApiDatasource = RepoApiDataSourceImpl(gitHubService)
     }
 
@@ -37,18 +37,18 @@ class RepoApiDataSourceTest {
         val result = repoApiDatasource.getRepositories(repoName, perPage, page)
 
         result.indices.forEach {
-            assertEquals(result[it].id, repos[it].id)
-            assertEquals(result[it].name, repos[it].name)
-            assertEquals(result[it].owner.login, repos[it].owner.login)
-            assertEquals(result[it].owner.avatarUrl, repos[it].owner.avatarUrl)
-            assertEquals(result[it].stargazersCount, repos[it].stargazersCount)
-            assertEquals(result[it].updatedAt, repos[it].updatedAt)
+            assertEquals(result[it].id, repoList[it].id)
+            assertEquals(result[it].name, repoList[it].name)
+            assertEquals(result[it].owner.login, repoList[it].owner.login)
+            assertEquals(result[it].owner.avatarUrl, repoList[it].owner.avatarUrl)
+            assertEquals(result[it].stargazersCount, repoList[it].stargazersCount)
+            assertEquals(result[it].updatedAt, repoList[it].updatedAt)
         }
     }
 
     @Test
     fun getRepository_repositoryPassedToDataSource() = runTest {
-        val repo = repos[0]
+        val repo = repoList[0]
 
         val result = repoApiDatasource.getRepository(repo.owner.login, repo.name)
 

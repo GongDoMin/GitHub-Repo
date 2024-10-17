@@ -38,27 +38,27 @@ class FakeTokenRepository: TokenRepository {
     }
 
     override suspend fun clearToken() {
-        TODO("Not yet implemented")
+        token = makeEmptyToken()
     }
 
     override suspend fun refreshToken(refreshToken: String): Result<Unit> {
-        TODO("Not yet implemented")
+        throw NotImplementedError("this method is not supported in fake repository")
     }
 
     override fun getAccessToken(): String {
-        TODO("Not yet implemented")
+        return token.accessToken
     }
 
     override fun getRefreshToken(): String {
-        TODO("Not yet implemented")
+        return token.refreshToken
     }
 
     override fun getAccessTokenIsExpired(): Boolean {
-        TODO("Not yet implemented")
+        return token.isExpired
     }
 
     override fun getRefreshTokenIsExpired(): Boolean {
-        TODO("Not yet implemented")
+        return token.isRefreshTokenExpired
     }
 
     private fun makeEmptyToken() =
