@@ -9,36 +9,37 @@ import androidx.paging.RemoteMediator
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.prac.data.exception.CommonException
+import com.prac.data.exception.RepositoryException
+import com.prac.data.fake.source.network.FakeRepoApiDataSource
+import com.prac.data.fake.source.network.FakeRepoStarApiDataSource
 import com.prac.data.repository.impl.RepoRepositoryImpl
-import com.prac.data.repository.model.OwnerModel
-import com.prac.data.repository.model.RepoDetailModel
-import com.prac.data.repository.model.RepoModel
 import com.prac.data.source.local.room.dao.RemoteKeyDao
 import com.prac.data.source.local.room.dao.RepositoryDao
 import com.prac.data.source.local.room.database.RepositoryDatabase
 import com.prac.data.source.local.room.entity.Owner
 import com.prac.data.source.local.room.entity.Repository
-import com.prac.data.source.network.RepoApiDataSource
-import com.prac.data.source.network.RepoStarApiDataSource
 import com.prac.data.source.network.dto.OwnerDto
 import com.prac.data.source.network.dto.RepoDto
 import kotlinx.coroutines.flow.first
 import org.junit.Assert.assertEquals
 import kotlinx.coroutines.test.runTest
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.After
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import retrofit2.HttpException
+import retrofit2.Response
+import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 internal class RepoRepositoryTest {
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-
-    private lateinit var repoApiDataSource: MockRepoApiDataSource
-    private lateinit var repoStarApiDataSource: MockRepoStarApiDataSource
+    private lateinit var repoApiDataSource: FakeRepoApiDataSource
+    private lateinit var repoStarApiDataSource: FakeRepoStarApiDataSource
 
     private lateinit var repositoryDatabase: RepositoryDatabase
     private lateinit var remoteKeyDao: RemoteKeyDao
@@ -51,10 +52,13 @@ internal class RepoRepositoryTest {
 
     @Before
     fun setUp() {
-        repoApiDataSource = MockRepoApiDataSource()
-        repoStarApiDataSource = MockRepoStarApiDataSource()
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        repoApiDataSource = FakeRepoApiDataSource()
+        repoStarApiDataSource = FakeRepoStarApiDataSource()
 
-        repositoryDatabase = Room.inMemoryDatabaseBuilder(context, RepositoryDatabase::class.java)
+        repositoryDatabase = Room
+            .inMemoryDatabaseBuilder(context, RepositoryDatabase::class.java)
+            .allowMainThreadQueries()
             .build()
         remoteKeyDao = repositoryDatabase.remoteKeyDao()
         repositoryDao = repositoryDatabase.repositoryDao()
@@ -83,7 +87,7 @@ internal class RepoRepositoryTest {
         val repoDtoList = getRepoDtoListForPage(page, loadSize)
         val prevKey = null // page 가 1 이기 때문에 prevKey 는 null
         val nextKey = page + 1 // loadSize 가 10 이기 때문에 nextKey 는 page + 1
-        repoApiDataSource.thenRepoDtoList(repoDtoList)
+        repoApiDataSource.setRepoDtoList(repoDtoList)
 
         val result = repoRepository.load(LoadType.REFRESH, pagingState)
 
@@ -118,10 +122,10 @@ internal class RepoRepositoryTest {
             config = PagingConfig(pageSize = pageLoadSize, enablePlaceholders = false),
             leadingPlaceholderCount = 0
         )
-        val repositoriesDto = getRepoDtoListForPage(page, loadSize)
+        val repoDtoList = getRepoDtoListForPage(page, loadSize)
         val prevKey = null // page 가 1 이기 때문에 prevKey 는 null
         val nextKey = null // loadSize 가 5 이기 때문에 nextKey 는 null
-        repoApiDataSource.thenRepoDtoList(repositoriesDto)
+        repoApiDataSource.setRepoDtoList(repoDtoList)
 
         val result = repoRepository.load(LoadType.REFRESH, pagingState)
 
@@ -132,11 +136,11 @@ internal class RepoRepositoryTest {
                 placeholdersEnabled = false
             )
         ) as? PagingSource.LoadResult.Page)?.data
-        assertEquals(roomRepositories?.size, repositoriesDto.size)
-        repositoriesDto.indices.forEach {
-            assertEquals(roomRepositories?.get(it)?.id, repositoriesDto[it].id)
-            val remoteKey = remoteKeyDao.remoteKey(repositoriesDto[it].id)
-            assertEquals(remoteKey?.repoId, repositoriesDto[it].id)
+        assertEquals(roomRepositories?.size, repoDtoList.size)
+        repoDtoList.indices.forEach {
+            assertEquals(roomRepositories?.get(it)?.id, repoDtoList[it].id)
+            val remoteKey = remoteKeyDao.remoteKey(repoDtoList[it].id)
+            assertEquals(remoteKey?.repoId, repoDtoList[it].id)
             assertEquals(remoteKey?.prevKey, prevKey)
             assertEquals(remoteKey?.nextKey, nextKey)
         }
@@ -164,9 +168,9 @@ internal class RepoRepositoryTest {
             )
             val prevKey = if (page == 0) null else page
             val nextKey = page + 2
-            val repositoriesDto = getRepoDtoListForPage(page, loadSize)
-            totalRepoDtoList.addAll(repositoriesDto)
-            repoApiDataSource.thenRepoDtoList(repositoriesDto)
+            val repoDtoList = getRepoDtoListForPage(page, loadSize)
+            totalRepoDtoList.addAll(repoDtoList)
+            repoApiDataSource.setRepoDtoList(repoDtoList)
             val loadParams =
                 if (page == 0)
                     PagingSource.LoadParams.Refresh(
@@ -189,9 +193,9 @@ internal class RepoRepositoryTest {
             val roomRepositories = (repositoryDao.getRepositories().load(loadParams) as? PagingSource.LoadResult.Page)
             assertEquals(roomRepositories?.data?.size, pageLoadSize)
             roomRepositories?.data?.indices?.forEach {
-                assertEquals(roomRepositories.data[it].id, repositoriesDto[it].id)
+                assertEquals(roomRepositories.data[it].id, repoDtoList[it].id)
                 val remoteKey = remoteKeyDao.remoteKey(roomRepositories.data[it].id)
-                assertEquals(remoteKey?.repoId, repositoriesDto[it].id)
+                assertEquals(remoteKey?.repoId, repoDtoList[it].id)
                 assertEquals(remoteKey?.prevKey, prevKey)
                 assertEquals(remoteKey?.nextKey, nextKey)
             }
@@ -208,18 +212,18 @@ internal class RepoRepositoryTest {
             config = PagingConfig(pageSize = pageLoadSize, enablePlaceholders = false),
             leadingPlaceholderCount = 0
         )
-        repoApiDataSource.thenThrow(Exception())
+        repoApiDataSource.setThrowable(Exception())
 
         val result = repoRepository.load(LoadType.REFRESH, pagingState)
 
-        val roomRepositories = (repositoryDao.getRepositories().load(
+        val roomRepositoryList = (repositoryDao.getRepositories().load(
             PagingSource.LoadParams.Refresh(
                 key = null,
                 loadSize = pageLoadSize,
                 placeholdersEnabled = false
             )
         ) as? PagingSource.LoadResult.Page)?.data
-        assertEquals(roomRepositories?.size, 0)
+        assertEquals(roomRepositoryList?.size, 0)
         assertTrue(result is RemoteMediator.MediatorResult.Error)
     }
 
@@ -228,12 +232,12 @@ internal class RepoRepositoryTest {
         val page = 1
         val loadSize = 10
         val index = 0
-        val repositoriesDto = getRepoDtoListForPage(page, loadSize)
-        repositoryDatabase.repositoryDao().insertRepositories(repositoriesDto.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, null) })
+        val repoDtoList = getRepoDtoListForPage(page, loadSize)
+        repositoryDatabase.repositoryDao().insertRepositories(repoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, null) })
 
-        repoRepository.isStarred(repositoriesDto[index].id, repositoriesDto[index].name)
+        repoRepository.isStarred(repoDtoList[index].id, repoDtoList[index].name)
 
-        val roomRepository = repositoryDao.getRepository(repositoriesDto[index].id).first()
+        val roomRepository = repositoryDao.getRepository(repoDtoList[index].id).first()
         assertEquals(roomRepository?.isStarred, true)
     }
 
@@ -242,13 +246,13 @@ internal class RepoRepositoryTest {
         val page = 1
         val loadSize = 10
         val index = 0
-        val repositoriesDto = getRepoDtoListForPage(page, loadSize)
-        repositoryDatabase.repositoryDao().insertRepositories(repositoriesDto.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, null) })
-        repoStarApiDataSource.thenThrow(Exception())
+        val repoDtoList = getRepoDtoListForPage(page, loadSize)
+        repositoryDatabase.repositoryDao().insertRepositories(repoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, null) })
+        repoStarApiDataSource.setThrowable(Exception())
 
-        repoRepository.isStarred(repositoriesDto[index].id, repositoriesDto[index].name)
+        repoRepository.isStarred(repoDtoList[index].id, repoDtoList[index].name)
 
-        val roomRepository = repositoryDao.getRepository(repositoriesDto[index].id).first()
+        val roomRepository = repositoryDao.getRepository(repoDtoList[index].id).first()
         assertEquals(roomRepository?.isStarred, false)
     }
 
@@ -263,14 +267,51 @@ internal class RepoRepositoryTest {
     }
 
     @Test
-    fun starRepository_returnFailureResult() = runTest {
+    fun starRepository_returnNetworkError() = runTest {
         val userName = "test"
         val repoName = "test"
-        repoStarApiDataSource.thenThrow(Exception())
+        repoStarApiDataSource.setThrowable(IOException())
 
         val result = repoRepository.starRepository(userName, repoName)
 
         assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is CommonException.NetworkError)
+    }
+
+    @Test
+    fun starRepository_returnAuthorizationError() = runTest {
+        val userName = "test"
+        val repoName = "test"
+        repoStarApiDataSource.setThrowable(HttpException(Response.error<Any>(401, "empty body".toResponseBody())))
+
+        val result = repoRepository.starRepository(userName, repoName)
+
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is CommonException.AuthorizationError)
+    }
+
+    @Test
+    fun starRepository_returnNotFoundRepositoryError() = runTest {
+        val userName = "test"
+        val repoName = "test"
+        repoStarApiDataSource.setThrowable(HttpException(Response.error<Any>(404, "empty body".toResponseBody())))
+
+        val result = repoRepository.starRepository(userName, repoName)
+
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is RepositoryException.NotFoundRepository)
+    }
+
+    @Test
+    fun starRepository_returnUnKnownError() = runTest {
+        val userName = "test"
+        val repoName = "test"
+        repoStarApiDataSource.setThrowable(IllegalArgumentException())
+
+        val result = repoRepository.starRepository(userName, repoName)
+
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is CommonException.UnKnownError)
     }
 
     @Test
@@ -284,14 +325,51 @@ internal class RepoRepositoryTest {
     }
 
     @Test
-    fun unStarRepository_returnFailureResult() = runTest {
+    fun unStarRepository_returnNetworkError() = runTest {
         val userName = "test"
         val repoName = "test"
-        repoStarApiDataSource.thenThrow(Exception())
+        repoStarApiDataSource.setThrowable(IOException())
 
         val result = repoRepository.unStarRepository(userName, repoName)
 
         assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is CommonException.NetworkError)
+    }
+
+    @Test
+    fun unStarRepository_returnAuthorizationError() = runTest {
+        val userName = "test"
+        val repoName = "test"
+        repoStarApiDataSource.setThrowable(HttpException(Response.error<Any>(401, "empty body".toResponseBody())))
+
+        val result = repoRepository.unStarRepository(userName, repoName)
+
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is CommonException.AuthorizationError)
+    }
+
+    @Test
+    fun unStarRepository_returnNotFoundRepositoryError() = runTest {
+        val userName = "test"
+        val repoName = "test"
+        repoStarApiDataSource.setThrowable(HttpException(Response.error<Any>(404, "empty body".toResponseBody())))
+
+        val result = repoRepository.unStarRepository(userName, repoName)
+
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is RepositoryException.NotFoundRepository)
+    }
+
+    @Test
+    fun unStarRepository_returnUnKnownError() = runTest {
+        val userName = "test"
+        val repoName = "test"
+        repoStarApiDataSource.setThrowable(IllegalArgumentException())
+
+        val result = repoRepository.unStarRepository(userName, repoName)
+
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is CommonException.UnKnownError)
     }
 
     @Test
@@ -299,14 +377,14 @@ internal class RepoRepositoryTest {
         val page = 1
         val loadSize = 10
         val index = 0
-        val repositoriesDto = getRepoDtoListForPage(page, loadSize)
-        repositoryDatabase.repositoryDao().insertRepositories(repositoriesDto.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, false) })
+        val repoDtoList = getRepoDtoListForPage(page, loadSize)
+        repositoryDatabase.repositoryDao().insertRepositories(repoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, false) })
 
-        repoRepository.starLocalRepository(repositoriesDto[index].id, repositoriesDto[index].stargazersCount + 1)
+        repoRepository.starLocalRepository(repoDtoList[index].id, repoDtoList[index].stargazersCount + 1)
 
-        val roomRepository = repositoryDao.getRepository(repositoriesDto[index].id).first()
+        val roomRepository = repositoryDao.getRepository(repoDtoList[index].id).first()
         assertEquals(roomRepository?.isStarred, true)
-        assertEquals(roomRepository?.stargazersCount, repositoriesDto[index].stargazersCount + 1)
+        assertEquals(roomRepository?.stargazersCount, repoDtoList[index].stargazersCount + 1)
     }
 
     @Test
@@ -314,120 +392,89 @@ internal class RepoRepositoryTest {
         val page = 1
         val loadSize = 10
         val index = 0
-        val repositoriesDto = getRepoDtoListForPage(page, loadSize)
-        repositoryDatabase.repositoryDao().insertRepositories(repositoriesDto.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount + 1, it.updatedAt, true) })
+        val repoDtoList = getRepoDtoListForPage(page, loadSize)
+        repositoryDatabase.repositoryDao().insertRepositories(repoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount + 1, it.updatedAt, true) })
 
-        repoRepository.unStarLocalRepository(repositoriesDto[index].id, repositoriesDto[index].stargazersCount)
+        repoRepository.unStarLocalRepository(repoDtoList[index].id, repoDtoList[index].stargazersCount)
 
-        val roomRepository = repositoryDao.getRepository(repositoriesDto[index].id).first()
+        val roomRepository = repositoryDao.getRepository(repoDtoList[index].id).first()
         assertEquals(roomRepository?.isStarred, false)
-        assertEquals(roomRepository?.stargazersCount, repositoriesDto[index].stargazersCount)
+        assertEquals(roomRepository?.stargazersCount, repoDtoList[index].stargazersCount)
     }
 
     @Test
     fun getRepository_starCountIsNotChanged_returnSuccessResult() = runTest {
-        val repositoriesDto = getRepoDtoListForPage(1, 10)
-        repositoryDatabase.repositoryDao().insertRepositories(repositoriesDto.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, false) })
-        repoApiDataSource.thenRepository(RepoDetailModel(repositoriesDto[0].id, repositoriesDto[0].name, OwnerModel(repositoriesDto[0].owner.login, repositoriesDto[0].owner.avatarUrl), repositoriesDto[0].stargazersCount, 0))
+        val repoDtoList = getRepoDtoListForPage(1, 10)
+        repositoryDatabase.repositoryDao().insertRepositories(repoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, false) })
+        repoApiDataSource.setRepoDtoList(repoDtoList)
 
-        val result = repoRepository.getRepository("test", "test")
+        val result = repoRepository.getRepository(repoDtoList[0].owner.login, repoDtoList[0].name)
 
-        val repository = repositoryDatabase.repositoryDao().getRepository(repositoriesDto[0].id).first()
+        val repository = repositoryDatabase.repositoryDao().getRepository(repoDtoList[0].id).first()
         assertEquals(repository?.stargazersCount, 0)
         assertTrue(result.isSuccess)
     }
 
     @Test
     fun getRepository_starCountIsChanged_returnSuccessResult() = runTest {
-        val repositoriesDto = getRepoDtoListForPage(1, 10)
-        repositoryDatabase.repositoryDao().insertRepositories(repositoriesDto.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, false) })
-        repoApiDataSource.thenRepository(RepoDetailModel(repositoriesDto[0].id, repositoriesDto[0].name, OwnerModel(repositoriesDto[0].owner.login, repositoriesDto[0].owner.avatarUrl), repositoriesDto[0].stargazersCount + 10, 0))
+        val repoDtoList = getRepoDtoListForPage(1, 10)
+        repositoryDatabase.repositoryDao().insertRepositories(repoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, false) })
+        repoApiDataSource.setRepoDtoList(repoDtoList)
+        repoApiDataSource.setStarCount(10)
 
-        val result = repoRepository.getRepository("test", "test")
+        val result = repoRepository.getRepository(repoDtoList[0].owner.login, repoDtoList[0].name)
 
-        val repository = repositoryDatabase.repositoryDao().getRepository(repositoriesDto[0].id).first()
+        val repository = repositoryDatabase.repositoryDao().getRepository(repoDtoList[0].id).first()
         assertEquals(repository?.stargazersCount, 10)
         assertTrue(result.isSuccess)
     }
 
     @Test
-    fun getRepository_returnFailureResult() = runTest {
-        repoApiDataSource.thenThrow(Exception())
+    fun getRepository_returnNetworkError() = runTest {
+        val userName = "test"
+        val repoName = "test"
+        repoApiDataSource.setThrowable(IOException())
 
-        val result = repoRepository.getRepository("test", "test")
+        val result = repoRepository.getRepository(userName, repoName)
 
         assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is CommonException.NetworkError)
     }
 
-    private class MockRepoApiDataSource : RepoApiDataSource {
+    @Test
+    fun getRepository_returnAuthorizationError() = runTest {
+        val userName = "test"
+        val repoName = "test"
+        repoApiDataSource.setThrowable(HttpException(Response.error<Any>(401, "empty body".toResponseBody())))
 
-        private lateinit var throwable: Throwable
-        private lateinit var repoDtoList: List<RepoDto>
-        private lateinit var repoDetailModel: RepoDetailModel
+        val result = repoRepository.getRepository(userName, repoName)
 
-        fun thenThrow(throwable: Throwable) {
-            this.throwable = throwable
-        }
-
-        fun thenRepoDtoList(repoDtoList: List<RepoDto>) {
-            this.repoDtoList = repoDtoList
-        }
-
-        fun thenRepository(repoDetailModel: RepoDetailModel) {
-            this.repoDetailModel = repoDetailModel
-        }
-
-
-        override suspend fun getRepositories(userName: String, perPage: Int, page: Int): List<RepoModel> {
-            if (!::throwable.isInitialized && !::repoDtoList.isInitialized) {
-                throw Exception("getRepositories is not initialized")
-            }
-
-            if (::throwable.isInitialized) {
-                throw throwable
-            }
-
-            return repoDtoList.map { RepoModel(it.id, it.name, OwnerModel(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt) }
-        }
-
-        override suspend fun getRepository(userName: String, repoName: String): RepoDetailModel {
-            if (!::throwable.isInitialized && !::repoDetailModel.isInitialized) {
-                throw Exception("getRepositories is not initialized")
-            }
-
-            if (::throwable.isInitialized) {
-                throw throwable
-            }
-
-            return repoDetailModel
-        }
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is CommonException.AuthorizationError)
     }
 
-    private class MockRepoStarApiDataSource: RepoStarApiDataSource {
+    @Test
+    fun getRepository_returnNotFoundRepository() = runTest {
+        val userName = "test"
+        val repoName = "test"
+        repoApiDataSource.setThrowable(HttpException(Response.error<Any>(404, "empty body".toResponseBody())))
 
-        private lateinit var throwable: Throwable
+        val result = repoRepository.getRepository(userName, repoName)
 
-        fun thenThrow(throwable: Throwable) {
-            this.throwable = throwable
-        }
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is RepositoryException.NotFoundRepository)
+    }
 
-        override suspend fun checkRepositoryIsStarred(repoName: String) {
-            if (::throwable.isInitialized) {
-                throw throwable
-            }
-        }
+    @Test
+    fun getRepository_returnUnKnownError() = runTest {
+        val userName = "test"
+        val repoName = "test"
+        repoApiDataSource.setThrowable(IllegalArgumentException())
 
-        override suspend fun starRepository(userName: String, repoName: String) {
-            if (::throwable.isInitialized) {
-                throw throwable
-            }
-        }
+        val result = repoRepository.getRepository(userName, repoName)
 
-        override suspend fun unStarRepository(userName: String, repoName: String) {
-            if (::throwable.isInitialized) {
-                throw throwable
-            }
-        }
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is CommonException.UnKnownError)
     }
 
     private fun getRepoDtoListForPage(page : Int, loadSize: Int) : List<RepoDto> =
