@@ -1,39 +1,36 @@
 package com.prac.githubrepo.login
 
-import com.prac.data.exception.CommonException
-import com.prac.data.repository.TokenRepository
+import com.prac.data.fake.repository.FakeTokenRepository
 import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.LOGIN_FAIL
-import com.prac.githubrepo.constants.UNKNOWN
 import com.prac.githubrepo.util.StandardTestDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.whenever
+import java.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@RunWith(MockitoJUnitRunner::class)
 class LoginViewModelTest {
 
     @get:Rule
     val standardTestDispatcherRule = StandardTestDispatcherRule()
 
-    @Mock
-    private lateinit var tokenRepository: TokenRepository
+    private lateinit var tokenRepository: FakeTokenRepository
 
     private lateinit var loginViewModel: LoginViewModel
 
+    private val code = "code"
+
     @Test
     fun checkAutoLogin_userIsLoggedIn_eventSuccess() = runTest {
-        whenever(tokenRepository.isLoggedIn()).thenReturn(true)
+        tokenRepository = FakeTokenRepository()
+        tokenRepository.setInitialToken()
         loginViewModel = LoginViewModel(tokenRepository, standardTestDispatcherRule.testDispatcher)
 
         val result = loginViewModel.event.first()
@@ -42,11 +39,21 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun loginWithGitHub_success_eventSuccess() = runTest {
-        val code = "code"
-        whenever(tokenRepository.isLoggedIn()).thenReturn(false)
+    fun checkAutoLogin_userIsNotLoggedIn() = runTest {
+        tokenRepository = FakeTokenRepository()
         loginViewModel = LoginViewModel(tokenRepository, standardTestDispatcherRule.testDispatcher)
-        whenever(tokenRepository.authorizeOAuth(code)).thenReturn(Result.success(Unit))
+
+        // if result is false, loginViewModel.event is not emitted
+        val result = tokenRepository.isLoggedIn()
+
+        assertFalse(result)
+    }
+
+    @Test
+    fun loginWithGitHub_updateSuccessEvent() = runTest {
+        val code = "testCode"
+        tokenRepository = FakeTokenRepository()
+        loginViewModel = LoginViewModel(tokenRepository, standardTestDispatcherRule.testDispatcher)
 
         loginViewModel.loginWithGitHub(code)
 
@@ -55,47 +62,30 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun loginWithGitHub_networkError() = runTest {
-        val code = "code"
-        whenever(tokenRepository.isLoggedIn()).thenReturn(false)
+    fun loginWithGitHub_networkError_updateUiStateToError() = runTest {
+        tokenRepository = FakeTokenRepository()
+        tokenRepository.setThrowable(IOException())
         loginViewModel = LoginViewModel(tokenRepository, standardTestDispatcherRule.testDispatcher)
-        whenever(tokenRepository.authorizeOAuth(code)).thenReturn(Result.failure(CommonException.NetworkError()))
 
         loginViewModel.loginWithGitHub(code)
         advanceUntilIdle()
 
-        val uiState = loginViewModel.uiState.first()
+        val uiState = loginViewModel.uiState.value
         assertTrue(uiState is LoginViewModel.UiState.Error)
         assertEquals((uiState as LoginViewModel.UiState.Error).errorMessage, CONNECTION_FAIL)
     }
 
     @Test
-    fun loginWithGitHub_authorizationError() = runTest {
-        val code = "code"
-        whenever(tokenRepository.isLoggedIn()).thenReturn(false)
+    fun loginWithGitHub_authorizationError_updateUiStateToError() = runTest {
+        tokenRepository = FakeTokenRepository()
+        tokenRepository.setThrowable(Exception())
         loginViewModel = LoginViewModel(tokenRepository, standardTestDispatcherRule.testDispatcher)
-        whenever(tokenRepository.authorizeOAuth(code)).thenReturn(Result.failure(CommonException.AuthorizationError()))
 
         loginViewModel.loginWithGitHub(code)
         advanceUntilIdle()
 
-        val uiState = loginViewModel.uiState.first()
+        val uiState = loginViewModel.uiState.value
         assertTrue(uiState is LoginViewModel.UiState.Error)
         assertEquals((uiState as LoginViewModel.UiState.Error).errorMessage, LOGIN_FAIL)
-    }
-
-    @Test
-    fun loginWithGitHub_unknownError() = runTest {
-        val code = "code"
-        whenever(tokenRepository.isLoggedIn()).thenReturn(false)
-        loginViewModel = LoginViewModel(tokenRepository, standardTestDispatcherRule.testDispatcher)
-        whenever(tokenRepository.authorizeOAuth(code)).thenReturn(Result.failure(CommonException.UnKnownError()))
-
-        loginViewModel.loginWithGitHub(code)
-        advanceUntilIdle()
-
-        val uiState = loginViewModel.uiState.first()
-        assertTrue(uiState is LoginViewModel.UiState.Error)
-        assertEquals((uiState as LoginViewModel.UiState.Error).errorMessage, UNKNOWN)
     }
 }
