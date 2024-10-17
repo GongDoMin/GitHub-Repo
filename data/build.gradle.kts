@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.jetbrains.kotlinx.coroutines.test)
 
     implementation(libs.dagger.hilt.android)
+    implementation(libs.hilt.android.testing)
     kapt(libs.dagger.hilt.compiler)
 
     implementation(libs.okhttp)
