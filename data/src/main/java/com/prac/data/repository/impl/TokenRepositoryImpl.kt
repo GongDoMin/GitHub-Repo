@@ -20,15 +20,13 @@ internal class TokenRepositoryImpl @Inject constructor(
             setToken(model)
 
             Result.success(Unit)
-        } catch (e: HttpException) {
-            Result.failure(CommonException.AuthorizationError())
         } catch (e: Exception) {
             when (e) {
                 is IOException -> {
                     Result.failure(CommonException.NetworkError())
                 }
                 else -> {
-                    Result.failure(CommonException.UnKnownError())
+                    Result.failure(CommonException.AuthorizationError())
                 }
             }
         }

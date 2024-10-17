@@ -1,5 +1,6 @@
 package com.prac.data.source.network.di
 
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.prac.data.BuildConfig
 import com.prac.data.source.network.di.annotation.AuthOkHttpClient
 import com.prac.data.source.network.di.annotation.BasicOkHttpClient
@@ -11,6 +12,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Converter
 import retrofit2.Retrofit
@@ -23,13 +26,12 @@ internal class RetrofitModule {
     @Singleton
     @BasicRetrofit
     fun provideGitHubTokenRetrofit(
-        @BasicOkHttpClient okHttpClient: OkHttpClient,
-        converterFactory: Converter.Factory
+        @BasicOkHttpClient okHttpClient: OkHttpClient
     ): Retrofit =
         Retrofit.Builder()
             .baseUrl(BuildConfig.GITHUB_URL)
             .client(okHttpClient)
-            .addConverterFactory(converterFactory)
+            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
             .build()
 
     @Provides
