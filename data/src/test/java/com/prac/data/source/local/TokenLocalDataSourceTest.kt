@@ -1,5 +1,6 @@
 package com.prac.data.source.local
 
+import com.prac.data.fake.source.local.FakeTokenDataStoreManager
 import com.prac.data.source.local.datastore.TokenDataStoreManager
 import com.prac.data.source.local.datastore.TokenLocalDto
 import com.prac.data.source.local.impl.TokenLocalDataSourceImpl
@@ -16,10 +17,9 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-@RunWith(MockitoJUnitRunner::class)
 internal class TokenLocalDataSourceTest {
 
-    @Mock private lateinit var tokenDataStoreManager: TokenDataStoreManager
+    private lateinit var tokenDataStoreManager: TokenDataStoreManager
     private lateinit var tokenLocalDataSource: TokenLocalDataSource
 
     @After
@@ -29,16 +29,7 @@ internal class TokenLocalDataSourceTest {
 
     @Test
     fun getCachedToken_returnEmptyTokenWhenDataStoreIsEmpty() = runTest {
-        whenever(tokenDataStoreManager.getToken())
-            .thenReturn(
-                TokenLocalDto(
-                    "",
-                    "",
-                    0,
-                    0,
-                    Instant.ofEpochMilli(0).atZone(ZoneId.systemDefault())
-                )
-            )
+        tokenDataStoreManager = FakeTokenDataStoreManager()
         tokenLocalDataSource = TokenLocalDataSourceImpl(tokenDataStoreManager)
 
         val result = tokenLocalDataSource.getToken()
@@ -49,16 +40,15 @@ internal class TokenLocalDataSourceTest {
 
     @Test
     fun getCachedToken_returnTokenWhenDataStoreIsNotEmpty() = runTest {
-        whenever(tokenDataStoreManager.getToken())
-            .thenReturn(
-                TokenLocalDto(
-                    "accessToken",
-                    "refreshToken",
-                    3600,
-                    3600,
-                    Instant.ofEpochMilli(ZonedDateTime.now().toInstant().toEpochMilli()).atZone(ZoneId.systemDefault())
-                )
+        tokenDataStoreManager = FakeTokenDataStoreManager(
+            TokenLocalDto(
+                "accessToken",
+                "refreshToken",
+                3600,
+                3600,
+                Instant.ofEpochMilli(ZonedDateTime.now().toInstant().toEpochMilli()).atZone(ZoneId.systemDefault())
             )
+        )
         tokenLocalDataSource = TokenLocalDataSourceImpl(tokenDataStoreManager)
 
         val result = tokenLocalDataSource.getToken()
@@ -69,15 +59,43 @@ internal class TokenLocalDataSourceTest {
 
     @Test
     fun setToken_updateCacheAndReturnCorrectToken() = runTest {
-        val token = TokenLocalDto("accessToken", "refreshToken", 3600, 3600, ZonedDateTime.now())
+        val token = TokenLocalDto(
+            "accessToken",
+            "refreshToken",
+            3600,
+            3600,
+            ZonedDateTime.now()
+        )
+        tokenDataStoreManager = FakeTokenDataStoreManager()
         tokenLocalDataSource = TokenLocalDataSourceImpl(tokenDataStoreManager)
+
         tokenLocalDataSource.setToken(token)
-        whenever(tokenDataStoreManager.getToken()).thenReturn(token)
 
         val cacheResult = tokenLocalDataSource.getToken()
         val dataStoreResult = tokenDataStoreManager.getToken()
-
         assertEquals(cacheResult, token)
         assertEquals(dataStoreResult, token)
+    }
+
+    @Test
+    fun clearToken_clearCacheAndDataStore() = runTest {
+        val token = TokenLocalDto(
+            "accessToken",
+            "refreshToken",
+            3600,
+            3600,
+            ZonedDateTime.now()
+        )
+        tokenDataStoreManager = FakeTokenDataStoreManager(token)
+        tokenLocalDataSource = TokenLocalDataSourceImpl(tokenDataStoreManager)
+
+        tokenLocalDataSource.clearToken()
+
+        val cacheResult = tokenLocalDataSource.getToken()
+        val dataStoreResult = tokenDataStoreManager.getToken()
+        assertTrue(cacheResult.accessToken.isEmpty())
+        assertTrue(cacheResult.refreshToken.isEmpty())
+        assertTrue(dataStoreResult.accessToken.isEmpty())
+        assertTrue(dataStoreResult.refreshToken.isEmpty())
     }
 }
