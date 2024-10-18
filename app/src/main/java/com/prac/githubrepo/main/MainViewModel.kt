@@ -115,11 +115,6 @@ class MainViewModel @Inject constructor(
             updateLoadState(combinedLoadStates.refresh)
         }
 
-        if (combinedLoadStates.refresh is LoadState.Loading) {
-            updateLoadState(combinedLoadStates.refresh)
-            return
-        }
-
         if (combinedLoadStates.append is LoadState.Error) {
             if ((combinedLoadStates.append as LoadState.Error).error !is IOException) {
                 viewModelScope.launch(ioDispatcher) {
