@@ -1,36 +1,34 @@
 package com.prac.data.repository
 
+import com.prac.data.exception.CommonException
+import com.prac.data.fake.source.local.FakeTokenLocalDataSource
+import com.prac.data.fake.source.network.FakeAuthApiDataSource
 import com.prac.data.repository.impl.TokenRepositoryImpl
 import com.prac.data.repository.model.TokenModel
-import com.prac.data.source.local.TokenLocalDataSource
-import com.prac.data.source.local.datastore.TokenLocalDto
-import com.prac.data.source.network.AuthApiDataSource
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.any
-import org.mockito.kotlin.never
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import java.io.IOException
 import java.time.ZonedDateTime
 
-@RunWith(MockitoJUnitRunner::class)
 class TokenRepositoryTest {
 
-    @Mock private lateinit var tokenLocalDataSource: TokenLocalDataSource
-    @Mock private lateinit var authApiDataSource: AuthApiDataSource
+    private lateinit var tokenLocalDataSource: FakeTokenLocalDataSource
+    private lateinit var authApiDataSource: FakeAuthApiDataSource
 
     private lateinit var tokenRepository: TokenRepository
 
+    private val code = "code"
+    private val token = TokenModel("accessToken", "refreshToken", 3600, 3600, ZonedDateTime.now())
+
     @Before
     fun setUp() {
+        tokenLocalDataSource = FakeTokenLocalDataSource()
+        authApiDataSource = FakeAuthApiDataSource(token)
         tokenRepository = TokenRepositoryImpl(
             tokenLocalDataSource = tokenLocalDataSource,
             authApiDataSource = authApiDataSource
@@ -38,75 +36,73 @@ class TokenRepositoryTest {
     }
 
     @Test
-    fun authorizeOAuth_updateDataStoreAndReturnSuccess() = runTest {
-        val code = "testCode"
-        val token = TokenModel("accessToken", "refreshToken", 3600, 3600, ZonedDateTime.now())
-        whenever(authApiDataSource.authorizeOAuth(code)).thenReturn(token)
+    fun authorizeOAuth_updateCacheAndReturnSuccess() = runTest {
 
         val result = tokenRepository.authorizeOAuth(code)
 
-        verify(tokenLocalDataSource)
-            .setToken(
-                TokenLocalDto(
-                    token.accessToken,
-                    token.refreshToken,
-                    token.expiresInSeconds,
-                    token.refreshTokenExpiresInSeconds,
-                    token.updatedAt
-                )
-            )
+        val cache = tokenLocalDataSource.getToken()
+        assertEquals(cache.accessToken, token.accessToken)
+        assertEquals(cache.refreshToken, token.refreshToken)
+        assertEquals(cache.expiresInSeconds, token.expiresInSeconds)
+        assertEquals(cache.refreshTokenExpiresInSeconds, token.refreshTokenExpiresInSeconds)
+        assertEquals(cache.updatedAt, token.updatedAt)
         assertTrue(result.isSuccess)
     }
 
     @Test
-    fun authorizeOAuth_returnFailure() = runTest {
-        val code = "testCode"
-        val exception = RuntimeException()
-        whenever(authApiDataSource.authorizeOAuth(code)).thenThrow(exception)
+    fun authorizeOAuth_returnNetworkError() = runTest {
+        authApiDataSource.setThrowable(IOException())
 
         val result = tokenRepository.authorizeOAuth(code)
 
-        verify(tokenLocalDataSource, never()).setToken(any())
+        val cache = tokenLocalDataSource.getToken()
+        assertTrue(cache.accessToken.isEmpty())
+        assertTrue(cache.refreshToken.isEmpty())
         assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is CommonException.NetworkError)
     }
 
     @Test
-    fun refreshToken_updateDataStoreAndReturnSuccess() = runTest {
-        val refreshToken = "RefreshToken"
-        val token = TokenModel("accessToken", "refreshToken", 3600, 3600, ZonedDateTime.now())
-        whenever(authApiDataSource.refreshAccessToken(refreshToken)).thenReturn(token)
+    fun authorizeOAuth_returnAuthorizationError() = runTest {
+        authApiDataSource.setThrowable(IllegalArgumentException())
 
-        val result = tokenRepository.refreshToken(refreshToken)
+        val result = tokenRepository.authorizeOAuth(code)
 
-        verify(tokenLocalDataSource)
-            .setToken(
-                TokenLocalDto(
-                    token.accessToken,
-                    token.refreshToken,
-                    token.expiresInSeconds,
-                    token.refreshTokenExpiresInSeconds,
-                    token.updatedAt
-                )
-            )
+        val cache = tokenLocalDataSource.getToken()
+        assertTrue(cache.accessToken.isEmpty())
+        assertTrue(cache.refreshToken.isEmpty())
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is CommonException.AuthorizationError)
+    }
+
+    @Test
+    fun refreshToken_updateCacheAndReturnSuccess() = runTest {
+        tokenRepository.authorizeOAuth(code)
+
+        val result = tokenRepository.refreshToken(token.refreshToken)
+
+        val cache = tokenLocalDataSource.getToken()
+        assertNotEquals(cache.accessToken, token.accessToken)
+        assertNotEquals(cache.accessToken, token.accessToken)
         assertTrue(result.isSuccess)
     }
 
     @Test
     fun refreshToken_returnFailure() = runTest {
-        val refreshToken = "refreshToken"
-        val exception = RuntimeException()
-        whenever(authApiDataSource.refreshAccessToken(refreshToken)).thenThrow(exception)
+        tokenRepository.authorizeOAuth(code)
+        authApiDataSource.setThrowable(Exception())
 
-        val result = tokenRepository.refreshToken(refreshToken)
+        val result = tokenRepository.refreshToken(token.refreshToken)
 
-        verify(tokenLocalDataSource, never()).setToken(any())
+        val cache = tokenLocalDataSource.getToken()
+        assertEquals(cache.accessToken, token.accessToken)
+        assertEquals(cache.accessToken, token.accessToken)
         assertTrue(result.isFailure)
     }
 
     @Test
-    fun isLoggedIn_accessTokenExist_returnsTrue() = runTest {
-        val token = TokenLocalDto("accessToken", "refreshToken", 3600, 3600, ZonedDateTime.now())
-        whenever(tokenLocalDataSource.getToken()).thenReturn(token)
+    fun isLoggedIn_accessTokenExist_returnTrue() = runTest {
+        tokenRepository.authorizeOAuth(code)
 
         val isLoggedIn = tokenRepository.isLoggedIn()
 
@@ -114,9 +110,7 @@ class TokenRepositoryTest {
     }
 
     @Test
-    fun isLoggedIn_accessTokenDoesNotExist_returnsFalse() = runTest {
-        val token = TokenLocalDto("", "", 0, 0, ZonedDateTime.now())
-        whenever(tokenLocalDataSource.getToken()).thenReturn(token)
+    fun isLoggedIn_accessTokenDoesNotExist_returnFalse() = runTest {
 
         val isLoggedIn = tokenRepository.isLoggedIn()
 
@@ -125,63 +119,69 @@ class TokenRepositoryTest {
 
     @Test
     fun getAccessToken_returnTokenFromDataSource() = runTest {
-        val token = TokenLocalDto("accessToken", "refreshToken", 3600, 3600, ZonedDateTime.now())
-        whenever(tokenLocalDataSource.getToken()).thenReturn(token)
+        tokenRepository.authorizeOAuth(code)
 
-        val accessToken = tokenRepository.getAccessToken()
+        val result = tokenRepository.getAccessToken()
 
-        assertEquals(token.accessToken, accessToken)
+        assertEquals(result, token.accessToken)
     }
 
     @Test
     fun getRefreshToken_returnTokenFromDataSource() = runTest {
-        val token = TokenLocalDto("accessToken", "refreshToken", 3600, 3600, ZonedDateTime.now())
-        whenever(tokenLocalDataSource.getToken()).thenReturn(token)
+        tokenRepository.authorizeOAuth(code)
 
-        val refreshToken = tokenRepository.getRefreshToken()
+        val result = tokenRepository.getRefreshToken()
 
-        assertEquals(token.refreshToken, refreshToken)
+        assertEquals(result, token.refreshToken)
     }
 
     @Test
-    fun getAccessTokenIsExpired_returnsFalseFromDataSource() = runTest {
-        val token = TokenLocalDto("accessToken", "refreshToken", 3600, 3600, ZonedDateTime.now())
-        whenever(tokenLocalDataSource.getToken()).thenReturn(token)
+    fun getAccessTokenIsExpired_returnFalseFromDataSource() = runTest {
+        tokenRepository.authorizeOAuth(code)
 
-        val accessTokenIsExpired = tokenRepository.getAccessTokenIsExpired()
+        val result = tokenRepository.getAccessTokenIsExpired()
 
-        assertFalse(accessTokenIsExpired)
+        assertFalse(result)
     }
 
     @Test
-    fun getAccessTokenIsExpired_returnsTrueFromDataSource() = runTest {
-        val token = TokenLocalDto("accessToken", "refreshToken", 1, 1, ZonedDateTime.now())
-        whenever(tokenLocalDataSource.getToken()).thenReturn(token)
+    fun getAccessTokenIsExpired_returnTrueFromDataSource() = runTest {
+        val expiredToken = TokenModel("accessToken", "refreshToken", 1, 1, ZonedDateTime.now())
+        authApiDataSource = FakeAuthApiDataSource(expiredToken)
+        tokenRepository = TokenRepositoryImpl(
+            tokenLocalDataSource = tokenLocalDataSource,
+            authApiDataSource = authApiDataSource
+        )
+        tokenRepository.authorizeOAuth(code)
         Thread.sleep(1500)
 
-        val accessTokenIsExpired = tokenRepository.getAccessTokenIsExpired()
+        val result = tokenRepository.getAccessTokenIsExpired()
 
-        assertTrue(accessTokenIsExpired)
+        assertTrue(result)
     }
 
     @Test
-    fun getRefreshTokenIsExpired_returnsFalseFromDataSource() = runTest {
-        val token = TokenLocalDto("accessToken", "refreshToken", 3600, 3600, ZonedDateTime.now())
-        whenever(tokenLocalDataSource.getToken()).thenReturn(token)
+    fun getRefreshTokenIsExpired_returnFalseFromDataSource() = runTest {
+        tokenRepository.authorizeOAuth(code)
 
-        val refreshTokenIsExpired = tokenRepository.getRefreshTokenIsExpired()
+        val result = tokenRepository.getRefreshTokenIsExpired()
 
-        assertFalse(refreshTokenIsExpired)
+        assertFalse(result)
     }
 
     @Test
-    fun getRefreshTokenIsExpired_returnsTrueFromDataSource() = runTest {
-        val token = TokenLocalDto("accessToken", "refreshToken", 0, 0, ZonedDateTime.now())
-        whenever(tokenLocalDataSource.getToken()).thenReturn(token)
+    fun getRefreshTokenIsExpired_returnTrueFromDataSource() = runTest {
+        val expiredToken = TokenModel("accessToken", "refreshToken", 1, 1, ZonedDateTime.now())
+        authApiDataSource = FakeAuthApiDataSource(expiredToken)
+        tokenRepository = TokenRepositoryImpl(
+            tokenLocalDataSource = tokenLocalDataSource,
+            authApiDataSource = authApiDataSource
+        )
+        tokenRepository.authorizeOAuth(code)
         Thread.sleep(1500)
 
-        val refreshTokenIsExpired = tokenRepository.getRefreshTokenIsExpired()
+        val result = tokenRepository.getRefreshTokenIsExpired()
 
-        assertTrue(refreshTokenIsExpired)
+        assertTrue(result)
     }
 }

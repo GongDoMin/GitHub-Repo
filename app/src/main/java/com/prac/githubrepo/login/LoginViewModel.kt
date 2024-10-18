@@ -100,11 +100,8 @@ class LoginViewModel @Inject constructor(
             is CommonException.NetworkError -> {
                 setUiState(UiState.Error(errorMessage = CONNECTION_FAIL))
             }
-            is CommonException.AuthorizationError -> {
-                setUiState(UiState.Error(errorMessage = LOGIN_FAIL))
-            }
             else -> {
-                setUiState(UiState.Error(errorMessage = UNKNOWN))
+                setUiState(UiState.Error(errorMessage = LOGIN_FAIL))
             }
         }
     }

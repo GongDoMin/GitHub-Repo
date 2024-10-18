@@ -23,7 +23,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.prac.githubrepo.CustomTestRunner"
     }
 
     buildTypes {
@@ -67,6 +67,11 @@ dependencies {
     testImplementation(libs.mockito.kotlin)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.runner)
+    androidTestImplementation(libs.androidx.rules)
+    androidTestImplementation(libs.androidx.espresso.intents)
+    androidTestImplementation(libs.androidx.espresso.contrib)
+    androidTestImplementation(libs.hamcrest)
 
     implementation(project(":data"))
 
@@ -76,6 +81,10 @@ dependencies {
     implementation(libs.glide)
 
     implementation(libs.dagger.hilt.android)
+    androidTestImplementation(libs.hilt.android.testing)
+    testImplementation(libs.hilt.android.testing)
+    kaptTest(libs.hilt.android.compiler)
+    kaptAndroidTest(libs.hilt.android.compiler)
     kapt(libs.dagger.hilt.compiler)
 
     implementation(libs.androidx.lifecycle.viewmodel)

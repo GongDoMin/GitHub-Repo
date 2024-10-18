@@ -74,6 +74,8 @@ class LoginActivity : AppCompatActivity() {
                 binding.includeProgressBar.root.isVisible = true
             }
             is UiState.Error -> {
+                binding.includeProgressBar.root.isVisible = false
+
                 AlertDialog.Builder(this@LoginActivity)
                     .setMessage(uiState.errorMessage)
                     .setPositiveButton(R.string.check) { dialog, _ ->

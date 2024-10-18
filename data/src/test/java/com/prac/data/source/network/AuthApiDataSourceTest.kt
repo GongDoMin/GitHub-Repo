@@ -1,53 +1,46 @@
 package com.prac.data.source.network
 
+import com.prac.data.fake.source.network.service.FakeGitHubAuthService
 import com.prac.data.source.network.dto.TokenDto
 import com.prac.data.source.network.impl.AuthApiDataSourceImpl
 import com.prac.data.source.network.service.GitHubAuthService
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.whenever
 
-@RunWith(MockitoJUnitRunner::class)
 internal class AuthApiDataSourceTest {
 
-    @Mock private lateinit var gitHubAuthService: GitHubAuthService
+    private lateinit var gitHubAuthService: GitHubAuthService
     private lateinit var authApiDataSource: AuthApiDataSource
+
+    private val token = TokenDto("accessToken", 3600, "refreshToken", 3600, "", "Bearer")
+    private val code = "code"
 
     @Before
     fun setup() {
+        gitHubAuthService = FakeGitHubAuthService(token)
         authApiDataSource = AuthApiDataSourceImpl(gitHubAuthService)
     }
 
     @Test
     fun authorizeOAuth_tokenPassedToDataSource() = runTest {
-        val code = "code"
-        val tokenDto = TokenDto("accessToken", 3600, "refreshToken", 3600, "Bearer")
-        whenever(gitHubAuthService.authorizeOAuth(code = code)).thenReturn(tokenDto)
 
         val result = authApiDataSource.authorizeOAuth(code)
 
-        assertEquals(result.accessToken, tokenDto.accessToken)
-        assertEquals(result.refreshToken, tokenDto.refreshToken)
-        assertEquals(result.expiresInSeconds, tokenDto.expiresIn)
-        assertEquals(result.refreshTokenExpiresInSeconds, tokenDto.refreshTokenExpiresIn)
+        assertEquals(result.accessToken, token.accessToken)
+        assertEquals(result.refreshToken, token.refreshToken)
+        assertEquals(result.expiresInSeconds, token.expiresIn)
+        assertEquals(result.refreshTokenExpiresInSeconds, token.refreshTokenExpiresIn)
     }
 
     @Test
     fun refreshAccessToken_tokenPassedToDataSource() = runTest {
-        val refreshToken = "refreshToken"
-        val tokenDto = TokenDto("newAccessToken", 3600, "newRefreshToken", 3600, "Bearer")
-        whenever(gitHubAuthService.refreshAccessToken(refreshToken = refreshToken)).thenReturn(tokenDto)
 
-        val result = authApiDataSource.refreshAccessToken(refreshToken)
+        val result = authApiDataSource.refreshAccessToken(code)
 
-        assertEquals(result.accessToken, tokenDto.accessToken)
-        assertEquals(result.refreshToken, tokenDto.refreshToken)
-        assertEquals(result.expiresInSeconds, tokenDto.expiresIn)
-        assertEquals(result.refreshTokenExpiresInSeconds, tokenDto.refreshTokenExpiresIn)
+        assertNotEquals(result.accessToken, token.accessToken)
+        assertNotEquals(result.refreshToken, token.refreshToken)
     }
 }

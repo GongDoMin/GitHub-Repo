@@ -5,8 +5,8 @@ import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
+import com.prac.data.fake.repository.FakeTokenRepository
 import com.prac.data.repository.RepoRepository
-import com.prac.data.repository.TokenRepository
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.constants.UNKNOWN
@@ -17,7 +17,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.After
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -35,19 +36,22 @@ class MainViewModelTest {
     @get:Rule
     val standardTestDispatcherRule = StandardTestDispatcherRule()
 
-    @Mock private lateinit var tokenRepository: TokenRepository
-    @Mock private lateinit var repoRepository: RepoRepository
+    private lateinit var tokenRepository: FakeTokenRepository
+    @Mock private lateinit var mockRepoRepository: RepoRepository
     private lateinit var backOffWork: FakeBackOffWorkManager
 
     private lateinit var mainViewModel: MainViewModel
 
     @Before
     fun setUp() = runTest {
+        tokenRepository = FakeTokenRepository()
+        tokenRepository.setInitialToken()
+
         backOffWork = FakeBackOffWorkManager()
 
         val pagingData = PagingData.from(emptyList<RepoEntity>())
-        whenever(repoRepository.getRepositories()).thenReturn(flow { emit(pagingData) } )
-        mainViewModel = MainViewModel(repoRepository, tokenRepository, backOffWork, standardTestDispatcherRule.testDispatcher)
+        whenever(mockRepoRepository.getRepositories()).thenReturn(flow { emit(pagingData) } )
+        mainViewModel = MainViewModel(mockRepoRepository, tokenRepository, backOffWork, standardTestDispatcherRule.testDispatcher)
     }
 
     @After
@@ -62,20 +66,20 @@ class MainViewModelTest {
 
         val result = mainViewModel.uiState.value
 
-        Assert.assertTrue(result is MainViewModel.UiState.Content)
+        assertTrue(result is MainViewModel.UiState.Content)
     }
 
     @Test
     fun starRepository_success_callStarLocalAndRemoteRepository() = runTest {
         val repoEntity = makeRepoEntity()
-        whenever(repoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
+        whenever(mockRepoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
             .thenReturn(Result.success(Unit))
 
         mainViewModel.starRepository(repoEntity)
         advanceUntilIdle()
 
-        verify(repoRepository).starLocalRepository(repoEntity.id, repoEntity.stargazersCount + 1)
-        verify(repoRepository).starRepository(repoEntity.owner.login, repoEntity.name)
+        verify(mockRepoRepository).starLocalRepository(repoEntity.id, repoEntity.stargazersCount + 1)
+        verify(mockRepoRepository).starRepository(repoEntity.owner.login, repoEntity.name)
     }
 
     @Test
@@ -85,8 +89,8 @@ class MainViewModelTest {
         mainViewModel.unStarRepository(repoEntity)
         advanceUntilIdle()
 
-        verify(repoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount - 1)
-        verify(repoRepository).unStarRepository(repoEntity.owner.login, repoEntity.name)
+        verify(mockRepoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount - 1)
+        verify(mockRepoRepository).unStarRepository(repoEntity.owner.login, repoEntity.name)
     }
 
     @Test
@@ -96,15 +100,15 @@ class MainViewModelTest {
         val uniqueID = "star_${repoEntity.id}"
         val callApiTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
         val delayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
-        whenever(repoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
+        whenever(mockRepoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
             .thenReturn(Result.failure(CommonException.NetworkError()))
 
         mainViewModel.starRepository(repoEntity)
         advanceUntilIdle()
 
-        verify(repoRepository).starLocalRepository(repoEntity.id, repoEntity.stargazersCount + 1)
-        verify(repoRepository, times(callApiTimes)).starRepository(repoEntity.owner.login, repoEntity.name)
-        Assert.assertEquals(backOffWork.getDelayTimes(uniqueID), delayTimes)
+        verify(mockRepoRepository).starLocalRepository(repoEntity.id, repoEntity.stargazersCount + 1)
+        verify(mockRepoRepository, times(callApiTimes)).starRepository(repoEntity.owner.login, repoEntity.name)
+        assertEquals(backOffWork.getDelayTimes(uniqueID), delayTimes)
     }
 
     @Test
@@ -114,107 +118,109 @@ class MainViewModelTest {
         val uniqueID = "star_${repoEntity.id}"
         val callApiTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
         val delayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
-        whenever(repoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
+        whenever(mockRepoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
             .thenReturn(Result.failure(CommonException.NetworkError()))
 
         mainViewModel.unStarRepository(repoEntity)
         advanceUntilIdle()
 
-        verify(repoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount - 1)
-        verify(repoRepository, times(callApiTimes)).unStarRepository(repoEntity.owner.login, repoEntity.name)
-        Assert.assertEquals(backOffWork.getDelayTimes(uniqueID), delayTimes)
+        verify(mockRepoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount - 1)
+        verify(mockRepoRepository, times(callApiTimes)).unStarRepository(repoEntity.owner.login, repoEntity.name)
+        assertEquals(backOffWork.getDelayTimes(uniqueID), delayTimes)
     }
 
     @Test
     fun starRepository_authorizationError_updateUiStateDialogMessage() = runTest {
         val repoEntity = makeRepoEntity()
-        whenever(repoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
+        whenever(mockRepoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
             .thenReturn(Result.failure(CommonException.AuthorizationError()))
 
         mainViewModel.starRepository(repoEntity)
         advanceUntilIdle()
 
         val uiState = mainViewModel.uiState.value
-        Assert.assertTrue(uiState is MainViewModel.UiState.Content)
-        Assert.assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, INVALID_TOKEN)
-        verify(tokenRepository).clearToken()
+        assertTrue(uiState is MainViewModel.UiState.Content)
+        assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, INVALID_TOKEN)
+        assertTrue(tokenRepository.getAccessToken().isEmpty())
+        assertTrue(tokenRepository.getRefreshToken().isEmpty())
     }
 
     @Test
     fun unStarRepository_authorizationError_updateUiStateDialogMessage() = runTest {
         val repoEntity = makeRepoEntity()
-        whenever(repoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
+        whenever(mockRepoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
             .thenReturn(Result.failure(CommonException.AuthorizationError()))
 
         mainViewModel.unStarRepository(repoEntity)
         advanceUntilIdle()
 
         val uiState = mainViewModel.uiState.value
-        Assert.assertTrue(uiState is MainViewModel.UiState.Content)
-        Assert.assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, INVALID_TOKEN)
-        verify(tokenRepository).clearToken()
+        assertTrue(uiState is MainViewModel.UiState.Content)
+        assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, INVALID_TOKEN)
+        assertTrue(tokenRepository.getAccessToken().isEmpty())
+        assertTrue(tokenRepository.getRefreshToken().isEmpty())
     }
 
     @Test
     fun starRepository_repositoryIsNotFoundError_updateUiStateDialogMessage() = runTest {
         val repoEntity = makeRepoEntity()
-        whenever(repoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
+        whenever(mockRepoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
             .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
 
         mainViewModel.starRepository(repoEntity)
         advanceUntilIdle()
 
         val uiState = mainViewModel.uiState.value
-        Assert.assertTrue(uiState is MainViewModel.UiState.Content)
-        Assert.assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, INVALID_REPOSITORY)
-        verify(repoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
+        assertTrue(uiState is MainViewModel.UiState.Content)
+        assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, INVALID_REPOSITORY)
+        verify(mockRepoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
     }
 
     @Test
     fun unStarRepository_repositoryIsNotFoundError_updateUiStateDialogMessage() = runTest {
         val repoEntity = makeRepoEntity()
-        whenever(repoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
+        whenever(mockRepoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
             .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
 
         mainViewModel.unStarRepository(repoEntity)
         advanceUntilIdle()
 
         val uiState = mainViewModel.uiState.value
-        Assert.assertTrue(uiState is MainViewModel.UiState.Content)
-        Assert.assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, INVALID_REPOSITORY)
-        verify(repoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
+        assertTrue(uiState is MainViewModel.UiState.Content)
+        assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, INVALID_REPOSITORY)
+        verify(mockRepoRepository).starLocalRepository(repoEntity.id, repoEntity.stargazersCount)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun starRepository_unKnownError_updateUiStateDialogMessage() = runTest {
         val repoEntity = makeRepoEntity()
-        whenever(repoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
+        whenever(mockRepoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
             .thenReturn(Result.failure(CommonException.UnKnownError()))
 
         mainViewModel.starRepository(repoEntity)
         advanceUntilIdle()
 
         val uiState = mainViewModel.uiState.value
-        Assert.assertTrue(uiState is MainViewModel.UiState.Content)
-        Assert.assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, UNKNOWN)
-        verify(repoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
+        assertTrue(uiState is MainViewModel.UiState.Content)
+        assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, UNKNOWN)
+        verify(mockRepoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun unStarRepository_unKnownError_updateUiStateDialogMessage() = runTest {
         val repoEntity = makeRepoEntity()
-        whenever(repoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
+        whenever(mockRepoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
             .thenReturn(Result.failure(CommonException.UnKnownError()))
 
         mainViewModel.unStarRepository(repoEntity)
         advanceUntilIdle()
 
         val uiState = mainViewModel.uiState.value
-        Assert.assertTrue(uiState is MainViewModel.UiState.Content)
-        Assert.assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, UNKNOWN)
-        verify(repoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
+        assertTrue(uiState is MainViewModel.UiState.Content)
+        assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, UNKNOWN)
+        verify(mockRepoRepository).starLocalRepository(repoEntity.id, repoEntity.stargazersCount)
     }
 
     private fun makeRepoEntity() =
@@ -226,5 +232,4 @@ class MainViewModelTest {
             updatedAt = "updatedAt",
             isStarred = null
         )
-
 }
