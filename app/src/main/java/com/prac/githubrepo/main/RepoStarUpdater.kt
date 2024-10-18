@@ -22,8 +22,6 @@ class RepoStarUpdater(
     }
 
     private fun cancelUpdatingStarState() {
-        starStateRequest.cancel()
-
         removeListener()
     }
 

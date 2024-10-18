@@ -3,15 +3,18 @@ package com.prac.githubrepo.main.request
 import android.view.View
 import com.prac.data.entity.RepoEntity
 import com.prac.githubrepo.R
+import com.prac.githubrepo.di.IODispatcher
 import com.prac.githubrepo.main.RepoStarUpdater
 import com.prac.githubrepo.main.star.StarStateFetcher
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 
 class StarStateRequestBuilder @AssistedInject constructor(
     private val starStateFetcher: StarStateFetcher,
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher,
     @Assisted private val scope: CoroutineScope,
 ) {
     companion object {
@@ -42,7 +45,8 @@ class StarStateRequestBuilder @AssistedInject constructor(
             starStateRequest = StarStateRequestImpl(
                 starStateFetcher = starStateFetcher,
                 repoEntity = repoEntity,
-                scope = scope
+                scope = scope,
+                ioDispatcher = ioDispatcher
             ),
             view = view
         )
