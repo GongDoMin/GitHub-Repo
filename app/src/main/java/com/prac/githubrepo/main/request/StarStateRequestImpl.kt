@@ -2,6 +2,7 @@ package com.prac.githubrepo.main.request
 
 import com.prac.data.entity.RepoEntity
 import com.prac.githubrepo.main.star.StarStateFetcher
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -11,25 +12,11 @@ internal class StarStateRequestImpl internal constructor(
     private val starStateFetcher: StarStateFetcher,
     private val repoEntity: RepoEntity,
     private val scope: CoroutineScope,
+    private val ioDispatcher: CoroutineDispatcher
 ) : StarStateRequest {
-    private var job: Job? = null
-
     override fun fetchStarState() {
-        cancel()
-
-        job = scope.launch(Dispatchers.IO) {
+        scope.launch(ioDispatcher) {
             starStateFetcher.fetchStarState(repoEntity)
         }
-    }
-
-    override fun cancel() {
-        job?.let {
-            if (!isCompleted()) it.cancel()
-            job = null
-        }
-    }
-
-    override fun isCompleted() : Boolean {
-        return job?.isCompleted == true
     }
 }
