@@ -25,8 +25,6 @@ class LoginViewModelTest {
 
     private lateinit var loginViewModel: LoginViewModel
 
-    private val code = "code"
-
     @Test
     fun checkAutoLogin_userIsLoggedIn_eventSuccess() = runTest {
         tokenRepository = FakeTokenRepository()
@@ -51,11 +49,10 @@ class LoginViewModelTest {
 
     @Test
     fun loginWithGitHub_updateSuccessEvent() = runTest {
-        val code = "testCode"
         tokenRepository = FakeTokenRepository()
         loginViewModel = LoginViewModel(tokenRepository, standardTestDispatcherRule.testDispatcher)
 
-        loginViewModel.loginWithGitHub(code)
+        loginViewModel.loginWithGitHub("success")
 
         val event = loginViewModel.event.first()
         assertTrue(event is LoginViewModel.Event.Success)
@@ -64,10 +61,9 @@ class LoginViewModelTest {
     @Test
     fun loginWithGitHub_networkError_updateUiStateToError() = runTest {
         tokenRepository = FakeTokenRepository()
-        tokenRepository.setThrowable(IOException())
         loginViewModel = LoginViewModel(tokenRepository, standardTestDispatcherRule.testDispatcher)
 
-        loginViewModel.loginWithGitHub(code)
+        loginViewModel.loginWithGitHub("ioException")
         advanceUntilIdle()
 
         val uiState = loginViewModel.uiState.value
@@ -78,10 +74,9 @@ class LoginViewModelTest {
     @Test
     fun loginWithGitHub_authorizationError_updateUiStateToError() = runTest {
         tokenRepository = FakeTokenRepository()
-        tokenRepository.setThrowable(Exception())
         loginViewModel = LoginViewModel(tokenRepository, standardTestDispatcherRule.testDispatcher)
 
-        loginViewModel.loginWithGitHub(code)
+        loginViewModel.loginWithGitHub("else")
         advanceUntilIdle()
 
         val uiState = loginViewModel.uiState.value
