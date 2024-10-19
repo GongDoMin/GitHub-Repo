@@ -1,17 +1,19 @@
 package com.prac.data.source.network.di
 
-import com.prac.data.source.local.datastore.TokenDataStoreManagerImpl
-import com.prac.data.source.network.RepoApiDataSource
-import com.prac.data.source.network.RepoStarApiDataSource
-import com.prac.data.source.network.AuthApiDataSource
 import com.prac.data.source.local.TokenLocalDataSource
 import com.prac.data.source.local.datastore.TokenDataStoreManager
-import com.prac.data.source.network.service.GitHubService
-import com.prac.data.source.network.service.GitHubAuthService
+import com.prac.data.source.local.impl.TokenLocalDataSourceImpl
+import com.prac.data.source.network.AuthApiDataSource
+import com.prac.data.source.network.RepoApiDataSource
+import com.prac.data.source.network.RepoStarApiDataSource
+import com.prac.data.source.network.UserApiDataSource
+import com.prac.data.source.network.impl.AuthApiDataSourceImpl
 import com.prac.data.source.network.impl.RepoApiDataSourceImpl
 import com.prac.data.source.network.impl.RepoStarApiDataSourceImpl
-import com.prac.data.source.network.impl.AuthApiDataSourceImpl
-import com.prac.data.source.local.impl.TokenLocalDataSourceImpl
+import com.prac.data.source.network.impl.UserApiDataSourceImpl
+import com.prac.data.source.network.service.GitHubAuthService
+import com.prac.data.source.network.service.GitHubService
+import com.prac.data.source.network.service.GitHubUserService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,4 +45,10 @@ internal class DataSourceModule {
         gitHubService: GitHubService
     ): RepoStarApiDataSource =
         RepoStarApiDataSourceImpl(gitHubService)
+
+    @Provides
+    fun provideUserApiDataSource(
+        gitHubUserService: GitHubUserService
+    ): UserApiDataSource =
+        UserApiDataSourceImpl(gitHubUserService)
 }
