@@ -1,8 +1,11 @@
 package com.prac.data.source.network.di
 
 import com.prac.data.source.local.TokenLocalDataSource
+import com.prac.data.source.local.UserLocalDataSource
 import com.prac.data.source.local.datastore.token.TokenDataStoreManager
+import com.prac.data.source.local.datastore.user.UserDataStoreManager
 import com.prac.data.source.local.impl.TokenLocalDataSourceImpl
+import com.prac.data.source.local.impl.UserLocalDataSourceImpl
 import com.prac.data.source.network.AuthApiDataSource
 import com.prac.data.source.network.RepoApiDataSource
 import com.prac.data.source.network.RepoStarApiDataSource
@@ -33,6 +36,12 @@ internal class DataSourceModule {
         tokenDataStoreManager: TokenDataStoreManager
     ): TokenLocalDataSource =
         TokenLocalDataSourceImpl(tokenDataStoreManager)
+
+    @Provides
+    fun provideUserLocalDataSource(
+        userDataStoreManager: UserDataStoreManager
+    ): UserLocalDataSource =
+        UserLocalDataSourceImpl(userDataStoreManager)
 
     @Provides
     fun provideRepoApiDataSource(
