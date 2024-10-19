@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "Github Repo"
 include(":app")
 include(":data")
+include(":local")
