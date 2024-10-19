@@ -6,6 +6,7 @@ import com.prac.data.fake.source.network.FakeAuthApiDataSource
 import com.prac.data.fake.source.network.FakeUserApiDataSource
 import com.prac.data.repository.impl.TokenRepositoryImpl
 import com.prac.data.repository.model.TokenModel
+import com.prac.data.source.local.UserLocalDataSource
 import com.prac.data.source.network.UserApiDataSource
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -14,14 +15,19 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.junit.MockitoJUnitRunner
 import java.io.IOException
 import java.time.ZonedDateTime
 
+@RunWith(MockitoJUnitRunner::class)
 class TokenRepositoryTest {
 
     private lateinit var tokenLocalDataSource: FakeTokenLocalDataSource
     private lateinit var authApiDataSource: FakeAuthApiDataSource
     private lateinit var userApiDataSource: UserApiDataSource
+    @Mock private lateinit var userLocalDataSource: UserLocalDataSource
 
     private lateinit var tokenRepository: TokenRepository
 
@@ -36,7 +42,8 @@ class TokenRepositoryTest {
         tokenRepository = TokenRepositoryImpl(
             tokenLocalDataSource = tokenLocalDataSource,
             authApiDataSource = authApiDataSource,
-            userApiDataSource = userApiDataSource
+            userApiDataSource = userApiDataSource,
+            userLocalDataSource = userLocalDataSource
         )
     }
 
@@ -156,7 +163,8 @@ class TokenRepositoryTest {
         tokenRepository = TokenRepositoryImpl(
             tokenLocalDataSource = tokenLocalDataSource,
             authApiDataSource = authApiDataSource,
-            userApiDataSource = userApiDataSource
+            userApiDataSource = userApiDataSource,
+            userLocalDataSource = userLocalDataSource
         )
         tokenRepository.authorizeOAuth(code)
         Thread.sleep(1500)
@@ -182,7 +190,8 @@ class TokenRepositoryTest {
         tokenRepository = TokenRepositoryImpl(
             tokenLocalDataSource = tokenLocalDataSource,
             authApiDataSource = authApiDataSource,
-            userApiDataSource = userApiDataSource
+            userApiDataSource = userApiDataSource,
+            userLocalDataSource = userLocalDataSource
         )
         tokenRepository.authorizeOAuth(code)
         Thread.sleep(1500)

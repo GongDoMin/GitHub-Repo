@@ -4,6 +4,7 @@ import com.prac.data.exception.CommonException
 import com.prac.data.repository.TokenRepository
 import com.prac.data.repository.model.TokenModel
 import com.prac.data.source.local.TokenLocalDataSource
+import com.prac.data.source.local.UserLocalDataSource
 import com.prac.data.source.local.datastore.token.TokenLocalDto
 import com.prac.data.source.network.AuthApiDataSource
 import com.prac.data.source.network.UserApiDataSource
@@ -13,14 +14,16 @@ import javax.inject.Inject
 internal class TokenRepositoryImpl @Inject constructor(
     private val tokenLocalDataSource: TokenLocalDataSource,
     private val authApiDataSource: AuthApiDataSource,
-    private val userApiDataSource: UserApiDataSource
+    private val userApiDataSource: UserApiDataSource,
+    private val userLocalDataSource: UserLocalDataSource
 ) : TokenRepository {
     override suspend fun authorizeOAuth(code: String): Result<Unit> {
         return try {
             val model = authApiDataSource.authorizeOAuth(code)
-            getUserName(model.accessToken)
+            val userName = getUserName(model.accessToken)
 
             setToken(model)
+            setUserName(userName)
 
             Result.success(Unit)
         } catch (e: Exception) {
@@ -88,5 +91,9 @@ internal class TokenRepositoryImpl @Inject constructor(
         // 422 : Client id or Client secret is invalid
         // authorizeOAuth 에서 에러 처리
         return userApiDataSource.getUserName(accessToken)
+    }
+
+    private suspend fun setUserName(userName: String) {
+        userLocalDataSource.setUserName(userName)
     }
 }
