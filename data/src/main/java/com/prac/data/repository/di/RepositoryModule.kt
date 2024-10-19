@@ -9,6 +9,7 @@ import com.prac.data.source.network.RepoStarApiDataSource
 import com.prac.data.source.network.AuthApiDataSource
 import com.prac.data.source.local.TokenLocalDataSource
 import com.prac.data.source.local.room.database.RepositoryDatabase
+import com.prac.data.source.network.UserApiDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,9 +23,10 @@ internal class RepositoryModule {
     @Singleton
     fun provideTokenRepository(
         tokenLocalDataSource: TokenLocalDataSource,
-        authApiDataSource: AuthApiDataSource
+        authApiDataSource: AuthApiDataSource,
+        userApiDataSource: UserApiDataSource
     ): TokenRepository =
-        TokenRepositoryImpl(tokenLocalDataSource, authApiDataSource)
+        TokenRepositoryImpl(tokenLocalDataSource, authApiDataSource, userApiDataSource)
 
     @Provides
     @Singleton

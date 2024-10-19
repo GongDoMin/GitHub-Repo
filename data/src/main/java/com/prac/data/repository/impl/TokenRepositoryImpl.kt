@@ -6,17 +6,20 @@ import com.prac.data.repository.model.TokenModel
 import com.prac.data.source.local.TokenLocalDataSource
 import com.prac.data.source.local.datastore.TokenLocalDto
 import com.prac.data.source.network.AuthApiDataSource
-import retrofit2.HttpException
+import com.prac.data.source.network.UserApiDataSource
 import java.io.IOException
 import javax.inject.Inject
 
 internal class TokenRepositoryImpl @Inject constructor(
     private val tokenLocalDataSource: TokenLocalDataSource,
-    private val authApiDataSource: AuthApiDataSource
+    private val authApiDataSource: AuthApiDataSource,
+    private val userApiDataSource: UserApiDataSource
 ) : TokenRepository {
     override suspend fun authorizeOAuth(code: String): Result<Unit> {
         return try {
             val model = authApiDataSource.authorizeOAuth(code)
+            getUserName(model.accessToken)
+
             setToken(model)
 
             Result.success(Unit)
@@ -78,5 +81,12 @@ internal class TokenRepositoryImpl @Inject constructor(
                 token.updatedAt
             )
         )
+    }
+
+    private suspend fun getUserName(accessToken: String) : String {
+        // 404 : Token is invalid
+        // 422 : Client id or Client secret is invalid
+        // authorizeOAuth 에서 에러 처리
+        return userApiDataSource.getUserName(accessToken)
     }
 }
