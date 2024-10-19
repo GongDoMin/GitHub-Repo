@@ -1,9 +1,8 @@
 package com.prac.data.source.local.impl
 
-import com.prac.data.source.local.datastore.TokenDataStoreManagerImpl
 import com.prac.data.source.local.TokenLocalDataSource
-import com.prac.data.source.local.datastore.TokenDataStoreManager
-import com.prac.data.source.local.datastore.TokenLocalDto
+import com.prac.data.source.local.datastore.token.TokenDataStoreManager
+import com.prac.data.source.local.datastore.token.TokenLocalDto
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject

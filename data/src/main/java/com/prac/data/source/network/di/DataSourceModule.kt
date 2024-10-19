@@ -1,7 +1,7 @@
 package com.prac.data.source.network.di
 
 import com.prac.data.source.local.TokenLocalDataSource
-import com.prac.data.source.local.datastore.TokenDataStoreManager
+import com.prac.data.source.local.datastore.token.TokenDataStoreManager
 import com.prac.data.source.local.impl.TokenLocalDataSourceImpl
 import com.prac.data.source.network.AuthApiDataSource
 import com.prac.data.source.network.RepoApiDataSource

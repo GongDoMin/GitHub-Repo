@@ -1,4 +1,4 @@
-package com.prac.data.source.local.datastore
+package com.prac.data.source.local.datastore.token
 
 internal interface TokenDataStoreManager {
     suspend fun saveTokenData(token: TokenLocalDto)

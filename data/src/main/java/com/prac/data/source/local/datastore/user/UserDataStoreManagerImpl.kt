@@ -1,4 +1,4 @@
-package com.prac.data.source.local.datastore
+package com.prac.data.source.local.datastore.user
 
 import android.content.Context
 import androidx.datastore.core.CorruptionException

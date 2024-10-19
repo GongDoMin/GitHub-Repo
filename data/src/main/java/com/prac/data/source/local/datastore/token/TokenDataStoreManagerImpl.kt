@@ -1,4 +1,4 @@
-package com.prac.data.source.local.datastore
+package com.prac.data.source.local.datastore.token
 
 import android.content.Context
 import androidx.datastore.core.CorruptionException

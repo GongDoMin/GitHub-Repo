@@ -1,18 +1,14 @@
 package com.prac.data.source.local
 
 import com.prac.data.fake.source.local.FakeTokenDataStoreManager
-import com.prac.data.source.local.datastore.TokenDataStoreManager
-import com.prac.data.source.local.datastore.TokenLocalDto
+import com.prac.data.source.local.datastore.token.TokenDataStoreManager
+import com.prac.data.source.local.datastore.token.TokenLocalDto
 import com.prac.data.source.local.impl.TokenLocalDataSourceImpl
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.whenever
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
