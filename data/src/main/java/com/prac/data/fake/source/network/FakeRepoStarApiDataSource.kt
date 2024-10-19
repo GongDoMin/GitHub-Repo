@@ -10,7 +10,7 @@ class FakeRepoStarApiDataSource: RepoStarApiDataSource {
         this.throwable = throwable
     }
 
-    override suspend fun checkRepositoryIsStarred(repoName: String) {
+    override suspend fun isStarred(userName: String, repoName: String) {
         if (::throwable.isInitialized) {
             throw throwable
         }

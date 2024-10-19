@@ -29,7 +29,7 @@ internal class FakeGitHubService(
         )
     }
 
-    override suspend fun checkRepositoryIsStarred(userName: String, repoName: String) {
+    override suspend fun isStarred(userName: String, repoName: String) {
         throw NotImplementedError("this method is not supported in FakeGitHubService")
     }
 
