@@ -35,7 +35,8 @@ internal class RepositoryModule {
     fun provideRepoRepository(
         repoApiDataSource: RepoApiDataSource,
         repoStarApiDataSource: RepoStarApiDataSource,
-        repositoryDatabase: RepositoryDatabase
+        repositoryDatabase: RepositoryDatabase,
+        userLocalDataSource: UserLocalDataSource
     ): RepoRepository =
-        RepoRepositoryImpl(repoApiDataSource, repoStarApiDataSource, repositoryDatabase)
+        RepoRepositoryImpl(repoApiDataSource, repoStarApiDataSource, repositoryDatabase, userLocalDataSource)
 }

@@ -14,6 +14,7 @@ import com.prac.data.entity.RepoEntity
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
+import com.prac.data.source.local.UserLocalDataSource
 import com.prac.data.source.local.room.database.RepositoryDatabase
 import com.prac.data.source.local.room.entity.Owner
 import com.prac.data.source.local.room.entity.RemoteKey
@@ -29,7 +30,8 @@ import javax.inject.Inject
 internal class RepoRepositoryImpl @Inject constructor(
     private val repoApiDataSource: RepoApiDataSource,
     private val repoStarApiDataSource: RepoStarApiDataSource,
-    private val repositoryDatabase: RepositoryDatabase
+    private val repositoryDatabase: RepositoryDatabase,
+    private val userLocalDataSource: UserLocalDataSource
 ) : RepoRepository() {
 
     @OptIn(ExperimentalPagingApi::class)
@@ -130,7 +132,8 @@ internal class RepoRepositoryImpl @Inject constructor(
         }
 
         try {
-            val response = repoApiDataSource.getRepositories("GongDoMin", PAGE_SIZE, page)
+            val userName = userLocalDataSource.getUserName()
+            val response = repoApiDataSource.getRepositories(userName, PAGE_SIZE, page)
 
             repositoryDatabase.withTransaction {
                 if (loadType == LoadType.REFRESH) {
