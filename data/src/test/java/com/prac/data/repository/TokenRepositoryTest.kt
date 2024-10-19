@@ -2,6 +2,7 @@ package com.prac.data.repository
 
 import com.prac.data.exception.CommonException
 import com.prac.data.fake.source.local.FakeTokenLocalDataSource
+import com.prac.data.fake.source.local.FakeUserLocalDataSource
 import com.prac.data.fake.source.network.FakeAuthApiDataSource
 import com.prac.data.fake.source.network.FakeUserApiDataSource
 import com.prac.data.repository.impl.TokenRepositoryImpl
@@ -15,19 +16,15 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
 import java.io.IOException
 import java.time.ZonedDateTime
 
-@RunWith(MockitoJUnitRunner::class)
 class TokenRepositoryTest {
 
     private lateinit var tokenLocalDataSource: FakeTokenLocalDataSource
     private lateinit var authApiDataSource: FakeAuthApiDataSource
-    private lateinit var userApiDataSource: UserApiDataSource
-    @Mock private lateinit var userLocalDataSource: UserLocalDataSource
+    private lateinit var userApiDataSource: FakeUserApiDataSource
+    private lateinit var userLocalDataSource: FakeUserLocalDataSource
 
     private lateinit var tokenRepository: TokenRepository
 
@@ -39,6 +36,7 @@ class TokenRepositoryTest {
         tokenLocalDataSource = FakeTokenLocalDataSource()
         authApiDataSource = FakeAuthApiDataSource(token)
         userApiDataSource = FakeUserApiDataSource()
+        userLocalDataSource = FakeUserLocalDataSource()
         tokenRepository = TokenRepositoryImpl(
             tokenLocalDataSource = tokenLocalDataSource,
             authApiDataSource = authApiDataSource,
@@ -49,16 +47,19 @@ class TokenRepositoryTest {
 
     @Test
     fun authorizeOAuth_updateCacheAndReturnSuccess() = runTest {
+        val expectedUserName = "test"
 
         val result = tokenRepository.authorizeOAuth(code)
 
         val cache = tokenLocalDataSource.getToken()
+        val userName = userLocalDataSource.getUserName()
         assertEquals(cache.accessToken, token.accessToken)
         assertEquals(cache.refreshToken, token.refreshToken)
         assertEquals(cache.expiresInSeconds, token.expiresInSeconds)
         assertEquals(cache.refreshTokenExpiresInSeconds, token.refreshTokenExpiresInSeconds)
         assertEquals(cache.updatedAt, token.updatedAt)
         assertTrue(result.isSuccess)
+        assertEquals(userName, expectedUserName)
     }
 
     @Test
