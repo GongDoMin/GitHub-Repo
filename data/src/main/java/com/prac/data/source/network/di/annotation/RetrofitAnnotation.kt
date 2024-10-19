@@ -4,8 +4,12 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class BasicRetrofit
+annotation class GitHubAuthRetrofit
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class AuthRetrofit
+annotation class GitHubRetrofit
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class GitHubUserRetrofit
