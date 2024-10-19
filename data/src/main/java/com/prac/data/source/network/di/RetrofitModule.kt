@@ -4,10 +4,9 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import com.prac.data.BuildConfig
 import com.prac.data.source.network.di.annotation.AuthOkHttpClient
 import com.prac.data.source.network.di.annotation.BasicOkHttpClient
-import com.prac.data.source.network.di.annotation.AuthRetrofit
-import com.prac.data.source.network.di.annotation.BasicRetrofit
-import com.prac.data.source.network.service.GitHubService
-import com.prac.data.source.network.service.GitHubAuthService
+import com.prac.data.source.network.di.annotation.GitHubAuthRetrofit
+import com.prac.data.source.network.di.annotation.GitHubRetrofit
+import com.prac.data.source.network.di.annotation.GitHubUserRetrofit
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,8 +23,8 @@ import javax.inject.Singleton
 internal class RetrofitModule {
     @Provides
     @Singleton
-    @BasicRetrofit
-    fun provideGitHubTokenRetrofit(
+    @GitHubAuthRetrofit
+    fun provideGitHubAuthRetrofit(
         @BasicOkHttpClient okHttpClient: OkHttpClient
     ): Retrofit =
         Retrofit.Builder()
@@ -36,7 +35,7 @@ internal class RetrofitModule {
 
     @Provides
     @Singleton
-    @AuthRetrofit
+    @GitHubRetrofit
     fun provideGitHubRetrofit(
         @AuthOkHttpClient okHttpClient: OkHttpClient,
         converterFactory: Converter.Factory
@@ -49,15 +48,14 @@ internal class RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideGitHubAuthService(
-        @BasicRetrofit retrofit: Retrofit
-    ): GitHubAuthService =
-        retrofit.create(GitHubAuthService::class.java)
-
-    @Provides
-    @Singleton
-    fun provideGitHubService(
-        @AuthRetrofit retrofit: Retrofit
-    ): GitHubService =
-        retrofit.create(GitHubService::class.java)
+    @GitHubUserRetrofit
+    fun provideUserRetrofit(
+        @BasicOkHttpClient okHttpClient: OkHttpClient,
+        converterFactory: Converter.Factory
+    ): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.GITHUB_API_URL)
+            .client(okHttpClient)
+            .addConverterFactory(converterFactory)
+            .build()
 }

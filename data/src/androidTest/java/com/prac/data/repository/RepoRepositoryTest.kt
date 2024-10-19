@@ -11,9 +11,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
+import com.prac.data.fake.source.local.FakeUserLocalDataSource
 import com.prac.data.fake.source.network.FakeRepoApiDataSource
 import com.prac.data.fake.source.network.FakeRepoStarApiDataSource
 import com.prac.data.repository.impl.RepoRepositoryImpl
+import com.prac.data.source.local.UserLocalDataSource
 import com.prac.data.source.local.room.dao.RemoteKeyDao
 import com.prac.data.source.local.room.dao.RepositoryDao
 import com.prac.data.source.local.room.database.RepositoryDatabase
@@ -22,10 +24,10 @@ import com.prac.data.source.local.room.entity.Repository
 import com.prac.data.source.network.dto.OwnerDto
 import com.prac.data.source.network.dto.RepoDto
 import kotlinx.coroutines.flow.first
-import org.junit.Assert.assertEquals
 import kotlinx.coroutines.test.runTest
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -40,6 +42,7 @@ internal class RepoRepositoryTest {
 
     private lateinit var repoApiDataSource: FakeRepoApiDataSource
     private lateinit var repoStarApiDataSource: FakeRepoStarApiDataSource
+    private lateinit var userLocalDataSource: UserLocalDataSource
 
     private lateinit var repositoryDatabase: RepositoryDatabase
     private lateinit var remoteKeyDao: RemoteKeyDao
@@ -55,6 +58,7 @@ internal class RepoRepositoryTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         repoApiDataSource = FakeRepoApiDataSource()
         repoStarApiDataSource = FakeRepoStarApiDataSource()
+        userLocalDataSource = FakeUserLocalDataSource()
 
         repositoryDatabase = Room
             .inMemoryDatabaseBuilder(context, RepositoryDatabase::class.java)
@@ -63,7 +67,7 @@ internal class RepoRepositoryTest {
         remoteKeyDao = repositoryDatabase.remoteKeyDao()
         repositoryDao = repositoryDatabase.repositoryDao()
 
-        repoRepository = RepoRepositoryImpl(repoApiDataSource, repoStarApiDataSource, repositoryDatabase)
+        repoRepository = RepoRepositoryImpl(repoApiDataSource, repoStarApiDataSource, repositoryDatabase, userLocalDataSource)
     }
 
     @After

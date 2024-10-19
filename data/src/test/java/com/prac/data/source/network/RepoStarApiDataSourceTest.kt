@@ -26,9 +26,9 @@ class RepoStarApiDataSourceTest {
     fun checkRepositoryIsStarred_callGitHubService() = runTest {
         val repoName = "testRepo"
 
-        repoStarApiDataSource.checkRepositoryIsStarred(repoName)
+        repoStarApiDataSource.isStarred(repoName)
 
-        verify(gitHubService).checkRepositoryIsStarred("GongDoMin", repoName)
+        verify(gitHubService).isStarred("GongDoMin", repoName)
     }
 
     @Test

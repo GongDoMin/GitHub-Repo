@@ -1,7 +1,7 @@
 package com.prac.data.fake.source.local
 
 import com.prac.data.source.local.TokenLocalDataSource
-import com.prac.data.source.local.datastore.TokenLocalDto
+import com.prac.data.source.local.datastore.token.TokenLocalDto
 import java.time.Instant
 import java.time.ZoneId
 

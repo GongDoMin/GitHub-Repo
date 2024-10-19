@@ -23,7 +23,7 @@ internal interface GitHubService {
     ): RepoDetailDto
 
     @GET("user/starred/{userName}/{repoName}")
-    suspend fun checkRepositoryIsStarred(
+    suspend fun isStarred(
         @Path("userName") userName: String,
         @Path("repoName") repoName: String
     )
