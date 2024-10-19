@@ -21,7 +21,7 @@ class UserLocalDataSourceTest {
     }
 
     @Test
-    fun getUserName_userNamePassedToDataSource() = runTest {
+    fun getCachedUserName_returnEmptyString_WhenDataStoreIsEmpty() = runTest {
         val expectedUserName = ""
 
         val result = userLocalDataSource.getUserName()
@@ -30,23 +30,27 @@ class UserLocalDataSourceTest {
     }
 
     @Test
-    fun setUserName_returnExpectedUserName() = runTest {
+    fun setUserName_updateCacheAndLocalData() = runTest {
         val expectedUserName = "test"
 
         userLocalDataSource.setUserName(expectedUserName)
 
-        val result = userLocalDataSource.getUserName()
-        assertEquals(result, expectedUserName)
+        val cache = userLocalDataSource.getUserName()
+        val local = userDataStoreManager.getUserName()
+        assertEquals(cache, expectedUserName)
+        assertEquals(local, expectedUserName)
     }
 
     @Test
-    fun clearUserName_returnEmptyString() = runTest {
+    fun clearUserName_updateCacheAndLocalData() = runTest {
         val userName = "test"
         userLocalDataSource.setUserName(userName)
 
         userLocalDataSource.clearUserName()
 
-        val result = userLocalDataSource.getUserName()
-        assertTrue(result.isEmpty())
+        val cache = userLocalDataSource.getUserName()
+        val local = userDataStoreManager.getUserName()
+        assertTrue(cache.isEmpty())
+        assertTrue(local.isEmpty())
     }
 }
