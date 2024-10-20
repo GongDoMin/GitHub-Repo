@@ -35,44 +35,51 @@ class RemoteKeyDaoTest {
     }
 
     @Test
-    fun remoteKey_existingId_returnCorrectRemoteKey() = runTest {
-        val index = 0
+    fun remoteKey_existingID_remoteKey() = runTest {
         val remoteKeys = makeRemoteKeys()
         remoteKeyDao.insertRemoteKeys(remoteKeys)
+        val index = 0
+        val remoteKey = remoteKeys[index]
 
-        val result = remoteKeyDao.remoteKey(remoteKeys[index].repoId)
+        val result = remoteKeyDao.remoteKey(remoteKey.repoId)
 
-        assertEquals(result, remoteKeys[index])
+        assertEquals(result, remoteKey)
     }
 
     @Test
-    fun remoteKey_nonExistingId_returnNull() = runTest {
+    fun remoteKey_notExistingID_null() = runTest {
+        val randomID = Random.nextInt(100)
 
-        val result = remoteKeyDao.remoteKey(Random.nextInt(100))
+        val result = remoteKeyDao.remoteKey(randomID)
 
         assertNull(result)
     }
 
     @Test
-    fun insertRemoteKeys_insertItemsIntoDatabase() = runTest {
-        val index = 0
+    fun insertRemoteKeys_insertRemoteKeys_remoteKeys() = runTest {
         val remoteKeys = makeRemoteKeys()
+        val expectedSize = remoteKeys.size
 
         remoteKeyDao.insertRemoteKeys(remoteKeys)
 
-        val result = remoteKeyDao.remoteKey(remoteKeys[index].repoId)
-        assertEquals(remoteKeys[index], result)
+        repeat(expectedSize) {
+            val result = remoteKeyDao.remoteKey(remoteKeys[it].repoId)
+            assertEquals(remoteKeys[it], result)
+        }
     }
 
     @Test
-    fun clearRemoteKeys_clearAllRemoteKeys() = runTest {
+    fun clearRemoteKeys_clearRoom_emptyList() = runTest {
         val remoteKeys = makeRemoteKeys()
         remoteKeyDao.insertRemoteKeys(remoteKeys)
+        val expectedSize = remoteKeys.size
 
         remoteKeyDao.clearRemoteKeys()
 
-        val retrievedRemoteKey = remoteKeyDao.remoteKey(remoteKeys[0].repoId)
-        assertNull(retrievedRemoteKey)
+        repeat(expectedSize) {
+            val result = remoteKeyDao.remoteKey(remoteKeys[it].repoId)
+            assertNull(result)
+        }
     }
 
     private fun makeRemoteKeys() =

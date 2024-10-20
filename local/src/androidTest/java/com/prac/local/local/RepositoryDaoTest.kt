@@ -13,6 +13,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -37,23 +38,43 @@ class RepositoryDaoTest {
     }
 
     @Test
-    fun insertRepositories_insertItemsIntoDatabase() = runTest {
+    fun getRepositories_roomIsEmpty_emptyList() = runTest {
+
+        val result = (repositoryDao.getRepositories().load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = 10,
+                placeholdersEnabled = false
+            )
+        ) as? PagingSource.LoadResult.Page)?.data
+
+        assertTrue(result?.isEmpty() == true)
+    }
+
+    @Test
+    fun insertRepositories_insertTwoRepositories_twoRepositories() = runTest {
         val repositories = makeRepositories()
+        val expectedSize = 2
 
         repositoryDao.insertRepositories(repositories)
 
         val result = (repositoryDao.getRepositories().load(
-            PagingSource.LoadParams.Refresh(key = null, loadSize = 10, placeholdersEnabled = false)
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = 10,
+                placeholdersEnabled = false
+            )
         ) as? PagingSource.LoadResult.Page)?.data
+        assertEquals(result?.size, expectedSize)
         assertEquals(result, repositories)
     }
 
     @Test
-    fun getRepository_withExistingId_returnsRepository() = runTest {
+    fun getRepository_existingID_repository() = runTest {
         val repositories = makeRepositories()
+        repositoryDao.insertRepositories(repositories)
         val index = 0
         val id = repositories[index].id
-        repositoryDao.insertRepositories(repositories)
 
         val result = repositoryDao.getRepository(id).first()
 
@@ -61,10 +82,10 @@ class RepositoryDaoTest {
     }
 
     @Test
-    fun getRepository_withNonExistingId_returnsNull() = runTest {
+    fun getRepository_notExistingID_null() = runTest {
         val repositories = makeRepositories()
-        val id = repositories.maxOf { it.id } + 1
         repositoryDao.insertRepositories(repositories)
+        val id = repositories.maxOf { it.id } + 1 // 존재하지 않는 아이디
 
         val result = repositoryDao.getRepository(id).first()
 
@@ -72,13 +93,13 @@ class RepositoryDaoTest {
     }
 
     @Test
-    fun updateStarStateAndStarCount_updateRepositoryCorrectly() = runTest {
+    fun updateStarStateAndStarCount_existingID_updateStarStateAndStateCountCorrectly() = runTest {
         val repositories = makeRepositories()
+        repositoryDao.insertRepositories(repositories)
         val index = 0
         val id = repositories[index].id
         val isStarred = true
         val updatedCount = 1
-        repositoryDao.insertRepositories(repositories)
 
         repositoryDao.updateStarStateAndStarCount(id, isStarred, updatedCount)
 
@@ -88,12 +109,12 @@ class RepositoryDaoTest {
     }
 
     @Test
-    fun updateStarState_updateRepositoryCorrectly() = runTest {
+    fun updateStarState_existingID_updateStarStateCorrectly() = runTest {
         val repositories = makeRepositories()
+        repositoryDao.insertRepositories(repositories)
         val index = 0
         val id = repositories[index].id
         val isStarred = true
-        repositoryDao.insertRepositories(repositories)
 
         repositoryDao.updateStarState(id, isStarred)
 
@@ -102,12 +123,12 @@ class RepositoryDaoTest {
     }
 
     @Test
-    fun updateStarCount_updateRepositoryCorrectly() = runTest {
+    fun updateStarCount_existingID_updateStarCountCorrectly() = runTest {
         val repositories = makeRepositories()
+        repositoryDao.insertRepositories(repositories)
         val index = 0
         val id = repositories[index].id
         val updatedCount = 1
-        repositoryDao.insertRepositories(repositories)
 
         repositoryDao.updateStarCount(id, updatedCount)
 
@@ -116,7 +137,7 @@ class RepositoryDaoTest {
     }
 
     @Test
-    fun clearRepositories_clearDatabase() = runTest {
+    fun clearRepositories_clearRoom_emptyList() = runTest {
         val repositories = makeRepositories()
         repositoryDao.insertRepositories(repositories)
 
