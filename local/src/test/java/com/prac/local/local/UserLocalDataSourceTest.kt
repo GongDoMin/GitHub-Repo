@@ -1,38 +1,43 @@
 package com.prac.local.local
 
 import com.prac.local.UserLocalDataSource
-import com.prac.local.datastore.user.UserDataStoreManager
 import com.prac.local.fake.FakeUserDataStoreManager
 import com.prac.local.impl.UserLocalDataSourceImpl
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Test
 
 class UserLocalDataSourceTest {
 
-    private lateinit var userDataStoreManager: UserDataStoreManager
+    private lateinit var userDataStoreManager: FakeUserDataStoreManager
     private lateinit var userLocalDataSource: UserLocalDataSource
 
-    @Before
-    fun setUp() {
+    @Test
+    fun getUserName_dataStoreIsEmpty_emptyUserName() = runTest {
         userDataStoreManager = FakeUserDataStoreManager()
         userLocalDataSource = UserLocalDataSourceImpl(userDataStoreManager)
-    }
-
-    @Test
-    fun getCachedUserName_returnEmptyString_WhenDataStoreIsEmpty() = runTest {
-        val expectedUserName = ""
 
         val result = userLocalDataSource.getUserName()
 
-        assertEquals(result, expectedUserName)
+        assertTrue(result.isEmpty())
     }
 
     @Test
-    fun setUserName_updateCacheAndLocalData() = runTest {
+    fun getUserName_dataStoreIsNotEmpty_notEmptyUserName() = runTest {
+        userDataStoreManager = FakeUserDataStoreManager().apply { setInitialUserName() }
+        userLocalDataSource = UserLocalDataSourceImpl(userDataStoreManager)
+
+        val result = userLocalDataSource.getUserName()
+
+        assertTrue(result.isNotEmpty())
+    }
+
+    @Test
+    fun setUserName_updateNewUserName_cacheAndLocalNotEmptyUserName() = runTest {
         val expectedUserName = "test"
+        userDataStoreManager = FakeUserDataStoreManager()
+        userLocalDataSource = UserLocalDataSourceImpl(userDataStoreManager)
 
         userLocalDataSource.setUserName(expectedUserName)
 
@@ -43,9 +48,9 @@ class UserLocalDataSourceTest {
     }
 
     @Test
-    fun clearUserName_updateCacheAndLocalData() = runTest {
-        val userName = "test"
-        userLocalDataSource.setUserName(userName)
+    fun clearUserName_updateEmptyUserName_cacheAndLocalEmptyUserName() = runTest {
+        userDataStoreManager = FakeUserDataStoreManager().apply { setInitialUserName() }
+        userLocalDataSource = UserLocalDataSourceImpl(userDataStoreManager)
 
         userLocalDataSource.clearUserName()
 

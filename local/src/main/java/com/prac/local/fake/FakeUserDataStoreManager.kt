@@ -6,6 +6,10 @@ class FakeUserDataStoreManager : UserDataStoreManager {
 
     private var userName = ""
 
+    fun setInitialUserName() {
+        userName = "test"
+    }
+
     override suspend fun setUserName(userName: String) {
         this.userName = userName
     }
