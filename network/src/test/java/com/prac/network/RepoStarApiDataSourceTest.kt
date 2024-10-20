@@ -13,8 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class RepoStarApiDataSourceTest {
 
-    @Mock
-    private lateinit var gitHubService: GitHubService
+    @Mock private lateinit var gitHubService: GitHubService
     private lateinit var repoStarApiDataSource: RepoStarApiDataSource
 
     @Before
@@ -23,18 +22,19 @@ class RepoStarApiDataSourceTest {
     }
 
     @Test
-    fun checkRepositoryIsStarred_callGitHubService() = runTest {
-        val repoName = "testRepo"
+    fun isStarred_whenCalled_callGitHubService() = runTest {
+        val userName = "test"
+        val repoName = "test"
 
-        repoStarApiDataSource.isStarred("GongDoMin", repoName)
+        repoStarApiDataSource.isStarred(userName, repoName)
 
-        verify(gitHubService).isStarred("GongDoMin", repoName)
+        verify(gitHubService).isStarred(userName, repoName)
     }
 
     @Test
-    fun starRepository_callGitHubService() = runTest {
-        val userName = "testUser"
-        val repoName = "testRepo"
+    fun starRepository_whenCalled_callGitHubService() = runTest {
+        val userName = "test"
+        val repoName = "test"
 
         repoStarApiDataSource.starRepository(userName, repoName)
 
@@ -42,9 +42,9 @@ class RepoStarApiDataSourceTest {
     }
 
     @Test
-    fun unStarRepository_callGitHubService() = runTest {
-        val userName = "testUser"
-        val repoName = "testRepo"
+    fun unStarRepository_whenCalled_callGitHubService() = runTest {
+        val userName = "test"
+        val repoName = "test"
 
         repoStarApiDataSource.unStarRepository(userName, repoName)
 
