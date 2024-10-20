@@ -5,7 +5,8 @@ import com.prac.local.datastore.token.TokenLocalDto
 import java.time.Instant
 import java.time.ZoneId
 
-class FakeTokenDataStoreManager(
+class FakeTokenDataStoreManager : TokenDataStoreManager {
+
     private var token: TokenLocalDto = TokenLocalDto(
         accessToken = "",
         refreshToken = "",
@@ -13,7 +14,17 @@ class FakeTokenDataStoreManager(
         refreshTokenExpiresInSeconds = 0,
         updatedAt = Instant.ofEpochMilli(0).atZone(ZoneId.systemDefault())
     )
-) : TokenDataStoreManager {
+
+    fun setInitialToken() {
+        token = token.copy(
+            accessToken = "accessToken",
+            refreshToken = "refreshToken",
+            expiresInSeconds = 3600,
+            refreshTokenExpiresInSeconds = 3600,
+            updatedAt = Instant.now().atZone(ZoneId.systemDefault())
+        )
+    }
+
     override suspend fun saveTokenData(token: TokenLocalDto) {
         this.token = token
     }
