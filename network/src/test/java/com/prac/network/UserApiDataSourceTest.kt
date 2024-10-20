@@ -1,5 +1,7 @@
 package com.prac.network
 
+import com.prac.network.dto.OwnerDto
+import com.prac.network.dto.UserDto
 import com.prac.network.fake.service.FakeGitHubUserService
 import com.prac.network.impl.UserApiDataSourceImpl
 import com.prac.network.service.GitHubUserService
@@ -10,7 +12,7 @@ import org.junit.Test
 
 class UserApiDataSourceTest {
 
-    private lateinit var gitHubUserService: GitHubUserService
+    private lateinit var gitHubUserService: FakeGitHubUserService
     private lateinit var repoStarApiDataSource: UserApiDataSource
 
     @Before
@@ -20,12 +22,17 @@ class UserApiDataSourceTest {
     }
 
     @Test
-    fun getUser_userNamePassedToDataSource() = runTest {
+    fun getUser_whenCalled_user() = runTest {
         val accessToken = "test"
-        val expectedUserName = "test"
+        val expectedUser = UserDto(
+            user = OwnerDto(
+                login = "test",
+                avatarUrl = "test"
+            )
+        )
 
         val result = repoStarApiDataSource.getUserName(accessToken)
 
-        assertEquals(result, expectedUserName)
+        assertEquals(result, expectedUser.user.login)
     }
 }
