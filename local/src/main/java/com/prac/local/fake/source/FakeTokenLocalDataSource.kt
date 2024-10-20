@@ -14,6 +14,16 @@ class FakeTokenLocalDataSource : TokenLocalDataSource {
         updatedAt = Instant.ofEpochMilli(0).atZone(ZoneId.systemDefault())
     )
 
+    fun setInitialToken() {
+        this.token = token.copy(
+            accessToken = "accessToken",
+            refreshToken = "refreshToken",
+            expiresInSeconds = 3600,
+            refreshTokenExpiresInSeconds = 3600,
+            updatedAt = Instant.now().atZone(ZoneId.systemDefault())
+        )
+    }
+
     override suspend fun setToken(token: TokenLocalDto) {
         this.token = token
     }
