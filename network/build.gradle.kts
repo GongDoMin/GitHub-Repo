@@ -10,10 +10,11 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.jetbrains.kotlin.kapt)
     alias(libs.plugins.dagger.hilt)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 android {
-    namespace = "com.prac.data"
+    namespace = "com.prac.network"
     compileSdk = 34
 
     defaultConfig {
@@ -22,7 +23,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
-
 
     buildTypes {
         debug {
@@ -40,8 +40,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-
-            buildConfigField("String", "GITHUB_URL", "\"https://github.com/\"")
         }
     }
     compileOptions {
@@ -66,12 +64,8 @@ dependencies {
     testImplementation(libs.androidx.junit)
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kotlin)
-    androidTestImplementation(libs.androidx.runner)
-    androidTestImplementation(libs.androidx.rules)
-    androidTestImplementation(libs.androidx.junit)
 
     implementation(project(":local"))
-    implementation(project(":network"))
 
     implementation(libs.jetbrains.kotlinx.coroutines)
     implementation(libs.jetbrains.kotlinx.coroutines.test)
@@ -80,13 +74,11 @@ dependencies {
     implementation(libs.hilt.android.testing)
     kapt(libs.dagger.hilt.compiler)
 
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+
     implementation(libs.retrofit)
+    implementation(libs.retrofit.serialization.converter)
 
-    implementation(libs.androidx.paging)
-
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    implementation(libs.androidx.room.paging)
-    kapt(libs.androidx.room.compiler)
-    androidTestImplementation(libs.androidx.room.testing)
+    implementation(libs.jetbrains.kotlinx.serialization)
 }
