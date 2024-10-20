@@ -3,9 +3,8 @@ package com.prac.network.fake
 import com.prac.network.AuthApiDataSource
 import com.prac.network.dto.TokenDto
 
-class FakeAuthApiDataSource(
-    private val token: TokenDto
-) : AuthApiDataSource {
+class FakeAuthApiDataSource: AuthApiDataSource {
+
     private lateinit var throwable: Throwable
 
     fun setThrowable(throwable: Throwable) {
@@ -15,7 +14,14 @@ class FakeAuthApiDataSource(
     override suspend fun authorizeOAuth(code: String): TokenDto {
         if (::throwable.isInitialized) throw throwable
 
-        return token
+        return TokenDto(
+            accessToken = "accessToken",
+            refreshToken = "refreshToken",
+            expiresIn = 3600,
+            refreshTokenExpiresIn = 3600,
+            scope = "",
+            tokenType = "Bearer"
+        )
     }
 
     override suspend fun refreshAccessToken(refreshToken: String): TokenDto {

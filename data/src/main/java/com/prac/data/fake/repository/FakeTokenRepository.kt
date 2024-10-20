@@ -48,22 +48,6 @@ class FakeTokenRepository: TokenRepository {
         throw NotImplementedError("this method is not supported in fake repository")
     }
 
-    override fun getAccessToken(): String {
-        return token.accessToken
-    }
-
-    override fun getRefreshToken(): String {
-        return token.refreshToken
-    }
-
-    override fun getAccessTokenIsExpired(): Boolean {
-        return token.isExpired
-    }
-
-    override fun getRefreshTokenIsExpired(): Boolean {
-        return token.isRefreshTokenExpired
-    }
-
     private fun makeEmptyToken() =
         TokenLocalDto(
             accessToken = "",

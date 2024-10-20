@@ -40,7 +40,7 @@ internal class TokenRepositoryImpl @Inject constructor(
     }
 
     override suspend fun isLoggedIn(): Boolean {
-        return getAccessToken().isNotEmpty()
+        return tokenLocalDataSource.getToken().accessToken.isNotEmpty()
     }
 
     override suspend fun clearToken() {
@@ -57,22 +57,6 @@ internal class TokenRepositoryImpl @Inject constructor(
             // 예외 발생 시 로그아웃 처리할 것이라서 따로 처리를 하지 않는다.
             Result.failure(e)
         }
-    }
-
-    override fun getAccessToken(): String {
-        return tokenLocalDataSource.getToken().accessToken
-    }
-
-    override fun getRefreshToken(): String {
-        return tokenLocalDataSource.getToken().refreshToken
-    }
-
-    override fun getAccessTokenIsExpired(): Boolean {
-        return tokenLocalDataSource.getToken().isExpired
-    }
-
-    override fun getRefreshTokenIsExpired(): Boolean {
-        return tokenLocalDataSource.getToken().isRefreshTokenExpired
     }
 
     private suspend fun setToken(token: TokenModel) {
