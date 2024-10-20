@@ -1,4 +1,3 @@
-import com.google.protobuf.gradle.id
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -11,8 +10,6 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.jetbrains.kotlin.kapt)
     alias(libs.plugins.dagger.hilt)
-    alias(libs.plugins.jetbrains.kotlin.serialization)
-    alias(libs.plugins.protobuf)
 }
 
 android {
@@ -72,7 +69,8 @@ dependencies {
     androidTestImplementation(libs.androidx.runner)
     androidTestImplementation(libs.androidx.rules)
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(project(":local"))
 
     implementation(libs.jetbrains.kotlinx.coroutines)
     implementation(libs.jetbrains.kotlinx.coroutines.test)
@@ -81,17 +79,7 @@ dependencies {
     implementation(libs.hilt.android.testing)
     kapt(libs.dagger.hilt.compiler)
 
-    implementation(libs.okhttp)
-    implementation(libs.logging.interceptor)
-
     implementation(libs.retrofit)
-    implementation(libs.retrofit.serialization.converter)
-
-    implementation(libs.jetbrains.kotlinx.serialization)
-
-    implementation(libs.androidx.datastore)
-    implementation(libs.androidx.datastore.preferences)
-    implementation(libs.protobuf)
 
     implementation(libs.androidx.paging)
 
@@ -100,20 +88,4 @@ dependencies {
     implementation(libs.androidx.room.paging)
     kapt(libs.androidx.room.compiler)
     androidTestImplementation(libs.androidx.room.testing)
-}
-
-protobuf {
-    protoc {
-        artifact = "com.google.protobuf:protoc:3.19.4"
-    }
-
-    generateProtoTasks {
-        all().forEach { task ->
-            task.builtins {
-                id("java") {
-                    option("lite")
-                }
-            }
-        }
-    }
 }

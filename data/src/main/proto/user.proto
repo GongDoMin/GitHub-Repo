@@ -1,8 +1,0 @@
-syntax = "proto3";
-
-option java_package = "com.prac.data.datastore";
-option java_multiple_files = true;
-
-message User {
-  string user_name = 1;
-}

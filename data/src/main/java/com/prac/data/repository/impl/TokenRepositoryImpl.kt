@@ -3,11 +3,11 @@ package com.prac.data.repository.impl
 import com.prac.data.exception.CommonException
 import com.prac.data.repository.TokenRepository
 import com.prac.data.repository.model.TokenModel
-import com.prac.data.source.local.TokenLocalDataSource
-import com.prac.data.source.local.UserLocalDataSource
-import com.prac.data.source.local.datastore.token.TokenLocalDto
 import com.prac.data.source.network.AuthApiDataSource
 import com.prac.data.source.network.UserApiDataSource
+import com.prac.local.TokenLocalDataSource
+import com.prac.local.UserLocalDataSource
+import com.prac.local.datastore.token.TokenLocalDto
 import java.io.IOException
 import javax.inject.Inject
 

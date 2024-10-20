@@ -5,7 +5,7 @@ import androidx.paging.PagingData
 import androidx.paging.RemoteMediator
 import com.prac.data.entity.RepoDetailEntity
 import com.prac.data.entity.RepoEntity
-import com.prac.data.source.local.room.entity.Repository
+import com.prac.local.room.entity.Repository
 import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalPagingApi::class)
