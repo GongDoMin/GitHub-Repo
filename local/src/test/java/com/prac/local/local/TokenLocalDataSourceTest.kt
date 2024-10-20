@@ -2,7 +2,7 @@ package com.prac.local.local
 
 import com.prac.local.TokenLocalDataSource
 import com.prac.local.datastore.token.TokenLocalDto
-import com.prac.local.fake.FakeTokenDataStoreManager
+import com.prac.local.fake.datastore.FakeTokenDataStoreManager
 import com.prac.local.impl.TokenLocalDataSourceImpl
 import kotlinx.coroutines.test.runTest
 import org.junit.After

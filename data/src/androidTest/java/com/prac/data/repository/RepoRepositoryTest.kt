@@ -17,7 +17,7 @@ import com.prac.data.repository.impl.RepoRepositoryImpl
 import com.prac.data.source.network.dto.OwnerDto
 import com.prac.data.source.network.dto.RepoDto
 import com.prac.local.UserLocalDataSource
-import com.prac.local.fake.FakeUserLocalDataSource
+import com.prac.local.fake.source.FakeUserLocalDataSource
 import com.prac.local.room.dao.RemoteKeyDao
 import com.prac.local.room.dao.RepositoryDao
 import com.prac.local.room.database.RepositoryDatabase

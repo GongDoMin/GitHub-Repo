@@ -1,10 +1,14 @@
-package com.prac.local.fake
+package com.prac.local.fake.datastore
 
-import com.prac.local.UserLocalDataSource
+import com.prac.local.datastore.user.UserDataStoreManager
 
-class FakeUserLocalDataSource : UserLocalDataSource {
+class FakeUserDataStoreManager : UserDataStoreManager {
 
     private var userName = ""
+
+    fun setInitialUserName() {
+        userName = "test"
+    }
 
     override suspend fun setUserName(userName: String) {
         this.userName = userName

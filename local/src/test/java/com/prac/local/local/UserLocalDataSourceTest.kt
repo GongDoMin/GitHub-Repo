@@ -1,7 +1,7 @@
 package com.prac.local.local
 
 import com.prac.local.UserLocalDataSource
-import com.prac.local.fake.FakeUserDataStoreManager
+import com.prac.local.fake.datastore.FakeUserDataStoreManager
 import com.prac.local.impl.UserLocalDataSourceImpl
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals

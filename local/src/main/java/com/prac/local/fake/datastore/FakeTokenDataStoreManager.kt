@@ -1,4 +1,4 @@
-package com.prac.local.fake
+package com.prac.local.fake.datastore
 
 import com.prac.local.datastore.token.TokenDataStoreManager
 import com.prac.local.datastore.token.TokenLocalDto
