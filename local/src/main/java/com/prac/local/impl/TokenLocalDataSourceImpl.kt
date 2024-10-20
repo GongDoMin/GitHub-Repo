@@ -22,7 +22,7 @@ internal class TokenLocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun setToken(token: TokenLocalDto) {
-        tokenDataStoreManager.saveTokenData(token)
+        tokenDataStoreManager.setToken(token)
         updateToken(token)
     }
 

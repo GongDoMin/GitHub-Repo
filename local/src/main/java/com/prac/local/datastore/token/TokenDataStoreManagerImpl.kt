@@ -97,7 +97,7 @@ internal class TokenDataStoreManagerImpl(
         }
     )
 
-    override suspend fun saveTokenData(token: TokenLocalDto) {
+    override suspend fun setToken(token: TokenLocalDto) {
         mContext.tokenDataStore.updateData { pref ->
             pref.toBuilder()
                 .setAccessToken(token.accessToken)

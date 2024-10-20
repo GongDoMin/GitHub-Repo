@@ -25,7 +25,7 @@ class FakeTokenDataStoreManager : TokenDataStoreManager {
         )
     }
 
-    override suspend fun saveTokenData(token: TokenLocalDto) {
+    override suspend fun setToken(token: TokenLocalDto) {
         this.token = token
     }
 
