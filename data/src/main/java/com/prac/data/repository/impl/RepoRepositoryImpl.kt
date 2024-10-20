@@ -14,13 +14,13 @@ import com.prac.data.entity.RepoEntity
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
-import com.prac.data.source.network.RepoApiDataSource
-import com.prac.data.source.network.RepoStarApiDataSource
 import com.prac.local.UserLocalDataSource
 import com.prac.local.room.database.RepositoryDatabase
 import com.prac.local.room.entity.Owner
 import com.prac.local.room.entity.RemoteKey
 import com.prac.local.room.entity.Repository
+import com.prac.network.RepoApiDataSource
+import com.prac.network.RepoStarApiDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import retrofit2.HttpException

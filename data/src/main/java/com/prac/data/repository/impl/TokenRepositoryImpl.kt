@@ -3,12 +3,13 @@ package com.prac.data.repository.impl
 import com.prac.data.exception.CommonException
 import com.prac.data.repository.TokenRepository
 import com.prac.data.repository.model.TokenModel
-import com.prac.data.source.network.AuthApiDataSource
-import com.prac.data.source.network.UserApiDataSource
 import com.prac.local.TokenLocalDataSource
 import com.prac.local.UserLocalDataSource
 import com.prac.local.datastore.token.TokenLocalDto
+import com.prac.network.AuthApiDataSource
+import com.prac.network.UserApiDataSource
 import java.io.IOException
+import java.time.ZonedDateTime
 import javax.inject.Inject
 
 internal class TokenRepositoryImpl @Inject constructor(
@@ -19,10 +20,10 @@ internal class TokenRepositoryImpl @Inject constructor(
 ) : TokenRepository {
     override suspend fun authorizeOAuth(code: String): Result<Unit> {
         return try {
-            val model = authApiDataSource.authorizeOAuth(code)
-            val userName = getUserName(model.accessToken)
+            val dto = authApiDataSource.authorizeOAuth(code)
+            val userName = getUserName(dto.accessToken)
 
-            setToken(model)
+            setToken(TokenModel(dto.accessToken, dto.refreshToken, dto.expiresIn, dto.refreshTokenExpiresIn, ZonedDateTime.now()))
             setUserName(userName)
 
             Result.success(Unit)
@@ -48,8 +49,8 @@ internal class TokenRepositoryImpl @Inject constructor(
 
     override suspend fun refreshToken(refreshToken: String): Result<Unit> {
         return try {
-            val model = authApiDataSource.refreshAccessToken(refreshToken)
-            setToken(model)
+            val dto = authApiDataSource.refreshAccessToken(refreshToken)
+            setToken(TokenModel(dto.accessToken, dto.refreshToken, dto.expiresIn, dto.refreshTokenExpiresIn, ZonedDateTime.now()))
 
             Result.success(Unit)
         } catch (e: Exception) {

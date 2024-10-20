@@ -3,10 +3,11 @@ package com.prac.data.repository
 import com.prac.data.exception.CommonException
 import com.prac.local.fake.source.FakeTokenLocalDataSource
 import com.prac.local.fake.source.FakeUserLocalDataSource
-import com.prac.data.fake.source.network.FakeAuthApiDataSource
-import com.prac.data.fake.source.network.FakeUserApiDataSource
+import com.prac.network.fake.FakeAuthApiDataSource
+import com.prac.network.fake.FakeUserApiDataSource
 import com.prac.data.repository.impl.TokenRepositoryImpl
 import com.prac.data.repository.model.TokenModel
+import com.prac.network.dto.TokenDto
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -27,7 +28,7 @@ class TokenRepositoryTest {
     private lateinit var tokenRepository: TokenRepository
 
     private val code = "code"
-    private val token = TokenModel("accessToken", "refreshToken", 3600, 3600, ZonedDateTime.now())
+    private val token = TokenDto("accessToken", 3600, "refreshToken", 3600, "", "Bearer")
 
     @Before
     fun setUp() {
@@ -53,9 +54,8 @@ class TokenRepositoryTest {
         val userName = userLocalDataSource.getUserName()
         assertEquals(cache.accessToken, token.accessToken)
         assertEquals(cache.refreshToken, token.refreshToken)
-        assertEquals(cache.expiresInSeconds, token.expiresInSeconds)
-        assertEquals(cache.refreshTokenExpiresInSeconds, token.refreshTokenExpiresInSeconds)
-        assertEquals(cache.updatedAt, token.updatedAt)
+        assertEquals(cache.expiresInSeconds, token.expiresIn)
+        assertEquals(cache.refreshTokenExpiresInSeconds, token.refreshTokenExpiresIn)
         assertTrue(result.isSuccess)
         assertEquals(userName, expectedUserName)
     }
@@ -157,7 +157,7 @@ class TokenRepositoryTest {
 
     @Test
     fun getAccessTokenIsExpired_returnTrueFromDataSource() = runTest {
-        val expiredToken = TokenModel("accessToken", "refreshToken", 1, 1, ZonedDateTime.now())
+        val expiredToken = TokenDto("accessToken", 1, "refreshToken", 1, "", "Bearer")
         authApiDataSource = FakeAuthApiDataSource(expiredToken)
         tokenRepository = TokenRepositoryImpl(
             tokenLocalDataSource = tokenLocalDataSource,
@@ -184,7 +184,7 @@ class TokenRepositoryTest {
 
     @Test
     fun getRefreshTokenIsExpired_returnTrueFromDataSource() = runTest {
-        val expiredToken = TokenModel("accessToken", "refreshToken", 1, 1, ZonedDateTime.now())
+        val expiredToken = TokenDto("accessToken", 1, "refreshToken", 1, "", "Bearer")
         authApiDataSource = FakeAuthApiDataSource(expiredToken)
         tokenRepository = TokenRepositoryImpl(
             tokenLocalDataSource = tokenLocalDataSource,
