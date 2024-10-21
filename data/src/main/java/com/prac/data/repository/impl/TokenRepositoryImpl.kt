@@ -2,12 +2,12 @@ package com.prac.data.repository.impl
 
 import com.prac.data.exception.CommonException
 import com.prac.data.repository.TokenRepository
-import com.prac.data.repository.model.TokenModel
 import com.prac.local.TokenLocalDataSource
 import com.prac.local.UserLocalDataSource
 import com.prac.local.datastore.token.TokenLocalDto
 import com.prac.network.AuthApiDataSource
 import com.prac.network.UserApiDataSource
+import com.prac.network.dto.TokenDto
 import java.io.IOException
 import java.time.ZonedDateTime
 import javax.inject.Inject
@@ -23,7 +23,7 @@ internal class TokenRepositoryImpl @Inject constructor(
             val dto = authApiDataSource.authorizeOAuth(code)
             val userName = getUserName(dto.accessToken)
 
-            setToken(TokenModel(dto.accessToken, dto.refreshToken, dto.expiresIn, dto.refreshTokenExpiresIn, ZonedDateTime.now()))
+            setToken(dto)
             setUserName(userName)
 
             Result.success(Unit)
@@ -50,7 +50,7 @@ internal class TokenRepositoryImpl @Inject constructor(
     override suspend fun refreshToken(refreshToken: String): Result<Unit> {
         return try {
             val dto = authApiDataSource.refreshAccessToken(refreshToken)
-            setToken(TokenModel(dto.accessToken, dto.refreshToken, dto.expiresIn, dto.refreshTokenExpiresIn, ZonedDateTime.now()))
+            setToken(dto)
 
             Result.success(Unit)
         } catch (e: Exception) {
@@ -59,14 +59,14 @@ internal class TokenRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun setToken(token: TokenModel) {
+    private suspend fun setToken(token: TokenDto) {
         tokenLocalDataSource.setToken(
             TokenLocalDto(
                 token.accessToken,
                 token.refreshToken,
-                token.expiresInSeconds,
-                token.refreshTokenExpiresInSeconds,
-                token.updatedAt
+                token.expiresIn,
+                token.refreshTokenExpiresIn,
+                ZonedDateTime.now()
             )
         )
     }

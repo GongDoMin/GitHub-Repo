@@ -5,6 +5,7 @@ data class RepoEntity(
     val name: String,
     val owner: OwnerEntity,
     val stargazersCount: Int,
+    val defaultBranch: String,
     val updatedAt: String,
     var isStarred: Boolean?
 )

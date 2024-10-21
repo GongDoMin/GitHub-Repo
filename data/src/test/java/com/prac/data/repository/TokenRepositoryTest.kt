@@ -2,7 +2,7 @@ package com.prac.data.repository
 
 import com.prac.data.exception.CommonException
 import com.prac.data.repository.impl.TokenRepositoryImpl
-import com.prac.data.repository.model.TokenModel
+import com.prac.local.datastore.token.TokenLocalDto
 import com.prac.local.fake.source.FakeTokenLocalDataSource
 import com.prac.local.fake.source.FakeUserLocalDataSource
 import com.prac.network.fake.FakeAuthApiDataSource
@@ -44,7 +44,7 @@ class TokenRepositoryTest {
     @Test
     fun authorizeOAuth_apiCallIsSuccess_successAndUpdateTokenAndUserName() = runTest {
         val expectedUserName = "test"
-        val expectedToken = TokenModel(
+        val expectedToken = TokenLocalDto(
             accessToken = "accessToken",
             refreshToken = "refreshToken",
             expiresInSeconds = 3600,
@@ -138,7 +138,7 @@ class TokenRepositoryTest {
     fun refreshToken_refreshTokenIsSuccess_successAndUpdateToken() = runTest {
         tokenLocalDataSource.setInitialToken()
         val refreshToken = "refreshToken"
-        val expectedToken = TokenModel(
+        val expectedToken = TokenLocalDto(
             accessToken = "refreshAccessToken",
             refreshToken = "refreshRefreshToken",
             expiresInSeconds = 3600,
@@ -160,7 +160,7 @@ class TokenRepositoryTest {
     fun refreshToken_refreshTokenIsFailure_errorAndNotUpdateToken() = runTest {
         tokenLocalDataSource.setInitialToken()
         val refreshToken = "refreshToken"
-        val expectedToken = TokenModel(
+        val expectedToken = TokenLocalDto(
             accessToken = "accessToken",
             refreshToken = "refreshToken",
             expiresInSeconds = 3600,

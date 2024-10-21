@@ -29,6 +29,7 @@ class MainAdapter(
                 setTitle()
                 setStarImage(isStarred)
                 setStarCount()
+                setDefaultBranch()
                 setUpdatedDate()
             }
 
@@ -55,7 +56,7 @@ class MainAdapter(
         }
 
         private fun RepoEntity.setTitle() {
-            binding.tvName.text = this.owner.login
+            binding.tvTitle.text = this.name
         }
 
         private fun setStarImage(isStarred: Boolean?) {
@@ -67,6 +68,10 @@ class MainAdapter(
 
         private fun RepoEntity.setStarCount() {
             binding.tvStar.text = this.stargazersCount.toString()
+        }
+
+        private fun RepoEntity.setDefaultBranch() {
+            binding.tvDefaultBranch.text = this.defaultBranch
         }
 
         private fun RepoEntity.setUpdatedDate() {
