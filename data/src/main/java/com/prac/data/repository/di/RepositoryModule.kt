@@ -4,13 +4,13 @@ import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.data.repository.impl.RepoRepositoryImpl
 import com.prac.data.repository.impl.TokenRepositoryImpl
-import com.prac.data.source.network.AuthApiDataSource
-import com.prac.data.source.network.RepoApiDataSource
-import com.prac.data.source.network.RepoStarApiDataSource
-import com.prac.data.source.network.UserApiDataSource
 import com.prac.local.TokenLocalDataSource
 import com.prac.local.UserLocalDataSource
 import com.prac.local.room.database.RepositoryDatabase
+import com.prac.network.AuthApiDataSource
+import com.prac.network.RepoApiDataSource
+import com.prac.network.RepoStarApiDataSource
+import com.prac.network.UserApiDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
