@@ -494,7 +494,7 @@ internal class RepoRepositoryTest {
         mutableListOf<RepoDto>().apply {
             repeat(loadSize) {
                 add(
-                    RepoDto(it + (10 * page), "test ${it + (10 * page)}", OwnerDto("login ${it + (10 * page)}", "avatarUrl ${it + (10 * page)}"), 0, "2022-01-01")
+                    RepoDto(it + (10 * page), "test ${it + (10 * page)}", OwnerDto("login ${it + (10 * page)}", "avatarUrl ${it + (10 * page)}"), 0, "master", "2022-01-01")
                 )
             }
         }

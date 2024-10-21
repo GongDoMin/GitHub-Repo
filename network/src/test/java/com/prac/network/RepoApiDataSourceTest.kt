@@ -16,10 +16,10 @@ class RepoApiDataSourceTest {
     private lateinit var repoApiDatasource: RepoApiDataSource
 
     private val expectedRepoList = listOf(
-        RepoDto(0, "test1", OwnerDto("test1", "test1"), 0, "test1"),
-        RepoDto(1, "test2", OwnerDto("test2", "test2"), 0, "test1"),
-        RepoDto(2, "test3", OwnerDto("test3", "test3"), 0, "test1"),
-        RepoDto(3, "test4", OwnerDto("test4", "test4"), 0, "test1"),
+        RepoDto(0, "test1", OwnerDto("test1", "test1"), 0, "master", "test1"),
+        RepoDto(1, "test2", OwnerDto("test2", "test2"), 0, "master", "test1"),
+        RepoDto(2, "test3", OwnerDto("test3", "test3"), 0, "master", "test1"),
+        RepoDto(3, "test4", OwnerDto("test4", "test4"), 0, "master", "test1"),
     )
 
     @Before
