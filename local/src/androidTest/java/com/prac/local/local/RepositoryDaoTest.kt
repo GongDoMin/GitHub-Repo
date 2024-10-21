@@ -151,7 +151,7 @@ class RepositoryDaoTest {
 
     private fun makeRepositories() =
         listOf(
-            Repository(1, "repo1", Owner("test1", "test1"), 0, "test1", false),
-            Repository(2, "repo2", Owner("test2", "test2"), 0, "test2", false)
+            Repository(1, "repo1", Owner("test1", "test1"), 0, "test1", "master", false),
+            Repository(2, "repo2", Owner("test2", "test2"), 0, "test2", "master", false)
         )
 }

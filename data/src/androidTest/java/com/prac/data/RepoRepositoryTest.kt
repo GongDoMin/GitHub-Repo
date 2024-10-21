@@ -160,7 +160,7 @@ internal class RepoRepositoryTest {
             val loadSize = 10
             val pagingState = PagingState(
                 pages = listOf(PagingSource.LoadResult.Page(
-                    data = totalRepoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, null) },
+                    data = totalRepoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, it.defaultBranch, null) },
                     prevKey = 0, // data 의 id 를 통해 remoteKey 를 가져오기 때문에 0 으로 구현
                     nextKey = 0 // data 의 id 를 통해 remoteKey 를 가져오기 때문에 0 으로 구현
                     )
@@ -238,7 +238,7 @@ internal class RepoRepositoryTest {
         val index = 0
         val repoDtoList = getRepoDtoListForPage(page, loadSize)
         val repoDto = repoDtoList[index]
-        repositoryDatabase.repositoryDao().insertRepositories(repoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, null) })
+        repositoryDatabase.repositoryDao().insertRepositories(repoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, it.defaultBranch, null) })
 
         repoRepository.isStarred(repoDto.id, repoDto.name)
 
@@ -253,7 +253,7 @@ internal class RepoRepositoryTest {
         val index = 0
         val repoDtoList = getRepoDtoListForPage(page, loadSize)
         val repoDto = repoDtoList[index]
-        repositoryDatabase.repositoryDao().insertRepositories(repoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, null) })
+        repositoryDatabase.repositoryDao().insertRepositories(repoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, it.defaultBranch, null) })
         repoStarApiDataSource.setThrowable(Exception()) // 사용자가 repository 를 star 하고 있지 않을 경우 응답이 304 이기 때문에 예외를 발생시켜서 테스트 진행
 
         repoRepository.isStarred(repoDto.id, repoDto.name)
@@ -385,7 +385,7 @@ internal class RepoRepositoryTest {
         val index = 0
         val repoDtoList = getRepoDtoListForPage(page, loadSize)
         val repoDto = repoDtoList[index]
-        repositoryDatabase.repositoryDao().insertRepositories(repoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, false) })
+        repositoryDatabase.repositoryDao().insertRepositories(repoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, it.defaultBranch, false) })
 
         repoRepository.starLocalRepository(repoDto.id, repoDto.stargazersCount + 1)
 
@@ -401,7 +401,7 @@ internal class RepoRepositoryTest {
         val index = 0
         val repoDtoList = getRepoDtoListForPage(page, loadSize)
         val repoDto = repoDtoList[index]
-        repositoryDatabase.repositoryDao().insertRepositories(repoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount + 1, it.updatedAt, true) })
+        repositoryDatabase.repositoryDao().insertRepositories(repoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount + 1, it.updatedAt, it.defaultBranch, true) })
 
         repoRepository.unStarLocalRepository(repoDto.id, repoDto.stargazersCount)
 
@@ -416,7 +416,7 @@ internal class RepoRepositoryTest {
         val index = 0
         val repoDto = repoDtoList[index]
         repoApiDataSource.setRepoDtoList(repoDtoList)
-        repositoryDatabase.repositoryDao().insertRepositories(repoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, false) })
+        repositoryDatabase.repositoryDao().insertRepositories(repoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, it.defaultBranch, false) })
 
         val result = repoRepository.getRepository(repoDto.owner.login, repoDto.name)
 
@@ -431,7 +431,7 @@ internal class RepoRepositoryTest {
         val index = 0
         val repoDto = repoDtoList[index]
         val starCount = 10
-        repositoryDatabase.repositoryDao().insertRepositories(repoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, false) })
+        repositoryDatabase.repositoryDao().insertRepositories(repoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, it.defaultBranch, false) })
         repoApiDataSource.setRepoDtoList(repoDtoList)
         repoApiDataSource.setStarCount(starCount)
 

@@ -16,6 +16,8 @@ import com.prac.local.room.database.RepositoryDatabase
 import com.prac.local.room.entity.Owner
 import com.prac.local.room.entity.RemoteKey
 import com.prac.local.room.entity.Repository
+import com.prac.network.dto.OwnerDto
+import com.prac.network.dto.RepoDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -108,7 +110,7 @@ class FakeRepoRepository @Inject constructor(
                     RemoteKey(it.id, prevKey, nextKey)
                 }
                 val repositories = response.map {
-                    Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, null)
+                    Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.defaultBranch, it.updatedAt, null)
                 }
                 repositoryDatabase.remoteKeyDao().insertRemoteKeys(keys)
                 repositoryDatabase.repositoryDao().insertRepositories(repositories)
@@ -141,24 +143,24 @@ class FakeRepoRepository @Inject constructor(
             }
     }
 
-    private fun makeRepoEntityList(page: Int) : List<RepoEntity> {
-        val pagingData: MutableList<RepoEntity> = mutableListOf()
+    private fun makeRepoEntityList(page: Int) : List<RepoDto> {
+        val pagingData: MutableList<RepoDto> = mutableListOf()
 
         repeat(10) {
             pagingData.add(
-                RepoEntity(
+                RepoDto(
                     id = it + (10 * (page - 1)),
                     name = "test ${it + (10 * (page - 1))}",
-                    owner = OwnerEntity("login ${it + (10 * (page - 1))}", "avatarUrl ${it + (10 * (page - 1))}"),
+                    owner = OwnerDto("login ${it + (10 * (page - 1))}", "avatarUrl ${it + (10 * (page - 1))}"),
                     stargazersCount = 5,
+                    defaultBranch = "master",
                     updatedAt = "update",
-                    isStarred = null
                 )
             )
         }
         // listOf(
-        //      RepoEntity(id = 0, name = "test 0", owner = OwnerEntity("login 0", "avatarUrl 0"), stargazersCount = 5, updatedAt = "update", isStarred = null),
-        //      RepoEntity(id = 1, name = "test 1", owner = OwnerEntity("login 1", "avatarUrl 1"), stargazersCount = 5, updatedAt = "update", isStarred = null),
+        //      RepoDto(id = 0, name = "test 0", owner = OwnerDto("login 0", "avatarUrl 0"), stargazersCount = 5, defaultBranch = "master", updatedAt = "update"),
+        //      RepoDto(id = 1, name = "test 1", owner = OwnerDto("login 1", "avatarUrl 1"), stargazersCount = 5, defaultBranch = "master", updatedAt = "update"),
         //      .....
         // )
 

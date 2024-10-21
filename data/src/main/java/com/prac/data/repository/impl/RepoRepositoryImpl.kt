@@ -148,7 +148,7 @@ internal class RepoRepositoryImpl @Inject constructor(
                     RemoteKey(it.id, prevKey, nextKey)
                 }
                 val repositories = response.map {
-                    Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, null)
+                    Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, it.defaultBranch, null)
                 }
                 repositoryDatabase.remoteKeyDao().insertRemoteKeys(keys)
                 repositoryDatabase.repositoryDao().insertRepositories(repositories)

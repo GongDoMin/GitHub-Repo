@@ -8,8 +8,8 @@ import com.prac.local.room.entity.RemoteKey
 import com.prac.local.room.entity.Repository
 
 @Database(
-    entities = [Repository::class, RemoteKey::class],
-    version = 1
+    version = 2,
+    entities = [Repository::class, RemoteKey::class]
 )
 abstract class RepositoryDatabase : RoomDatabase() {
 

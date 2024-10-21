@@ -12,5 +12,6 @@ data class Repository(
     @Embedded val owner: Owner,
     @ColumnInfo(name = "stargazersCount") val stargazersCount: Int,
     @ColumnInfo(name = "updatedAt") val updatedAt: String,
+    @ColumnInfo(name = "defaultBranch") val defaultBranch: String,
     @ColumnInfo(name = "isStarred") val isStarred: Boolean?
 )
