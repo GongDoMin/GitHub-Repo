@@ -65,7 +65,7 @@ class LoginActivityTest {
     }
 
     @Test
-    fun testLoginButtonClick_startOAuthIntent() {
+    fun loginButtonClick_callLoginMethod() {
         onView(withId(R.id.btnLogin)).perform(click())
 
         intended(hasAction(Intent.ACTION_VIEW))
@@ -73,7 +73,7 @@ class LoginActivityTest {
     }
 
     @Test
-    fun testValidIntent_navigateToMainActivity() {
+    fun onNewIntent_validIntent_navigateToMainActivity() {
         val scheme = "githubrepo"
         val host = "localhost:8080"
         val code = "success"
@@ -87,7 +87,7 @@ class LoginActivityTest {
     }
 
     @Test
-    fun testInvalidIntent_showConnectionErrorDialog() {
+    fun onNewIntent_invalidIntent_showConnectionFailDialog() {
         val scheme = "githubrepo"
         val host = "localhost:8080"
         val code = "ioException"
@@ -107,7 +107,7 @@ class LoginActivityTest {
     }
 
     @Test
-    fun testInvalidIntent_showErrorDialog() {
+    fun onNewIntent_invalidIntent_showLoginFailDialog() {
         val scheme = "githubrepo"
         val host = "localhost:8080"
         val code = "else"
