@@ -3,6 +3,7 @@ package com.prac.githubrepo.main
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
@@ -55,20 +56,24 @@ class MainActivityTest {
             starDrawable = it.getDrawable(R.drawable.img_star)!!
             unStarDrawable = it.getDrawable(R.drawable.img_unstar)!!
         }
-        Intents.init() // Espresso Intents 초기화
+        Intents.init()
     }
 
     @After
     fun tearDown() {
-        Intents.release() // Espresso Intents 해제
+        Intents.release()
     }
 
     @Test
-    fun mainActivity_displaysInUiWithInitialItem() {
+    fun mainActivity_displaysInUI() {
+        // 현재 FakeRepository 10개 씩 리스트를 만들고 있음.
+        // 데이터 형식은 아래과 같음
+        // RepoEntity(id = 0, name = "test 0", owner = OwnerEntity("login 0", "avatarUrl 0"), stargazersCount = 5, updatedAt = "update", isStarred = true),
+        // RepoEntity(id = 1, name = "test 1", owner = OwnerEntity("login 1", "avatarUrl 1"), stargazersCount = 5, updatedAt = "update", isStarred = false),
         val initialItemCount = 10
         repeat(initialItemCount) {
             val expectedText = "login $it"
-            val expectedDrawable = if (it % 2 == 0) starDrawable else unStarDrawable
+            val expectedDrawable = if (it % 2 == 0) starDrawable else unStarDrawable // 짝수의 repository 경우 star state 홀수의 repository 경우 unstar state
             onView(withId(R.id.rvMain))
                 .perform(scrollToPosition<RecyclerView.ViewHolder>(it))
                 .check(matches(hasDescendant(allOf(withText(expectedText), isDisplayed()))))
@@ -77,25 +82,31 @@ class MainActivityTest {
     }
 
     @Test
-    fun repositoryIsNotEmpty_clickStarImageView() {
+    fun clickStarImageView_starImageDrawableToUnStarImageDrawable_and_starCountMinusOne() {
         val clickPosition = 0 // position 이 짝수일 경우 repository is starred
+        val expectedStarCount = 4
 
         onView(withRecyclerViewAtPosition(R.id.rvMain, clickPosition, R.id.ivStar))
             .perform(waitForImageChange())
             .check(matches(matchesImageViewDrawable(unStarDrawable)))
+        onView(matchesViewInRecyclerView(R.id.rvMain, clickPosition, R.id.tvStar))
+            .check(matches(matchesStarCount(expectedStarCount)))
     }
 
     @Test
-    fun repositoryIsNotEmpty_clickUnStarImageView() {
-        val clickPosition = 1 // position 이 홀수일 경우 repository is starred
+    fun clickUnStarImageView_unStarImageDrawableToStarImageDrawable_and_starCountPlusOne() {
+        val clickPosition = 1 // position 이 홀수일 경우 repository is unstarred
+        val expectedStarCount = 6
 
         onView(withRecyclerViewAtPosition(R.id.rvMain, clickPosition, R.id.ivStar))
             .perform(waitForImageChange())
             .check(matches(matchesImageViewDrawable(starDrawable)))
+        onView(matchesViewInRecyclerView(R.id.rvMain, clickPosition, R.id.tvStar))
+            .check(matches(matchesStarCount(expectedStarCount)))
     }
 
     @Test
-    fun repositoryIsNotEmpty_clickRepository() {
+    fun clickRepository_navigateToDetailActivity() {
         val clickPosition = 0
 
         onView(withId(R.id.rvMain))
@@ -145,10 +156,17 @@ class MainActivityTest {
         }
     }
 
+    private fun matchesStarCount(expectedStarCount: Int): Matcher<View> {
+        return object : CustomTypeSafeMatcher<View>("get matched view is ImageView and view drawable") {
+            override fun matchesSafely(item: View): Boolean =
+                (item as TextView).text == expectedStarCount.toString()
+        }
+    }
+
     private fun waitForImageChange(): ViewAction {
         return object : ViewAction {
             override fun getDescription(): String
-                = "wait for image change"
+                    = "wait for image change"
 
             override fun getConstraints(): Matcher<View> =
                 allOf(isAssignableFrom(ImageView::class.java), isDisplayed())

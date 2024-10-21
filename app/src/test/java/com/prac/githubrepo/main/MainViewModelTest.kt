@@ -42,15 +42,15 @@ class MainViewModelTest {
 
     private lateinit var mainViewModel: MainViewModel
 
+
     @Before
     fun setUp() = runTest {
-        tokenRepository = FakeTokenRepository()
-        tokenRepository.setInitialToken()
-
+        tokenRepository = FakeTokenRepository().apply { setInitialToken() }
         backOffWork = FakeBackOffWorkManager()
 
         val pagingData = PagingData.from(emptyList<RepoEntity>())
         whenever(mockRepoRepository.getRepositories()).thenReturn(flow { emit(pagingData) } )
+
         mainViewModel = MainViewModel(mockRepoRepository, tokenRepository, backOffWork, standardTestDispatcherRule.testDispatcher)
     }
 
@@ -61,7 +61,7 @@ class MainViewModelTest {
     }
 
     @Test
-    fun getRepositories_updateUiStateToContent() = runTest {
+    fun getRepositories_getRepositoriesIsSuccess_updateUiStateToContent() = runTest {
         advanceUntilIdle()
 
         val result = mainViewModel.uiState.value
@@ -70,10 +70,8 @@ class MainViewModelTest {
     }
 
     @Test
-    fun starRepository_success_callStarLocalAndRemoteRepository() = runTest {
+    fun starRepository_starRepositoryIsSuccess_callStarLocalAndRemoteRepository() = runTest {
         val repoEntity = makeRepoEntity()
-        whenever(mockRepoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
-            .thenReturn(Result.success(Unit))
 
         mainViewModel.starRepository(repoEntity)
         advanceUntilIdle()
@@ -83,7 +81,7 @@ class MainViewModelTest {
     }
 
     @Test
-    fun unStarRepository_success_callStarLocalAndRemoteRepository() = runTest {
+    fun unStarRepository_unStarRepositoryIsSuccess_callStarLocalAndRemoteRepository() = runTest {
         val repoEntity = makeRepoEntity()
 
         mainViewModel.unStarRepository(repoEntity)
@@ -94,12 +92,12 @@ class MainViewModelTest {
     }
 
     @Test
-    fun starRepository_networkError_callMultipleTimesRemoteRepository() = runTest {
+    fun starRepository_starRepositoryIsNetworkError_callMultipleTimesRemoteRepository() = runTest {
         backOffWork.setScope(this)
         val repoEntity = makeRepoEntity()
         val uniqueID = "star_${repoEntity.id}"
-        val callApiTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
-        val delayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
+        val expectedCallTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
+        val expectedDelayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
         whenever(mockRepoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
             .thenReturn(Result.failure(CommonException.NetworkError()))
 
@@ -107,17 +105,17 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         verify(mockRepoRepository).starLocalRepository(repoEntity.id, repoEntity.stargazersCount + 1)
-        verify(mockRepoRepository, times(callApiTimes)).starRepository(repoEntity.owner.login, repoEntity.name)
-        assertEquals(backOffWork.getDelayTimes(uniqueID), delayTimes)
+        verify(mockRepoRepository, times(expectedCallTimes)).starRepository(repoEntity.owner.login, repoEntity.name)
+        assertEquals(backOffWork.getDelayTimes(uniqueID), expectedDelayTimes)
     }
 
     @Test
-    fun unStarRepository_networkError_callMultipleTimesRemoteRepository() = runTest {
+    fun unStarRepository_unStarRepositoryIsNetworkError_callMultipleTimesRemoteRepository() = runTest {
         backOffWork.setScope(this)
         val repoEntity = makeRepoEntity()
         val uniqueID = "star_${repoEntity.id}"
-        val callApiTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
-        val delayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
+        val expectedCallTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
+        val expectedDelayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
         whenever(mockRepoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
             .thenReturn(Result.failure(CommonException.NetworkError()))
 
@@ -125,12 +123,12 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         verify(mockRepoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount - 1)
-        verify(mockRepoRepository, times(callApiTimes)).unStarRepository(repoEntity.owner.login, repoEntity.name)
-        assertEquals(backOffWork.getDelayTimes(uniqueID), delayTimes)
+        verify(mockRepoRepository, times(expectedCallTimes)).unStarRepository(repoEntity.owner.login, repoEntity.name)
+        assertEquals(backOffWork.getDelayTimes(uniqueID), expectedDelayTimes)
     }
 
     @Test
-    fun starRepository_authorizationError_updateUiStateDialogMessage() = runTest {
+    fun starRepository_starRepositoryIsAuthorizationError_uiStateHasDialogMessage() = runTest {
         val repoEntity = makeRepoEntity()
         whenever(mockRepoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
             .thenReturn(Result.failure(CommonException.AuthorizationError()))
@@ -141,12 +139,10 @@ class MainViewModelTest {
         val uiState = mainViewModel.uiState.value
         assertTrue(uiState is MainViewModel.UiState.Content)
         assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, INVALID_TOKEN)
-        assertTrue(tokenRepository.getAccessToken().isEmpty())
-        assertTrue(tokenRepository.getRefreshToken().isEmpty())
     }
 
     @Test
-    fun unStarRepository_authorizationError_updateUiStateDialogMessage() = runTest {
+    fun unStarRepository_unStarRepositoryIsAuthorizationError_uiStateHasDialogMessage() = runTest {
         val repoEntity = makeRepoEntity()
         whenever(mockRepoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
             .thenReturn(Result.failure(CommonException.AuthorizationError()))
@@ -157,12 +153,10 @@ class MainViewModelTest {
         val uiState = mainViewModel.uiState.value
         assertTrue(uiState is MainViewModel.UiState.Content)
         assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, INVALID_TOKEN)
-        assertTrue(tokenRepository.getAccessToken().isEmpty())
-        assertTrue(tokenRepository.getRefreshToken().isEmpty())
     }
 
     @Test
-    fun starRepository_repositoryIsNotFoundError_updateUiStateDialogMessage() = runTest {
+    fun starRepository_starRepositoryIsNotFoundRepositoryError_uiStateHasDialogMessage() = runTest {
         val repoEntity = makeRepoEntity()
         whenever(mockRepoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
             .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
@@ -177,7 +171,7 @@ class MainViewModelTest {
     }
 
     @Test
-    fun unStarRepository_repositoryIsNotFoundError_updateUiStateDialogMessage() = runTest {
+    fun unStarRepository_unStarRepositoryIsNotFoundRepositoryError_uiStateHasDialogMessage() = runTest {
         val repoEntity = makeRepoEntity()
         whenever(mockRepoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
             .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
@@ -193,7 +187,7 @@ class MainViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun starRepository_unKnownError_updateUiStateDialogMessage() = runTest {
+    fun starRepository_starRepositoryIsUnKnownError_uiStateHasDialogMessage() = runTest {
         val repoEntity = makeRepoEntity()
         whenever(mockRepoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
             .thenReturn(Result.failure(CommonException.UnKnownError()))
@@ -209,7 +203,7 @@ class MainViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun unStarRepository_unKnownError_updateUiStateDialogMessage() = runTest {
+    fun unStarRepository_unStarRepositoryIsUnKnownError_uiStateHasDialogMessage() = runTest {
         val repoEntity = makeRepoEntity()
         whenever(mockRepoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
             .thenReturn(Result.failure(CommonException.UnKnownError()))

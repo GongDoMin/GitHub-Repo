@@ -101,7 +101,7 @@ class FakeRepoRepository @Inject constructor(
         }
 
         try {
-            val response = makeRepoEntityList(page - 1)
+            val response = makeRepoEntityList(page)
 
             repositoryDatabase.withTransaction {
                 if (loadType == LoadType.REFRESH) {
@@ -152,7 +152,14 @@ class FakeRepoRepository @Inject constructor(
 
         repeat(10) {
             pagingData.add(
-                RepoEntity(id = it + (10 * page), name = "test ${it + (10 * page)}", owner = OwnerEntity("login ${it + (10 * page)}", "avatarUrl ${it + (10 * page)}"), stargazersCount = 5, updatedAt = "update", isStarred = null)
+                RepoEntity(
+                    id = it + (10 * (page - 1)),
+                    name = "test ${it + (10 * (page - 1))}",
+                    owner = OwnerEntity("login ${it + (10 * (page - 1))}", "avatarUrl ${it + (10 * (page - 1))}"),
+                    stargazersCount = 5,
+                    updatedAt = "update",
+                    isStarred = null
+                )
             )
         }
         // listOf(

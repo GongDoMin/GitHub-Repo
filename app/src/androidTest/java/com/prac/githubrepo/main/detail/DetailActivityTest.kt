@@ -3,6 +3,7 @@ package com.prac.githubrepo.main.detail
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
@@ -62,6 +63,9 @@ class DetailActivityTest {
 
     @Test
     fun detailActivity_displayInUI() {
+        // 데이터 형식은 아래과 같음
+        // RepoEntity(id = 0, name = "test 0", owner = OwnerEntity("login 0", "avatarUrl 0"), stargazersCount = 5, updatedAt = "update", isStarred = true),
+        // RepoEntity(id = 1, name = "test 1", owner = OwnerEntity("login 1", "avatarUrl 1"), stargazersCount = 5, updatedAt = "update", isStarred = false),
         val clickPosition = 0
         val expectedRepoName = "test 0"
         val expectedUserName = "login 0"
@@ -80,9 +84,10 @@ class DetailActivityTest {
     }
 
     @Test
-    fun detailActivity_clickStarImageView() {
+    fun clickStarImageView_starImageDrawableToUnStarImageDrawable_and_starCountMinusOne() {
         val clickPosition = 0
         val expectedStarDrawable = unStarDrawable
+        val expectedStarCount = 4
         onView(withId(R.id.rvMain))
             .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(clickPosition, ViewActions.click()))
         intended(hasComponent(DetailActivity::class.java.name))
@@ -90,12 +95,15 @@ class DetailActivityTest {
         onView(withId(R.id.ivStar))
             .perform(waitForImageChange())
             .check(matches(matchesImageViewDrawable(expectedStarDrawable)))
+        onView(withId(R.id.tvStarCount))
+            .check(matches(matchesStarCount(expectedStarCount)))
     }
 
     @Test
-    fun detailActivity_clickStarUnImageView() {
+    fun clickUnStarImageView_unStarImageDrawableToStarImageDrawable_and_starCountPlusOne() {
         val clickPosition = 1
         val expectedStarDrawable = starDrawable
+        val expectedStarCount = 6
         onView(withId(R.id.rvMain))
             .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(clickPosition, ViewActions.click()))
         intended(hasComponent(DetailActivity::class.java.name))
@@ -103,12 +111,21 @@ class DetailActivityTest {
         onView(withId(R.id.ivStar))
             .perform(waitForImageChange())
             .check(matches(matchesImageViewDrawable(expectedStarDrawable)))
+        onView(withId(R.id.tvStarCount))
+            .check(matches(matchesStarCount(expectedStarCount)))
     }
 
     private fun matchesImageViewDrawable(drawable: Drawable): Matcher<View> {
         return object : CustomTypeSafeMatcher<View>("get matched view is ImageView and view drawable") {
             override fun matchesSafely(item: View): Boolean =
                 (item as ImageView).drawable?.constantState == drawable.constantState
+        }
+    }
+
+    private fun matchesStarCount(expectedStarCount: Int): Matcher<View> {
+        return object : CustomTypeSafeMatcher<View>("get matched view is ImageView and view drawable") {
+            override fun matchesSafely(item: View): Boolean =
+                (item as TextView).text == "별 ${expectedStarCount}개"
         }
     }
 

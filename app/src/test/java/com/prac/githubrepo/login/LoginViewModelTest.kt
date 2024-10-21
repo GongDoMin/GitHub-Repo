@@ -26,8 +26,7 @@ class LoginViewModelTest {
 
     @Test
     fun checkAutoLogin_userIsLoggedIn_eventSuccess() = runTest {
-        tokenRepository = FakeTokenRepository()
-        tokenRepository.setInitialToken()
+        tokenRepository = FakeTokenRepository().apply { setInitialToken() }
         loginViewModel = LoginViewModel(tokenRepository, standardTestDispatcherRule.testDispatcher)
 
         val result = loginViewModel.event.first()
@@ -36,7 +35,7 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun checkAutoLogin_userIsNotLoggedIn() = runTest {
+    fun checkAutoLogin_userIsNotLoggedIn_eventIsNotChanged() = runTest {
         tokenRepository = FakeTokenRepository()
         loginViewModel = LoginViewModel(tokenRepository, standardTestDispatcherRule.testDispatcher)
 
@@ -47,22 +46,24 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun loginWithGitHub_updateSuccessEvent() = runTest {
+    fun loginWithGitHub_apiCallIsSuccess_successEvent() = runTest {
+        val code = "success"
         tokenRepository = FakeTokenRepository()
         loginViewModel = LoginViewModel(tokenRepository, standardTestDispatcherRule.testDispatcher)
 
-        loginViewModel.loginWithGitHub("success")
+        loginViewModel.loginWithGitHub(code)
 
         val event = loginViewModel.event.first()
         assertTrue(event is LoginViewModel.Event.Success)
     }
 
     @Test
-    fun loginWithGitHub_networkError_updateUiStateToError() = runTest {
+    fun loginWithGitHub_apiCallIsNetworkError_uiStateIsError() = runTest {
+        val code = "ioException"
         tokenRepository = FakeTokenRepository()
         loginViewModel = LoginViewModel(tokenRepository, standardTestDispatcherRule.testDispatcher)
 
-        loginViewModel.loginWithGitHub("ioException")
+        loginViewModel.loginWithGitHub(code)
         advanceUntilIdle()
 
         val uiState = loginViewModel.uiState.value
@@ -71,11 +72,12 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun loginWithGitHub_authorizationError_updateUiStateToError() = runTest {
+    fun loginWithGitHub_apiCallIsAuthorizationError_uiStateIsError() = runTest {
+        val code = "else"
         tokenRepository = FakeTokenRepository()
         loginViewModel = LoginViewModel(tokenRepository, standardTestDispatcherRule.testDispatcher)
 
-        loginViewModel.loginWithGitHub("else")
+        loginViewModel.loginWithGitHub(code)
         advanceUntilIdle()
 
         val uiState = loginViewModel.uiState.value
