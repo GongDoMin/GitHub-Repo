@@ -12,8 +12,6 @@ import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoDetailEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.data.repository.RepoRepository
-import com.prac.data.repository.model.OwnerModel
-import com.prac.data.repository.model.RepoDetailModel
 import com.prac.local.room.database.RepositoryDatabase
 import com.prac.local.room.entity.Owner
 import com.prac.local.room.entity.RemoteKey
@@ -45,13 +43,9 @@ class FakeRepoRepository @Inject constructor(
 
     override suspend fun getRepository(userName: String, repoName: String): Result<RepoDetailEntity> {
         val id = userName.split(" ")[1] // userName 은 "login id" 형식으로 되어있다.
-        val model = RepoDetailModel(id.toInt(), "test $id", OwnerModel("login $id", "avatarUrl $id"), 5, 5)
+        val entity = RepoDetailEntity(id.toInt(), "test $id", OwnerEntity("login $id", "avatarUrl $id"), 5, 5, null)
 
-        return Result.success(
-            RepoDetailEntity(
-                model.id, model.name, OwnerEntity(model.owner.login, model.owner.avatarUrl), model.stargazersCount, model.forksCount, null
-            )
-        )
+        return Result.success(entity)
     }
 
     override suspend fun getStarStateAndStarCount(id: Int): Flow<Pair<Boolean?, Int?>> {
