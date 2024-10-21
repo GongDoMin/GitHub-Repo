@@ -38,7 +38,7 @@ class FakeRepoRepository @Inject constructor(
         ).flow
             .map { pagingData ->
                 pagingData.map { repository ->
-                    RepoEntity(repository.id, repository.name, OwnerEntity(repository.owner.login, repository.owner.avatarUrl), repository.stargazersCount, repository.updatedAt, repository.isStarred)
+                    RepoEntity(repository.id, repository.name, OwnerEntity(repository.owner.login, repository.owner.avatarUrl), repository.stargazersCount, repository.defaultBranch, repository.updatedAt, repository.isStarred)
                 }
             }
     }
