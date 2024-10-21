@@ -1,4 +1,4 @@
-package com.prac.data.repository.di
+package com.prac.data.di
 
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository

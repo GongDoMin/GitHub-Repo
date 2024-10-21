@@ -5,7 +5,7 @@ import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
-import com.prac.data.fake.repository.FakeTokenRepository
+import com.prac.data.fake.FakeTokenRepository
 import com.prac.data.repository.RepoRepository
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN

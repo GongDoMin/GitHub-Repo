@@ -1,10 +1,9 @@
-package com.prac.data.fake.di
+package com.prac.data.di
 
-import com.prac.data.fake.repository.FakeRepoRepository
-import com.prac.data.fake.repository.FakeTokenRepository
+import com.prac.data.fake.FakeRepoRepository
+import com.prac.data.fake.FakeTokenRepository
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
-import com.prac.data.repository.di.RepositoryModule
 import com.prac.local.room.database.RepositoryDatabase
 import dagger.Module
 import dagger.Provides
