@@ -1,6 +1,6 @@
 package com.prac.githubrepo.login
 
-import com.prac.data.fake.repository.FakeTokenRepository
+import com.prac.data.fake.FakeTokenRepository
 import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.LOGIN_FAIL
 import com.prac.githubrepo.util.StandardTestDispatcherRule
@@ -13,7 +13,6 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
-import java.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LoginViewModelTest {
