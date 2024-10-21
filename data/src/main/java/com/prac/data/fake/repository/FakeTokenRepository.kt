@@ -2,7 +2,7 @@ package com.prac.data.fake.repository
 
 import com.prac.data.exception.CommonException
 import com.prac.data.repository.TokenRepository
-import com.prac.data.source.local.datastore.token.TokenLocalDto
+import com.prac.local.datastore.token.TokenLocalDto
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
