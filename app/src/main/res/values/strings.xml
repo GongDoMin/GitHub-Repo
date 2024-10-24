@@ -5,6 +5,8 @@
 
     <string name="retry">재시도</string>
 
+    <string name="login">로그인</string>
+    <string name="login_description">개인 계정을 사용해서 GitHub.com 에 로그인</string>
     <string name="login_github_login">GitHub Login</string>
 
     <string name="main_title">Repository</string>
