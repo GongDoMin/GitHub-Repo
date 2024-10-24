@@ -39,7 +39,11 @@ internal class RepoRepositoryImpl @Inject constructor(
         return Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
-                enablePlaceholders = false
+                enablePlaceholders = true
+                // Warning: If you use a RemoteMediator to fetch data from a network service, make sure to provide realistically sized placeholder items.
+                // If you use a RemoteMediator, it will be repeatedly invoked to fetch new data, up until the screen has been filled with content.
+                // If small placeholders are provided (or no placeholder at all), the screen might never be filled, and your app will fetch many pages of data.
+                // false -> true
             ),
             remoteMediator = this,
             pagingSourceFactory = { repositoryDatabase.repositoryDao().getRepositories() }

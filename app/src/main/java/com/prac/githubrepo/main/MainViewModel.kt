@@ -1,5 +1,8 @@
 package com.prac.githubrepo.main
 
+import android.util.SparseArray
+import android.util.SparseBooleanArray
+import android.util.SparseIntArray
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.CombinedLoadStates
@@ -18,10 +21,14 @@ import com.prac.githubrepo.di.IODispatcher
 import com.prac.githubrepo.util.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -34,15 +41,10 @@ class MainViewModel @Inject constructor(
     private val backOffWorkManager: BackOffWorkManager,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    sealed class UiState {
-        data object Idle : UiState()
-
-        data class Content(
-            val repositories : PagingData<RepoEntity>,
-            val loadState: LoadState? = null,
-            val dialogMessage: String = ""
-        ) : UiState()
-    }
+    data class Content(
+        val repositories : Flow<PagingData<RepoEntity>> = flow { emit(PagingData.empty()) },
+        val dialogMessage: String = ""
+    )
 
     sealed class SideEffect {
         data object LogoutDialogDismiss : SideEffect()
@@ -52,11 +54,13 @@ class MainViewModel @Inject constructor(
         data class RepositoryClick(val repoEntity: RepoEntity) : SideEffect()
     }
 
-    private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
+    private val _uiState = MutableStateFlow(Content())
     val uiState = _uiState.asStateFlow()
 
     private val _sideEffect = MutableSharedFlow<SideEffect>()
     val sideEffect = _sideEffect.asSharedFlow()
+
+    private val _starRequestJobManager: SparseArray<Unit> = SparseArray()
 
     fun setSideEffect(sideEffect: SideEffect) {
         viewModelScope.launch {
@@ -66,19 +70,19 @@ class MainViewModel @Inject constructor(
 
     private fun getRepositories() {
         viewModelScope.launch {
-            if (_uiState.value != UiState.Idle) return@launch
-
-            repoRepository.getRepositories().cachedIn(viewModelScope).collect { pagingData ->
-                _uiState.update { UiState.Content(pagingData) }
-            }
+            _uiState.update { Content(repositories = repoRepository.getRepositories().cachedIn(viewModelScope)) }
         }
     }
 
-    private fun updateLoadState(loadState: LoadState) {
-        if (_uiState.value !is UiState.Content) return
+    fun fetchStarState(repoEntity: RepoEntity) {
+        if (_starRequestJobManager[repoEntity.id] == null) {
+            _starRequestJobManager.put(repoEntity.id, Unit)
 
-        _uiState.update {
-            (it as UiState.Content).copy(loadState = loadState)
+            viewModelScope.launch(ioDispatcher) {
+                repoRepository.isStarred(repoEntity.id, repoEntity.name)
+
+                _starRequestJobManager.remove(repoEntity.id)
+            }
         }
     }
 
@@ -104,15 +108,19 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun handleLoadStates(combinedLoadStates: CombinedLoadStates) {
+    fun handleLoadStates(combinedLoadStates: CombinedLoadStates) : LoadState? {
         if (combinedLoadStates.refresh is LoadState.Error) {
             if ((combinedLoadStates.refresh as LoadState.Error).error !is IOException) {
                 viewModelScope.launch(ioDispatcher) {
                     logout()
                 }
-                return
+                return null
             }
-            updateLoadState(combinedLoadStates.refresh)
+            return combinedLoadStates.refresh
+        }
+
+        if (combinedLoadStates.refresh is LoadState.Loading) {
+            return combinedLoadStates.refresh
         }
 
         if (combinedLoadStates.append is LoadState.Error) {
@@ -120,12 +128,12 @@ class MainViewModel @Inject constructor(
                 viewModelScope.launch(ioDispatcher) {
                     logout()
                 }
-                return
+                return null
             }
-            updateLoadState(combinedLoadStates.append)
+            return combinedLoadStates.append
         }
 
-        updateLoadState(combinedLoadStates.append)
+        return combinedLoadStates.append
     }
 
     private suspend fun logout() {
@@ -133,7 +141,7 @@ class MainViewModel @Inject constructor(
         backOffWorkManager.clearWork()
 
         _uiState.update {
-            (it as UiState.Content).copy(dialogMessage = INVALID_TOKEN)
+            it.copy(dialogMessage = INVALID_TOKEN)
         }
     }
 
@@ -151,12 +159,12 @@ class MainViewModel @Inject constructor(
             is RepositoryException.NotFoundRepository -> {
                 repoRepository.unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
 
-                _uiState.update { (it as UiState.Content).copy(dialogMessage = INVALID_REPOSITORY) }
+                _uiState.update { it.copy(dialogMessage = INVALID_REPOSITORY) }
             }
             else -> {
                 repoRepository.unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
 
-                _uiState.update { (it as UiState.Content).copy(dialogMessage = UNKNOWN) }
+                _uiState.update { it.copy(dialogMessage = UNKNOWN) }
             }
         }
     }
@@ -175,12 +183,12 @@ class MainViewModel @Inject constructor(
             is RepositoryException.NotFoundRepository -> {
                 repoRepository.starLocalRepository(repoEntity.id, repoEntity.stargazersCount)
 
-                _uiState.update { (it as UiState.Content).copy(dialogMessage = INVALID_REPOSITORY) }
+                _uiState.update { it.copy(dialogMessage = INVALID_REPOSITORY) }
             }
             else -> {
                 repoRepository.starLocalRepository(repoEntity.id, repoEntity.stargazersCount)
 
-                _uiState.update { (it as UiState.Content).copy(dialogMessage = UNKNOWN) }
+                _uiState.update { it.copy(dialogMessage = UNKNOWN) }
             }
         }
     }
