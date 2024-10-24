@@ -8,8 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.paging.CombinedLoadStates
-import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.prac.data.entity.RepoEntity
@@ -17,14 +15,13 @@ import com.prac.githubrepo.R
 import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.databinding.ActivityMainBinding
 import com.prac.githubrepo.login.LoginActivity
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
-import com.prac.githubrepo.main.MainViewModel.UiState
 import com.prac.githubrepo.main.MainViewModel.SideEffect
 import com.prac.githubrepo.main.detail.DetailActivity
 import com.prac.githubrepo.main.request.StarStateRequestBuilder
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import java.io.IOException
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -90,27 +87,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private suspend fun UiState.handleUiState() {
-        when (this) {
-            is UiState.Idle -> { }
-            is UiState.Content -> {
-                if (dialogMessage.isNotEmpty()) {
-                    AlertDialog.Builder(this@MainActivity)
-                        .setMessage(dialogMessage)
-                        .setPositiveButton(R.string.check) { dialog, _ ->
-                            dialog.dismiss()
-                        }
-                        .setOnDismissListener {
-                            handleDialogMessage(dialogMessage)
-                        }
-                        .show()
+    private suspend fun MainViewModel.Content.handleUiState() {
+        if (dialogMessage.isNotEmpty()) {
+            AlertDialog.Builder(this@MainActivity)
+                .setMessage(dialogMessage)
+                .setPositiveButton(R.string.check) { dialog, _ ->
+                    dialog.dismiss()
                 }
-
-                this.loadState?.let { retryFooterAdapter.loadState = it }
-
-                mainAdapter.submitData(this.repositories)
-            }
+                .setOnDismissListener {
+                    handleDialogMessage(dialogMessage)
+                }
+                .show()
         }
+
+        this.loadState?.let { retryFooterAdapter.loadState = it }
+
+        mainAdapter.submitData(this.repositories.first())
     }
 
     private fun SideEffect.handleSideEffect() {
