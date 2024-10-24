@@ -1,5 +1,8 @@
 package com.prac.githubrepo.main
 
+import android.util.SparseArray
+import android.util.SparseBooleanArray
+import android.util.SparseIntArray
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.CombinedLoadStates
@@ -18,6 +21,8 @@ import com.prac.githubrepo.di.IODispatcher
 import com.prac.githubrepo.util.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,6 +60,8 @@ class MainViewModel @Inject constructor(
     private val _sideEffect = MutableSharedFlow<SideEffect>()
     val sideEffect = _sideEffect.asSharedFlow()
 
+    private val _starRequestJobManager: SparseArray<Unit> = SparseArray()
+
     fun setSideEffect(sideEffect: SideEffect) {
         viewModelScope.launch {
             _sideEffect.emit(sideEffect)
@@ -63,8 +70,18 @@ class MainViewModel @Inject constructor(
 
     private fun getRepositories() {
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(repositories = repoRepository.getRepositories().cachedIn(viewModelScope))
+            _uiState.update { Content(repositories = repoRepository.getRepositories().cachedIn(viewModelScope)) }
+        }
+    }
+
+    fun fetchStarState(repoEntity: RepoEntity) {
+        if (_starRequestJobManager[repoEntity.id] == null) {
+            _starRequestJobManager.put(repoEntity.id, Unit)
+
+            viewModelScope.launch(ioDispatcher) {
+                repoRepository.isStarred(repoEntity.id, repoEntity.name)
+
+                _starRequestJobManager.remove(repoEntity.id)
             }
         }
     }
@@ -91,15 +108,19 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun handleLoadStates(combinedLoadStates: CombinedLoadStates) {
+    fun handleLoadStates(combinedLoadStates: CombinedLoadStates) : LoadState? {
         if (combinedLoadStates.refresh is LoadState.Error) {
             if ((combinedLoadStates.refresh as LoadState.Error).error !is IOException) {
                 viewModelScope.launch(ioDispatcher) {
                     logout()
                 }
-                return
+                return null
             }
-            updateLoadState(combinedLoadStates.refresh)
+            return combinedLoadStates.refresh
+        }
+
+        if (combinedLoadStates.refresh is LoadState.Loading) {
+            return combinedLoadStates.refresh
         }
 
         if (combinedLoadStates.append is LoadState.Error) {
@@ -107,12 +128,12 @@ class MainViewModel @Inject constructor(
                 viewModelScope.launch(ioDispatcher) {
                     logout()
                 }
-                return
+                return null
             }
-            updateLoadState(combinedLoadStates.append)
+            return combinedLoadStates.append
         }
 
-        updateLoadState(combinedLoadStates.append)
+        return combinedLoadStates.append
     }
 
     private suspend fun logout() {

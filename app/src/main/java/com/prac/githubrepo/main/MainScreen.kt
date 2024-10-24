@@ -23,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.CombinedLoadStates
@@ -46,8 +45,8 @@ fun MainScreen(
 
     MainContent(
         content = uiState.value,
-        handleLoadState = { null }, // TODO
-        starStateRequest = { }, // TODO
+        handleLoadState = { viewModel.handleLoadStates(it) },
+        starStateRequest = { viewModel.fetchStarState(it) },
         onClickStar = { viewModel.setSideEffect(MainViewModel.SideEffect.StarClick(it)) },
         onClickUnStar = { viewModel.setSideEffect(MainViewModel.SideEffect.UnStarClick(it)) },
         onClickRepository = { viewModel.setSideEffect(MainViewModel.SideEffect.RepositoryClick(it)) },
