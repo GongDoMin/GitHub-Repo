@@ -9,6 +9,7 @@
     <string name="login_description">개인 계정을 사용해서 GitHub.com 에 로그인</string>
     <string name="login_github_login">GitHub Login</string>
 
+    <string name="repository">레파지토리</string>
     <string name="main_title">Repository</string>
 
     <string name="requestID">requestID</string>
