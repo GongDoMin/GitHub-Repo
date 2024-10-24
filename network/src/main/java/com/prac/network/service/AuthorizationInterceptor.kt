@@ -1,10 +1,12 @@
 package com.prac.network.service
 
 import com.prac.local.TokenLocalDataSource
+import com.prac.local.datastore.token.TokenLocalDto
 import com.prac.network.AuthApiDataSource
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
+import java.time.ZonedDateTime
 import javax.inject.Inject
 
 internal class AuthorizationInterceptor @Inject constructor(
@@ -24,7 +26,16 @@ internal class AuthorizationInterceptor @Inject constructor(
 
                     runBlocking {
                         try {
-                            authApiDataSource.refreshAccessToken(tokenLocalDataSource.getToken().refreshToken)
+                            val response = authApiDataSource.refreshAccessToken(tokenLocalDataSource.getToken().refreshToken)
+                            tokenLocalDataSource.setToken(
+                                TokenLocalDto(
+                                    accessToken = response.accessToken,
+                                    refreshToken = response.refreshToken,
+                                    expiresInSeconds = response.expiresIn,
+                                    refreshTokenExpiresInSeconds = response.refreshTokenExpiresIn,
+                                    updatedAt = ZonedDateTime.now()
+                                )
+                            )
                         } catch (e: Exception) {
                             tokenLocalDataSource.clearToken()
                         }
