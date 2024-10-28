@@ -20,9 +20,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.CombinedLoadStates
@@ -36,6 +38,7 @@ import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.util.ErrorAlertDialog
 import com.prac.githubrepo.util.UserProfile
+import com.prac.githubrepo.util.drawableID
 
 @Composable
 fun MainScreen(
@@ -113,7 +116,10 @@ fun MainContentBody(
     onClickUnStar: (RepoEntity) -> Unit,
     onClickRepository: (RepoEntity) -> Unit
 ) {
-    LazyColumn{
+    LazyColumn(
+        modifier = Modifier
+            .testTag("lazyColumn")
+    ) {
         items(
             count = repositories.itemCount,
             key = repositories.itemKey { it.id }
@@ -249,7 +255,8 @@ fun MainContentItemStar(
                         if (repo.isStarred == true) onClickStar(repo)
                         else onClickUnStar(repo)
                     }
-                ),
+                )
+                .semantics { drawableID = if (repo.isStarred == true) R.drawable.img_star else R.drawable.img_unstar },
             painter = painterResource(id = if (repo.isStarred == true) R.drawable.img_star else R.drawable.img_unstar),
             contentDescription = null
         )

@@ -21,9 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.core.util.Consumer
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -34,6 +36,8 @@ import com.prac.githubrepo.R
 import com.prac.githubrepo.util.ErrorAlertDialog
 import com.prac.githubrepo.util.LoadingContent
 import com.prac.githubrepo.util.bounceClick
+import com.prac.githubrepo.util.buttonID
+import com.prac.githubrepo.util.drawableID
 
 @Composable
 fun LoginScreen(
@@ -100,7 +104,8 @@ fun LoginContent(
                     .size(dimensionResource(id = R.dimen.login_icon))
                     .padding(
                         bottom = dimensionResource(id = R.dimen.padding_normal)
-                    ),
+                    )
+                    .semantics { drawableID = R.drawable.img_github_icon },
                 painter = painterResource(id = R.drawable.img_github_icon),
                 contentDescription = null
             )
@@ -136,7 +141,8 @@ fun LoginButton() {
         },
         modifier = Modifier
             .fillMaxWidth()
-            .bounceClick(),
+            .bounceClick()
+            .semantics { buttonID = R.string.login },
         colors = ButtonColors(
             containerColor = Color.Black,
             contentColor = Color.White,
