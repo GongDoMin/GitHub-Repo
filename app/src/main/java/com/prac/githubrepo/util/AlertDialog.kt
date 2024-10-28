@@ -39,3 +39,48 @@ fun ErrorAlertDialog(
         }
     )
 }
+
+@Composable
+fun BasicAlertDialog(
+    onDismissRequest: () -> Unit,
+    onClickCheckButton: () -> Unit,
+    dialogMessage: String
+) {
+    AlertDialog(
+        modifier = Modifier
+            .fillMaxWidth(),
+        onDismissRequest = onDismissRequest,
+        text = { Text(dialogMessage) }, // 내용
+        confirmButton = {
+            Button(
+                onClick = onDismissRequest,
+                colors = ButtonColors(
+                    containerColor = Color.Red,
+                    contentColor = Color.White,
+                    disabledContainerColor = Color.Red.copy(alpha = 0.3f),
+                    disabledContentColor = Color.White
+                )
+            ) {
+                Text(
+                    text = stringResource(id = R.string.cancel),
+                    color = Color.White
+                )
+            }
+
+            Button(
+                onClick = onClickCheckButton,
+                colors = ButtonColors(
+                    containerColor = Color.Black,
+                    contentColor = Color.White,
+                    disabledContainerColor = Color.Gray,
+                    disabledContentColor = Color.White
+                )
+            ) {
+                Text(
+                    text = stringResource(id = R.string.check),
+                    color = Color.White
+                )
+            }
+        }
+    )
+}
