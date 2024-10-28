@@ -42,7 +42,6 @@ class MainViewModelTest {
 
     private lateinit var mainViewModel: MainViewModel
 
-
     @Before
     fun setUp() = runTest {
         tokenRepository = FakeTokenRepository().apply { setInitialToken() }
@@ -58,15 +57,6 @@ class MainViewModelTest {
     fun tearDown() {
         backOffWork.clearWork()
         backOffWork.clearDelayTimes()
-    }
-
-    @Test
-    fun getRepositories_getRepositoriesIsSuccess_updateUiStateToContent() = runTest {
-        advanceUntilIdle()
-
-        val result = mainViewModel.uiState.value
-
-        assertTrue(result is MainViewModel.UiState.Content)
     }
 
     @Test
@@ -137,8 +127,7 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         val uiState = mainViewModel.uiState.value
-        assertTrue(uiState is MainViewModel.UiState.Content)
-        assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, INVALID_TOKEN)
+        assertEquals(uiState.dialogMessage, INVALID_TOKEN)
     }
 
     @Test
@@ -151,8 +140,7 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         val uiState = mainViewModel.uiState.value
-        assertTrue(uiState is MainViewModel.UiState.Content)
-        assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, INVALID_TOKEN)
+        assertEquals(uiState.dialogMessage, INVALID_TOKEN)
     }
 
     @Test
@@ -165,8 +153,7 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         val uiState = mainViewModel.uiState.value
-        assertTrue(uiState is MainViewModel.UiState.Content)
-        assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, INVALID_REPOSITORY)
+        assertEquals(uiState.dialogMessage, INVALID_REPOSITORY)
         verify(mockRepoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
     }
 
@@ -180,8 +167,7 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         val uiState = mainViewModel.uiState.value
-        assertTrue(uiState is MainViewModel.UiState.Content)
-        assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, INVALID_REPOSITORY)
+        assertEquals(uiState.dialogMessage, INVALID_REPOSITORY)
         verify(mockRepoRepository).starLocalRepository(repoEntity.id, repoEntity.stargazersCount)
     }
 
@@ -196,8 +182,7 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         val uiState = mainViewModel.uiState.value
-        assertTrue(uiState is MainViewModel.UiState.Content)
-        assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, UNKNOWN)
+        assertEquals(uiState.dialogMessage, UNKNOWN)
         verify(mockRepoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
     }
 
@@ -212,8 +197,7 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         val uiState = mainViewModel.uiState.value
-        assertTrue(uiState is MainViewModel.UiState.Content)
-        assertEquals((uiState as MainViewModel.UiState.Content).dialogMessage, UNKNOWN)
+        assertEquals(uiState.dialogMessage, UNKNOWN)
         verify(mockRepoRepository).starLocalRepository(repoEntity.id, repoEntity.stargazersCount)
     }
 
@@ -223,6 +207,7 @@ class MainViewModelTest {
             name = "name",
             owner = OwnerEntity(login = "login", avatarUrl = "avatarUrl"),
             stargazersCount = 10,
+            defaultBranch = "master",
             updatedAt = "updatedAt",
             isStarred = null
         )
