@@ -1,8 +1,6 @@
 package com.prac.githubrepo.main
 
 import android.util.SparseArray
-import android.util.SparseBooleanArray
-import android.util.SparseIntArray
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.CombinedLoadStates
@@ -21,12 +19,8 @@ import com.prac.githubrepo.di.IODispatcher
 import com.prac.githubrepo.util.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
@@ -41,36 +35,19 @@ class MainViewModel @Inject constructor(
     private val backOffWorkManager: BackOffWorkManager,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    data class Content(
+    data class UiState(
         val repositories : Flow<PagingData<RepoEntity>> = flow { emit(PagingData.empty()) },
         val dialogMessage: String = ""
     )
 
-    sealed class SideEffect {
-        data object LogoutDialogDismiss : SideEffect()
-        data object StarDialogDismiss : SideEffect()
-        data class StarClick(val repoEntity: RepoEntity) : SideEffect()
-        data class UnStarClick(val repoEntity: RepoEntity) : SideEffect()
-        data class RepositoryClick(val repoEntity: RepoEntity) : SideEffect()
-    }
-
-    private val _uiState = MutableStateFlow(Content())
+    private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
-
-    private val _sideEffect = MutableSharedFlow<SideEffect>()
-    val sideEffect = _sideEffect.asSharedFlow()
 
     private val _starRequestJobManager: SparseArray<Unit> = SparseArray()
 
-    fun setSideEffect(sideEffect: SideEffect) {
-        viewModelScope.launch {
-            _sideEffect.emit(sideEffect)
-        }
-    }
-
     private fun getRepositories() {
         viewModelScope.launch {
-            _uiState.update { Content(repositories = repoRepository.getRepositories().cachedIn(viewModelScope)) }
+            _uiState.update { UiState(repositories = repoRepository.getRepositories().cachedIn(viewModelScope)) }
         }
     }
 
