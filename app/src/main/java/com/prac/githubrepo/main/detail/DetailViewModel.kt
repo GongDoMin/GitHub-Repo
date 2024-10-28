@@ -45,24 +45,8 @@ class DetailViewModel @Inject constructor(
         ) : UiState()
     }
 
-    sealed class SideEffect {
-        data object BasicDialogDismiss : SideEffect() // IOException, 404 에러의 alert dialog 가 dismiss 되는 경우
-        data object LogoutDialogDismiss : SideEffect()
-        data class StarClick(val repoDetailEntity: RepoDetailEntity) : SideEffect()
-        data class UnStarClick(val repoDetailEntity: RepoDetailEntity) : SideEffect()
-    }
-
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
     val uiState = _uiState.asStateFlow()
-
-    private val _sideEffect = MutableSharedFlow<SideEffect>()
-    val sideEffect = _sideEffect.asSharedFlow()
-
-    fun setSideEffect(sideEffect: SideEffect) {
-        viewModelScope.launch {
-            _sideEffect.emit(sideEffect)
-        }
-    }
 
     fun getRepository(userName: String?, repoName: String?) {
         if (_uiState.value != UiState.Idle) return
