@@ -8,7 +8,7 @@ kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
-espressoCore = "3.6.1"
+espressoCore = "3.5.0"
 appcompat = "1.7.0"
 material = "1.12.0"
 activity = "1.9.0"
@@ -23,7 +23,7 @@ okhttp = "4.12.0"
 pagingCompose = "3.3.2"
 retrofit = "2.11.0"
 rules = "1.6.1"
-runner = "1.6.2"
+runner = "1.5.0"
 serialization-converter = "1.0.0"
 kotlinx-serialization = "1.7.1"
 viewModel = "2.4.0"
@@ -42,6 +42,7 @@ protobuf = "0.9.1"
 # common
 hilt = "2.51.1"
 junitKtx = "1.2.1"
+uiTestJunit4Android = "1.7.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -95,6 +96,7 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 androidx-room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
+androidx-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android", version.ref = "uiTestJunit4Android" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

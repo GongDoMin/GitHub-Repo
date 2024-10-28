@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,6 +28,7 @@ import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.util.ErrorAlertDialog
 import com.prac.githubrepo.util.LoadingContent
 import com.prac.githubrepo.util.UserProfile
+import com.prac.githubrepo.util.drawableID
 
 @Composable
 fun DetailScreen(
@@ -156,7 +158,8 @@ fun DetailContentStarAndFork(
                         if (repoDetail.isStarred == true) onClickStar(repoDetail)
                         else onClickUnStar(repoDetail)
                     }
-                ),
+                )
+                .semantics { drawableID = if (repoDetail.isStarred == true) R.drawable.img_star else R.drawable.img_unstar },
             painter = painterResource(id = if (repoDetail.isStarred == true) R.drawable.img_star else R.drawable.img_unstar),
             contentDescription = null
         )
@@ -169,7 +172,8 @@ fun DetailContentStarAndFork(
         Image(
             modifier = Modifier
                 .size(20.dp)
-                .padding(start = dimensionResource(id = R.dimen.padding_small)),
+                .padding(start = dimensionResource(id = R.dimen.padding_small))
+                .semantics { drawableID = R.drawable.img_fork },
             painter = painterResource(id = R.drawable.img_fork),
             contentDescription = null
         )

@@ -44,7 +44,13 @@ class FakeRepoRepository @Inject constructor(
     }
 
     override suspend fun getRepository(userName: String, repoName: String): Result<RepoDetailEntity> {
-        val id = userName.split(" ")[1] // userName 은 "login id" 형식으로 되어있다.
+        // DetailScreen 테스트를 위한 임시 데이터
+        val repositories = makeRepoEntityList(1).map {
+            Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.defaultBranch, it.updatedAt, null)
+        }
+        repositoryDatabase.repositoryDao().insertRepositories(repositories)
+
+        val id = userName.split(" ")[1]
         val entity = RepoDetailEntity(id.toInt(), "test $id", OwnerEntity("login $id", "avatarUrl $id"), 5, 5, null)
 
         return Result.success(entity)
