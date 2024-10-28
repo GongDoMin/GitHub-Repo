@@ -30,6 +30,7 @@ fun MainScreenPreview() {
         onClickStar = { },
         onClickUnStar = { },
         onClickRepository = { },
+        onClickSetting = { },
         onDismissRequest = { }
     )
 }
@@ -49,6 +50,7 @@ fun MainScreenNetworkFailurePreview() {
         onClickStar = { },
         onClickUnStar = { },
         onClickRepository = { },
+        onClickSetting = { },
         onDismissRequest = { }
     )
 }
@@ -68,6 +70,7 @@ fun MainScreenAuthorizationErrorPreview() {
         onClickStar = { },
         onClickUnStar = { },
         onClickRepository = { },
+        onClickSetting = { },
         onDismissRequest = { }
     )
 }
@@ -87,6 +90,7 @@ fun MainScreenNotFoundRepositoryErrorPreview() {
         onClickStar = { },
         onClickUnStar = { },
         onClickRepository = { },
+        onClickSetting = { },
         onDismissRequest = { }
     )
 }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
@@ -19,12 +20,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.CombinedLoadStates
@@ -44,7 +47,8 @@ import com.prac.githubrepo.util.drawableID
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
     onLogout: () -> Unit,
-    onClickRepository: (String, String) -> Unit
+    onClickRepository: (String, String) -> Unit,
+    onClickSetting: () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -55,6 +59,7 @@ fun MainScreen(
         onClickStar = viewModel::unStarRepository,
         onClickUnStar = viewModel::starRepository,
         onClickRepository = { onClickRepository(it.owner.login, it.name) },
+        onClickSetting = onClickSetting,
         onDismissRequest = { dialogMessage -> if (dialogMessage == INVALID_TOKEN) onLogout() }
     )
 }
@@ -67,16 +72,18 @@ fun MainContent(
     onClickStar: (RepoEntity) -> Unit,
     onClickUnStar: (RepoEntity) -> Unit,
     onClickRepository: (RepoEntity) -> Unit,
+    onClickSetting: () -> Unit,
     onDismissRequest: (String) -> Unit
 ) {
     val repositories = uiState.repositories.collectAsLazyPagingItems()
 
     Column(
         modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxSize()
     ) {
-        MainContentTitle()
+        MainContentHeader(
+            onClickSetting = onClickSetting
+        )
 
         MainContentBody(
             repositories = repositories,
@@ -97,14 +104,48 @@ fun MainContent(
 }
 
 @Composable
-fun MainContentTitle() {
-    Text(
+fun MainContentHeader(
+    onClickSetting: () -> Unit
+) {
+    ConstraintLayout(
         modifier = Modifier
-            .padding(
-                top = dimensionResource(id = R.dimen.padding_normal)
-            ),
-        text = stringResource(id = R.string.repository)
-    )
+            .fillMaxWidth()
+    ) {
+        val (text, image, divider) = createRefs()
+
+        Text(
+            text = stringResource(id = R.string.repository),
+            modifier = Modifier.constrainAs(text) {
+                centerHorizontallyTo(parent)
+                centerVerticallyTo(parent)
+            }
+        )
+
+        Image(
+            painter = painterResource(id = R.drawable.img_glide_profile),
+            contentDescription = null,
+            modifier = Modifier
+                .padding(dimensionResource(id = R.dimen.padding_normal))
+                .size(dimensionResource(id = R.dimen.user_profile))
+                .clip(CircleShape)
+                .constrainAs(image) {
+                    end.linkTo(parent.end)
+                    centerVerticallyTo(parent)
+                }
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = onClickSetting
+                )
+        )
+
+        HorizontalDivider(
+            modifier = Modifier
+                .constrainAs(divider) {
+                    bottom.linkTo(parent.bottom)
+                }
+        )
+    }
 }
 
 @Composable
@@ -256,7 +297,10 @@ fun MainContentItemStar(
                         else onClickUnStar(repo)
                     }
                 )
-                .semantics { drawableID = if (repo.isStarred == true) R.drawable.img_star else R.drawable.img_unstar },
+                .semantics {
+                    drawableID =
+                        if (repo.isStarred == true) R.drawable.img_star else R.drawable.img_unstar
+                },
             painter = painterResource(id = if (repo.isStarred == true) R.drawable.img_star else R.drawable.img_unstar),
             contentDescription = null
         )
