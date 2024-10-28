@@ -14,7 +14,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.prac.data.repository.TokenRepository
@@ -22,11 +21,9 @@ import com.prac.githubrepo.BuildConfig
 import com.prac.githubrepo.R
 import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.LOGIN_FAIL
-import com.prac.githubrepo.main.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.CoreMatchers
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.endsWith
 import org.junit.After
 import org.junit.Before

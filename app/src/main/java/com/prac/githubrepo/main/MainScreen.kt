@@ -23,8 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -39,24 +39,26 @@ import com.prac.githubrepo.util.UserProfile
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = viewModel()
+    viewModel: MainViewModel = hiltViewModel(),
+    onLogout: () -> Unit,
+    onClickRepository: (String, String) -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     MainContent(
-        content = uiState.value,
-        handleLoadState = { viewModel.handleLoadStates(it) },
-        starStateRequest = { viewModel.fetchStarState(it) },
-        onClickStar = { viewModel.setSideEffect(MainViewModel.SideEffect.StarClick(it)) },
-        onClickUnStar = { viewModel.setSideEffect(MainViewModel.SideEffect.UnStarClick(it)) },
-        onClickRepository = { viewModel.setSideEffect(MainViewModel.SideEffect.RepositoryClick(it)) },
-        onDismissRequest = { dialogMessage -> handleDialogMessage(viewModel, dialogMessage) }
+        uiState = uiState.value,
+        handleLoadState = viewModel::handleLoadStates,
+        starStateRequest = viewModel::fetchStarState,
+        onClickStar = viewModel::unStarRepository,
+        onClickUnStar = viewModel::starRepository,
+        onClickRepository = { onClickRepository(it.owner.login, it.name) },
+        onDismissRequest = { dialogMessage -> if (dialogMessage == INVALID_TOKEN) onLogout() }
     )
 }
 
 @Composable
 fun MainContent(
-    content: MainViewModel.Content,
+    uiState: MainViewModel.UiState,
     handleLoadState: (CombinedLoadStates) -> LoadState?,
     starStateRequest: (RepoEntity) -> Unit,
     onClickStar: (RepoEntity) -> Unit,
@@ -64,7 +66,7 @@ fun MainContent(
     onClickRepository: (RepoEntity) -> Unit,
     onDismissRequest: (String) -> Unit
 ) {
-    val repositories = content.repositories.collectAsLazyPagingItems()
+    val repositories = uiState.repositories.collectAsLazyPagingItems()
 
     Column(
         modifier = Modifier
@@ -82,10 +84,10 @@ fun MainContent(
             onClickRepository = onClickRepository
         )
 
-        if (content.dialogMessage.isNotEmpty()) {
+        if (uiState.dialogMessage.isNotEmpty()) {
             ErrorAlertDialog(
                 onDismissRequest = onDismissRequest,
-                errorMessage = content.dialogMessage
+                errorMessage = uiState.dialogMessage
             )
         }
     }
@@ -208,7 +210,8 @@ fun MainContentItemUser(
         UserProfile(uri = uri)
 
         Text(
-            modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_small)),
+            modifier = Modifier
+                .padding(start = dimensionResource(id = R.dimen.padding_small)),
             text = userName
         )
     }
@@ -252,7 +255,9 @@ fun MainContentItemStar(
         )
 
         Text(
-            modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_small)),
+            modifier = Modifier
+                .padding(start = dimensionResource(id = R.dimen.padding_small))
+            ,
             text = repo.stargazersCount.toString()
         )
     }
@@ -342,16 +347,4 @@ fun LoadErrorFooter(
             Text(text = stringResource(id = R.string.retry))
         }
     }
-}
-
-fun handleDialogMessage(
-    viewModel: MainViewModel,
-    dialogMessage: String
-) {
-    if (dialogMessage == INVALID_TOKEN) {
-        viewModel.setSideEffect(MainViewModel.SideEffect.LogoutDialogDismiss)
-        return
-    }
-
-    viewModel.setSideEffect(MainViewModel.SideEffect.StarDialogDismiss)
 }

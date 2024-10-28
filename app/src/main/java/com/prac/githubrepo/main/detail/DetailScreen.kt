@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -18,7 +19,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.prac.data.entity.RepoDetailEntity
 import com.prac.githubrepo.R
 import com.prac.githubrepo.constants.CONNECTION_FAIL
@@ -29,7 +30,11 @@ import com.prac.githubrepo.util.UserProfile
 
 @Composable
 fun DetailScreen(
-    viewModel: DetailViewModel = viewModel()
+    viewModel: DetailViewModel = hiltViewModel(),
+    onLogout: () -> Unit,
+    onBack: () -> Unit,
+    userName: String?,
+    repoName: String?
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
@@ -37,14 +42,18 @@ fun DetailScreen(
         isLoading = uiState.value is DetailViewModel.UiState.Loading,
         errorMessage = (uiState.value as? DetailViewModel.UiState.Error)?.errorMessage ?: "",
         repoDetail = (uiState.value as? DetailViewModel.UiState.Content)?.repository,
-        onClickStar = { viewModel.setSideEffect(DetailViewModel.SideEffect.StarClick(it)) },
-        onClickUnStar = { viewModel.setSideEffect(DetailViewModel.SideEffect.UnStarClick(it)) },
-        onDismissRequest = { dialogMessage -> handleDialogMessage(viewModel, dialogMessage) }, // 추후 util 로 빼기
-        modifier = Modifier
-            .padding(
-                bottom = dimensionResource(id = R.dimen.padding_small)
-            )
+        onClickStar = viewModel::unStarRepository,
+        onClickUnStar = viewModel::starRepository,
+        onDismissRequest = { dialogMessage ->
+            if (dialogMessage == CONNECTION_FAIL || dialogMessage == INVALID_REPOSITORY) onBack()
+            else onLogout()
+        },
+        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_small))
     )
+
+    LaunchedEffect(Unit) {
+        viewModel.getRepository(userName, repoName)
+    }
 }
 
 @Composable
@@ -68,7 +77,7 @@ fun DetailContent(
             ) {
                 DetailContentUser(
                     uri = repoDetail.owner.avatarUrl,
-                    userName = repoDetail.name,
+                    userName = repoDetail.owner.login,
                     modifier = modifier
                 )
 
@@ -170,16 +179,4 @@ fun DetailContentStarAndFork(
             text = repoDetail.forksCount.toString()
         )
     }
-}
-
-fun handleDialogMessage(
-    viewModel: DetailViewModel,
-    dialogMessage: String
-) {
-    if (dialogMessage == CONNECTION_FAIL || dialogMessage == INVALID_REPOSITORY) {
-        viewModel.setSideEffect(DetailViewModel.SideEffect.BasicDialogDismiss)
-        return
-    }
-
-    viewModel.setSideEffect(DetailViewModel.SideEffect.LogoutDialogDismiss)
 }

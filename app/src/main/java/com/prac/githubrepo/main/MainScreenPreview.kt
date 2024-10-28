@@ -18,13 +18,13 @@ import java.io.IOException
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    val content = MainViewModel.Content(
+    val uiState = MainViewModel.UiState(
         repositories = flow { emit(PagingData.from(makeRepoEntity())) },
         dialogMessage = ""
     )
 
     MainContent(
-        content = content,
+        uiState = uiState,
         handleLoadState = { null },
         starStateRequest = { },
         onClickStar = { },
@@ -37,13 +37,13 @@ fun MainScreenPreview() {
 @Preview(showBackground = true)
 @Composable
 fun MainScreenNetworkFailurePreview() {
-    val content = MainViewModel.Content(
+    val uiState = MainViewModel.UiState(
         repositories = flow { emit(PagingData.from(makeRepoEntity())) },
         dialogMessage = ""
     )
 
     MainContent(
-        content = content,
+        uiState = uiState,
         handleLoadState = { LoadState.Error(IOException()) },
         starStateRequest = { },
         onClickStar = { },
@@ -56,13 +56,13 @@ fun MainScreenNetworkFailurePreview() {
 @Preview(showBackground = true)
 @Composable
 fun MainScreenAuthorizationErrorPreview() {
-    val content = MainViewModel.Content(
+    val uiState = MainViewModel.UiState(
         repositories = flow { emit(PagingData.from(makeRepoEntity())) },
         dialogMessage = INVALID_TOKEN
     )
 
     MainContent(
-        content = content,
+        uiState = uiState,
         handleLoadState = { null },
         starStateRequest = { },
         onClickStar = { },
@@ -75,13 +75,13 @@ fun MainScreenAuthorizationErrorPreview() {
 @Preview(showBackground = true)
 @Composable
 fun MainScreenNotFoundRepositoryErrorPreview() {
-    val content = MainViewModel.Content(
+    val uiState = MainViewModel.UiState(
         repositories = flow { emit(PagingData.from(makeRepoEntity())) },
         dialogMessage = INVALID_REPOSITORY
     )
 
     MainContent(
-        content = content,
+        uiState = uiState,
         handleLoadState = { null },
         starStateRequest = { },
         onClickStar = { },
