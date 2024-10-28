@@ -8,6 +8,7 @@ private object Screens {
     const val LOGIN_SCREEN = "login"
     const val MAIN_SCREEN = "main"
     const val DETAIL_SCREEN = "detail"
+    const val SETTING_SCREEN = "setting"
 }
 
 object DetailArgs {
@@ -19,6 +20,7 @@ object Destinations {
     const val LOGIN_SCREEN = Screens.LOGIN_SCREEN
     const val MAIN_SCREEN = Screens.MAIN_SCREEN
     const val DETAIL_SCREEN = "${Screens.DETAIL_SCREEN}?${USER_NAME_ARG}={${USER_NAME_ARG}}&${REPO_NAME_ARG}={${REPO_NAME_ARG}}"
+    const val SETTING_SCREEN = Screens.SETTING_SCREEN
 }
 
 class NavigationActions(private val navController: NavHostController) {
@@ -40,5 +42,9 @@ class NavigationActions(private val navController: NavHostController) {
         navController.navigate(
             route
         )
+    }
+
+    fun navigateMainToSetting() {
+        navController.navigate(Screens.SETTING_SCREEN)
     }
 }
