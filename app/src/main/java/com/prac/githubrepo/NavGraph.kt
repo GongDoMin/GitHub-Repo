@@ -13,6 +13,7 @@ import com.prac.githubrepo.DetailArgs.USER_NAME_ARG
 import com.prac.githubrepo.login.LoginScreen
 import com.prac.githubrepo.main.MainScreen
 import com.prac.githubrepo.main.detail.DetailScreen
+import com.prac.githubrepo.main.setting.SettingScreen
 
 @Composable
 fun NavGraph(
@@ -37,7 +38,8 @@ fun NavGraph(
         ) {
             MainScreen(
                 onLogout = { navActions.navigationToLogin() },
-                onClickRepository = { userName, repoName -> navActions.navigateMainToDetail(userName, repoName) }
+                onClickRepository = { userName, repoName -> navActions.navigateMainToDetail(userName, repoName) },
+                onClickSetting = { navActions.navigateMainToSetting() }
             )
         }
 
@@ -53,6 +55,14 @@ fun NavGraph(
                 onBack = { navActions.navigationLoginToMain() },
                 userName = entry.arguments?.getString(USER_NAME_ARG),
                 repoName = entry.arguments?.getString(REPO_NAME_ARG)
+            )
+        }
+
+        composable(
+            route = Destinations.SETTING_SCREEN
+        ) {
+            SettingScreen(
+                onLogout = { navActions.navigationToLogin() }
             )
         }
     }

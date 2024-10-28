@@ -110,4 +110,5 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.paging.compose)
     implementation(libs.compose)
+    implementation(libs.compose.constraintLayout)
 }

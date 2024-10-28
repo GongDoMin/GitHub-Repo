@@ -56,6 +56,11 @@ class FakeRepoRepository @Inject constructor(
         return Result.success(entity)
     }
 
+    override suspend fun clearRepositories() {
+        repositoryDatabase.repositoryDao().clearRepositories()
+        repositoryDatabase.remoteKeyDao().clearRemoteKeys()
+    }
+
     override suspend fun getStarStateAndStarCount(id: Int): Flow<Pair<Boolean?, Int?>> {
         return repositoryDatabase.repositoryDao().getRepository(id).map { Pair(it?.isStarred, it?.stargazersCount) }
     }

@@ -45,6 +45,7 @@ internal class TokenRepositoryImpl @Inject constructor(
 
     override suspend fun clearToken() {
         tokenLocalDataSource.clearToken()
+        userLocalDataSource.clearUserName()
     }
 
     override suspend fun refreshToken(refreshToken: String): Result<Unit> {

@@ -33,6 +33,7 @@ datastore-preferences = "1.0.0"
 protobuf-javalite = "3.18.0"
 paging = "3.3.1"
 room = "2.6.1"
+compose-constraintLayout= "1.0.1"
 
 # plugins
 kapt = "1.5.30"
@@ -62,6 +63,7 @@ androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedat
 androidx-ui = { module = "androidx.compose.ui:ui" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 compose = { module = "com.github.bumptech.glide:compose", version.ref = "compose" }
+compose-constraintLayout = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "compose-constraintLayout" }
 hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidTesting" }
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltAndroidTesting" }
