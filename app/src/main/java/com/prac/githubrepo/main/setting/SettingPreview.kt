@@ -1,7 +1,9 @@
 package com.prac.githubrepo.main.setting
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.prac.githubrepo.R
 
 @Preview(showBackground = true)
 @Composable
@@ -33,7 +35,7 @@ fun SettingContentPreview() {
 fun SettingContentDialogPreview() {
     SettingContent(
         isLoading = false,
-        dialogMessage = "정말 로그아웃하시겠습니까?",
+        dialogMessage = stringResource(id = R.string.logout_confirm),
         onClickLogoutButton = { },
         onClickCheckButton = { },
         onDismissRequest = { }

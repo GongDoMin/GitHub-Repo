@@ -52,7 +52,7 @@ fun NavGraph(
         ) { entry ->
             DetailScreen(
                 onLogout = { navActions.navigationToLogin() },
-                onBack = { navActions.navigationLoginToMain() },
+                onBack = { navController.popBackStack() },
                 userName = entry.arguments?.getString(USER_NAME_ARG),
                 repoName = entry.arguments?.getString(REPO_NAME_ARG)
             )

@@ -195,4 +195,18 @@ class TokenRepositoryTest {
 
         assertFalse(isLoggedIn)
     }
+
+    @Test
+    fun clearToken_clearTokenAndUserName_tokenAndUserNameIsEmpty() = runTest {
+        tokenLocalDataSource.setInitialToken()
+        userLocalDataSource.setInitialUserName()
+
+        tokenRepository.clearToken()
+
+        val token = tokenLocalDataSource.getToken()
+        val userName = userLocalDataSource.getUserName()
+        assertTrue(token.accessToken.isEmpty())
+        assertTrue(token.refreshToken.isEmpty())
+        assertTrue(userName.isEmpty())
+    }
 }
