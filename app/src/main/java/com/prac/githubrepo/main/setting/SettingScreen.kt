@@ -40,7 +40,7 @@ fun SettingScreen(
         isLoading = uiState is SettingViewModel.UiState.Loading,
         dialogMessage = (uiState as? SettingViewModel.UiState.Dialog)?.message ?: "",
         onClickLogoutButton = {
-            viewModel.setUiState(SettingViewModel.UiState.Dialog(message = "정말 로그아웃하시겠습니까?"))
+            viewModel.setUiState(SettingViewModel.UiState.Dialog(message = activity.getString(R.string.logout_confirm)))
         },
         onClickCheckButton = { viewModel.logout() },
         onDismissRequest = { viewModel.setUiState(SettingViewModel.UiState.Idle) }
