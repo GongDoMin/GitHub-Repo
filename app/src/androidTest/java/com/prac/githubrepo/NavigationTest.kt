@@ -2,19 +2,30 @@ package com.prac.githubrepo
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onChild
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
+import androidx.compose.ui.test.printToLog
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
+import com.prac.githubrepo.util.hasButton
 import com.prac.githubrepo.util.hasDrawable
+import com.prac.githubrepo.util.hasIcon
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
@@ -105,6 +116,36 @@ class NavigationTest {
         composeTestRule.onNode(hasDrawable(R.drawable.img_star)).assertIsDisplayed()
         composeTestRule.onNode(hasDrawable(R.drawable.img_fork)).assertIsDisplayed()
         composeTestRule.onAllNodesWithText(expectedRepoDetail.stargazersCount.toString()).assertCountEquals(2)
+
+        pressBack()
+
+        composeTestRule.onNodeWithText(activity.getString(R.string.repository)).assertIsDisplayed()
+    }
+
+    @Test
+    fun navigationMainToSettingTest() = runTest {
+        composeTestRule.setContent {
+            NavGraph(startDestination = Destinations.MAIN_SCREEN)
+        }
+
+        composeTestRule
+            .onNode(hasIcon(Icons.Default.AccountCircle))
+            .performClick()
+
+        composeTestRule.onNode(hasButton(R.string.logout)).assertIsDisplayed()
+    }
+
+    @Test
+    fun navigationSettingToMainTest() = runTest {
+        composeTestRule.setContent {
+            NavGraph(startDestination = Destinations.MAIN_SCREEN)
+        }
+
+        composeTestRule
+            .onNode(hasIcon(Icons.Default.AccountCircle))
+            .performClick()
+
+        composeTestRule.onNode(hasButton(R.string.logout)).assertIsDisplayed()
 
         pressBack()
 
