@@ -11,10 +11,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -42,6 +45,7 @@ import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.util.ErrorAlertDialog
 import com.prac.githubrepo.util.UserProfile
 import com.prac.githubrepo.util.drawableID
+import com.prac.githubrepo.util.iconID
 
 @Composable
 fun MainScreen(
@@ -121,8 +125,8 @@ fun MainContentHeader(
             }
         )
 
-        Image(
-            painter = painterResource(id = R.drawable.img_glide_profile),
+        Icon(
+            imageVector = Icons.Default.AccountCircle,
             contentDescription = null,
             modifier = Modifier
                 .padding(dimensionResource(id = R.dimen.padding_normal))
@@ -137,6 +141,7 @@ fun MainContentHeader(
                     indication = null,
                     onClick = onClickSetting
                 )
+                .semantics { iconID = Icons.Default.AccountCircle }
         )
 
         HorizontalDivider(
