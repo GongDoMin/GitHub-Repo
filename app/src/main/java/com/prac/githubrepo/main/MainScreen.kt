@@ -189,7 +189,7 @@ fun MainContentBody(
         item {
             LoadStateFooter(
                 loadState = handleLoadState(repositories.loadState),
-                onRetryClick = { }
+                onRetryClick = { repositories.retry() }
             )
         }
     }
