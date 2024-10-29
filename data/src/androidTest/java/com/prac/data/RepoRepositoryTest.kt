@@ -30,6 +30,7 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -488,6 +489,21 @@ internal class RepoRepositoryTest {
 
         assertTrue(result.isFailure)
         assertTrue(result.exceptionOrNull() is CommonException.UnKnownError)
+    }
+
+    @Test
+    fun clearRepositories_clearRepositoriesAndRemoteKeys_roomIsEmpty() = runTest {
+        val repoDtoList = getRepoDtoListForPage(1, 10)
+        repositoryDatabase.repositoryDao().insertRepositories(repoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, it.defaultBranch, false) })
+
+        repoRepository.clearRepositories()
+
+        repoDtoList.forEach {
+            val repository = repositoryDatabase.repositoryDao().getRepository(it.id).first()
+            assertNull(repository)
+            val remoteKey = repositoryDatabase.remoteKeyDao().remoteKey(it.id)
+            assertNull(remoteKey)
+        }
     }
 
     private fun getRepoDtoListForPage(page : Int, loadSize: Int) : List<RepoDto> =
