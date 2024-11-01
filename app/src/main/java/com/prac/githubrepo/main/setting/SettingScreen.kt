@@ -1,33 +1,25 @@
 package com.prac.githubrepo.main.setting
 
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.prac.githubrepo.R
 import com.prac.githubrepo.util.BasicAlertDialog
 import com.prac.githubrepo.util.BounceButton
 import com.prac.githubrepo.util.LoadingContent
-import com.prac.githubrepo.util.bounceClick
-import com.prac.githubrepo.util.buttonID
 
 @Composable
 fun SettingScreen(
@@ -35,20 +27,21 @@ fun SettingScreen(
     onLogout: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val activity = LocalContext.current as ComponentActivity
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val context = LocalContext.current
 
     SettingContent(
         isLoading = uiState is SettingViewModel.UiState.Loading,
         dialogMessage = (uiState as? SettingViewModel.UiState.Dialog)?.message ?: "",
         onClickLogoutButton = {
-            viewModel.setUiState(SettingViewModel.UiState.Dialog(message = activity.getString(R.string.logout_confirm)))
+            viewModel.setUiState(SettingViewModel.UiState.Dialog(message = context.getString(R.string.logout_confirm)))
         },
         onClickCheckButton = { viewModel.logout() },
         onDismissRequest = { viewModel.setUiState(SettingViewModel.UiState.Idle) }
     )
 
-    LaunchedEffect(Unit) {
-        activity.repeatOnLifecycle(Lifecycle.State.STARTED) {
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.event.collect {
                 onLogout()
             }
