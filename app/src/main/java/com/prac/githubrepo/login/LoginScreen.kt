@@ -59,7 +59,7 @@ fun LoginScreen(
         onDismissRequest = { viewModel.setUiState(LoginViewModel.UiState.Idle) }
     )
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(activity) {
         activity.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.event.collect {
                 onLogin()
@@ -67,7 +67,7 @@ fun LoginScreen(
         }
     }
 
-    DisposableEffect(Unit) {
+    DisposableEffect(activity) {
         val listener = Consumer<Intent> {
             it.let { intent ->
                 if (intent.action == Intent.ACTION_VIEW) {
