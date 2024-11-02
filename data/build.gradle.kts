@@ -72,6 +72,7 @@ dependencies {
 
     implementation(project(":local"))
     implementation(project(":network"))
+    testImplementation(project(":shared-test"))
 
     implementation(libs.jetbrains.kotlinx.coroutines)
     implementation(libs.jetbrains.kotlinx.coroutines.test)

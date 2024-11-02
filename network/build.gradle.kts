@@ -66,6 +66,7 @@ dependencies {
     testImplementation(libs.mockito.kotlin)
 
     implementation(project(":local"))
+    testImplementation(project(":shared-test"))
 
     implementation(libs.jetbrains.kotlinx.coroutines)
     implementation(libs.jetbrains.kotlinx.coroutines.test)
