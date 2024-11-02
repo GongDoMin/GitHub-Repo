@@ -2,13 +2,9 @@ package com.prac.shared_test.local.source
 
 import com.prac.local.UserLocalDataSource
 
-class FakeUserLocalDataSource : UserLocalDataSource {
-
-    private var userName = ""
-
-    fun setInitialUserName() {
-        userName = "test"
-    }
+class FakeUserLocalDataSource(
+    private var userName: String = ""
+) : UserLocalDataSource {
 
     override suspend fun setUserName(userName: String) {
         this.userName = userName

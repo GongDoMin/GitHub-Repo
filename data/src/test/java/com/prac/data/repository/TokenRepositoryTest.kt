@@ -200,7 +200,7 @@ class TokenRepositoryTest {
     @Test
     fun clearToken_clearTokenAndUserName_tokenAndUserNameIsEmpty() = runTest {
         makeTokenRepositoryWithInitialToken()
-        userLocalDataSource.setInitialUserName()
+        userLocalDataSource.setUserName("test")
 
         tokenRepository.clearToken()
 
