@@ -6,7 +6,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Query
 
-internal interface GitHubAuthService {
+interface GitHubAuthService {
     @POST("login/oauth/access_token")
     suspend fun authorizeOAuth(
         @Header("Accept") accept: String = "application/json",

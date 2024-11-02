@@ -8,7 +8,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-internal interface GitHubService {
+interface GitHubService {
     @GET("users/{userName}/repos")
     suspend fun getRepos(
         @Path("userName") userName: String,
