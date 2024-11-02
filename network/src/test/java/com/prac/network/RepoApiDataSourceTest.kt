@@ -2,9 +2,8 @@ package com.prac.network
 
 import com.prac.network.dto.OwnerDto
 import com.prac.network.dto.RepoDto
-import com.prac.network.fake.service.FakeGitHubService
+import com.prac.shared_test.network.service.FakeGitHubService
 import com.prac.network.impl.RepoApiDataSourceImpl
-import com.prac.network.service.GitHubService
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before

@@ -9,7 +9,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-internal interface GitHubUserService {
+interface GitHubUserService {
     @POST("applications/{clientID}/token")
     suspend fun getUserInformation(
         @Path("clientID") clientId: String = BuildConfig.CLIENT_ID,
