@@ -14,7 +14,7 @@ import com.prac.data.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.impl.RepoRepositoryImpl
 import com.prac.local.UserLocalDataSource
-import com.prac.local.fake.source.FakeUserLocalDataSource
+import com.prac.shared_test.local.source.FakeUserLocalDataSource
 import com.prac.local.room.dao.RemoteKeyDao
 import com.prac.local.room.dao.RepositoryDao
 import com.prac.local.room.database.RepositoryDatabase

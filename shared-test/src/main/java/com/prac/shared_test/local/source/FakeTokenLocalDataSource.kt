@@ -1,4 +1,4 @@
-package com.prac.local.fake.source
+package com.prac.shared_test.local.source
 
 import com.prac.local.TokenLocalDataSource
 import com.prac.local.datastore.token.TokenLocalDto
