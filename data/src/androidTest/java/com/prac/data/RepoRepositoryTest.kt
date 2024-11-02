@@ -22,8 +22,8 @@ import com.prac.local.room.entity.Owner
 import com.prac.local.room.entity.Repository
 import com.prac.network.dto.OwnerDto
 import com.prac.network.dto.RepoDto
-import com.prac.network.fake.FakeRepoApiDataSource
-import com.prac.network.fake.FakeRepoStarApiDataSource
+import com.prac.shared_test.network.FakeRepoApiDataSource
+import com.prac.shared_test.network.FakeRepoStarApiDataSource
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import okhttp3.ResponseBody.Companion.toResponseBody

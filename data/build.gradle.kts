@@ -79,6 +79,7 @@ dependencies {
 
     implementation(libs.dagger.hilt.android)
     implementation(libs.hilt.android.testing)
+    androidTestImplementation(project(":shared-test"))
     kapt(libs.dagger.hilt.compiler)
 
     implementation(libs.retrofit)
