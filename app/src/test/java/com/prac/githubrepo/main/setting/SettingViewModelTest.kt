@@ -1,6 +1,6 @@
 package com.prac.githubrepo.main.setting
 
-import com.prac.data.fake.FakeTokenRepository
+import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.data.repository.RepoRepository
 import com.prac.githubrepo.util.FakeBackOffWorkManager
 import com.prac.githubrepo.util.StandardTestDispatcherRule
