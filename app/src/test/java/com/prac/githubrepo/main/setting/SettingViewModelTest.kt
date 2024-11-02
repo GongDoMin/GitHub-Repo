@@ -1,9 +1,9 @@
 package com.prac.githubrepo.main.setting
 
-import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.data.repository.RepoRepository
 import com.prac.githubrepo.util.FakeBackOffWorkManager
 import com.prac.githubrepo.util.StandardTestDispatcherRule
+import com.prac.shared_test.data.FakeTokenRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertFalse
@@ -26,9 +26,11 @@ class SettingViewModelTest {
 
     private lateinit var settingViewModel: SettingViewModel
 
+    private val token = "test"
+
     @Before
     fun setup() {
-        tokenRepository = FakeTokenRepository().apply { setInitialToken() }
+        tokenRepository = FakeTokenRepository(token)
         backOffWorkManager = FakeBackOffWorkManager()
 
         settingViewModel = SettingViewModel(tokenRepository, mockRepoRepository, standardTestDispatcherRule.testDispatcher, backOffWorkManager)
