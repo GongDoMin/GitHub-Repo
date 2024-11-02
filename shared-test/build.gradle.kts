@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.jetbrains.kotlin.kapt)
 }
 
 android {
@@ -45,4 +46,20 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":local"))
     implementation(project(":network"))
+
+    implementation(libs.jetbrains.kotlinx.coroutines)
+    implementation(libs.jetbrains.kotlinx.coroutines.test)
+
+    implementation(libs.dagger.hilt.android)
+    implementation(libs.hilt.android.testing)
+    kapt(libs.dagger.hilt.compiler)
+
+    implementation(libs.retrofit)
+
+    implementation(libs.androidx.paging)
+
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.paging)
+    kapt(libs.androidx.room.compiler)
 }

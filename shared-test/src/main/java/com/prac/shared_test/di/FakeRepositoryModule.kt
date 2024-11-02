@@ -1,10 +1,11 @@
-package com.prac.data.di
+package com.prac.shared_test.di
 
-import com.prac.data.fake.FakeRepoRepository
-import com.prac.data.fake.FakeTokenRepository
+import com.prac.data.di.RepositoryModule
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.local.room.database.RepositoryDatabase
+import com.prac.shared_test.data.FakeRepoRepository
+import com.prac.shared_test.data.FakeTokenRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
