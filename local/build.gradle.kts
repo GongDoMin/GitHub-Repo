@@ -50,6 +50,8 @@ dependencies {
     androidTestImplementation(libs.androidx.rules)
     androidTestImplementation(libs.androidx.junit)
 
+    testImplementation(project(":shared-test"))
+
     implementation(libs.jetbrains.kotlinx.coroutines)
     implementation(libs.jetbrains.kotlinx.coroutines.test)
 

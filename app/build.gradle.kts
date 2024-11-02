@@ -77,6 +77,8 @@ dependencies {
     androidTestImplementation(libs.hamcrest)
 
     implementation(project(":data"))
+    testImplementation(project(":shared-test"))
+    androidTestImplementation(project(":shared-test"))
 
     implementation(libs.jetbrains.kotlinx.coroutines)
     implementation(libs.jetbrains.kotlinx.coroutines.test)
