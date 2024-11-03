@@ -5,13 +5,10 @@ import com.prac.network.dto.OwnerDto
 import com.prac.network.dto.UserDto
 import com.prac.network.service.GitHubUserService
 
-class FakeGitHubUserService : GitHubUserService {
+class FakeGitHubUserService(
+    private val user: UserDto
+) : GitHubUserService {
     override suspend fun getUserInformation(clientId: String, accept: String, authorization: String, accessToken: AccessTokenRequest): UserDto {
-        return UserDto(
-            user = OwnerDto(
-                login = "test",
-                avatarUrl = "test"
-            )
-        )
+        return user
     }
 }

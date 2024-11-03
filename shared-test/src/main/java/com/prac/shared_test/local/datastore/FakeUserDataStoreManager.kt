@@ -2,13 +2,9 @@ package com.prac.shared_test.local.datastore
 
 import com.prac.local.datastore.user.UserDataStoreManager
 
-class FakeUserDataStoreManager : UserDataStoreManager {
-
-    private var userName = ""
-
-    fun setInitialUserName() {
-        userName = "test"
-    }
+class FakeUserDataStoreManager(
+    private var userName: String = ""
+) : UserDataStoreManager {
 
     override suspend fun setUserName(userName: String) {
         this.userName = userName
