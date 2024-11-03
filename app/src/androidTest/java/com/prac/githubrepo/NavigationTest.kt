@@ -139,14 +139,22 @@ class NavigationTest {
     @Test
     fun navigationMainToSettingTest() = runTest {
         composeTestRule.setContent {
-            NavGraph(startDestination = Destinations.MAIN_SCREEN)
+            navController = TestNavHostController(LocalContext.current)
+            navController.navigatorProvider.addNavigator(ComposeNavigator())
+            NavGraph(
+                startDestination = MAIN_SCREEN,
+                navController = navController
+            )
         }
 
         composeTestRule
             .onNode(hasIcon(Icons.Default.AccountCircle))
             .performClick()
 
-        composeTestRule.onNode(hasButton(R.string.logout)).assertIsDisplayed()
+        composeTestRule.waitUntil {
+            navController.currentBackStackEntry?.destination?.route == Destinations.SETTING_SCREEN
+                    && composeTestRule.onNode(hasButton(R.string.logout)).isDisplayed()
+        }
     }
 
     @Test
