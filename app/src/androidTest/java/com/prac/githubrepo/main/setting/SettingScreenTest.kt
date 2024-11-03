@@ -35,14 +35,14 @@ class SettingScreenTest {
 
     @Test
     fun loginButtonClick_showLogoutAlertDialog() = runTest {
-        composeTestRule.onNode(hasButton(R.string.logout)).performClick()
+        composeTestRule.onNode(hasButton(activity.getString(R.string.logout))).performClick()
 
         composeTestRule.onNodeWithText(activity.getString(R.string.logout_confirm)).assertIsDisplayed()
     }
 
     @Test
     fun loginButtonClick_showLogoutAlertDialog_cancelButtonClick() = runTest {
-        composeTestRule.onNode(hasButton(R.string.logout)).performClick()
+        composeTestRule.onNode(hasButton(activity.getString(R.string.logout))).performClick()
 
         composeTestRule.onNodeWithText(activity.getString(R.string.logout_confirm)).assertIsDisplayed()
 
@@ -55,7 +55,7 @@ class SettingScreenTest {
 
     @Test
     fun loginButtonClick_showLogoutAlertDialog_checkButtonClick() = runTest {
-        composeTestRule.onNode(hasButton(R.string.logout)).performClick()
+        composeTestRule.onNode(hasButton(activity.getString(R.string.logout))).performClick()
 
         composeTestRule.onNodeWithText(activity.getString(R.string.logout_confirm)).assertIsDisplayed()
 

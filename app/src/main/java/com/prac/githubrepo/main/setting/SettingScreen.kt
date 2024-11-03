@@ -24,6 +24,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.prac.githubrepo.R
 import com.prac.githubrepo.util.BasicAlertDialog
+import com.prac.githubrepo.util.BounceButton
 import com.prac.githubrepo.util.LoadingContent
 import com.prac.githubrepo.util.bounceClick
 import com.prac.githubrepo.util.buttonID
@@ -75,8 +76,9 @@ fun SettingContent(
                 ),
             verticalArrangement = Arrangement.Center
         ) {
-            LogoutButton(
-                onClickLogout = onClickLogoutButton
+            BounceButton(
+                text = stringResource(id = R.string.logout),
+                onClickButton = onClickLogoutButton
             )
         }
 
@@ -87,33 +89,5 @@ fun SettingContent(
                 dialogMessage = dialogMessage
             )
         }
-    }
-}
-
-@Composable
-fun LogoutButton(
-    onClickLogout: () -> Unit
-) {
-    Button(
-        onClick = onClickLogout,
-        modifier = Modifier
-            .fillMaxWidth()
-            .bounceClick()
-            .semantics { buttonID = R.string.logout },
-        colors = ButtonColors(
-            containerColor = Color.Black,
-            contentColor = Color.White,
-            disabledContainerColor = Color.Gray,
-            disabledContentColor = Color.White
-        )
-    ) {
-        Text(
-            modifier = Modifier
-                .padding(
-                    top = dimensionResource(id = R.dimen.padding_small),
-                    bottom = dimensionResource(id = R.dimen.padding_small)
-                ),
-            text = stringResource(id = R.string.logout)
-        )
     }
 }

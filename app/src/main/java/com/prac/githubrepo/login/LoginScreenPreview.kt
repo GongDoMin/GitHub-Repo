@@ -11,6 +11,7 @@ fun LoginContentIsLoadingPreview() {
     LoginContent(
         isLoading = true,
         errorMessage = "",
+        onClickLogin = { },
         onDismissRequest = { }
     )
 }
@@ -21,6 +22,7 @@ fun LoginContentPreview() {
     LoginContent(
         isLoading = false,
         errorMessage = "",
+        onClickLogin = { },
         onDismissRequest = { }
     )
 }
@@ -31,6 +33,7 @@ fun LoginContentNetworkErrorPreview() {
     LoginContent(
         isLoading = false,
         errorMessage = CONNECTION_FAIL,
+        onClickLogin = { },
         onDismissRequest = { }
     )
 }
@@ -40,13 +43,7 @@ fun LoginContentLoginFailureErrorPreview() {
     LoginContent(
         isLoading = false,
         errorMessage = LOGIN_FAIL,
+        onClickLogin = { },
         onDismissRequest = { }
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoginContentLoginButtonPreview() {
-    LoginButton()
-
 }
