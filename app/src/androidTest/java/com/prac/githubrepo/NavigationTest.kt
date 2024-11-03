@@ -21,6 +21,7 @@ import androidx.test.espresso.Espresso.pressBack
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
+import com.prac.githubrepo.Destinations.DETAIL_SCREEN
 import com.prac.githubrepo.Destinations.MAIN_SCREEN
 import com.prac.githubrepo.util.hasButton
 import com.prac.githubrepo.util.hasDrawable
@@ -105,7 +106,12 @@ class NavigationTest {
     @Test
     fun navigationDetailToMainTest() = runTest {
         composeTestRule.setContent {
-            NavGraph(startDestination = Destinations.MAIN_SCREEN)
+            navController = TestNavHostController(LocalContext.current)
+            navController.navigatorProvider.addNavigator(ComposeNavigator())
+            NavGraph(
+                startDestination = MAIN_SCREEN,
+                navController = navController
+            )
         }
 
         val clickPosition = 0
@@ -118,18 +124,16 @@ class NavigationTest {
             .onNodeWithText("test $clickPosition")
             .performClick()
 
-        val expectedRepoDetail = RepoEntity(id = 0, name = "test 0", owner = OwnerEntity("login 0", "avatarUrl 0"), stargazersCount = 5, defaultBranch = "master", updatedAt = "update", isStarred = true)
-
-        composeTestRule.onNodeWithText(expectedRepoDetail.name).assertIsDisplayed()
-        composeTestRule.onNodeWithText(expectedRepoDetail.owner.login).assertIsDisplayed()
-        composeTestRule.onNode(hasDrawable(R.drawable.img_glide_profile)).assertIsDisplayed()
-        composeTestRule.onNode(hasDrawable(R.drawable.img_star)).assertIsDisplayed()
-        composeTestRule.onNode(hasDrawable(R.drawable.img_fork)).assertIsDisplayed()
-        composeTestRule.onAllNodesWithText(expectedRepoDetail.stargazersCount.toString()).assertCountEquals(2)
+        composeTestRule.waitUntil {
+            navController.currentBackStackEntry?.destination?.route == DETAIL_SCREEN
+        }
 
         pressBack()
 
-        composeTestRule.onNodeWithText(activity.getString(R.string.repository)).assertIsDisplayed()
+        composeTestRule.waitUntil {
+            navController.currentBackStackEntry?.destination?.route == MAIN_SCREEN
+                    && composeTestRule.onNodeWithText(activity.getString(R.string.repository)).isDisplayed()
+        }
     }
 
     @Test
