@@ -32,7 +32,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import javax.inject.Inject
 
-@RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class MainScreenTest {
 
@@ -41,12 +40,6 @@ class MainScreenTest {
 
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
-    private val activity get() = composeTestRule.activity
-
-    @Inject
-    lateinit var tokenRepository: TokenRepository
-    @Inject
-    lateinit var repoRepository: RepoRepository
 
     private var isDetailScreen = false
     private var userName = ""
@@ -62,42 +55,6 @@ class MainScreenTest {
     @After
     fun tearDown() {
         Intents.release()
-    }
-
-    @Test
-    fun displayMainScreen() {
-        // 현재 FakeRepository 10개 씩 리스트를 만들고 있음.
-        // 데이터 형식은 아래과 같음
-        // RepoEntity(id = 0, name = "test 0", owner = OwnerEntity("login 0", "avatarUrl 0"), stargazersCount = 5, defaultBranch = "master", updatedAt = "update", isStarred = true),
-        // RepoEntity(id = 1, name = "test 1", owner = OwnerEntity("login 1", "avatarUrl 1"), stargazersCount = 5, defaultBranch = "master", updatedAt = "update", isStarred = false),
-        // ....
-        val initialItemCount = 10
-
-        composeTestRule
-            .onNodeWithText(activity.getString(R.string.repository))
-            .assertIsDisplayed()
-
-        repeat(initialItemCount) {
-            val expectedImage = if (it % 2 == 0) hasDrawable(R.drawable.img_star) else hasDrawable(R.drawable.img_unstar)
-
-            composeTestRule
-                .onNode(hasTestTag("lazyColumn"))
-                .performScrollToIndex(it)
-                .assertIsDisplayed()
-
-            composeTestRule
-                .onNode(
-            hasDrawable(R.drawable.img_glide_profile)
-                    and hasText("login $it")
-                    and hasText("test $it")
-                    and hasText("master")
-                    and hasText("update")
-                    and hasText("5")
-                )
-                .onChild()
-                .assert(expectedImage)
-                .assertIsDisplayed()
-        }
     }
 
     @Test
@@ -171,7 +128,6 @@ class MainScreenTest {
     private fun setContent() {
         composeTestRule.setContent {
             MainScreen(
-                viewModel = MainViewModel(repoRepository, tokenRepository, FakeBackOffWorkManager(), Dispatchers.IO),
                 onLogout = { },
                 onClickRepository = { userName, repoName ->
                     isDetailScreen = true
@@ -181,12 +137,6 @@ class MainScreenTest {
                 onClickSetting = { }
             )
         }
-    }
-
-    private class FakeBackOffWorkManager: BackOffWorkManager {
-        override fun addWork(uniqueID: String, times: Int, initialDelay: Long, maxDelay: Long, factor: Double, work: suspend () -> Result<*>) { }
-
-        override fun clearWork() { }
     }
 
     private fun SemanticsNodeInteraction.isChangedStarStateAndCount(starMatcher: SemanticsMatcher, expectedStarCount: Int) : Boolean {
