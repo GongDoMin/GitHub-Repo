@@ -160,17 +160,27 @@ class NavigationTest {
     @Test
     fun navigationSettingToMainTest() = runTest {
         composeTestRule.setContent {
-            NavGraph(startDestination = Destinations.MAIN_SCREEN)
+            navController = TestNavHostController(LocalContext.current)
+            navController.navigatorProvider.addNavigator(ComposeNavigator())
+            NavGraph(
+                startDestination = MAIN_SCREEN,
+                navController = navController
+            )
         }
 
         composeTestRule
             .onNode(hasIcon(Icons.Default.AccountCircle))
             .performClick()
 
-        composeTestRule.onNode(hasButton(R.string.logout)).assertIsDisplayed()
+        composeTestRule.waitUntil {
+            navController.currentBackStackEntry?.destination?.route == Destinations.SETTING_SCREEN
+        }
 
         pressBack()
 
-        composeTestRule.onNodeWithText(activity.getString(R.string.repository)).assertIsDisplayed()
+        composeTestRule.waitUntil {
+            navController.currentBackStackEntry?.destination?.route == MAIN_SCREEN
+                    && composeTestRule.onNodeWithText(activity.getString(R.string.repository)).isDisplayed()
+        }
     }
 }
