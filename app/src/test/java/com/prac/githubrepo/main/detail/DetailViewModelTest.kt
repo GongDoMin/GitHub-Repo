@@ -42,9 +42,11 @@ class DetailViewModelTest {
 
     private lateinit var detailViewMock: DetailViewModel
 
+    private val token = "test"
+
     @Before
     fun setUp() = runTest {
-        tokenRepository = FakeTokenRepository().apply { setInitialToken() }
+        tokenRepository = FakeTokenRepository(token)
 
         backOffWork = FakeBackOffWorkManager()
 

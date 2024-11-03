@@ -5,13 +5,13 @@ import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
-import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.data.repository.RepoRepository
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.constants.UNKNOWN
 import com.prac.githubrepo.util.FakeBackOffWorkManager
 import com.prac.githubrepo.util.StandardTestDispatcherRule
+import com.prac.shared_test.data.FakeTokenRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -41,9 +41,11 @@ class MainViewModelTest {
 
     private lateinit var mainViewModel: MainViewModel
 
+    private val token = "test"
+
     @Before
     fun setUp() = runTest {
-        tokenRepository = FakeTokenRepository().apply { setInitialToken() }
+        tokenRepository = FakeTokenRepository(token)
         backOffWork = FakeBackOffWorkManager()
 
         val pagingData = PagingData.from(emptyList<RepoEntity>())

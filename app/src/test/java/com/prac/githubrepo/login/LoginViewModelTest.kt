@@ -24,9 +24,11 @@ class LoginViewModelTest {
 
     private lateinit var loginViewModel: LoginViewModel
 
+    private val token = "test"
+
     @Test
     fun checkAutoLogin_userIsLoggedIn_eventSuccess() = runTest {
-        tokenRepository = FakeTokenRepository().apply { setInitialToken() }
+        tokenRepository = FakeTokenRepository(token)
         loginViewModel = LoginViewModel(tokenRepository, standardTestDispatcherRule.testDispatcher)
 
         val result = loginViewModel.event.first()
