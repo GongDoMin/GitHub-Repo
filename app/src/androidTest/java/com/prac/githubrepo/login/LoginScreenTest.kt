@@ -50,7 +50,7 @@ class LoginScreenTest {
 
     @Test
     fun loginButtonClick_openBrowser() = runTest {
-        composeTestRule.onNode(hasButton(R.string.login)).performClick()
+        composeTestRule.onNode(hasButton(activity.getString(R.string.login))).performClick()
 
         intended(hasAction(Intent.ACTION_VIEW))
         intended(hasData(Uri.parse(BuildConfig.GITHUB_OAUTH_URI)))

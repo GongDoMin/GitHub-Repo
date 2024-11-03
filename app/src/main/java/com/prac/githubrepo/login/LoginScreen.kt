@@ -33,6 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.prac.githubrepo.BuildConfig
 import com.prac.githubrepo.R
+import com.prac.githubrepo.util.BounceButton
 import com.prac.githubrepo.util.ErrorAlertDialog
 import com.prac.githubrepo.util.LoadingContent
 import com.prac.githubrepo.util.bounceClick
@@ -50,10 +51,15 @@ fun LoginScreen(
     LoginContent(
         isLoading = uiState is LoginViewModel.UiState.Loading,
         errorMessage = (uiState as? LoginViewModel.UiState.Error)?.errorMessage ?: "",
+        onClickLogin = {
+            activity.startActivity(
+                Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.GITHUB_OAUTH_URI))
+            )
+        },
         onDismissRequest = { viewModel.setUiState(LoginViewModel.UiState.Idle) }
     )
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(activity) {
         activity.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.event.collect {
                 onLogin()
@@ -61,7 +67,7 @@ fun LoginScreen(
         }
     }
 
-    DisposableEffect(Unit) {
+    DisposableEffect(activity) {
         val listener = Consumer<Intent> {
             it.let { intent ->
                 if (intent.action == Intent.ACTION_VIEW) {
@@ -84,6 +90,7 @@ fun LoginScreen(
 fun LoginContent(
     isLoading: Boolean,
     errorMessage: String,
+    onClickLogin: () -> Unit,
     onDismissRequest: (String) -> Unit
 ) {
     LoadingContent(
@@ -110,7 +117,10 @@ fun LoginContent(
                 contentDescription = null
             )
 
-            LoginButton()
+            BounceButton(
+                text = stringResource(id = R.string.login),
+                onClickButton = onClickLogin
+            )
 
             Text(
                 modifier = Modifier
@@ -127,36 +137,5 @@ fun LoginContent(
                 errorMessage = errorMessage
             )
         }
-    }
-}
-
-@Composable
-fun LoginButton() {
-    val activity = LocalContext.current as ComponentActivity
-
-    Button(
-        onClick = {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.GITHUB_OAUTH_URI))
-            activity.startActivity(intent)
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .bounceClick()
-            .semantics { buttonID = R.string.login },
-        colors = ButtonColors(
-            containerColor = Color.Black,
-            contentColor = Color.White,
-            disabledContainerColor = Color.Gray,
-            disabledContentColor = Color.White
-        )
-    ) {
-        Text(
-            modifier = Modifier
-                .padding(
-                    top = dimensionResource(id = R.dimen.padding_small),
-                    bottom = dimensionResource(id = R.dimen.padding_small)
-                ),
-            text = stringResource(id = R.string.login)
-        )
     }
 }

@@ -147,7 +147,7 @@ class NavigationTest {
 
         composeTestRule.waitUntil {
             navController.currentBackStackEntry?.destination?.route == Destinations.SETTING_SCREEN
-                    && composeTestRule.onNode(hasButton(R.string.logout)).isDisplayed()
+                    && composeTestRule.onNode(hasButton(activity.getString(R.string.logout))).isDisplayed()
         }
     }
 

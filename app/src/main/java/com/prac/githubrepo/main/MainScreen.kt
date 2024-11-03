@@ -57,30 +57,30 @@ fun MainScreen(
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     MainContent(
-        uiState = uiState.value,
+        repositories = uiState.value.repositories.collectAsLazyPagingItems(),
         handleLoadState = viewModel::handleLoadStates,
         starStateRequest = viewModel::fetchStarState,
         onClickStar = viewModel::unStarRepository,
         onClickUnStar = viewModel::starRepository,
         onClickRepository = { onClickRepository(it.owner.login, it.name) },
         onClickSetting = onClickSetting,
+        dialogMessage = uiState.value.dialogMessage,
         onDismissRequest = { dialogMessage -> if (dialogMessage == INVALID_TOKEN) onLogout() }
     )
 }
 
 @Composable
 fun MainContent(
-    uiState: MainViewModel.UiState,
+    repositories: LazyPagingItems<RepoEntity>,
     handleLoadState: (CombinedLoadStates) -> LoadState?,
     starStateRequest: (RepoEntity) -> Unit,
     onClickStar: (RepoEntity) -> Unit,
     onClickUnStar: (RepoEntity) -> Unit,
     onClickRepository: (RepoEntity) -> Unit,
     onClickSetting: () -> Unit,
+    dialogMessage: String,
     onDismissRequest: (String) -> Unit
 ) {
-    val repositories = uiState.repositories.collectAsLazyPagingItems()
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -98,10 +98,10 @@ fun MainContent(
             onClickRepository = onClickRepository
         )
 
-        if (uiState.dialogMessage.isNotEmpty()) {
+        if (dialogMessage.isNotEmpty()) {
             ErrorAlertDialog(
                 onDismissRequest = onDismissRequest,
-                errorMessage = uiState.dialogMessage
+                errorMessage = dialogMessage
             )
         }
     }
