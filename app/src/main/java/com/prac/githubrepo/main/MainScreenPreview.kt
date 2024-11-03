@@ -7,9 +7,11 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.LoadState
 import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.githubrepo.R
+import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN
 import kotlinx.coroutines.flow.flow
@@ -18,19 +20,17 @@ import java.io.IOException
 @Preview(showBackground = true)
 @Composable
 fun MainScreenPreview() {
-    val uiState = MainViewModel.UiState(
-        repositories = flow { emit(PagingData.from(makeRepoEntity())) },
-        dialogMessage = ""
-    )
+    val repositories = flow { emit(PagingData.from(makeRepoEntity())) }.collectAsLazyPagingItems()
 
     MainContent(
-        uiState = uiState,
+        repositories = repositories,
         handleLoadState = { null },
         starStateRequest = { },
         onClickStar = { },
         onClickUnStar = { },
         onClickRepository = { },
         onClickSetting = { },
+        dialogMessage = "",
         onDismissRequest = { }
     )
 }
@@ -38,19 +38,17 @@ fun MainScreenPreview() {
 @Preview(showBackground = true)
 @Composable
 fun MainScreenNetworkFailurePreview() {
-    val uiState = MainViewModel.UiState(
-        repositories = flow { emit(PagingData.from(makeRepoEntity())) },
-        dialogMessage = ""
-    )
+    val repositories = flow { emit(PagingData.from(makeRepoEntity())) }.collectAsLazyPagingItems()
 
     MainContent(
-        uiState = uiState,
+        repositories = repositories,
         handleLoadState = { LoadState.Error(IOException()) },
         starStateRequest = { },
         onClickStar = { },
         onClickUnStar = { },
         onClickRepository = { },
         onClickSetting = { },
+        dialogMessage = CONNECTION_FAIL,
         onDismissRequest = { }
     )
 }
@@ -58,19 +56,17 @@ fun MainScreenNetworkFailurePreview() {
 @Preview(showBackground = true)
 @Composable
 fun MainScreenAuthorizationErrorPreview() {
-    val uiState = MainViewModel.UiState(
-        repositories = flow { emit(PagingData.from(makeRepoEntity())) },
-        dialogMessage = INVALID_TOKEN
-    )
+    val repositories = flow { emit(PagingData.from(makeRepoEntity())) }.collectAsLazyPagingItems()
 
     MainContent(
-        uiState = uiState,
+        repositories = repositories,
         handleLoadState = { null },
         starStateRequest = { },
         onClickStar = { },
         onClickUnStar = { },
         onClickRepository = { },
         onClickSetting = { },
+        dialogMessage = INVALID_TOKEN,
         onDismissRequest = { }
     )
 }
@@ -78,19 +74,17 @@ fun MainScreenAuthorizationErrorPreview() {
 @Preview(showBackground = true)
 @Composable
 fun MainScreenNotFoundRepositoryErrorPreview() {
-    val uiState = MainViewModel.UiState(
-        repositories = flow { emit(PagingData.from(makeRepoEntity())) },
-        dialogMessage = INVALID_REPOSITORY
-    )
+    val repositories = flow { emit(PagingData.from(makeRepoEntity())) }.collectAsLazyPagingItems()
 
     MainContent(
-        uiState = uiState,
+        repositories = repositories,
         handleLoadState = { null },
         starStateRequest = { },
         onClickStar = { },
         onClickUnStar = { },
         onClickRepository = { },
         onClickSetting = { },
+        dialogMessage = INVALID_REPOSITORY,
         onDismissRequest = { }
     )
 }
