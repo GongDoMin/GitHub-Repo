@@ -42,6 +42,11 @@ android {
             )
         }
     }
+    sourceSets {
+        getByName("debug") {
+            java.srcDirs("src/debug/java")
+        }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8

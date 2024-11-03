@@ -5,7 +5,7 @@ import androidx.compose.ui.test.isNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.prac.githubrepo.MainActivity
+import com.prac.githubrepo.HiltTestActivity
 import com.prac.githubrepo.R
 import com.prac.githubrepo.util.hasButton
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -22,7 +22,7 @@ class SettingScreenTest {
     var hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val composeTestRule = createAndroidComposeRule<MainActivity>()
+    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
     private val activity get() = composeTestRule.activity
 
     private var isMainScreen = false

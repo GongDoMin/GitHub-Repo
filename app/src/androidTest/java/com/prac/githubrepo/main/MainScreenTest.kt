@@ -12,16 +12,11 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.test.espresso.intent.Intents
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.prac.data.repository.RepoRepository
-import com.prac.data.repository.TokenRepository
-import com.prac.githubrepo.MainActivity
+import com.prac.githubrepo.HiltTestActivity
 import com.prac.githubrepo.R
-import com.prac.githubrepo.util.BackOffWorkManager
 import com.prac.githubrepo.util.hasDrawable
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -29,8 +24,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import javax.inject.Inject
 
 @HiltAndroidTest
 class MainScreenTest {
@@ -39,7 +32,7 @@ class MainScreenTest {
     val hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val composeTestRule = createAndroidComposeRule<MainActivity>()
+    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
 
     private var isDetailScreen = false
     private var userName = ""

@@ -4,21 +4,14 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
-import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
-import androidx.compose.ui.test.onChild
-import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
-import androidx.compose.ui.test.printToLog
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.prac.data.entity.OwnerEntity
@@ -41,7 +34,7 @@ class NavigationTest {
     var hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val composeTestRule = createAndroidComposeRule<MainActivity>()
+    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
     private val activity get() = composeTestRule.activity
 
     @Before
@@ -55,8 +48,8 @@ class NavigationTest {
             NavGraph(startDestination = Destinations.LOGIN_SCREEN)
         }
 
-        val scheme = "githubrepo"
-        val host = "localhost:8080"
+        val scheme = "test"
+        val host = "test"
         val code = "success"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("$scheme://$host?code=$code"))
         activity.startActivity(intent)

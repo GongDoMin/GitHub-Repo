@@ -11,7 +11,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import com.prac.githubrepo.BuildConfig
-import com.prac.githubrepo.MainActivity
+import com.prac.githubrepo.HiltTestActivity
 import com.prac.githubrepo.R
 import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.LOGIN_FAIL
@@ -31,7 +31,7 @@ class LoginScreenTest {
     var hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val composeTestRule = createAndroidComposeRule<MainActivity>()
+    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
     private val activity get() = composeTestRule.activity
 
     private var isMainScreen: Boolean = false
@@ -58,8 +58,8 @@ class LoginScreenTest {
 
     @Test
     fun onNewIntent_validIntent_navigateToMainActivity() = runTest {
-        val scheme = "githubrepo"
-        val host = "localhost:8080"
+        val scheme = "test"
+        val host = "test"
         val code = "success"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("$scheme://$host?code=$code"))
         activity.startActivity(intent)
@@ -71,8 +71,8 @@ class LoginScreenTest {
 
     @Test
     fun onNewIntent_invalidIntent_showNetworkErrorAlertDialog() = runTest {
-        val scheme = "githubrepo"
-        val host = "localhost:8080"
+        val scheme = "test"
+        val host = "test"
         val code = "ioException"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("$scheme://$host?code=$code"))
         activity.startActivity(intent)
@@ -84,8 +84,8 @@ class LoginScreenTest {
 
     @Test
     fun onNewIntent_invalidIntent_showLoginFailureAlertDialog() = runTest {
-        val scheme = "githubrepo"
-        val host = "localhost:8080"
+        val scheme = "test"
+        val host = "test"
         val code = "else"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("$scheme://$host?code=$code"))
         activity.startActivity(intent)

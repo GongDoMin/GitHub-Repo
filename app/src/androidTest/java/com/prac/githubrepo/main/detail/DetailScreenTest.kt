@@ -6,7 +6,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.intent.Intents
-import com.prac.githubrepo.MainActivity
+import com.prac.githubrepo.HiltTestActivity
 import com.prac.githubrepo.R
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.util.hasDrawable
@@ -26,7 +26,7 @@ class DetailScreenTest {
     val hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val composeTestRule = createAndroidComposeRule<MainActivity>()
+    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
     private val activity get() = composeTestRule.activity
 
     private var isMainScreen = false
