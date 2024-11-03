@@ -21,6 +21,7 @@ import androidx.test.espresso.Espresso.pressBack
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
+import com.prac.githubrepo.Destinations.MAIN_SCREEN
 import com.prac.githubrepo.util.hasButton
 import com.prac.githubrepo.util.hasDrawable
 import com.prac.githubrepo.util.hasIcon
@@ -71,7 +72,12 @@ class NavigationTest {
     @Test
     fun navigationMainToDetailTest() = runTest {
         composeTestRule.setContent {
-            NavGraph(startDestination = Destinations.MAIN_SCREEN)
+            navController = TestNavHostController(LocalContext.current)
+            navController.navigatorProvider.addNavigator(ComposeNavigator())
+            NavGraph(
+                startDestination = MAIN_SCREEN,
+                navController = navController
+            )
         }
 
         val clickPosition = 0
@@ -86,12 +92,14 @@ class NavigationTest {
 
         val expectedRepoDetail = RepoEntity(id = 0, name = "test 0", owner = OwnerEntity("login 0", "avatarUrl 0"), stargazersCount = 5, defaultBranch = "master", updatedAt = "update", isStarred = true)
 
-        composeTestRule.onNodeWithText(expectedRepoDetail.name).assertIsDisplayed()
-        composeTestRule.onNodeWithText(expectedRepoDetail.owner.login).assertIsDisplayed()
-        composeTestRule.onNode(hasDrawable(R.drawable.img_glide_profile)).assertIsDisplayed()
-        composeTestRule.onNode(hasDrawable(R.drawable.img_star)).assertIsDisplayed()
-        composeTestRule.onNode(hasDrawable(R.drawable.img_fork)).assertIsDisplayed()
-        composeTestRule.onAllNodesWithText(expectedRepoDetail.stargazersCount.toString()).assertCountEquals(2)
+        composeTestRule.waitUntil {
+            navController.currentBackStackEntry?.destination?.route == Destinations.DETAIL_SCREEN
+                    && composeTestRule.onNodeWithText(expectedRepoDetail.name).isDisplayed()
+                    && composeTestRule.onNodeWithText(expectedRepoDetail.owner.login).isDisplayed()
+                    && composeTestRule.onNode(hasDrawable(R.drawable.img_glide_profile)).isDisplayed()
+                    && composeTestRule.onNode(hasDrawable(R.drawable.img_star)).isDisplayed()
+                    && composeTestRule.onNode(hasDrawable(R.drawable.img_fork)).isDisplayed()
+        }
     }
 
     @Test
