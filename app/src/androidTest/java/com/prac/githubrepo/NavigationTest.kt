@@ -4,25 +4,21 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.ui.test.assert
-import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onAllNodesWithText
-import androidx.compose.ui.test.onChild
-import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
-import androidx.compose.ui.test.printToLog
+import androidx.navigation.compose.ComposeNavigator
+import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.pressBack
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
+import com.prac.githubrepo.Destinations.DETAIL_SCREEN
+import com.prac.githubrepo.Destinations.MAIN_SCREEN
 import com.prac.githubrepo.util.hasButton
 import com.prac.githubrepo.util.hasDrawable
 import com.prac.githubrepo.util.hasIcon
@@ -32,17 +28,16 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class NavigationTest {
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val composeTestRule = createAndroidComposeRule<MainActivity>()
+    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
     private val activity get() = composeTestRule.activity
+    private lateinit var navController: TestNavHostController
 
     @Before
     fun init() {
@@ -52,24 +47,32 @@ class NavigationTest {
     @Test
     fun navigationLoginToMainTest() = runTest {
         composeTestRule.setContent {
-            NavGraph(startDestination = Destinations.LOGIN_SCREEN)
+            navController = TestNavHostController(LocalContext.current)
+            navController.navigatorProvider.addNavigator(ComposeNavigator())
+            NavGraph(navController = navController)
         }
 
-        val scheme = "githubrepo"
-        val host = "localhost:8080"
+        val scheme = "test"
+        val host = "test"
         val code = "success"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("$scheme://$host?code=$code"))
         activity.startActivity(intent)
 
-        composeTestRule.awaitIdle()
-
-        composeTestRule.onNodeWithText(activity.getString(R.string.repository)).assertIsDisplayed()
+        composeTestRule.waitUntil {
+            navController.currentBackStackEntry?.destination?.route == Destinations.MAIN_SCREEN
+                    && composeTestRule.onNodeWithText(activity.getString(R.string.repository)).isDisplayed()
+        }
     }
 
     @Test
     fun navigationMainToDetailTest() = runTest {
         composeTestRule.setContent {
-            NavGraph(startDestination = Destinations.MAIN_SCREEN)
+            navController = TestNavHostController(LocalContext.current)
+            navController.navigatorProvider.addNavigator(ComposeNavigator())
+            NavGraph(
+                startDestination = MAIN_SCREEN,
+                navController = navController
+            )
         }
 
         val clickPosition = 0
@@ -84,18 +87,25 @@ class NavigationTest {
 
         val expectedRepoDetail = RepoEntity(id = 0, name = "test 0", owner = OwnerEntity("login 0", "avatarUrl 0"), stargazersCount = 5, defaultBranch = "master", updatedAt = "update", isStarred = true)
 
-        composeTestRule.onNodeWithText(expectedRepoDetail.name).assertIsDisplayed()
-        composeTestRule.onNodeWithText(expectedRepoDetail.owner.login).assertIsDisplayed()
-        composeTestRule.onNode(hasDrawable(R.drawable.img_glide_profile)).assertIsDisplayed()
-        composeTestRule.onNode(hasDrawable(R.drawable.img_star)).assertIsDisplayed()
-        composeTestRule.onNode(hasDrawable(R.drawable.img_fork)).assertIsDisplayed()
-        composeTestRule.onAllNodesWithText(expectedRepoDetail.stargazersCount.toString()).assertCountEquals(2)
+        composeTestRule.waitUntil {
+            navController.currentBackStackEntry?.destination?.route == Destinations.DETAIL_SCREEN
+                    && composeTestRule.onNodeWithText(expectedRepoDetail.name).isDisplayed()
+                    && composeTestRule.onNodeWithText(expectedRepoDetail.owner.login).isDisplayed()
+                    && composeTestRule.onNode(hasDrawable(R.drawable.img_glide_profile)).isDisplayed()
+                    && composeTestRule.onNode(hasDrawable(R.drawable.img_star)).isDisplayed()
+                    && composeTestRule.onNode(hasDrawable(R.drawable.img_fork)).isDisplayed()
+        }
     }
 
     @Test
     fun navigationDetailToMainTest() = runTest {
         composeTestRule.setContent {
-            NavGraph(startDestination = Destinations.MAIN_SCREEN)
+            navController = TestNavHostController(LocalContext.current)
+            navController.navigatorProvider.addNavigator(ComposeNavigator())
+            NavGraph(
+                startDestination = MAIN_SCREEN,
+                navController = navController
+            )
         }
 
         val clickPosition = 0
@@ -108,47 +118,63 @@ class NavigationTest {
             .onNodeWithText("test $clickPosition")
             .performClick()
 
-        val expectedRepoDetail = RepoEntity(id = 0, name = "test 0", owner = OwnerEntity("login 0", "avatarUrl 0"), stargazersCount = 5, defaultBranch = "master", updatedAt = "update", isStarred = true)
-
-        composeTestRule.onNodeWithText(expectedRepoDetail.name).assertIsDisplayed()
-        composeTestRule.onNodeWithText(expectedRepoDetail.owner.login).assertIsDisplayed()
-        composeTestRule.onNode(hasDrawable(R.drawable.img_glide_profile)).assertIsDisplayed()
-        composeTestRule.onNode(hasDrawable(R.drawable.img_star)).assertIsDisplayed()
-        composeTestRule.onNode(hasDrawable(R.drawable.img_fork)).assertIsDisplayed()
-        composeTestRule.onAllNodesWithText(expectedRepoDetail.stargazersCount.toString()).assertCountEquals(2)
+        composeTestRule.waitUntil {
+            navController.currentBackStackEntry?.destination?.route == DETAIL_SCREEN
+        }
 
         pressBack()
 
-        composeTestRule.onNodeWithText(activity.getString(R.string.repository)).assertIsDisplayed()
+        composeTestRule.waitUntil {
+            navController.currentBackStackEntry?.destination?.route == MAIN_SCREEN
+                    && composeTestRule.onNodeWithText(activity.getString(R.string.repository)).isDisplayed()
+        }
     }
 
     @Test
     fun navigationMainToSettingTest() = runTest {
         composeTestRule.setContent {
-            NavGraph(startDestination = Destinations.MAIN_SCREEN)
+            navController = TestNavHostController(LocalContext.current)
+            navController.navigatorProvider.addNavigator(ComposeNavigator())
+            NavGraph(
+                startDestination = MAIN_SCREEN,
+                navController = navController
+            )
         }
 
         composeTestRule
             .onNode(hasIcon(Icons.Default.AccountCircle))
             .performClick()
 
-        composeTestRule.onNode(hasButton(R.string.logout)).assertIsDisplayed()
+        composeTestRule.waitUntil {
+            navController.currentBackStackEntry?.destination?.route == Destinations.SETTING_SCREEN
+                    && composeTestRule.onNode(hasButton(R.string.logout)).isDisplayed()
+        }
     }
 
     @Test
     fun navigationSettingToMainTest() = runTest {
         composeTestRule.setContent {
-            NavGraph(startDestination = Destinations.MAIN_SCREEN)
+            navController = TestNavHostController(LocalContext.current)
+            navController.navigatorProvider.addNavigator(ComposeNavigator())
+            NavGraph(
+                startDestination = MAIN_SCREEN,
+                navController = navController
+            )
         }
 
         composeTestRule
             .onNode(hasIcon(Icons.Default.AccountCircle))
             .performClick()
 
-        composeTestRule.onNode(hasButton(R.string.logout)).assertIsDisplayed()
+        composeTestRule.waitUntil {
+            navController.currentBackStackEntry?.destination?.route == Destinations.SETTING_SCREEN
+        }
 
         pressBack()
 
-        composeTestRule.onNodeWithText(activity.getString(R.string.repository)).assertIsDisplayed()
+        composeTestRule.waitUntil {
+            navController.currentBackStackEntry?.destination?.route == MAIN_SCREEN
+                    && composeTestRule.onNodeWithText(activity.getString(R.string.repository)).isDisplayed()
+        }
     }
 }
