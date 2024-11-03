@@ -1,4 +1,4 @@
-package com.prac.local.fake.datastore
+package com.prac.shared_test.local.datastore
 
 import com.prac.local.datastore.user.UserDataStoreManager
 

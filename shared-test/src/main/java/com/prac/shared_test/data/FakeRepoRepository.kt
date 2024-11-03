@@ -1,4 +1,4 @@
-package com.prac.data.fake
+package com.prac.shared_test.data
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType

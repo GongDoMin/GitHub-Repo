@@ -1,4 +1,4 @@
-package com.prac.network.fake
+package com.prac.shared_test.network
 
 import com.prac.network.RepoApiDataSource
 import com.prac.network.dto.OwnerDto

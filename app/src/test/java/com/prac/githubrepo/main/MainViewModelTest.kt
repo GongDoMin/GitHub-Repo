@@ -5,7 +5,7 @@ import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
-import com.prac.data.fake.FakeTokenRepository
+import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.data.repository.RepoRepository
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN
@@ -18,7 +18,6 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

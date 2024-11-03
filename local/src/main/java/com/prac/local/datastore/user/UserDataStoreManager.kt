@@ -1,6 +1,6 @@
 package com.prac.local.datastore.user
 
-internal interface UserDataStoreManager {
+interface UserDataStoreManager {
     suspend fun getUserName(): String
 
     suspend fun setUserName(userName: String)

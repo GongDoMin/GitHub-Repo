@@ -1,9 +1,9 @@
-package com.prac.network.fake.service
+package com.prac.shared_test.network.service
 
 import com.prac.network.dto.TokenDto
 import com.prac.network.service.GitHubAuthService
 
-internal class FakeGitHubAuthService: GitHubAuthService {
+class FakeGitHubAuthService: GitHubAuthService {
     override suspend fun authorizeOAuth(accept: String, clientID: String, clientSecret: String, code: String): TokenDto {
         return TokenDto(
             accessToken = "accessToken",

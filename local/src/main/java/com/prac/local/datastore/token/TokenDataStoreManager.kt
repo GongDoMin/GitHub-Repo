@@ -1,6 +1,6 @@
 package com.prac.local.datastore.token
 
-internal interface TokenDataStoreManager {
+interface TokenDataStoreManager {
     suspend fun getToken(): TokenLocalDto
 
     suspend fun setToken(token: TokenLocalDto)

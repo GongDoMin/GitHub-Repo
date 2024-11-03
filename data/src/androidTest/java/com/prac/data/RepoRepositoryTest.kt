@@ -14,7 +14,7 @@ import com.prac.data.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.impl.RepoRepositoryImpl
 import com.prac.local.UserLocalDataSource
-import com.prac.local.fake.source.FakeUserLocalDataSource
+import com.prac.shared_test.local.source.FakeUserLocalDataSource
 import com.prac.local.room.dao.RemoteKeyDao
 import com.prac.local.room.dao.RepositoryDao
 import com.prac.local.room.database.RepositoryDatabase
@@ -22,8 +22,8 @@ import com.prac.local.room.entity.Owner
 import com.prac.local.room.entity.Repository
 import com.prac.network.dto.OwnerDto
 import com.prac.network.dto.RepoDto
-import com.prac.network.fake.FakeRepoApiDataSource
-import com.prac.network.fake.FakeRepoStarApiDataSource
+import com.prac.shared_test.network.FakeRepoApiDataSource
+import com.prac.shared_test.network.FakeRepoStarApiDataSource
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import okhttp3.ResponseBody.Companion.toResponseBody

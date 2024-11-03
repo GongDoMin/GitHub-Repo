@@ -1,11 +1,11 @@
-package com.prac.network.fake.service
+package com.prac.shared_test.network.service
 
 import com.prac.network.dto.OwnerDto
 import com.prac.network.dto.RepoDetailDto
 import com.prac.network.dto.RepoDto
 import com.prac.network.service.GitHubService
 
-internal class FakeGitHubService: GitHubService {
+class FakeGitHubService: GitHubService {
 
     private val repoList = listOf(
         RepoDto(0, "test1", OwnerDto("test1", "test1"), 0, "master", "test1"),
