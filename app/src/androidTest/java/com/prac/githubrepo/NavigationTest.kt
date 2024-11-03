@@ -4,14 +4,19 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
+import androidx.navigation.NavController
+import androidx.navigation.compose.ComposeNavigator
+import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.prac.data.entity.OwnerEntity
@@ -36,6 +41,7 @@ class NavigationTest {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
     private val activity get() = composeTestRule.activity
+    private lateinit var navController: TestNavHostController
 
     @Before
     fun init() {
@@ -45,7 +51,9 @@ class NavigationTest {
     @Test
     fun navigationLoginToMainTest() = runTest {
         composeTestRule.setContent {
-            NavGraph(startDestination = Destinations.LOGIN_SCREEN)
+            navController = TestNavHostController(LocalContext.current)
+            navController.navigatorProvider.addNavigator(ComposeNavigator())
+            NavGraph(navController = navController)
         }
 
         val scheme = "test"
@@ -54,9 +62,10 @@ class NavigationTest {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("$scheme://$host?code=$code"))
         activity.startActivity(intent)
 
-        composeTestRule.awaitIdle()
-
-        composeTestRule.onNodeWithText(activity.getString(R.string.repository)).assertIsDisplayed()
+        composeTestRule.waitUntil {
+            navController.currentBackStackEntry?.destination?.route == Destinations.MAIN_SCREEN
+                    && composeTestRule.onNodeWithText(activity.getString(R.string.repository)).isDisplayed()
+        }
     }
 
     @Test
