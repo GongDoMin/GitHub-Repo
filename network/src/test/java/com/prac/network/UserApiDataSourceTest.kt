@@ -14,25 +14,24 @@ class UserApiDataSourceTest {
     private lateinit var gitHubUserService: FakeGitHubUserService
     private lateinit var repoStarApiDataSource: UserApiDataSource
 
-    private val user = UserDto(
-        user = OwnerDto(
-            login = "test",
-            avatarUrl = "test"
-        )
-    )
-
     @Before
     fun setUp() {
-        gitHubUserService = FakeGitHubUserService(user)
+        gitHubUserService = FakeGitHubUserService()
         repoStarApiDataSource = UserApiDataSourceImpl(gitHubUserService)
     }
 
     @Test
     fun getUser_whenCalled_user() = runTest {
         val accessToken = "test"
+        val expectedUser = UserDto(
+            user = OwnerDto(
+                login = "test",
+                avatarUrl = "test"
+            )
+        )
 
         val result = repoStarApiDataSource.getUserName(accessToken)
 
-        assertEquals(result, user.user.login)
+        assertEquals(result, expectedUser.user.login)
     }
 }

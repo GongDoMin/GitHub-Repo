@@ -2,29 +2,19 @@ package com.prac.local.local
 
 import com.prac.local.TokenLocalDataSource
 import com.prac.local.datastore.token.TokenLocalDto
-import com.prac.local.impl.TokenLocalDataSourceImpl
 import com.prac.shared_test.local.datastore.FakeTokenDataStoreManager
+import com.prac.local.impl.TokenLocalDataSourceImpl
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.time.Instant
-import java.time.ZoneId
 import java.time.ZonedDateTime
 
 internal class TokenLocalDataSourceTest {
 
     private lateinit var tokenDataStoreManager: FakeTokenDataStoreManager
     private lateinit var tokenLocalDataSource: TokenLocalDataSource
-
-    private val initialToken = TokenLocalDto(
-        accessToken = "accessToken",
-        refreshToken = "refreshToken",
-        expiresInSeconds = 3600,
-        refreshTokenExpiresInSeconds = 3600,
-        updatedAt = Instant.now().atZone(ZoneId.systemDefault())
-    )
 
     @After
     fun tearDown() = runTest {
@@ -44,7 +34,7 @@ internal class TokenLocalDataSourceTest {
 
     @Test
     fun getToken_dataStoreIsNotEmpty_notEmptyToken() = runTest {
-        tokenDataStoreManager = FakeTokenDataStoreManager(initialToken)
+        tokenDataStoreManager = FakeTokenDataStoreManager().apply { setInitialToken() }
         tokenLocalDataSource = TokenLocalDataSourceImpl(tokenDataStoreManager)
 
         val result = tokenLocalDataSource.getToken()
@@ -75,7 +65,7 @@ internal class TokenLocalDataSourceTest {
 
     @Test
     fun clearToken_updateEmptyToken_localAndCachedEmptyToken() = runTest {
-        tokenDataStoreManager = FakeTokenDataStoreManager(initialToken)
+        tokenDataStoreManager = FakeTokenDataStoreManager().apply { setInitialToken() }
         tokenLocalDataSource = TokenLocalDataSourceImpl(tokenDataStoreManager)
 
         tokenLocalDataSource.clearToken()
