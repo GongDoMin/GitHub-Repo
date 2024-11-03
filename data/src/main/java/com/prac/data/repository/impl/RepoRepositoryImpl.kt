@@ -14,6 +14,8 @@ import com.prac.data.entity.RepoEntity
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
+import com.prac.local.RemoteKeyLocalDataSource
+import com.prac.local.RepositoryLocalDataSource
 import com.prac.local.UserLocalDataSource
 import com.prac.local.room.database.RepositoryDatabase
 import com.prac.local.room.entity.Owner
@@ -30,7 +32,8 @@ import javax.inject.Inject
 internal class RepoRepositoryImpl @Inject constructor(
     private val repoApiDataSource: RepoApiDataSource,
     private val repoStarApiDataSource: RepoStarApiDataSource,
-    private val repositoryDatabase: RepositoryDatabase,
+    private val repositoryLocalDataSource: RepositoryLocalDataSource,
+    private val remoteKeyLocalDataSource: RemoteKeyLocalDataSource,
     private val userLocalDataSource: UserLocalDataSource
 ) : RepoRepository() {
 
@@ -46,7 +49,7 @@ internal class RepoRepositoryImpl @Inject constructor(
                 // false -> true
             ),
             remoteMediator = this,
-            pagingSourceFactory = { repositoryDatabase.repositoryDao().getRepositories() }
+            pagingSourceFactory = { repositoryLocalDataSource.getRepositories() }
         ).flow
             .map { pagingData ->
                 pagingData.map { repository ->
@@ -60,7 +63,7 @@ internal class RepoRepositoryImpl @Inject constructor(
             val model = repoApiDataSource.getRepository(userName, repoName)
 
             // 디테일 화면에 들어오는 동안 Star Count 가 변경될 수 있기 때문에 Star Count update
-            repositoryDatabase.repositoryDao().updateStarCount(model.id, model.stargazersCount)
+            repositoryLocalDataSource.updateStarCount(model.id, model.stargazersCount)
 
             Result.success(
                 RepoDetailEntity(
@@ -73,12 +76,12 @@ internal class RepoRepositoryImpl @Inject constructor(
     }
 
     override suspend fun clearRepositories() {
-        repositoryDatabase.repositoryDao().clearRepositories()
-        repositoryDatabase.remoteKeyDao().clearRemoteKeys()
+        repositoryLocalDataSource.clearRepositories()
+        remoteKeyLocalDataSource.clearRemoteKeys()
     }
 
     override suspend fun getStarStateAndStarCount(id: Int): Flow<Pair<Boolean?, Int?>> {
-        return repositoryDatabase.repositoryDao().getRepository(id).map { Pair(it?.isStarred, it?.stargazersCount) }
+        return repositoryLocalDataSource.getRepository(id).map { Pair(it?.isStarred, it?.stargazersCount) }
     }
 
     override suspend fun isStarred(id: Int, repoName: String) {
@@ -87,9 +90,9 @@ internal class RepoRepositoryImpl @Inject constructor(
 
             repoStarApiDataSource.isStarred(userName, repoName)
 
-            repositoryDatabase.repositoryDao().updateStarState(id, true)
+            repositoryLocalDataSource.updateStarState(id, true)
         } catch (e: Exception) {
-            repositoryDatabase.repositoryDao().updateStarState(id, false)
+            repositoryLocalDataSource.updateStarState(id, false)
         }
     }
 
@@ -114,11 +117,11 @@ internal class RepoRepositoryImpl @Inject constructor(
     }
 
     override suspend fun starLocalRepository(id: Int, updatedStarCount: Int) {
-        repositoryDatabase.repositoryDao().updateStarStateAndStarCount(id, true, updatedStarCount)
+        repositoryLocalDataSource.updateStarStateAndStarCount(id, true, updatedStarCount)
     }
 
     override suspend fun unStarLocalRepository(id: Int, updatedStarCount: Int) {
-        repositoryDatabase.repositoryDao().updateStarStateAndStarCount(id, false, updatedStarCount)
+        repositoryLocalDataSource.updateStarStateAndStarCount(id, false, updatedStarCount)
     }
 
     @OptIn(ExperimentalPagingApi::class)
@@ -146,22 +149,21 @@ internal class RepoRepositoryImpl @Inject constructor(
             val userName = userLocalDataSource.getUserName()
             val response = repoApiDataSource.getRepositories(userName, PAGE_SIZE, page)
 
-            repositoryDatabase.withTransaction {
-                if (loadType == LoadType.REFRESH) {
-                    repositoryDatabase.remoteKeyDao().clearRemoteKeys()
-                    repositoryDatabase.repositoryDao().clearRepositories()
-                }
-                val prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1
-                val nextKey = if (response.size < 10) null else page + 1
-                val keys = response.map {
-                    RemoteKey(it.id, prevKey, nextKey)
-                }
-                val repositories = response.map {
-                    Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, it.defaultBranch, null)
-                }
-                repositoryDatabase.remoteKeyDao().insertRemoteKeys(keys)
-                repositoryDatabase.repositoryDao().insertRepositories(repositories)
+            if (loadType == LoadType.REFRESH) {
+                remoteKeyLocalDataSource.clearRemoteKeys()
+                repositoryLocalDataSource.clearRepositories()
             }
+            val prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1
+            val nextKey = if (response.size < 10) null else page + 1
+            val keys = response.map {
+                RemoteKey(it.id, prevKey, nextKey)
+            }
+            val repositories = response.map {
+                Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, it.defaultBranch, null)
+            }
+            remoteKeyLocalDataSource.insertRemoteKeys(keys)
+            repositoryLocalDataSource.insertRepositories(repositories)
+
             return MediatorResult.Success(endOfPaginationReached = response.size < 10)
         } catch (exception: Exception) {
             return MediatorResult.Error(exception)
@@ -171,7 +173,7 @@ internal class RepoRepositoryImpl @Inject constructor(
     private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, Repository>): RemoteKey? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.id?.let { repoId ->
-                repositoryDatabase.remoteKeyDao().remoteKey(repoId)
+                remoteKeyLocalDataSource.remoteKey(repoId)
             }
         }
     }
@@ -179,14 +181,14 @@ internal class RepoRepositoryImpl @Inject constructor(
     private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, Repository>): RemoteKey? {
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
             ?.let { repo ->
-                repositoryDatabase.remoteKeyDao().remoteKey(repo.id)
+                remoteKeyLocalDataSource.remoteKey(repo.id)
             }
     }
 
     private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, Repository>): RemoteKey? {
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { repo ->
-                repositoryDatabase.remoteKeyDao().remoteKey(repo.id)
+                remoteKeyLocalDataSource.remoteKey(repo.id)
             }
     }
 
