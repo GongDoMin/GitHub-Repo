@@ -1,12 +1,10 @@
 package com.prac.network
 
 import com.prac.network.dto.TokenDto
-import com.prac.network.fake.service.FakeGitHubAuthService
+import com.prac.shared_test.network.service.FakeGitHubAuthService
 import com.prac.network.impl.AuthApiDataSourceImpl
-import com.prac.network.service.GitHubAuthService
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Test
 

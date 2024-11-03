@@ -72,12 +72,14 @@ dependencies {
 
     implementation(project(":local"))
     implementation(project(":network"))
+    testImplementation(project(":shared-test"))
 
     implementation(libs.jetbrains.kotlinx.coroutines)
     implementation(libs.jetbrains.kotlinx.coroutines.test)
 
     implementation(libs.dagger.hilt.android)
     implementation(libs.hilt.android.testing)
+    androidTestImplementation(project(":shared-test"))
     kapt(libs.dagger.hilt.compiler)
 
     implementation(libs.retrofit)

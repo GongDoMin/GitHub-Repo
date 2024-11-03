@@ -3,10 +3,10 @@ package com.prac.data.repository
 import com.prac.data.exception.CommonException
 import com.prac.data.repository.impl.TokenRepositoryImpl
 import com.prac.local.datastore.token.TokenLocalDto
-import com.prac.local.fake.source.FakeTokenLocalDataSource
-import com.prac.local.fake.source.FakeUserLocalDataSource
-import com.prac.network.fake.FakeAuthApiDataSource
-import com.prac.network.fake.FakeUserApiDataSource
+import com.prac.shared_test.local.source.FakeTokenLocalDataSource
+import com.prac.shared_test.local.source.FakeUserLocalDataSource
+import com.prac.shared_test.network.FakeAuthApiDataSource
+import com.prac.shared_test.network.FakeUserApiDataSource
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

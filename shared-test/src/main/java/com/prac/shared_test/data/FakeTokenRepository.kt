@@ -1,4 +1,4 @@
-package com.prac.data.fake
+package com.prac.shared_test.data
 
 import com.prac.data.exception.CommonException
 import com.prac.data.repository.TokenRepository
