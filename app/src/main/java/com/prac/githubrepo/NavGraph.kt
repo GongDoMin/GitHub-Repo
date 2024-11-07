@@ -3,67 +3,62 @@ package com.prac.githubrepo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.prac.githubrepo.DetailArgs.REPO_NAME_ARG
-import com.prac.githubrepo.DetailArgs.USER_NAME_ARG
-import com.prac.githubrepo.login.LoginScreen
-import com.prac.githubrepo.main.MainScreen
-import com.prac.githubrepo.main.detail.DetailScreen
-import com.prac.githubrepo.main.setting.SettingScreen
+import androidx.navigation.navOptions
+import com.prac.githubrepo.login.LOGIN_SCREEN
+import com.prac.githubrepo.login.loginScreen
+import com.prac.githubrepo.login.navigationToLogin
+import com.prac.githubrepo.main.MAIN_SCREEN
+import com.prac.githubrepo.main.detail.detailScreen
+import com.prac.githubrepo.main.detail.navigationToDetail
+import com.prac.githubrepo.main.mainScreen
+import com.prac.githubrepo.main.navigationMain
+import com.prac.githubrepo.main.setting.navigationToSetting
+import com.prac.githubrepo.main.setting.settingScreen
 
 @Composable
 fun NavGraph(
     navController: NavHostController = rememberNavController(),
-    navActions: NavigationActions = remember(navController) { NavigationActions(navController) },
-    startDestination: String = Destinations.LOGIN_SCREEN
+    startDestination: String = LOGIN_SCREEN
 ) {
+    val loginNavOptions = remember {
+        navOptions {
+            popUpTo(MAIN_SCREEN) {
+                inclusive = true
+            }
+        }
+    }
+
     NavHost(
         navController = navController,
         startDestination = startDestination,
     ) {
-        composable(
-            route = Destinations.LOGIN_SCREEN
-        ) {
-            LoginScreen(
-                onLogin = { navActions.navigationLoginToMain() }
-            )
-        }
+        loginScreen(
+            onLogin = { navController.navigationMain() }
+        )
 
-        composable(
-            route = Destinations.MAIN_SCREEN
-        ) {
-            MainScreen(
-                onLogout = { navActions.navigationToLogin() },
-                onClickRepository = { userName, repoName -> navActions.navigateMainToDetail(userName, repoName) },
-                onClickSetting = { navActions.navigateMainToSetting() }
-            )
-        }
+        mainScreen(
+            onLogout = {
+                navController.navigationToLogin(navOptions = loginNavOptions)
+            },
+            onClickRepository = { userName, repoName ->
+                navController.navigationToDetail(userName, repoName)
+            },
+            onClickSetting = { navController.navigationToSetting() }
+        )
 
-        composable(
-            route = Destinations.DETAIL_SCREEN,
-            arguments = listOf(
-                navArgument(USER_NAME_ARG) { type = NavType.StringType },
-                navArgument(REPO_NAME_ARG) { type = NavType.StringType },
-            )
-        ) { entry ->
-            DetailScreen(
-                onLogout = { navActions.navigationToLogin() },
-                onBack = { navController.popBackStack() },
-                userName = entry.arguments?.getString(USER_NAME_ARG),
-                repoName = entry.arguments?.getString(REPO_NAME_ARG)
-            )
-        }
+        detailScreen(
+            onLogout = {
+                navController.navigationToLogin(navOptions = loginNavOptions)
+            },
+            onBack = { navController.popBackStack() }
+        )
 
-        composable(
-            route = Destinations.SETTING_SCREEN
-        ) {
-            SettingScreen(
-                onLogout = { navActions.navigationToLogin() }
-            )
-        }
+        settingScreen(
+            onLogout = {
+                navController.navigationToLogin(navOptions = loginNavOptions)
+            }
+        )
     }
 }
