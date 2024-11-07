@@ -17,8 +17,9 @@ import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.pressBack
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
-import com.prac.githubrepo.Destinations.DETAIL_SCREEN
-import com.prac.githubrepo.Destinations.MAIN_SCREEN
+import com.prac.githubrepo.main.MAIN_SCREEN
+import com.prac.githubrepo.main.detail.DETAIL_SCREEN_WITH_ARGS
+import com.prac.githubrepo.main.setting.SETTING_SCREEN
 import com.prac.githubrepo.util.hasButton
 import com.prac.githubrepo.util.hasDrawable
 import com.prac.githubrepo.util.hasIcon
@@ -59,7 +60,7 @@ class NavigationTest {
         activity.startActivity(intent)
 
         composeTestRule.waitUntil {
-            navController.currentBackStackEntry?.destination?.route == Destinations.MAIN_SCREEN
+            navController.currentBackStackEntry?.destination?.route == MAIN_SCREEN
                     && composeTestRule.onNodeWithText(activity.getString(R.string.repository)).isDisplayed()
         }
     }
@@ -88,7 +89,7 @@ class NavigationTest {
         val expectedRepoDetail = RepoEntity(id = 0, name = "test 0", owner = OwnerEntity("login 0", "avatarUrl 0"), stargazersCount = 5, defaultBranch = "master", updatedAt = "update", isStarred = true)
 
         composeTestRule.waitUntil {
-            navController.currentBackStackEntry?.destination?.route == Destinations.DETAIL_SCREEN
+            navController.currentBackStackEntry?.destination?.route == DETAIL_SCREEN_WITH_ARGS
                     && composeTestRule.onNodeWithText(expectedRepoDetail.name).isDisplayed()
                     && composeTestRule.onNodeWithText(expectedRepoDetail.owner.login).isDisplayed()
                     && composeTestRule.onNode(hasDrawable(R.drawable.img_glide_profile)).isDisplayed()
@@ -119,7 +120,7 @@ class NavigationTest {
             .performClick()
 
         composeTestRule.waitUntil {
-            navController.currentBackStackEntry?.destination?.route == DETAIL_SCREEN
+            navController.currentBackStackEntry?.destination?.route == DETAIL_SCREEN_WITH_ARGS
         }
 
         pressBack()
@@ -146,7 +147,7 @@ class NavigationTest {
             .performClick()
 
         composeTestRule.waitUntil {
-            navController.currentBackStackEntry?.destination?.route == Destinations.SETTING_SCREEN
+            navController.currentBackStackEntry?.destination?.route == SETTING_SCREEN
                     && composeTestRule.onNode(hasButton(activity.getString(R.string.logout))).isDisplayed()
         }
     }
@@ -167,7 +168,7 @@ class NavigationTest {
             .performClick()
 
         composeTestRule.waitUntil {
-            navController.currentBackStackEntry?.destination?.route == Destinations.SETTING_SCREEN
+            navController.currentBackStackEntry?.destination?.route == SETTING_SCREEN
         }
 
         pressBack()
