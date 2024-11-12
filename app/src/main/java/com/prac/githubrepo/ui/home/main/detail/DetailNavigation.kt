@@ -1,12 +1,12 @@
-package com.prac.githubrepo.main.detail
+package com.prac.githubrepo.ui.home.main.detail
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.prac.githubrepo.main.detail.DetailArgs.REPO_NAME_ARG
-import com.prac.githubrepo.main.detail.DetailArgs.USER_NAME_ARG
+import com.prac.githubrepo.ui.home.main.detail.DetailArgs.REPO_NAME_ARG
+import com.prac.githubrepo.ui.home.main.detail.DetailArgs.USER_NAME_ARG
 
 object DetailArgs {
     const val USER_NAME_ARG = "userName"

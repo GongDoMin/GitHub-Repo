@@ -1,4 +1,4 @@
-package com.prac.githubrepo.main
+package com.prac.githubrepo.ui.home.main
 
 import android.util.SparseArray
 import androidx.lifecycle.ViewModel

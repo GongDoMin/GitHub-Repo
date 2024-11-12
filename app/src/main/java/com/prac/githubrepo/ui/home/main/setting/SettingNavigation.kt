@@ -1,4 +1,4 @@
-package com.prac.githubrepo.main.setting
+package com.prac.githubrepo.ui.home.main.setting
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder

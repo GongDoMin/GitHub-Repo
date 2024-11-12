@@ -9,6 +9,7 @@ import androidx.test.espresso.intent.Intents
 import com.prac.githubrepo.HiltTestActivity
 import com.prac.githubrepo.R
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
+import com.prac.githubrepo.ui.home.main.detail.DetailScreen
 import com.prac.githubrepo.util.hasDrawable
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

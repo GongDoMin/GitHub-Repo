@@ -17,9 +17,9 @@ import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.pressBack
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
-import com.prac.githubrepo.main.MAIN_SCREEN
-import com.prac.githubrepo.main.detail.DETAIL_SCREEN_WITH_ARGS
-import com.prac.githubrepo.main.setting.SETTING_SCREEN
+import com.prac.githubrepo.ui.home.main.MAIN_SCREEN
+import com.prac.githubrepo.ui.home.main.detail.DETAIL_SCREEN_WITH_ARGS
+import com.prac.githubrepo.ui.home.main.setting.SETTING_SCREEN
 import com.prac.githubrepo.util.hasButton
 import com.prac.githubrepo.util.hasDrawable
 import com.prac.githubrepo.util.hasIcon

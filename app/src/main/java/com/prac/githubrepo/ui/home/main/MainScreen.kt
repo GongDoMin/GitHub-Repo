@@ -1,4 +1,4 @@
-package com.prac.githubrepo.main
+package com.prac.githubrepo.ui.home.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

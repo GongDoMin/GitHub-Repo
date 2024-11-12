@@ -1,4 +1,4 @@
-package com.prac.githubrepo.main.detail
+package com.prac.githubrepo.ui.home.main.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -118,7 +118,12 @@ class DetailViewModel @Inject constructor(
             }
 
             _uiState.update {
-                UiState.Content(repoDetailEntity.copy(isStarred = isStarred, stargazersCount = stargazersCount))
+                UiState.Content(
+                    repoDetailEntity.copy(
+                        isStarred = isStarred,
+                        stargazersCount = stargazersCount
+                    )
+                )
             }
         }
     }

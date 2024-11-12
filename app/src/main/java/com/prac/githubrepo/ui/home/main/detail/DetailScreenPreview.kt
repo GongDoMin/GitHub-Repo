@@ -1,4 +1,4 @@
-package com.prac.githubrepo.main.detail
+package com.prac.githubrepo.ui.home.main.detail
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview

@@ -1,4 +1,4 @@
-package com.prac.githubrepo.main.setting
+package com.prac.githubrepo.ui.home.main.setting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

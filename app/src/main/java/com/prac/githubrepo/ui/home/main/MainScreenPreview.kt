@@ -1,4 +1,4 @@
-package com.prac.githubrepo.main
+package com.prac.githubrepo.ui.home.main
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable

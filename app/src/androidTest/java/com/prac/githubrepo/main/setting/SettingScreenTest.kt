@@ -7,6 +7,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.prac.githubrepo.HiltTestActivity
 import com.prac.githubrepo.R
+import com.prac.githubrepo.ui.home.main.setting.SettingScreen
 import com.prac.githubrepo.util.hasButton
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

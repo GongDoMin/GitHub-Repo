@@ -9,13 +9,13 @@ import androidx.navigation.navOptions
 import com.prac.githubrepo.ui.login.LOGIN_SCREEN
 import com.prac.githubrepo.ui.login.loginScreen
 import com.prac.githubrepo.ui.login.navigationToLogin
-import com.prac.githubrepo.main.MAIN_SCREEN
-import com.prac.githubrepo.main.detail.detailScreen
-import com.prac.githubrepo.main.detail.navigationToDetail
-import com.prac.githubrepo.main.mainScreen
-import com.prac.githubrepo.main.navigationMain
-import com.prac.githubrepo.main.setting.navigationToSetting
-import com.prac.githubrepo.main.setting.settingScreen
+import com.prac.githubrepo.ui.home.main.MAIN_SCREEN
+import com.prac.githubrepo.ui.home.main.detail.detailScreen
+import com.prac.githubrepo.ui.home.main.detail.navigationToDetail
+import com.prac.githubrepo.ui.home.main.mainScreen
+import com.prac.githubrepo.ui.home.main.navigationMain
+import com.prac.githubrepo.ui.home.main.setting.navigationToSetting
+import com.prac.githubrepo.ui.home.main.setting.settingScreen
 
 @Composable
 fun NavGraph(
