@@ -14,16 +14,14 @@ fun NavController.navigationToMain() {
 
 fun NavGraphBuilder.mainScreen(
     onLogout: () -> Unit,
-    onClickRepository: (String, String) -> Unit,
-    onClickSetting: () -> Unit
+    onClickRepository: (String, String) -> Unit
 ) {
     composable(
         route = MAIN_SCREEN
     ) {
         MainScreen(
             onLogout = onLogout,
-            onClickRepository = onClickRepository,
-            onClickSetting = onClickSetting
+            onClickRepository = onClickRepository
         )
     }
 }

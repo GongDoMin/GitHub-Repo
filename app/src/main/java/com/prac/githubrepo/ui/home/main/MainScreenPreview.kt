@@ -29,7 +29,6 @@ fun MainScreenPreview() {
         onClickStar = { },
         onClickUnStar = { },
         onClickRepository = { },
-        onClickSetting = { },
         dialogMessage = "",
         onDismissRequest = { }
     )
@@ -47,7 +46,6 @@ fun MainScreenNetworkFailurePreview() {
         onClickStar = { },
         onClickUnStar = { },
         onClickRepository = { },
-        onClickSetting = { },
         dialogMessage = CONNECTION_FAIL,
         onDismissRequest = { }
     )
@@ -65,7 +63,6 @@ fun MainScreenAuthorizationErrorPreview() {
         onClickStar = { },
         onClickUnStar = { },
         onClickRepository = { },
-        onClickSetting = { },
         dialogMessage = INVALID_TOKEN,
         onDismissRequest = { }
     )
@@ -83,7 +80,6 @@ fun MainScreenNotFoundRepositoryErrorPreview() {
         onClickStar = { },
         onClickUnStar = { },
         onClickRepository = { },
-        onClickSetting = { },
         dialogMessage = INVALID_REPOSITORY,
         onDismissRequest = { }
     )

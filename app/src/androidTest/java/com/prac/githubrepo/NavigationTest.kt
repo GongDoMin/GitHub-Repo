@@ -131,51 +131,51 @@ class NavigationTest {
         }
     }
 
-    @Test
-    fun navigationMainToSettingTest() = runTest {
-        composeTestRule.setContent {
-            navController = TestNavHostController(LocalContext.current)
-            navController.navigatorProvider.addNavigator(ComposeNavigator())
-            NavGraph(
-                startDestination = MAIN_SCREEN,
-                navController = navController
-            )
-        }
+//    @Test
+//    fun navigationMainToSettingTest() = runTest {
+//        composeTestRule.setContent {
+//            navController = TestNavHostController(LocalContext.current)
+//            navController.navigatorProvider.addNavigator(ComposeNavigator())
+//            NavGraph(
+//                startDestination = MAIN_SCREEN,
+//                navController = navController
+//            )
+//        }
+//
+//        composeTestRule
+//            .onNode(hasIcon(Icons.Default.AccountCircle))
+//            .performClick()
+//
+//        composeTestRule.waitUntil {
+//            navController.currentBackStackEntry?.destination?.route == SETTING_SCREEN
+//                    && composeTestRule.onNode(hasButton(activity.getString(R.string.logout))).isDisplayed()
+//        }
+//    }
 
-        composeTestRule
-            .onNode(hasIcon(Icons.Default.AccountCircle))
-            .performClick()
-
-        composeTestRule.waitUntil {
-            navController.currentBackStackEntry?.destination?.route == SETTING_SCREEN
-                    && composeTestRule.onNode(hasButton(activity.getString(R.string.logout))).isDisplayed()
-        }
-    }
-
-    @Test
-    fun navigationSettingToMainTest() = runTest {
-        composeTestRule.setContent {
-            navController = TestNavHostController(LocalContext.current)
-            navController.navigatorProvider.addNavigator(ComposeNavigator())
-            NavGraph(
-                startDestination = MAIN_SCREEN,
-                navController = navController
-            )
-        }
-
-        composeTestRule
-            .onNode(hasIcon(Icons.Default.AccountCircle))
-            .performClick()
-
-        composeTestRule.waitUntil {
-            navController.currentBackStackEntry?.destination?.route == SETTING_SCREEN
-        }
-
-        pressBack()
-
-        composeTestRule.waitUntil {
-            navController.currentBackStackEntry?.destination?.route == MAIN_SCREEN
-                    && composeTestRule.onNodeWithText(activity.getString(R.string.repository)).isDisplayed()
-        }
-    }
+//    @Test
+//    fun navigationSettingToMainTest() = runTest {
+//        composeTestRule.setContent {
+//            navController = TestNavHostController(LocalContext.current)
+//            navController.navigatorProvider.addNavigator(ComposeNavigator())
+//            NavGraph(
+//                startDestination = MAIN_SCREEN,
+//                navController = navController
+//            )
+//        }
+//
+//        composeTestRule
+//            .onNode(hasIcon(Icons.Default.AccountCircle))
+//            .performClick()
+//
+//        composeTestRule.waitUntil {
+//            navController.currentBackStackEntry?.destination?.route == SETTING_SCREEN
+//        }
+//
+//        pressBack()
+//
+//        composeTestRule.waitUntil {
+//            navController.currentBackStackEntry?.destination?.route == MAIN_SCREEN
+//                    && composeTestRule.onNodeWithText(activity.getString(R.string.repository)).isDisplayed()
+//        }
+//    }
 }

@@ -23,8 +23,7 @@ fun NavGraphBuilder.homeNavigation(
             },
             onClickRepository = { userName, repoName ->
                 navController.navigationToDetail(userName, repoName)
-            },
-            onClickSetting = { navController.navigationToSetting() }
+            }
         )
 
         detailScreen(

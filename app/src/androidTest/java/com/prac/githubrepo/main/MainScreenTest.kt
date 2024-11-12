@@ -127,8 +127,7 @@ class MainScreenTest {
                     isDetailScreen = true
                     this.userName = userName
                     this.repoName = repoName
-                },
-                onClickSetting = { }
+                }
             )
         }
     }
