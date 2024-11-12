@@ -1,4 +1,4 @@
-package com.prac.githubrepo.login
+package com.prac.githubrepo.ui.login
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder

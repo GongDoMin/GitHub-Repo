@@ -6,9 +6,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.prac.githubrepo.login.LOGIN_SCREEN
-import com.prac.githubrepo.login.loginScreen
-import com.prac.githubrepo.login.navigationToLogin
+import com.prac.githubrepo.ui.login.LOGIN_SCREEN
+import com.prac.githubrepo.ui.login.loginScreen
+import com.prac.githubrepo.ui.login.navigationToLogin
 import com.prac.githubrepo.main.MAIN_SCREEN
 import com.prac.githubrepo.main.detail.detailScreen
 import com.prac.githubrepo.main.detail.navigationToDetail

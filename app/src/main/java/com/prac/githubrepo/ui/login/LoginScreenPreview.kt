@@ -1,4 +1,4 @@
-package com.prac.githubrepo.login
+package com.prac.githubrepo.ui.login
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview

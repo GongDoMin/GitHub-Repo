@@ -3,6 +3,7 @@ package com.prac.githubrepo.login
 import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.LOGIN_FAIL
+import com.prac.githubrepo.ui.login.LoginViewModel
 import com.prac.githubrepo.util.StandardTestDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
