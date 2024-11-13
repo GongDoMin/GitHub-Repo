@@ -14,6 +14,7 @@ import com.prac.githubrepo.ui.home.homeNavigation
 import com.prac.githubrepo.ui.home.main.navigationToMain
 import com.prac.githubrepo.ui.login.LOGIN_SCREEN
 import com.prac.githubrepo.ui.login.loginScreen
+import com.prac.githubrepo.ui.login.navigationToLogin
 import com.prac.githubrepo.ui.profile.profileScreen
 import com.prac.githubrepo.util.MyBottomNavigation
 
@@ -48,7 +49,9 @@ fun NavGraph(
                 navController = navController
             )
 
-            profileScreen()
+            profileScreen(
+                onLogout = { navController.navigationToLogin() }
+            )
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.home.main.setting
+package com.prac.githubrepo.ui.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingViewModel @Inject constructor(
+class ProfileViewModel @Inject constructor(
     private val tokenRepository: TokenRepository,
     private val repoRepository: RepoRepository,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,

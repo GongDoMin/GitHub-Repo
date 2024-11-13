@@ -5,10 +5,14 @@ import androidx.navigation.compose.composable
 
 const val BOTTOM_PROFILE = "bottomProfile"
 
-fun NavGraphBuilder.profileScreen() {
+fun NavGraphBuilder.profileScreen(
+    onLogout: () -> Unit
+) {
     composable(
         route = BOTTOM_PROFILE
     ) {
-        ProfileScreen()
+        ProfileScreen(
+            onLogout = onLogout
+        )
     }
 }

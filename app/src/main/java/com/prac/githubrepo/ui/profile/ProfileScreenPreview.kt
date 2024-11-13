@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.home.main.setting
+package com.prac.githubrepo.ui.profile
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
@@ -7,8 +7,8 @@ import com.prac.githubrepo.R
 
 @Preview(showBackground = true)
 @Composable
-fun SettingContentIsLoadingPreview() {
-    SettingContent(
+fun ProfileContentIsLoadingPreview() {
+    ProfileContent(
         isLoading = true,
         dialogMessage = "",
         onClickLogoutButton = { },
@@ -20,8 +20,8 @@ fun SettingContentIsLoadingPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun SettingContentPreview() {
-    SettingContent(
+fun ProfileContentPreview() {
+    ProfileContent(
         isLoading = false,
         dialogMessage = "",
         onClickLogoutButton = { },
@@ -32,8 +32,8 @@ fun SettingContentPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun SettingContentDialogPreview() {
-    SettingContent(
+fun ProfileContentDialogPreview() {
+    ProfileContent(
         isLoading = false,
         dialogMessage = stringResource(id = R.string.logout_confirm),
         onClickLogoutButton = { },
