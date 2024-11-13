@@ -2,8 +2,6 @@ package com.prac.githubrepo
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
@@ -17,12 +15,12 @@ import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.pressBack
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
+import com.prac.githubrepo.ui.home.BOTTOM_HOME
 import com.prac.githubrepo.ui.home.main.MAIN_SCREEN
 import com.prac.githubrepo.ui.home.main.detail.DETAIL_SCREEN_WITH_ARGS
-import com.prac.githubrepo.ui.home.main.setting.SETTING_SCREEN
+import com.prac.githubrepo.ui.profile.BOTTOM_PROFILE
 import com.prac.githubrepo.util.hasButton
 import com.prac.githubrepo.util.hasDrawable
-import com.prac.githubrepo.util.hasIcon
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
@@ -60,7 +58,8 @@ class NavigationTest {
         activity.startActivity(intent)
 
         composeTestRule.waitUntil {
-            navController.currentBackStackEntry?.destination?.route == MAIN_SCREEN
+            navController.currentBackStackEntry?.destination?.parent?.route == BOTTOM_HOME
+                    && navController.currentBackStackEntry?.destination?.route == MAIN_SCREEN
                     && composeTestRule.onNodeWithText(activity.getString(R.string.repository)).isDisplayed()
         }
     }
@@ -71,7 +70,7 @@ class NavigationTest {
             navController = TestNavHostController(LocalContext.current)
             navController.navigatorProvider.addNavigator(ComposeNavigator())
             NavGraph(
-                startDestination = MAIN_SCREEN,
+                startDestination = BOTTOM_HOME,
                 navController = navController
             )
         }
@@ -104,7 +103,7 @@ class NavigationTest {
             navController = TestNavHostController(LocalContext.current)
             navController.navigatorProvider.addNavigator(ComposeNavigator())
             NavGraph(
-                startDestination = MAIN_SCREEN,
+                startDestination = BOTTOM_HOME,
                 navController = navController
             )
         }
@@ -131,51 +130,45 @@ class NavigationTest {
         }
     }
 
-//    @Test
-//    fun navigationMainToSettingTest() = runTest {
-//        composeTestRule.setContent {
-//            navController = TestNavHostController(LocalContext.current)
-//            navController.navigatorProvider.addNavigator(ComposeNavigator())
-//            NavGraph(
-//                startDestination = MAIN_SCREEN,
-//                navController = navController
-//            )
-//        }
-//
-//        composeTestRule
-//            .onNode(hasIcon(Icons.Default.AccountCircle))
-//            .performClick()
-//
-//        composeTestRule.waitUntil {
-//            navController.currentBackStackEntry?.destination?.route == SETTING_SCREEN
-//                    && composeTestRule.onNode(hasButton(activity.getString(R.string.logout))).isDisplayed()
-//        }
-//    }
+    @Test
+    fun navigationBottomHomeToBottomProfile() = runTest {
+        composeTestRule.setContent {
+            navController = TestNavHostController(LocalContext.current)
+            navController.navigatorProvider.addNavigator(ComposeNavigator())
+            NavGraph(
+                startDestination = BOTTOM_HOME,
+                navController = navController
+            )
+        }
 
-//    @Test
-//    fun navigationSettingToMainTest() = runTest {
-//        composeTestRule.setContent {
-//            navController = TestNavHostController(LocalContext.current)
-//            navController.navigatorProvider.addNavigator(ComposeNavigator())
-//            NavGraph(
-//                startDestination = MAIN_SCREEN,
-//                navController = navController
-//            )
-//        }
-//
-//        composeTestRule
-//            .onNode(hasIcon(Icons.Default.AccountCircle))
-//            .performClick()
-//
-//        composeTestRule.waitUntil {
-//            navController.currentBackStackEntry?.destination?.route == SETTING_SCREEN
-//        }
-//
-//        pressBack()
-//
-//        composeTestRule.waitUntil {
-//            navController.currentBackStackEntry?.destination?.route == MAIN_SCREEN
-//                    && composeTestRule.onNodeWithText(activity.getString(R.string.repository)).isDisplayed()
-//        }
-//    }
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.bottom_profile))
+            .performClick()
+
+        composeTestRule.waitUntil {
+            navController.currentBackStackEntry?.destination?.route == BOTTOM_PROFILE
+                    && composeTestRule.onNode(hasButton(activity.getString(R.string.logout))).isDisplayed()
+        }
+    }
+
+    @Test
+    fun navigationBottomProfileToBottomHome() = runTest {
+        composeTestRule.setContent {
+            navController = TestNavHostController(LocalContext.current)
+            navController.navigatorProvider.addNavigator(ComposeNavigator())
+            NavGraph(
+                startDestination = BOTTOM_PROFILE,
+                navController = navController
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText(activity.getString(R.string.bottom_home))
+            .performClick()
+
+        composeTestRule.waitUntil {
+            navController.currentBackStackEntry?.destination?.parent?.route == BOTTOM_HOME
+                    && composeTestRule.onNodeWithText(activity.getString(R.string.repository)).isDisplayed()
+        }
+    }
 }
