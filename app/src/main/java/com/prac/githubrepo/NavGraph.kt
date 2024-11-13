@@ -1,46 +1,35 @@
 package com.prac.githubrepo
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navOptions
-import com.prac.githubrepo.ui.login.LOGIN_SCREEN
-import com.prac.githubrepo.ui.login.loginScreen
-import com.prac.githubrepo.ui.login.navigationToLogin
-import com.prac.githubrepo.ui.home.main.MAIN_SCREEN
 import com.prac.githubrepo.ui.home.main.detail.detailScreen
 import com.prac.githubrepo.ui.home.main.detail.navigationToDetail
 import com.prac.githubrepo.ui.home.main.mainScreen
-import com.prac.githubrepo.ui.home.main.navigationMain
+import com.prac.githubrepo.ui.home.main.navigationToMain
 import com.prac.githubrepo.ui.home.main.setting.navigationToSetting
 import com.prac.githubrepo.ui.home.main.setting.settingScreen
+import com.prac.githubrepo.ui.login.LOGIN_SCREEN
+import com.prac.githubrepo.ui.login.loginScreen
+import com.prac.githubrepo.ui.login.navigationToLogin
 
 @Composable
 fun NavGraph(
     navController: NavHostController = rememberNavController(),
     startDestination: String = LOGIN_SCREEN
 ) {
-    val loginNavOptions = remember {
-        navOptions {
-            popUpTo(MAIN_SCREEN) {
-                inclusive = true
-            }
-        }
-    }
-
     NavHost(
         navController = navController,
         startDestination = startDestination,
     ) {
         loginScreen(
-            onLogin = { navController.navigationMain() }
+            onLogin = { navController.navigationToMain() }
         )
 
         mainScreen(
             onLogout = {
-                navController.navigationToLogin(navOptions = loginNavOptions)
+                navController.navigationToLogin()
             },
             onClickRepository = { userName, repoName ->
                 navController.navigationToDetail(userName, repoName)
@@ -50,14 +39,14 @@ fun NavGraph(
 
         detailScreen(
             onLogout = {
-                navController.navigationToLogin(navOptions = loginNavOptions)
+                navController.navigationToLogin()
             },
             onBack = { navController.popBackStack() }
         )
 
         settingScreen(
             onLogout = {
-                navController.navigationToLogin(navOptions = loginNavOptions)
+                navController.navigationToLogin()
             }
         )
     }

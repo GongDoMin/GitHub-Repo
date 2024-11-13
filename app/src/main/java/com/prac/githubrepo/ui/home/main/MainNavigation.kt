@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 
 const val MAIN_SCREEN = "main"
 
-fun NavController.navigationMain() {
+fun NavController.navigationToMain() {
     navigate(MAIN_SCREEN) {
         popBackStack()
     }

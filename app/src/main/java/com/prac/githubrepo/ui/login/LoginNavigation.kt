@@ -7,10 +7,12 @@ import androidx.navigation.compose.composable
 
 const val LOGIN_SCREEN = "login"
 
-fun NavController.navigationToLogin(
-    navOptions: NavOptions
-) {
-    navigate(LOGIN_SCREEN, navOptions)
+fun NavController.navigationToLogin() {
+    navigate(LOGIN_SCREEN) {
+        popUpTo(graph.id) {
+            inclusive = true
+        }
+    }
 }
 
 fun NavGraphBuilder.loginScreen(
