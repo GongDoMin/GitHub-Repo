@@ -15,6 +15,7 @@ import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.pressBack
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
+import com.prac.githubrepo.ui.GitHubApp
 import com.prac.githubrepo.ui.home.BOTTOM_HOME
 import com.prac.githubrepo.ui.home.main.MAIN_SCREEN
 import com.prac.githubrepo.ui.home.main.detail.DETAIL_SCREEN_WITH_ARGS
@@ -48,7 +49,7 @@ class NavigationTest {
         composeTestRule.setContent {
             navController = TestNavHostController(LocalContext.current)
             navController.navigatorProvider.addNavigator(ComposeNavigator())
-            NavGraph(navController = navController)
+            GitHubApp(navController = navController)
         }
 
         val scheme = "test"
@@ -69,7 +70,7 @@ class NavigationTest {
         composeTestRule.setContent {
             navController = TestNavHostController(LocalContext.current)
             navController.navigatorProvider.addNavigator(ComposeNavigator())
-            NavGraph(
+            GitHubApp(
                 startDestination = BOTTOM_HOME,
                 navController = navController
             )
@@ -102,7 +103,7 @@ class NavigationTest {
         composeTestRule.setContent {
             navController = TestNavHostController(LocalContext.current)
             navController.navigatorProvider.addNavigator(ComposeNavigator())
-            NavGraph(
+            GitHubApp(
                 startDestination = BOTTOM_HOME,
                 navController = navController
             )
@@ -135,7 +136,7 @@ class NavigationTest {
         composeTestRule.setContent {
             navController = TestNavHostController(LocalContext.current)
             navController.navigatorProvider.addNavigator(ComposeNavigator())
-            NavGraph(
+            GitHubApp(
                 startDestination = BOTTOM_HOME,
                 navController = navController
             )
@@ -156,7 +157,7 @@ class NavigationTest {
         composeTestRule.setContent {
             navController = TestNavHostController(LocalContext.current)
             navController.navigatorProvider.addNavigator(ComposeNavigator())
-            NavGraph(
+            GitHubApp(
                 startDestination = BOTTOM_PROFILE,
                 navController = navController
             )

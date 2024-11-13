@@ -1,4 +1,4 @@
-package com.prac.githubrepo
+package com.prac.githubrepo.ui
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,7 +19,7 @@ import com.prac.githubrepo.ui.profile.profileScreen
 import com.prac.githubrepo.util.MyBottomNavigation
 
 @Composable
-fun NavGraph(
+fun GitHubApp(
     navController: NavHostController = rememberNavController(),
     startDestination: String = LOGIN_SCREEN
 ) {
