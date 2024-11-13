@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Github Repo</string>
 
+    <string name="bottom_home">홈</string>
+    <string name="bottom_profile">프로필</string>
+
     <string name="logout_confirm">로그아웃 하시겠습니까?</string>
 
     <string name="check">확인</string>
