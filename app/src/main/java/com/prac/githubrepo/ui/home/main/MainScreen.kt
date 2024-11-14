@@ -25,7 +25,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.CombinedLoadStates
@@ -44,7 +43,7 @@ import com.prac.githubrepo.util.drawableID
 @Composable
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
-    onLogout: () -> Unit,
+    onNavigateToLogin: () -> Unit,
     onClickRepository: (String, String) -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
@@ -57,7 +56,7 @@ fun MainScreen(
         onClickUnStar = viewModel::starRepository,
         onClickRepository = { onClickRepository(it.owner.login, it.name) },
         dialogMessage = uiState.value.dialogMessage,
-        onDismissRequest = { dialogMessage -> if (dialogMessage == INVALID_TOKEN) onLogout() }
+        onDismissRequest = { dialogMessage -> if (dialogMessage == INVALID_TOKEN) onNavigateToLogin() }
     )
 }
 

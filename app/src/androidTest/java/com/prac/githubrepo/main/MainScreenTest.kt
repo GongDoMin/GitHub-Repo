@@ -122,7 +122,7 @@ class MainScreenTest {
     private fun setContent() {
         composeTestRule.setContent {
             MainScreen(
-                onLogout = { },
+                onNavigateToLogin = { },
                 onClickRepository = { userName, repoName ->
                     isDetailScreen = true
                     this.userName = userName

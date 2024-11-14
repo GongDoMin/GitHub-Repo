@@ -10,7 +10,7 @@ fun NavGraphBuilder.mainScreen(
 ) {
     composable<HOME.MAIN> {
         MainScreen(
-            onLogout = onLogout,
+            onNavigateToLogin = onLogout,
             onClickRepository = onClickRepository
         )
     }
