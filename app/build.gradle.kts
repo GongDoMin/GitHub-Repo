@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.kapt)
     alias(libs.plugins.dagger.hilt)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 android {
@@ -119,4 +120,6 @@ dependencies {
     implementation(libs.androidx.paging.compose)
     implementation(libs.compose)
     implementation(libs.compose.constraintLayout)
+
+    implementation(libs.jetbrains.kotlinx.serialization)
 }
