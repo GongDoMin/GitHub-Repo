@@ -12,8 +12,8 @@ import com.prac.data.repository.TokenRepository
 import com.prac.githubrepo.HiltTestActivity
 import com.prac.githubrepo.R
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
-import com.prac.githubrepo.ui.Routes.HOME.DETAIL.Companion.REPO_NAME
-import com.prac.githubrepo.ui.Routes.HOME.DETAIL.Companion.USER_NAME
+import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.REPO_NAME
+import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.USER_NAME
 import com.prac.githubrepo.ui.home.main.detail.DetailScreen
 import com.prac.githubrepo.ui.home.main.detail.DetailViewModel
 import com.prac.githubrepo.util.BackOffWorkManager

@@ -2,7 +2,7 @@ package com.prac.githubrepo.ui.home.main
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.prac.githubrepo.ui.Routes.HOME
+import com.prac.githubrepo.ui.NavigationDestinations.HOME
 
 fun NavGraphBuilder.mainScreen(
     onLogout: () -> Unit,

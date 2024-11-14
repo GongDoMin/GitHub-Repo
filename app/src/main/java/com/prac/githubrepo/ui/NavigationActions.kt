@@ -1,9 +1,9 @@
 package com.prac.githubrepo.ui
 
 import androidx.navigation.NavController
-import com.prac.githubrepo.ui.Routes.HOME
-import com.prac.githubrepo.ui.Routes.LOGIN
-import com.prac.githubrepo.ui.Routes.PROFILE
+import com.prac.githubrepo.ui.NavigationDestinations.HOME
+import com.prac.githubrepo.ui.NavigationDestinations.LOGIN
+import com.prac.githubrepo.ui.NavigationDestinations.PROFILE
 
 class NavigationActions(private val navController: NavController) {
     fun popBackStack() {
@@ -18,7 +18,7 @@ class NavigationActions(private val navController: NavController) {
         }
     }
 
-    fun navigateToBottom(route: Routes) {
+    fun navigateToBottom(route: NavigationDestinations) {
         when (route) {
             HOME -> {
                 navController.navigate(route) {

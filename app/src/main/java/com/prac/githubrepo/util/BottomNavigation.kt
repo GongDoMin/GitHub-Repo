@@ -24,14 +24,14 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.prac.githubrepo.R
 import com.prac.githubrepo.ui.NavigationActions
-import com.prac.githubrepo.ui.Routes
-import com.prac.githubrepo.ui.Routes.HOME
-import com.prac.githubrepo.ui.Routes.PROFILE
+import com.prac.githubrepo.ui.NavigationDestinations
+import com.prac.githubrepo.ui.NavigationDestinations.HOME
+import com.prac.githubrepo.ui.NavigationDestinations.PROFILE
 
 sealed class BottomNavItem(
     @StringRes val title: Int,
     val icon: ImageVector,
-    val route: Routes
+    val route: NavigationDestinations
 ) {
     data object Home : BottomNavItem(R.string.bottom_home, Icons.Default.Home, HOME)
     data object Profile : BottomNavItem(R.string.bottom_profile, Icons.Default.AccountCircle, PROFILE)
@@ -87,5 +87,5 @@ fun MyBottomNavigation(
     }
 }
 
-private fun NavDestination?.hierarchyHasRoute(route: Routes) =
+private fun NavDestination?.hierarchyHasRoute(route: NavigationDestinations) =
     this?.hierarchy?.any { it.hasRoute(route::class) }

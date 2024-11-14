@@ -13,15 +13,12 @@ import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.constants.UNKNOWN
 import com.prac.githubrepo.di.IODispatcher
-import com.prac.githubrepo.ui.Routes.HOME.DETAIL.Companion.REPO_NAME
-import com.prac.githubrepo.ui.Routes.HOME.DETAIL.Companion.USER_NAME
+import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.REPO_NAME
+import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.USER_NAME
 import com.prac.githubrepo.util.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
