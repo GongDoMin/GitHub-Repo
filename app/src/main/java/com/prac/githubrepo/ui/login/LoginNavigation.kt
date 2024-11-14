@@ -10,7 +10,7 @@ fun NavGraphBuilder.loginScreen(
 ) {
     composable<LOGIN> {
         LoginScreen(
-            onLogin = { navigationActions.navigateToMain() }
+            onNavigateToMain = { navigationActions.navigateToMain() }
         )
     }
 }

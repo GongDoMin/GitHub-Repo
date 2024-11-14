@@ -99,7 +99,7 @@ class LoginScreenTest {
     private fun setContent() {
         composeTestRule.setContent {
             LoginScreen(
-                onLogin = { isMainScreen = true }
+                onNavigateToMain = { isMainScreen = true }
             )
         }
     }

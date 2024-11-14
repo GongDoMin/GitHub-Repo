@@ -7,11 +7,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -19,9 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -36,14 +31,12 @@ import com.prac.githubrepo.R
 import com.prac.githubrepo.util.BounceButton
 import com.prac.githubrepo.util.ErrorAlertDialog
 import com.prac.githubrepo.util.LoadingContent
-import com.prac.githubrepo.util.bounceClick
-import com.prac.githubrepo.util.buttonID
 import com.prac.githubrepo.util.drawableID
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
-    onLogin: () -> Unit
+    onNavigateToMain: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as ComponentActivity
@@ -62,7 +55,7 @@ fun LoginScreen(
     LaunchedEffect(activity) {
         activity.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.event.collect {
-                onLogin()
+                onNavigateToMain()
             }
         }
     }
