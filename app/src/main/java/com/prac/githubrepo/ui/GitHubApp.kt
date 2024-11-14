@@ -50,7 +50,7 @@ fun GitHubApp(
             )
 
             homeNavigation(
-                navController = navController
+                navigationActions = navigationActions
             )
 
             profileScreen(

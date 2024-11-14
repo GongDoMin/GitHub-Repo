@@ -1,32 +1,30 @@
 package com.prac.githubrepo.ui.home
 
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navigation
+import com.prac.githubrepo.ui.NavigationActions
 import com.prac.githubrepo.ui.Routes.HOME
 import com.prac.githubrepo.ui.home.main.detail.detailScreen
-import com.prac.githubrepo.ui.home.main.detail.navigationToDetail
 import com.prac.githubrepo.ui.home.main.mainScreen
-import com.prac.githubrepo.ui.login.navigationToLogin
 
 fun NavGraphBuilder.homeNavigation(
-    navController: NavController
+    navigationActions: NavigationActions
 ) {
     navigation<HOME>(startDestination = HOME.MAIN) {
         mainScreen(
             onLogout = {
-                navController.navigationToLogin()
+                navigationActions.navigateToLogin()
             },
             onClickRepository = { userName, repoName ->
-                navController.navigationToDetail(userName, repoName)
+                navigationActions.navigateToDetail(userName, repoName)
             }
         )
 
         detailScreen(
             onLogout = {
-                navController.navigationToLogin()
+                navigationActions.navigateToLogin()
             },
-            onBack = { navController.popBackStack() }
+            onBack = { navigationActions.popBackStack() }
         )
     }
 }
