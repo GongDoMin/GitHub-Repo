@@ -54,7 +54,7 @@ fun GitHubApp(
             )
 
             profileScreen(
-                onLogout = { navController.navigationToLogin() }
+                navigationActions = navigationActions
             )
         }
     }
