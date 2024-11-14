@@ -11,7 +11,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -23,9 +22,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.prac.githubrepo.R
+import com.prac.githubrepo.ui.NavigationActions
 import com.prac.githubrepo.ui.Routes
 import com.prac.githubrepo.ui.Routes.HOME
 import com.prac.githubrepo.ui.Routes.PROFILE
@@ -42,10 +40,9 @@ sealed class BottomNavItem(
 @Composable
 fun MyBottomNavigation(
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navigationActions: NavigationActions,
+    currentDestination: NavDestination?
 ) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = navBackStackEntry?.destination
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Profile
@@ -75,13 +72,7 @@ fun MyBottomNavigation(
                 },
                 onClick = {
                     if (currentDestination?.hierarchyHasRoute(item.route) == false) {
-                        navController.navigate(item.route) {
-                            popUpTo(navController.graph.id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
+                        navigationActions.navigateToBottom(item.route)
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(
