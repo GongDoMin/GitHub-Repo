@@ -3,6 +3,7 @@ package com.prac.githubrepo.ui.login
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.prac.githubrepo.ui.NavigationActions
 import com.prac.githubrepo.ui.Routes.LOGIN
 
 fun NavController.navigationToLogin() {
@@ -14,11 +15,11 @@ fun NavController.navigationToLogin() {
 }
 
 fun NavGraphBuilder.loginScreen(
-    onLogin: () -> Unit
+    navigationActions: NavigationActions
 ) {
     composable<LOGIN> {
         LoginScreen(
-            onLogin = onLogin
+            onLogin = { navigationActions.navigateToMain() }
         )
     }
 }
