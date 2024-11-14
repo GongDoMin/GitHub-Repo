@@ -20,6 +20,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
@@ -55,7 +56,7 @@ fun MyBottomNavigation(
     ) {
         items.forEach { item ->
             NavigationBarItem(
-                selected = currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true,
+                selected = currentDestination?.hierarchyHasRoute(item.route) == true,
                 label = {
                     Text(
                         text = stringResource(id = item.title),
@@ -73,7 +74,7 @@ fun MyBottomNavigation(
                     )
                 },
                 onClick = {
-                    if (currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == false) {
+                    if (currentDestination?.hierarchyHasRoute(item.route) == false) {
                         navController.navigate(item.route) {
                             popUpTo(navController.graph.id) {
                                 saveState = true
@@ -94,3 +95,6 @@ fun MyBottomNavigation(
         }
     }
 }
+
+private fun NavDestination?.hierarchyHasRoute(route: Routes) =
+    this?.hierarchy?.any { it.hasRoute(route::class) }
