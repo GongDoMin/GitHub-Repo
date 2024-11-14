@@ -10,7 +10,7 @@ fun NavGraphBuilder.detailScreen(
 ) {
     composable<HOME.DETAIL> {
         DetailScreen(
-            onLogout = onLogout,
+            onNavigateToLogin = onLogout,
             onBack = onBack
         )
     }

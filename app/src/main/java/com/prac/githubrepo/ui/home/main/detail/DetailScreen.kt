@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -33,7 +32,7 @@ import com.prac.githubrepo.util.drawableID
 @Composable
 fun DetailScreen(
     viewModel: DetailViewModel = hiltViewModel(),
-    onLogout: () -> Unit,
+    onNavigateToLogin: () -> Unit,
     onBack: () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState()
@@ -46,7 +45,7 @@ fun DetailScreen(
         onClickUnStar = viewModel::starRepository,
         onDismissRequest = { dialogMessage ->
             if (dialogMessage == CONNECTION_FAIL || dialogMessage == INVALID_REPOSITORY) onBack()
-            else onLogout()
+            else onNavigateToLogin()
         },
         modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_small))
     )

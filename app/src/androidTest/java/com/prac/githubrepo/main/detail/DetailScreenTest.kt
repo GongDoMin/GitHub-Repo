@@ -77,7 +77,7 @@ class DetailScreenTest {
         composeTestRule.setContent {
             DetailScreen(
                 viewModel = viewModel,
-                onLogout = { },
+                onNavigateToLogin = { },
                 onBack = { isMainScreen = true }
             )
         }
@@ -107,7 +107,7 @@ class DetailScreenTest {
         composeTestRule.setContent {
             DetailScreen(
                 viewModel = viewModel,
-                onLogout = { },
+                onNavigateToLogin = { },
                 onBack = { }
             )
         }
@@ -138,7 +138,7 @@ class DetailScreenTest {
         composeTestRule.setContent {
             DetailScreen(
                 viewModel = viewModel,
-                onLogout = { },
+                onNavigateToLogin = { },
                 onBack = { }
             )
         }
