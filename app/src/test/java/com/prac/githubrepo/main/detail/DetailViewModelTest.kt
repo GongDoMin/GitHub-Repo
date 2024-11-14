@@ -1,5 +1,6 @@
 package com.prac.githubrepo.main.detail
 
+import androidx.lifecycle.SavedStateHandle
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoDetailEntity
 import com.prac.data.exception.CommonException
@@ -10,6 +11,8 @@ import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.constants.UNKNOWN
+import com.prac.githubrepo.ui.Routes.HOME.DETAIL.Companion.REPO_NAME
+import com.prac.githubrepo.ui.Routes.HOME.DETAIL.Companion.USER_NAME
 import com.prac.githubrepo.ui.home.main.detail.DetailViewModel
 import com.prac.githubrepo.util.FakeBackOffWorkManager
 import com.prac.githubrepo.util.StandardTestDispatcherRule
@@ -50,8 +53,6 @@ class DetailViewModelTest {
         tokenRepository = FakeTokenRepository(token)
 
         backOffWork = FakeBackOffWorkManager()
-
-        detailViewMock = DetailViewModel(mockRepoRepository, tokenRepository, backOffWork, standardTestDispatcherRule.testDispatcher)
     }
 
     @After
@@ -70,8 +71,8 @@ class DetailViewModelTest {
             .thenReturn(Result.success(repoDetailEntity))
         whenever(mockRepoRepository.getStarStateAndStarCount(repoDetailEntity.id))
             .thenReturn(flow { emit(starStateAndCount) })
+        initViewModel(userName, repoName)
 
-        detailViewMock.getRepository(userName, repoName)
         advanceUntilIdle()
 
         val uiState = detailViewMock.uiState.value
@@ -82,10 +83,8 @@ class DetailViewModelTest {
 
     @Test
     fun getRepository_invalidInput_uiStateIsError() = runTest {
-        val userName = null
-        val repoName = null
+        initViewModel(null, null)
 
-        detailViewMock.getRepository(userName, repoName)
         advanceUntilIdle()
 
         val uiState = detailViewMock.uiState.value
@@ -99,8 +98,8 @@ class DetailViewModelTest {
         val repoName = "test"
         whenever(mockRepoRepository.getRepository(userName, repoName))
             .thenReturn(Result.failure(CommonException.NetworkError()))
+        initViewModel(userName, repoName)
 
-        detailViewMock.getRepository(userName, repoName)
         advanceUntilIdle()
 
         val uiState = detailViewMock.uiState.value
@@ -114,8 +113,8 @@ class DetailViewModelTest {
         val repoName = "test"
         whenever(mockRepoRepository.getRepository(userName, repoName))
             .thenReturn(Result.failure(CommonException.AuthorizationError()))
+        initViewModel(userName, repoName)
 
-        detailViewMock.getRepository(userName, repoName)
         advanceUntilIdle()
 
         val uiState = detailViewMock.uiState.value
@@ -125,6 +124,7 @@ class DetailViewModelTest {
 
     @Test
     fun starRepository_starRepositoryIsSuccess_callStarLocalAndRemoteRepository() = runTest {
+        initViewModel(null, null)
         val repoDetailEntity = makeRepoDetailEntity()
         whenever(mockRepoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.success(Unit))
@@ -138,6 +138,7 @@ class DetailViewModelTest {
 
     @Test
     fun unStarRepository_unStarRepositoryIsSuccess_callStarLocalAndRemoteRepository() = runTest {
+        initViewModel(null, null)
         val repoDetailEntity = makeRepoDetailEntity()
         whenever(mockRepoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.success(Unit))
@@ -151,6 +152,7 @@ class DetailViewModelTest {
 
     @Test
     fun starRepository_starRepositoryNetworkError_callMultipleTimesRemoteRepository() = runTest {
+        initViewModel(null, null)
         backOffWork.setScope(this)
         val repoDetailEntity = makeRepoDetailEntity()
         val uniqueID = "star_${repoDetailEntity.id}"
@@ -169,6 +171,7 @@ class DetailViewModelTest {
 
     @Test
     fun unStarRepository_unStarRepositoryNetworkError_callMultipleTimesRemoteRepository() = runTest {
+        initViewModel(null, null)
         backOffWork.setScope(this)
         val repoDetailEntity = makeRepoDetailEntity()
         val uniqueID = "star_${repoDetailEntity.id}"
@@ -187,6 +190,7 @@ class DetailViewModelTest {
 
     @Test
     fun starRepository_starRepositoryIsAuthorizationError_uiStateHasDialogMessage() = runTest {
+        initViewModel(null, null)
         val repoDetailEntity = makeRepoDetailEntity()
         whenever(mockRepoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(CommonException.AuthorizationError()))
@@ -201,6 +205,7 @@ class DetailViewModelTest {
 
     @Test
     fun unStarRepository_unStarRepositoryIsAuthorizationError_uiStateHasDialogMessage() = runTest {
+        initViewModel(null, null)
         val repoDetailEntity = makeRepoDetailEntity()
         whenever(mockRepoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(CommonException.AuthorizationError()))
@@ -215,6 +220,7 @@ class DetailViewModelTest {
 
     @Test
     fun starRepository_starRepositoryIsNotFoundRepositoryError_uiStateHasDialogMessage() = runTest {
+        initViewModel(null, null)
         val repoDetailEntity = makeRepoDetailEntity()
         whenever(mockRepoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
@@ -230,6 +236,7 @@ class DetailViewModelTest {
 
     @Test
     fun unStarRepository_unStarRepositoryIsNotFoundRepositoryError_uiStateHasDialogMessage() = runTest {
+        initViewModel(null, null)
         val repoDetailEntity = makeRepoDetailEntity()
         whenever(mockRepoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
@@ -245,6 +252,7 @@ class DetailViewModelTest {
 
     @Test
     fun starRepository_starRepositoryIsUnKnownError_uiStateHasDialogMessage() = runTest {
+        initViewModel(null, null)
         val repoDetailEntity = makeRepoDetailEntity()
         whenever(mockRepoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(CommonException.UnKnownError()))
@@ -260,6 +268,7 @@ class DetailViewModelTest {
 
     @Test
     fun unStarRepository_unStarRepositoryIsUnKnownError_uiStateHasDialogMessage() = runTest {
+        initViewModel(null, null)
         val repoDetailEntity = makeRepoDetailEntity()
         whenever(mockRepoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(CommonException.UnKnownError()))
@@ -271,6 +280,19 @@ class DetailViewModelTest {
         assertTrue(uiState is DetailViewModel.UiState.Error)
         assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, UNKNOWN)
         verify(mockRepoRepository).starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
+    }
+
+    private fun initViewModel(userName: String?, repoName: String?) {
+        detailViewMock = DetailViewModel(
+            mockRepoRepository,
+            tokenRepository,
+            backOffWork,
+            standardTestDispatcherRule.testDispatcher,
+            SavedStateHandle().apply {
+                set(USER_NAME, userName)
+                set(REPO_NAME, repoName)
+            }
+        )
     }
 
     private fun makeRepoDetailEntity() =

@@ -34,9 +34,7 @@ import com.prac.githubrepo.util.drawableID
 fun DetailScreen(
     viewModel: DetailViewModel = hiltViewModel(),
     onLogout: () -> Unit,
-    onBack: () -> Unit,
-    userName: String?,
-    repoName: String?
+    onBack: () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
@@ -52,10 +50,6 @@ fun DetailScreen(
         },
         modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_small))
     )
-
-    LaunchedEffect(Unit) {
-        viewModel.getRepository(userName, repoName)
-    }
 }
 
 @Composable

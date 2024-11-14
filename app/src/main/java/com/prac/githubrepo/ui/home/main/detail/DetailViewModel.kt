@@ -1,5 +1,6 @@
 package com.prac.githubrepo.ui.home.main.detail
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.prac.data.entity.RepoDetailEntity
@@ -12,6 +13,8 @@ import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.constants.UNKNOWN
 import com.prac.githubrepo.di.IODispatcher
+import com.prac.githubrepo.ui.Routes.HOME.DETAIL.Companion.REPO_NAME
+import com.prac.githubrepo.ui.Routes.HOME.DETAIL.Companion.USER_NAME
 import com.prac.githubrepo.util.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -29,7 +32,8 @@ class DetailViewModel @Inject constructor(
     private val repoRepository: RepoRepository,
     private val tokenRepository: TokenRepository,
     private val backOffWorkManager: BackOffWorkManager,
-    @IODispatcher private val ioDispatcher: CoroutineDispatcher
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     sealed class UiState {
         data object Idle : UiState()
@@ -48,7 +52,7 @@ class DetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
     val uiState = _uiState.asStateFlow()
 
-    fun getRepository(userName: String?, repoName: String?) {
+    private fun getRepository(userName: String?, repoName: String?) {
         if (_uiState.value != UiState.Idle) return
 
         _uiState.update { UiState.Loading }
@@ -191,5 +195,12 @@ class DetailViewModel @Inject constructor(
                 _uiState.update { UiState.Error(errorMessage = UNKNOWN) }
             }
         }
+    }
+
+    init {
+        getRepository(
+            userName = savedStateHandle.get<String>(USER_NAME),
+            repoName = savedStateHandle.get<String>(REPO_NAME)
+        )
     }
 }

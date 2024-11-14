@@ -17,13 +17,10 @@ fun NavGraphBuilder.detailScreen(
     onLogout: () -> Unit,
     onBack: () -> Unit,
 ) {
-    composable<HOME.DETAIL> { entry ->
-        val detail: HOME.DETAIL = entry.toRoute()
+    composable<HOME.DETAIL> {
         DetailScreen(
             onLogout = onLogout,
-            onBack = onBack,
-            userName = detail.userName,
-            repoName = detail.repoName
+            onBack = onBack
         )
     }
 }
