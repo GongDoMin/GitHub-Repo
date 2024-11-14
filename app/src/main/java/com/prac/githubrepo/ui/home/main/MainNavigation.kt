@@ -1,15 +1,8 @@
 package com.prac.githubrepo.ui.home.main
 
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.prac.githubrepo.ui.Routes.HOME
-
-fun NavController.navigationToMain() {
-    navigate(HOME.MAIN) {
-        popBackStack()
-    }
-}
 
 fun NavGraphBuilder.mainScreen(
     onLogout: () -> Unit,
