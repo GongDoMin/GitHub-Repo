@@ -70,7 +70,7 @@ class ProfileScreenTest {
     private fun setContent() {
         composeTestRule.setContent {
             ProfileScreen(
-                onLogout = { isMainScreen = true }
+                onNavigateToLogin = { isMainScreen = true }
             )
         }
     }

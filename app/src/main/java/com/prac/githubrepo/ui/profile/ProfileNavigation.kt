@@ -10,7 +10,7 @@ fun NavGraphBuilder.profileScreen(
 ) {
     composable<PROFILE> {
         ProfileScreen(
-            onLogout = { navigationActions.navigateToLogin() }
+            onNavigateToLogin = { navigationActions.navigateToLogin() }
         )
     }
 }
