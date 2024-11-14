@@ -20,20 +20,22 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.prac.githubrepo.R
-import com.prac.githubrepo.ui.home.BOTTOM_HOME
-import com.prac.githubrepo.ui.profile.BOTTOM_PROFILE
+import com.prac.githubrepo.ui.Routes
+import com.prac.githubrepo.ui.Routes.HOME
+import com.prac.githubrepo.ui.Routes.PROFILE
 
 sealed class BottomNavItem(
     @StringRes val title: Int,
     val icon: ImageVector,
-    val screenRoute: String
+    val route: Routes
 ) {
-    data object Home : BottomNavItem(R.string.bottom_home, Icons.Default.Home, BOTTOM_HOME)
-    data object Profile : BottomNavItem(R.string.bottom_profile, Icons.Default.AccountCircle, BOTTOM_PROFILE)
+    data object Home : BottomNavItem(R.string.bottom_home, Icons.Default.Home, HOME)
+    data object Profile : BottomNavItem(R.string.bottom_profile, Icons.Default.AccountCircle, PROFILE)
 }
 
 @Composable
@@ -53,7 +55,7 @@ fun MyBottomNavigation(
     ) {
         items.forEach { item ->
             NavigationBarItem(
-                selected = currentDestination?.hierarchy?.any { it.route == item.screenRoute } == true,
+                selected = currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true,
                 label = {
                     Text(
                         text = stringResource(id = item.title),
@@ -71,8 +73,8 @@ fun MyBottomNavigation(
                     )
                 },
                 onClick = {
-                    if (currentDestination?.hierarchy?.any { it.route == item.screenRoute } == false) {
-                        navController.navigate(item.screenRoute) {
+                    if (currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == false) {
+                        navController.navigate(item.route) {
                             popUpTo(navController.graph.id) {
                                 saveState = true
                             }

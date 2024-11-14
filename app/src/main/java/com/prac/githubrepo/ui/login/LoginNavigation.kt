@@ -2,13 +2,11 @@ package com.prac.githubrepo.ui.login
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-
-const val LOGIN_SCREEN = "login"
+import com.prac.githubrepo.ui.Routes.LOGIN
 
 fun NavController.navigationToLogin() {
-    navigate(LOGIN_SCREEN) {
+    navigate(LOGIN) {
         popUpTo(graph.id) {
             inclusive = true
         }
@@ -18,9 +16,7 @@ fun NavController.navigationToLogin() {
 fun NavGraphBuilder.loginScreen(
     onLogin: () -> Unit
 ) {
-    composable(
-        route = LOGIN_SCREEN
-    ) {
+    composable<LOGIN> {
         LoginScreen(
             onLogin = onLogin
         )

@@ -3,11 +3,10 @@ package com.prac.githubrepo.ui.home.main
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-
-const val MAIN_SCREEN = "main"
+import com.prac.githubrepo.ui.Routes.HOME
 
 fun NavController.navigationToMain() {
-    navigate(MAIN_SCREEN) {
+    navigate(HOME.MAIN) {
         popBackStack()
     }
 }
@@ -16,9 +15,7 @@ fun NavGraphBuilder.mainScreen(
     onLogout: () -> Unit,
     onClickRepository: (String, String) -> Unit
 ) {
-    composable(
-        route = MAIN_SCREEN
-    ) {
+    composable<HOME.MAIN> {
         MainScreen(
             onLogout = onLogout,
             onClickRepository = onClickRepository

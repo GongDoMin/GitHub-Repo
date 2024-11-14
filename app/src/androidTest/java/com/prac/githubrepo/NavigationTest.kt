@@ -10,16 +10,15 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.pressBack
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.githubrepo.ui.GitHubApp
-import com.prac.githubrepo.ui.home.BOTTOM_HOME
-import com.prac.githubrepo.ui.home.main.MAIN_SCREEN
-import com.prac.githubrepo.ui.home.main.detail.DETAIL_SCREEN_WITH_ARGS
-import com.prac.githubrepo.ui.profile.BOTTOM_PROFILE
+import com.prac.githubrepo.ui.Routes.HOME
+import com.prac.githubrepo.ui.Routes.PROFILE
 import com.prac.githubrepo.util.hasButton
 import com.prac.githubrepo.util.hasDrawable
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -59,8 +58,8 @@ class NavigationTest {
         activity.startActivity(intent)
 
         composeTestRule.waitUntil {
-            navController.currentBackStackEntry?.destination?.parent?.route == BOTTOM_HOME
-                    && navController.currentBackStackEntry?.destination?.route == MAIN_SCREEN
+            navController.currentBackStackEntry?.destination?.parent?.hasRoute(HOME::class) == true
+                    && navController.currentBackStackEntry?.destination?.hasRoute(HOME.MAIN::class) == true
                     && composeTestRule.onNodeWithText(activity.getString(R.string.repository)).isDisplayed()
         }
     }
@@ -71,7 +70,7 @@ class NavigationTest {
             navController = TestNavHostController(LocalContext.current)
             navController.navigatorProvider.addNavigator(ComposeNavigator())
             GitHubApp(
-                startDestination = BOTTOM_HOME,
+                startDestination = HOME,
                 navController = navController
             )
         }
@@ -89,7 +88,7 @@ class NavigationTest {
         val expectedRepoDetail = RepoEntity(id = 0, name = "test 0", owner = OwnerEntity("login 0", "avatarUrl 0"), stargazersCount = 5, defaultBranch = "master", updatedAt = "update", isStarred = true)
 
         composeTestRule.waitUntil {
-            navController.currentBackStackEntry?.destination?.route == DETAIL_SCREEN_WITH_ARGS
+            navController.currentBackStackEntry?.destination?.hasRoute(HOME.DETAIL::class) == true
                     && composeTestRule.onNodeWithText(expectedRepoDetail.name).isDisplayed()
                     && composeTestRule.onNodeWithText(expectedRepoDetail.owner.login).isDisplayed()
                     && composeTestRule.onNode(hasDrawable(R.drawable.img_glide_profile)).isDisplayed()
@@ -104,7 +103,7 @@ class NavigationTest {
             navController = TestNavHostController(LocalContext.current)
             navController.navigatorProvider.addNavigator(ComposeNavigator())
             GitHubApp(
-                startDestination = BOTTOM_HOME,
+                startDestination = HOME,
                 navController = navController
             )
         }
@@ -120,13 +119,13 @@ class NavigationTest {
             .performClick()
 
         composeTestRule.waitUntil {
-            navController.currentBackStackEntry?.destination?.route == DETAIL_SCREEN_WITH_ARGS
+            navController.currentBackStackEntry?.destination?.hasRoute(HOME.DETAIL::class) == true
         }
 
         pressBack()
 
         composeTestRule.waitUntil {
-            navController.currentBackStackEntry?.destination?.route == MAIN_SCREEN
+            navController.currentBackStackEntry?.destination?.hasRoute(HOME.MAIN::class) == true
                     && composeTestRule.onNodeWithText(activity.getString(R.string.repository)).isDisplayed()
         }
     }
@@ -137,7 +136,7 @@ class NavigationTest {
             navController = TestNavHostController(LocalContext.current)
             navController.navigatorProvider.addNavigator(ComposeNavigator())
             GitHubApp(
-                startDestination = BOTTOM_HOME,
+                startDestination = HOME,
                 navController = navController
             )
         }
@@ -147,7 +146,7 @@ class NavigationTest {
             .performClick()
 
         composeTestRule.waitUntil {
-            navController.currentBackStackEntry?.destination?.route == BOTTOM_PROFILE
+            navController.currentBackStackEntry?.destination?.hasRoute(PROFILE::class) == true
                     && composeTestRule.onNode(hasButton(activity.getString(R.string.logout))).isDisplayed()
         }
     }
@@ -158,7 +157,7 @@ class NavigationTest {
             navController = TestNavHostController(LocalContext.current)
             navController.navigatorProvider.addNavigator(ComposeNavigator())
             GitHubApp(
-                startDestination = BOTTOM_PROFILE,
+                startDestination = PROFILE,
                 navController = navController
             )
         }
@@ -168,7 +167,7 @@ class NavigationTest {
             .performClick()
 
         composeTestRule.waitUntil {
-            navController.currentBackStackEntry?.destination?.parent?.route == BOTTOM_HOME
+            navController.currentBackStackEntry?.destination?.parent?.hasRoute(HOME::class) == true
                     && composeTestRule.onNodeWithText(activity.getString(R.string.repository)).isDisplayed()
         }
     }

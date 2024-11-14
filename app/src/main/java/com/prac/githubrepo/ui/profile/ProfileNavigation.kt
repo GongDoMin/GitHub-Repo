@@ -2,15 +2,12 @@ package com.prac.githubrepo.ui.profile
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-
-const val BOTTOM_PROFILE = "bottomProfile"
+import com.prac.githubrepo.ui.Routes.PROFILE
 
 fun NavGraphBuilder.profileScreen(
     onLogout: () -> Unit
 ) {
-    composable(
-        route = BOTTOM_PROFILE
-    ) {
+    composable<PROFILE> {
         ProfileScreen(
             onLogout = onLogout
         )
