@@ -1,4 +1,4 @@
-package com.prac.githubrepo.util
+package com.prac.githubrepo.components
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -11,6 +11,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.prac.githubrepo.R
+import com.prac.githubrepo.util.drawableID
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable

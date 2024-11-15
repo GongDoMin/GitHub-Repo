@@ -26,7 +26,7 @@ import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.components.ErrorAlertDialog
 import com.prac.githubrepo.components.LoadingContent
-import com.prac.githubrepo.util.UserProfile
+import com.prac.githubrepo.components.UserProfile
 import com.prac.githubrepo.util.drawableID
 
 @Composable
