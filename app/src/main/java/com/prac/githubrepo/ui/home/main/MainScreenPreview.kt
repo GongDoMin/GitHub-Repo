@@ -8,6 +8,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.githubrepo.R
@@ -23,7 +24,11 @@ fun MainScreenPreview() {
     val repositories = flow { emit(PagingData.from(makeRepoEntity())) }.collectAsLazyPagingItems()
 
     MainContent(
-        repositories = repositories,
+        repositories = repositories.itemSnapshotList.items,
+        itemCount = repositories.itemCount,
+        itemKey = repositories.itemKey { it.id },
+        loadState = repositories.loadState,
+        retry = repositories::retry,
         handleLoadState = { null },
         starStateRequest = { },
         onClickStar = { },
@@ -40,7 +45,11 @@ fun MainScreenNetworkFailurePreview() {
     val repositories = flow { emit(PagingData.from(makeRepoEntity())) }.collectAsLazyPagingItems()
 
     MainContent(
-        repositories = repositories,
+        repositories = repositories.itemSnapshotList.items,
+        itemCount = repositories.itemCount,
+        itemKey = repositories.itemKey { it.id },
+        loadState = repositories.loadState,
+        retry = repositories::retry,
         handleLoadState = { LoadState.Error(IOException()) },
         starStateRequest = { },
         onClickStar = { },
@@ -57,7 +66,11 @@ fun MainScreenAuthorizationErrorPreview() {
     val repositories = flow { emit(PagingData.from(makeRepoEntity())) }.collectAsLazyPagingItems()
 
     MainContent(
-        repositories = repositories,
+        repositories = repositories.itemSnapshotList.items,
+        itemCount = repositories.itemCount,
+        itemKey = repositories.itemKey { it.id },
+        loadState = repositories.loadState,
+        retry = repositories::retry,
         handleLoadState = { null },
         starStateRequest = { },
         onClickStar = { },
@@ -74,7 +87,11 @@ fun MainScreenNotFoundRepositoryErrorPreview() {
     val repositories = flow { emit(PagingData.from(makeRepoEntity())) }.collectAsLazyPagingItems()
 
     MainContent(
-        repositories = repositories,
+        repositories = repositories.itemSnapshotList.items,
+        itemCount = repositories.itemCount,
+        itemKey = repositories.itemKey { it.id },
+        loadState = repositories.loadState,
+        retry = repositories::retry,
         handleLoadState = { null },
         starStateRequest = { },
         onClickStar = { },

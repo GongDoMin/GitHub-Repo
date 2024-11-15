@@ -29,15 +29,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.prac.data.entity.RepoEntity
 import com.prac.githubrepo.R
-import com.prac.githubrepo.constants.CONNECTION_FAIL
-import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.components.ErrorAlertDialog
 import com.prac.githubrepo.components.UserProfile
+import com.prac.githubrepo.constants.CONNECTION_FAIL
+import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.util.drawableID
 
 @Composable
@@ -47,9 +46,14 @@ fun MainScreen(
     onClickRepository: (String, String) -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+    val repositories = uiState.value.repositories.collectAsLazyPagingItems()
 
     MainContent(
-        repositories = uiState.value.repositories.collectAsLazyPagingItems(),
+        repositories = repositories.itemSnapshotList.items,
+        itemCount = repositories.itemCount,
+        itemKey = repositories.itemKey { it.id },
+        loadState = repositories.loadState,
+        retry = repositories::retry,
         handleLoadState = viewModel::handleLoadStates,
         starStateRequest = viewModel::fetchStarState,
         onClickStar = viewModel::unStarRepository,
@@ -62,7 +66,11 @@ fun MainScreen(
 
 @Composable
 fun MainContent(
-    repositories: LazyPagingItems<RepoEntity>,
+    repositories: List<RepoEntity>,
+    itemCount: Int,
+    itemKey: ((Int) -> Any)?,
+    loadState: CombinedLoadStates,
+    retry: () -> Unit,
     handleLoadState: (CombinedLoadStates) -> LoadState?,
     starStateRequest: (RepoEntity) -> Unit,
     onClickStar: (RepoEntity) -> Unit,
@@ -80,6 +88,10 @@ fun MainContent(
 
         MainContentBody(
             repositories = repositories,
+            itemCount = itemCount,
+            itemKey = itemKey,
+            loadState = loadState,
+            retry = retry,
             handleLoadState = handleLoadState,
             starStateRequest = starStateRequest,
             onClickStar = onClickStar,
@@ -112,7 +124,11 @@ fun MainContentHeader() {
 
 @Composable
 fun MainContentBody(
-    repositories: LazyPagingItems<RepoEntity>,
+    repositories: List<RepoEntity>,
+    itemCount: Int,
+    itemKey: ((Int) -> Any)?,
+    loadState: CombinedLoadStates,
+    retry: () -> Unit,
     handleLoadState: (CombinedLoadStates) -> LoadState?,
     starStateRequest: (RepoEntity) -> Unit,
     onClickStar: (RepoEntity) -> Unit,
@@ -124,10 +140,10 @@ fun MainContentBody(
             .testTag("lazyColumn")
     ) {
         items(
-            count = repositories.itemCount,
-            key = repositories.itemKey { it.id }
+            count = itemCount,
+            key = itemKey
         ) { index ->
-            repositories[index]?.let { repository ->
+            repositories[index].let { repository ->
                 MainContentItem(
                     repository = repository,
                     onClickStar = onClickStar,
@@ -145,8 +161,8 @@ fun MainContentBody(
 
         item {
             LoadStateFooter(
-                loadState = handleLoadState(repositories.loadState),
-                onRetryClick = { repositories.retry() }
+                loadState = handleLoadState(loadState),
+                onRetryClick = retry
             )
         }
     }
