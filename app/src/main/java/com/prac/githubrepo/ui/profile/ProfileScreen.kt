@@ -19,7 +19,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.prac.githubrepo.R
 import com.prac.githubrepo.components.BasicAlertDialog
 import com.prac.githubrepo.components.BounceButton
-import com.prac.githubrepo.util.LoadingContent
+import com.prac.githubrepo.components.LoadingContent
 
 @Composable
 fun ProfileScreen(

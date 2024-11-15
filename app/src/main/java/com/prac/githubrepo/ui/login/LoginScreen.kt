@@ -30,7 +30,7 @@ import com.prac.githubrepo.BuildConfig
 import com.prac.githubrepo.R
 import com.prac.githubrepo.components.BounceButton
 import com.prac.githubrepo.components.ErrorAlertDialog
-import com.prac.githubrepo.util.LoadingContent
+import com.prac.githubrepo.components.LoadingContent
 import com.prac.githubrepo.util.drawableID
 
 @Composable

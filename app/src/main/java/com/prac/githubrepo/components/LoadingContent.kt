@@ -1,4 +1,4 @@
-package com.prac.githubrepo.util
+package com.prac.githubrepo.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
