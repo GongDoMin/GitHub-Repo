@@ -16,7 +16,7 @@ import com.prac.githubrepo.ui.NavigationDestinations.LOGIN
 import com.prac.githubrepo.ui.home.homeNavigation
 import com.prac.githubrepo.ui.login.loginScreen
 import com.prac.githubrepo.ui.profile.profileScreen
-import com.prac.githubrepo.util.MyBottomNavigation
+import com.prac.githubrepo.components.GitHubBottomNavigation
 
 @Composable
 fun GitHubApp(
@@ -31,7 +31,7 @@ fun GitHubApp(
         bottomBar = {
             if (navBackStackEntry?.destination?.hasRoute(LOGIN::class) == true) return@Scaffold
 
-            MyBottomNavigation(
+            GitHubBottomNavigation(
                 navigationActions = navigationActions,
                 currentDestination = navBackStackEntry?.destination
             )

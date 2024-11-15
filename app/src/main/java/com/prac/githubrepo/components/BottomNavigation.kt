@@ -1,4 +1,4 @@
-package com.prac.githubrepo.util
+package com.prac.githubrepo.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.size
@@ -38,7 +38,7 @@ sealed class BottomNavItem(
 }
 
 @Composable
-fun MyBottomNavigation(
+fun GitHubBottomNavigation(
     modifier: Modifier = Modifier,
     navigationActions: NavigationActions,
     currentDestination: NavDestination?
