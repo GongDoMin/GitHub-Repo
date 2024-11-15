@@ -1,4 +1,4 @@
-package com.prac.githubrepo.util
+package com.prac.githubrepo.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog

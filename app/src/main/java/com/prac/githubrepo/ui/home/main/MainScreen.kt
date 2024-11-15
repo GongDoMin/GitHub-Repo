@@ -36,7 +36,7 @@ import com.prac.data.entity.RepoEntity
 import com.prac.githubrepo.R
 import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.INVALID_TOKEN
-import com.prac.githubrepo.util.ErrorAlertDialog
+import com.prac.githubrepo.components.ErrorAlertDialog
 import com.prac.githubrepo.util.UserProfile
 import com.prac.githubrepo.util.drawableID
 
