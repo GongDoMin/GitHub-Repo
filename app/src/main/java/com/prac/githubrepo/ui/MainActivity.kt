@@ -1,4 +1,4 @@
-package com.prac.githubrepo
+package com.prac.githubrepo.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
