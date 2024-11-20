@@ -1,8 +1,11 @@
 package com.prac.githubrepo.ui.login
 
 import androidx.lifecycle.ViewModel
+import com.prac.githubrepo.common.ActionProcessor
 import com.prac.githubrepo.common.model
 import com.prac.githubrepo.di.IODispatcher
+import com.prac.githubrepo.di.LoginActionAnnotation
+import com.prac.githubrepo.di.UserActionAnnotation
 import com.prac.githubrepo.ui.login.model.Action
 import com.prac.githubrepo.ui.login.model.Event
 import com.prac.githubrepo.ui.login.model.UiState
@@ -14,8 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginActionProcessor: LoginActionProcessor,
-    private val userActionProcessor: UserActionProcessor,
+    @LoginActionAnnotation private val loginActionProcessor: ActionProcessor<Action, UiState, Event>,
+    @UserActionAnnotation  private val userActionProcessor: ActionProcessor<Action, UiState, Event>,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
     private val model by model(listOf(loginActionProcessor, userActionProcessor), ioDispatcher, UiState.Idle)
