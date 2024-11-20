@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.login
+package com.prac.githubrepo.ui.login.view
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable

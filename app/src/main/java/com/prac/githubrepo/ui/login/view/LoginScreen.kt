@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.login
+package com.prac.githubrepo.ui.login.view
 
 import android.content.Intent
 import android.net.Uri
@@ -31,6 +31,7 @@ import com.prac.githubrepo.R
 import com.prac.githubrepo.components.BounceButton
 import com.prac.githubrepo.components.ErrorAlertDialog
 import com.prac.githubrepo.components.LoadingContent
+import com.prac.githubrepo.ui.login.LoginViewModel
 import com.prac.githubrepo.ui.login.model.Action
 import com.prac.githubrepo.ui.login.model.Event
 import com.prac.githubrepo.ui.login.model.UiState
