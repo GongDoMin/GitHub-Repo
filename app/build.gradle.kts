@@ -1,3 +1,4 @@
+import kotlinx.coroutines.flow.firstOrNull
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -75,6 +76,8 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.kotlin.test)
+    testImplementation(libs.turbine)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.runner)
