@@ -31,6 +31,9 @@ import com.prac.githubrepo.R
 import com.prac.githubrepo.components.BounceButton
 import com.prac.githubrepo.components.ErrorAlertDialog
 import com.prac.githubrepo.components.LoadingContent
+import com.prac.githubrepo.ui.login.model.Action
+import com.prac.githubrepo.ui.login.model.Event
+import com.prac.githubrepo.ui.login.model.UiState
 import com.prac.githubrepo.util.drawableID
 
 @Composable
@@ -38,24 +41,27 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     onNavigateToMain: () -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiStateFlow.collectAsStateWithLifecycle()
     val activity = LocalContext.current as ComponentActivity
 
     LoginContent(
-        isLoading = uiState is LoginViewModel.UiState.Loading,
-        errorMessage = (uiState as? LoginViewModel.UiState.Error)?.errorMessage ?: "",
-        onClickLogin = {
-            activity.startActivity(
-                Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.GITHUB_OAUTH_URI))
-            )
-        },
-        onDismissRequest = { viewModel.setUiState(LoginViewModel.UiState.Idle) }
+        isLoading = uiState is UiState.Loading,
+        errorMessage = (uiState as? UiState.Error)?.errorMessage ?: "",
+        onClickLogin = { viewModel.process(Action.OnClickLoginButton) },
+        onDismissRequest = { viewModel.process(Action.DialogDismiss) }
     )
 
     LaunchedEffect(activity) {
         activity.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.event.collect {
-                onNavigateToMain()
+            viewModel.eventFlow.collect {
+                when (it) {
+                    is Event.LoginSuccess -> onNavigateToMain()
+                    is Event.LaunchLoginIntent -> {
+                        activity.startActivity(
+                            Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.GITHUB_OAUTH_URI))
+                        )
+                    }
+                }
             }
         }
     }
@@ -66,7 +72,7 @@ fun LoginScreen(
                 if (intent.action == Intent.ACTION_VIEW) {
                     intent.data?.let { uri ->
                         uri.getQueryParameter("code")?.let { code ->
-                            viewModel.loginWithGitHub(code)
+                            viewModel.process(Action.OAuthAuthenticated(code))
                         }
                     }
                 }

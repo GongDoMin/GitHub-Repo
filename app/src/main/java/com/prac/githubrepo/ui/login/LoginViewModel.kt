@@ -1,94 +1,27 @@
 package com.prac.githubrepo.ui.login
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.prac.data.exception.CommonException
-import com.prac.data.repository.TokenRepository
-import com.prac.githubrepo.constants.CONNECTION_FAIL
-import com.prac.githubrepo.constants.LOGIN_FAIL
-import com.prac.githubrepo.constants.UNKNOWN
+import com.prac.githubrepo.common.model
 import com.prac.githubrepo.di.IODispatcher
+import com.prac.githubrepo.ui.login.model.Action
+import com.prac.githubrepo.ui.login.model.Event
+import com.prac.githubrepo.ui.login.model.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val tokenRepository: TokenRepository,
+    private val loginActionProcessor: LoginActionProcessor,
+    private val userActionProcessor: UserActionProcessor,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    sealed class UiState {
-        data object Idle : UiState()
+    private val model by model(listOf(loginActionProcessor, userActionProcessor), ioDispatcher, UiState.Idle)
 
-        data object Loading : UiState()
+    internal val uiStateFlow: StateFlow<UiState> get() = model.uiState
+    internal val eventFlow: SharedFlow<Event> get() = model.event
 
-        data class Error(
-            val errorMessage : String
-        ) : UiState()
-    }
-
-    sealed class Event {
-        data object Success : Event()
-    }
-
-    private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
-    val uiState = _uiState.asStateFlow()
-
-    private val _event = MutableSharedFlow<Event>()
-    val event = _event.asSharedFlow()
-
-    init {
-        checkAutoLogin()
-    }
-
-    fun setUiState(uiState: UiState) {
-        _uiState.update { uiState }
-    }
-
-    private fun setEvent(event: Event) {
-        viewModelScope.launch {
-            _event.emit(event)
-        }
-    }
-
-    fun loginWithGitHub(code: String) {
-        viewModelScope.launch(ioDispatcher) {
-            if (uiState.value != UiState.Idle) return@launch
-
-            setUiState(UiState.Loading)
-
-            tokenRepository.authorizeOAuth(code = code)
-                .onSuccess {
-                    setEvent(Event.Success)
-                }.onFailure {
-                    handleLoginError(it)
-                }
-        }
-    }
-
-    private fun checkAutoLogin() {
-        viewModelScope.launch(ioDispatcher) {
-            if (uiState.value != UiState.Idle) return@launch
-
-            if (tokenRepository.isLoggedIn()) setEvent(Event.Success)
-        }
-    }
-
-    private fun handleLoginError(t: Throwable) {
-        when (t) {
-            is CommonException.NetworkError -> {
-                setUiState(UiState.Error(errorMessage = CONNECTION_FAIL))
-            }
-            else -> {
-                setUiState(UiState.Error(errorMessage = LOGIN_FAIL))
-            }
-        }
-    }
+    fun process(action: Action) = model.process(action)
 }
