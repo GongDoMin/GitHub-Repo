@@ -25,6 +25,7 @@ import com.prac.githubrepo.util.drawableID
 @Composable
 fun LoginContent(
     isLoading: Boolean,
+    isError: Boolean,
     errorMessage: String,
     onClickLogin: () -> Unit,
     onDismissRequest: (String) -> Unit
@@ -67,7 +68,7 @@ fun LoginContent(
             )
         }
 
-        if (errorMessage.isNotEmpty()) {
+        if (isError) {
             ErrorAlertDialog(
                 onDismissRequest = onDismissRequest,
                 errorMessage = errorMessage
@@ -81,6 +82,7 @@ fun LoginContent(
 fun LoginContentLoadingPreview() {
     LoginContent(
         isLoading = true,
+        isError = false,
         errorMessage = "",
         onClickLogin = {},
         onDismissRequest = {}
@@ -92,6 +94,7 @@ fun LoginContentLoadingPreview() {
 fun LoginContentPreview() {
     LoginContent(
         isLoading = false,
+        isError = false,
         errorMessage = "",
         onClickLogin = {},
         onDismissRequest = {}
@@ -103,6 +106,7 @@ fun LoginContentPreview() {
 fun LoginContentErrorMessagePreview() {
     LoginContent(
         isLoading = false,
+        isError = true,
         errorMessage = CONNECTION_FAIL,
         onClickLogin = {},
         onDismissRequest = {}
