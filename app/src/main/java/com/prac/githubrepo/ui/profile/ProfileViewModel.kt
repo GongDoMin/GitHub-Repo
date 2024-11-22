@@ -4,15 +4,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
+import com.prac.githubrepo.common.Reducer
+import com.prac.githubrepo.common.eventModel
+import com.prac.githubrepo.common.stateModel
 import com.prac.githubrepo.di.IODispatcher
+import com.prac.githubrepo.di.ProfileReducerAnnotation
+import com.prac.githubrepo.ui.profile.model.Action
+import com.prac.githubrepo.ui.profile.model.Event
+import com.prac.githubrepo.ui.profile.model.Event.*
+import com.prac.githubrepo.ui.profile.model.Mutation
+import com.prac.githubrepo.ui.profile.model.Mutation.*
+import com.prac.githubrepo.ui.profile.view.UiState
 import com.prac.githubrepo.util.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,42 +27,48 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val tokenRepository: TokenRepository,
     private val repoRepository: RepoRepository,
+    @ProfileReducerAnnotation private val profileReducerProcessor: Reducer<Mutation, UiState>,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
     private val backOffWorkManager: BackOffWorkManager
 ) : ViewModel() {
-    sealed class UiState {
-        data object Idle : UiState()
+    private val stateModel by stateModel(
+        reducerProcessor = profileReducerProcessor,
+        initialState = UiState()
+    )
+    private val eventModel by eventModel<Event>()
 
-        data object Loading : UiState()
+    internal val uiStateFlow: StateFlow<UiState> get() = stateModel.uiState
+    internal val eventFlow: SharedFlow<Event> get() = eventModel.event
 
-        data class Dialog(
-            val message : String
-        ) : UiState()
+    fun process(action: Action) {
+        when (action) {
+            is Action.UserAction.OnClickLogoutButton -> onClickLogoutButton()
+            is Action.UserAction.DialogDismiss -> dialogDismiss()
+            is Action.UserAction.OnClickCheckButton -> onClickCheckButton()
+        }
     }
 
-    sealed class Event {
-        data object Success : Event()
+    private fun onClickLogoutButton() {
+        ShowDialog.handleMutation()
     }
 
-    private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
-    val uiState = _uiState.asStateFlow()
-
-    private val _event = MutableSharedFlow<Event>()
-    val event = _event.asSharedFlow()
-
-    fun setUiState(uiState: UiState) {
-        _uiState.update { uiState }
+    private fun dialogDismiss() {
+        ShowIdle.handleMutation()
     }
 
-    fun logout() {
+    private fun onClickCheckButton() {
         viewModelScope.launch(ioDispatcher) {
-            _uiState.update { UiState.Loading }
+            ShowLoading.handleMutation()
 
             tokenRepository.clearToken()
             backOffWorkManager.clearWork()
             repoRepository.clearRepositories()
 
-            _event.emit(Event.Success)
+            Logout.handleEvent()
         }
     }
+
+    private fun Mutation.handleMutation() = stateModel.process(this)
+
+    private fun Event.handleEvent() = eventModel.process(this)
 }

@@ -17,7 +17,7 @@ import com.prac.githubrepo.components.LoadingContent
 @Composable
 fun ProfileContent(
     isLoading: Boolean,
-    dialogMessage: String,
+    isDialog: Boolean,
     onClickLogoutButton: () -> Unit,
     onClickCheckButton: () -> Unit,
     onDismissRequest: () -> Unit
@@ -40,7 +40,8 @@ fun ProfileContent(
             )
         }
 
-        if (dialogMessage.isNotEmpty()) {
+        if (isDialog) {
+            val dialogMessage = stringResource(id = R.string.logout_confirm)
             BasicAlertDialog(
                 onDismissRequest = onDismissRequest,
                 onClickCheckButton = onClickCheckButton,
@@ -55,7 +56,7 @@ fun ProfileContent(
 fun ProfileContentPreview() {
     ProfileContent(
         isLoading = false,
-        dialogMessage = "",
+        isDialog = false,
         onClickLogoutButton = {},
         onClickCheckButton = {},
         onDismissRequest = {}
@@ -67,7 +68,7 @@ fun ProfileContentPreview() {
 fun ProfileContentLoadingPreview() {
     ProfileContent(
         isLoading = true,
-        dialogMessage = "",
+        isDialog = false,
         onClickLogoutButton = {},
         onClickCheckButton = {},
         onDismissRequest = {}
@@ -79,7 +80,7 @@ fun ProfileContentLoadingPreview() {
 fun ProfileContentDialogPreview() {
     ProfileContent(
         isLoading = true,
-        dialogMessage = stringResource(id = R.string.logout_confirm),
+        isDialog = true,
         onClickLogoutButton = {},
         onClickCheckButton = {},
         onDismissRequest = {}
