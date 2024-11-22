@@ -18,8 +18,8 @@ class LoginActionProcessor(
     override fun invoke(action: Action): Flow<Pair<UiState?, Event?>> =
         flow {
             when (action) {
-                is Action.OAuthAuthenticated -> oAuthAuthenticated(action.code)
-                is Action.CheckAutoLogin -> checkAutoLogin()
+                is Action.InternalAction.AuthenticateOAuth -> oAuthAuthenticated(action.code)
+                is Action.InternalAction.CheckAutoLogin -> checkAutoLogin()
                 else -> Unit
             }
         }

@@ -31,7 +31,7 @@ class LoginViewModelTest {
         val userActionProcessor = FakeUserActionProcessor()
         loginViewModel = LoginViewModel(loginActionProcessor, userActionProcessor, standardTestDispatcherRule.testDispatcher)
 
-        loginViewModel.process(Action.CheckAutoLogin)
+        loginViewModel.process(Action.InternalAction.CheckAutoLogin)
 
         val result = loginViewModel.eventFlow.first()
         assertTrue(result is Event.LoginSuccess)
@@ -45,7 +45,7 @@ class LoginViewModelTest {
         val userActionProcessor = FakeUserActionProcessor()
         loginViewModel = LoginViewModel(loginActionProcessor, userActionProcessor, standardTestDispatcherRule.testDispatcher)
 
-        loginViewModel.process(Action.CheckAutoLogin)
+        loginViewModel.process(Action.InternalAction.CheckAutoLogin)
 
         loginViewModel.eventFlow.test {
             expectNoEvents()
@@ -60,7 +60,7 @@ class LoginViewModelTest {
         val userActionProcessor = FakeUserActionProcessor()
         loginViewModel = LoginViewModel(loginActionProcessor, userActionProcessor, standardTestDispatcherRule.testDispatcher)
 
-        loginViewModel.process(Action.OAuthAuthenticated("test"))
+        loginViewModel.process(Action.InternalAction.AuthenticateOAuth("test"))
 
         loginViewModel.eventFlow.test {
             val result = awaitItem()
@@ -78,7 +78,7 @@ class LoginViewModelTest {
         val userActionProcessor = FakeUserActionProcessor()
         loginViewModel = LoginViewModel(loginActionProcessor, userActionProcessor, standardTestDispatcherRule.testDispatcher)
 
-        loginViewModel.process(Action.OAuthAuthenticated("test"))
+        loginViewModel.process(Action.InternalAction.AuthenticateOAuth("test"))
 
         loginViewModel.uiStateFlow.test {
             awaitItem() // idle
@@ -98,7 +98,7 @@ class LoginViewModelTest {
         val userActionProcessor = FakeUserActionProcessor()
         loginViewModel = LoginViewModel(loginActionProcessor, userActionProcessor, standardTestDispatcherRule.testDispatcher)
 
-        loginViewModel.process(Action.DialogDismiss)
+        loginViewModel.process(Action.UserAction.DialogDismiss)
 
         loginViewModel.uiStateFlow.test {
             val result = awaitItem()

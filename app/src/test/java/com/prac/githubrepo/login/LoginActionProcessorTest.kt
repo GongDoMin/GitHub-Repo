@@ -24,7 +24,7 @@ class LoginActionProcessorTest {
         tokenRepository = FakeTokenRepository("test")
         loginActionProcessor = LoginActionProcessor(tokenRepository)
 
-        val result = loginActionProcessor.invoke(Action.CheckAutoLogin).first()
+        val result = loginActionProcessor.invoke(Action.InternalAction.CheckAutoLogin).first()
 
         val uiState = result.first
         val event = result.second
@@ -38,7 +38,7 @@ class LoginActionProcessorTest {
         loginActionProcessor = LoginActionProcessor(tokenRepository)
 
         assertFailsWith<NoSuchElementException> {
-            loginActionProcessor.invoke(Action.CheckAutoLogin).first()
+            loginActionProcessor.invoke(Action.InternalAction.CheckAutoLogin).first()
         }
     }
 
@@ -47,13 +47,13 @@ class LoginActionProcessorTest {
         tokenRepository = FakeTokenRepository()
         loginActionProcessor = LoginActionProcessor(tokenRepository)
 
-        val result = loginActionProcessor.invoke(Action.OAuthAuthenticated("success")).take(2).toList()
+        val result = loginActionProcessor.invoke(Action.InternalAction.AuthenticateOAuth("success")).take(2).toList()
 
         val fUiState = result[0].first
         val fEvent = result[0].second
         val sUiState = result[1].first
         val sEvent = result[1].second
-        Assert.assertTrue(fUiState is UiState.Loading)
+        Assert.assertTrue(fUiState?.isLoading == true)
         Assert.assertTrue(fEvent == null)
         Assert.assertTrue(sUiState == null)
         Assert.assertTrue(sEvent is Event.LoginSuccess)
@@ -64,15 +64,15 @@ class LoginActionProcessorTest {
         tokenRepository = FakeTokenRepository()
         loginActionProcessor = LoginActionProcessor(tokenRepository)
 
-        val result = loginActionProcessor.invoke(Action.OAuthAuthenticated("ioException")).take(2).toList()
+        val result = loginActionProcessor.invoke(Action.InternalAction.AuthenticateOAuth("ioException")).take(2).toList()
 
         val fUiState = result[0].first
         val fEvent = result[0].second
         val sUiState = result[1].first
         val sEvent = result[1].second
-        Assert.assertTrue(fUiState is UiState.Loading)
+        Assert.assertTrue(fUiState?.isLoading == true)
         Assert.assertTrue(fEvent == null)
-        Assert.assertTrue(sUiState is UiState.Error)
+        Assert.assertTrue(sUiState?.isError == true)
         Assert.assertTrue(sEvent == null)
     }
 }

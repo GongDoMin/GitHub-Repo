@@ -12,8 +12,8 @@ class UserActionProcessor : ActionProcessor<Action, UiState, Event> {
     override fun invoke(action: Action): Flow<Pair<UiState?, Event?>> =
         flow {
             when (action) {
-                is Action.OnClickLoginButton -> onClickLoginButton()
-                is Action.DialogDismiss -> dialogDismiss()
+                is Action.UserAction.OnClickLoginButton -> onClickLoginButton()
+                is Action.UserAction.DialogDismiss -> dialogDismiss()
                 else -> Unit
             }
         }

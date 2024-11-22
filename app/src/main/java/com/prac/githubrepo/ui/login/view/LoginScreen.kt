@@ -30,8 +30,8 @@ fun LoginScreen(
     LoginContent(
         isLoading = uiState.isLoading,
         errorMessage = uiState.errorMessage,
-        onClickLogin = { viewModel.process(Action.OnClickLoginButton) },
-        onDismissRequest = { viewModel.process(Action.DialogDismiss) }
+        onClickLogin = { viewModel.process(Action.UserAction.OnClickLoginButton) },
+        onDismissRequest = { viewModel.process(Action.UserAction.DialogDismiss) }
     )
 
     LaunchedEffect(activity) {
@@ -55,7 +55,7 @@ fun LoginScreen(
                 if (intent.action == Intent.ACTION_VIEW) {
                     intent.data?.let { uri ->
                         uri.getQueryParameter("code")?.let { code ->
-                            viewModel.process(Action.OAuthAuthenticated(code))
+                            viewModel.process(Action.InternalAction.AuthenticateOAuth(code))
                         }
                     }
                 }

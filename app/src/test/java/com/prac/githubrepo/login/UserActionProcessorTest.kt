@@ -15,7 +15,7 @@ class UserActionProcessorTest {
 
     @Test
     fun invoke_actionIsOnClickLoginButton_emitLaunchLoginIntent() = runTest {
-        val result = userActionProcessor.invoke(Action.OnClickLoginButton).first()
+        val result = userActionProcessor.invoke(Action.UserAction.OnClickLoginButton).first()
 
         val uiState = result.first
         val event = result.second
@@ -25,11 +25,11 @@ class UserActionProcessorTest {
 
     @Test
     fun invoke_actionIsDialogDismiss_emitIdle() = runTest {
-        val result = userActionProcessor.invoke(Action.DialogDismiss).first()
+        val result = userActionProcessor.invoke(Action.UserAction.DialogDismiss).first()
 
         val uiState = result.first
         val event = result.second
-        assertTrue(uiState is UiState.Idle)
+        assertTrue(uiState?.isError == false && !uiState.isLoading)
         assertTrue(event == null)
     }
 }
