@@ -4,7 +4,6 @@ import app.cash.turbine.test
 import com.prac.githubrepo.ui.login.LoginViewModel
 import com.prac.githubrepo.ui.login.model.Action
 import com.prac.githubrepo.ui.login.model.Event
-import com.prac.githubrepo.ui.login.model.UiState
 import com.prac.githubrepo.util.StandardTestDispatcherRule
 import com.prac.shared_test.ui.FakeLoginActionProcessor
 import com.prac.shared_test.ui.FakeUserActionProcessor
@@ -34,7 +33,7 @@ class LoginViewModelTest {
         loginViewModel.process(Action.InternalAction.CheckAutoLogin)
 
         val result = loginViewModel.eventFlow.first()
-        assertTrue(result is Event.LoginSuccess)
+        assertTrue(result is Event.SuccessLogin)
     }
 
     @Test
@@ -64,7 +63,7 @@ class LoginViewModelTest {
 
         loginViewModel.eventFlow.test {
             val result = awaitItem()
-            assertTrue(result is Event.LoginSuccess)
+            assertTrue(result is Event.SuccessLogin)
         }
     }
 

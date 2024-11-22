@@ -12,7 +12,7 @@ class FakeUserActionProcessor : ActionProcessor<Action, UiState, Event> {
         flow {
             println("?????")
             when (action) {
-                is Action.OnClickLoginButton -> emit(null to Event.LaunchLoginIntent)
+                is Action.OnClickLoginButton -> emit(null to Event.OpenBrowser)
                 is Action.DialogDismiss -> emit(UiState.Idle to null)
                 else -> Unit
             }

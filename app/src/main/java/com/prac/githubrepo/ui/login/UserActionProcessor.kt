@@ -19,7 +19,7 @@ class UserActionProcessor : ActionProcessor<Action, UiState, Event> {
         }
 
     private suspend fun FlowCollector<Pair<UiState?, Event?>>.onClickLoginButton() {
-        emit(null to Event.LaunchLoginIntent)
+        emit(null to Event.OpenBrowser)
     }
 
     private suspend fun FlowCollector<Pair<UiState?, Event?>>.dialogDismiss() {

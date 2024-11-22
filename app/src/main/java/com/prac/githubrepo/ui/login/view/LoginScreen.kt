@@ -17,7 +17,6 @@ import com.prac.githubrepo.BuildConfig
 import com.prac.githubrepo.ui.login.LoginViewModel
 import com.prac.githubrepo.ui.login.model.Action
 import com.prac.githubrepo.ui.login.model.Event
-import com.prac.githubrepo.ui.login.model.UiState
 
 @Composable
 fun LoginScreen(
@@ -38,8 +37,8 @@ fun LoginScreen(
         activity.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.eventFlow.collect {
                 when (it) {
-                    is Event.LoginSuccess -> onNavigateToMain()
-                    is Event.LaunchLoginIntent -> {
+                    is Event.SuccessLogin -> onNavigateToMain()
+                    is Event.OpenBrowser -> {
                         activity.startActivity(
                             Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.GITHUB_OAUTH_URI))
                         )

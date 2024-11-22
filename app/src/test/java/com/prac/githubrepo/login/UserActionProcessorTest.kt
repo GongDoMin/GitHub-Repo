@@ -3,7 +3,6 @@ package com.prac.githubrepo.login
 import com.prac.githubrepo.ui.login.UserActionProcessor
 import com.prac.githubrepo.ui.login.model.Action
 import com.prac.githubrepo.ui.login.model.Event
-import com.prac.githubrepo.ui.login.model.UiState
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertTrue
@@ -20,7 +19,7 @@ class UserActionProcessorTest {
         val uiState = result.first
         val event = result.second
         assertTrue(uiState == null)
-        assertTrue(event is Event.LaunchLoginIntent)
+        assertTrue(event is Event.OpenBrowser)
     }
 
     @Test

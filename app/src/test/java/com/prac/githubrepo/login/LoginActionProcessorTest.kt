@@ -3,7 +3,6 @@ package com.prac.githubrepo.login
 import com.prac.githubrepo.ui.login.LoginActionProcessor
 import com.prac.githubrepo.ui.login.model.Action
 import com.prac.githubrepo.ui.login.model.Event
-import com.prac.githubrepo.ui.login.model.UiState
 import com.prac.shared_test.data.FakeTokenRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.take
@@ -29,7 +28,7 @@ class LoginActionProcessorTest {
         val uiState = result.first
         val event = result.second
         Assert.assertTrue(uiState == null)
-        Assert.assertTrue(event is Event.LoginSuccess)
+        Assert.assertTrue(event is Event.SuccessLogin)
     }
 
     @Test
@@ -56,7 +55,7 @@ class LoginActionProcessorTest {
         Assert.assertTrue(fUiState?.isLoading == true)
         Assert.assertTrue(fEvent == null)
         Assert.assertTrue(sUiState == null)
-        Assert.assertTrue(sEvent is Event.LoginSuccess)
+        Assert.assertTrue(sEvent is Event.SuccessLogin)
     }
 
     @Test

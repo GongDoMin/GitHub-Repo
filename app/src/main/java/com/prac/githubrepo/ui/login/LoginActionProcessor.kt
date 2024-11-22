@@ -29,7 +29,7 @@ class LoginActionProcessor(
 
         tokenRepository.authorizeOAuth(code = code)
             .onSuccess {
-                emit(null to Event.LoginSuccess)
+                emit(null to Event.SuccessLogin)
             }.onFailure {
                 val errorMessage = handleLoginError(it)
                 emit(UiState(isError = true, errorMessage = errorMessage) to null)
@@ -37,7 +37,7 @@ class LoginActionProcessor(
     }
 
     private suspend fun FlowCollector<Pair<UiState?, Event?>>.checkAutoLogin() {
-        if (tokenRepository.isLoggedIn()) emit(null to Event.LoginSuccess)
+        if (tokenRepository.isLoggedIn()) emit(null to Event.SuccessLogin)
     }
 
     private fun handleLoginError(t: Throwable) =

@@ -16,11 +16,11 @@ class FakeLoginActionProcessor(
             when (action) {
                 is Action.OAuthAuthenticated -> {
                     emit(UiState.Loading to null)
-                    if (errorMessage.isEmpty()) emit(null to Event.LoginSuccess)
+                    if (errorMessage.isEmpty()) emit(null to Event.SuccessLogin)
                     else emit(UiState.Error(errorMessage) to null)
                 }
                 is Action.CheckAutoLogin -> {
-                    if (isLoggedIn) emit(null to Event.LoginSuccess)
+                    if (isLoggedIn) emit(null to Event.SuccessLogin)
                 }
                 else -> Unit
             }
