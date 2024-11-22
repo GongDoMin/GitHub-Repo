@@ -2,7 +2,7 @@ package com.prac.githubrepo.login
 
 import com.prac.githubrepo.ui.login.LoginReducer
 import com.prac.githubrepo.ui.login.model.Mutation
-import com.prac.githubrepo.ui.login.model.UiState
+import com.prac.githubrepo.ui.login.view.UiState
 import org.junit.Assert.assertFalse
 import org.junit.Test
 import kotlin.test.assertEquals

@@ -19,7 +19,7 @@ import com.prac.githubrepo.ui.login.model.Mutation
 import com.prac.githubrepo.ui.login.model.Mutation.ShowError
 import com.prac.githubrepo.ui.login.model.Mutation.ShowIdle
 import com.prac.githubrepo.ui.login.model.Mutation.ShowLoading
-import com.prac.githubrepo.ui.login.model.UiState
+import com.prac.githubrepo.ui.login.view.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharedFlow

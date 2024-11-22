@@ -3,7 +3,7 @@ package com.prac.githubrepo.di
 import com.prac.githubrepo.common.Reducer
 import com.prac.githubrepo.ui.login.LoginReducer
 import com.prac.githubrepo.ui.login.model.Mutation
-import com.prac.githubrepo.ui.login.model.UiState
+import com.prac.githubrepo.ui.login.view.UiState
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
