@@ -11,6 +11,7 @@ import com.prac.shared_test.ui.FakeUserActionProcessor
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -82,10 +83,10 @@ class LoginViewModelTest {
         loginViewModel.uiStateFlow.test {
             awaitItem() // idle
             val loading = awaitItem()
-            assertTrue(loading is UiState.Loading)
+            assertTrue(loading.isLoading)
             val result = awaitItem()
-            assertTrue(result is UiState.Error)
-            assertEquals((result as UiState.Error).errorMessage, errorMessage)
+            assertTrue(result.isError)
+            assertEquals(result.errorMessage, errorMessage)
         }
     }
 
@@ -101,7 +102,8 @@ class LoginViewModelTest {
 
         loginViewModel.uiStateFlow.test {
             val result = awaitItem()
-            assertTrue(result is UiState.Idle)
+            assertFalse(result.isLoading)
+            assertFalse(result.isError)
         }
     }
 }

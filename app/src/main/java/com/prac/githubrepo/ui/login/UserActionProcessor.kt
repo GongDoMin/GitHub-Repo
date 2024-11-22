@@ -23,6 +23,6 @@ class UserActionProcessor : ActionProcessor<Action, UiState, Event> {
     }
 
     private suspend fun FlowCollector<Pair<UiState?, Event?>>.dialogDismiss() {
-        emit(UiState.Idle to null)
+        emit(UiState() to null)
     }
 }

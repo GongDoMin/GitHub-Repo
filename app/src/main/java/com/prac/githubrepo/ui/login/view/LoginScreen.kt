@@ -28,8 +28,8 @@ fun LoginScreen(
     val activity = LocalContext.current as ComponentActivity
 
     LoginContent(
-        isLoading = uiState is UiState.Loading,
-        errorMessage = (uiState as? UiState.Error)?.errorMessage ?: "",
+        isLoading = uiState.isLoading,
+        errorMessage = uiState.errorMessage,
         onClickLogin = { viewModel.process(Action.OnClickLoginButton) },
         onDismissRequest = { viewModel.process(Action.DialogDismiss) }
     )

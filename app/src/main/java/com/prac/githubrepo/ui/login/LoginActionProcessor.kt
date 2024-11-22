@@ -25,14 +25,14 @@ class LoginActionProcessor(
         }
 
     private suspend fun FlowCollector<Pair<UiState?, Event?>>.oAuthAuthenticated(code: String) {
-        emit(UiState.Loading to null)
+        emit(UiState(isLoading = true) to null)
 
         tokenRepository.authorizeOAuth(code = code)
             .onSuccess {
                 emit(null to Event.LoginSuccess)
             }.onFailure {
                 val errorMessage = handleLoginError(it)
-                emit(UiState.Error(errorMessage) to null)
+                emit(UiState(isError = true, errorMessage = errorMessage) to null)
             }
     }
 

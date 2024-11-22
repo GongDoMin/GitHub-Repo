@@ -21,7 +21,7 @@ class LoginViewModel @Inject constructor(
     @UserActionAnnotation  private val userActionProcessor: ActionProcessor<Action, UiState, Event>,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val model by model(listOf(loginActionProcessor, userActionProcessor), ioDispatcher, UiState.Idle)
+    private val model by model(listOf(loginActionProcessor, userActionProcessor), ioDispatcher, UiState())
 
     internal val uiStateFlow: StateFlow<UiState> get() = model.uiState
     internal val eventFlow: SharedFlow<Event> get() = model.event
