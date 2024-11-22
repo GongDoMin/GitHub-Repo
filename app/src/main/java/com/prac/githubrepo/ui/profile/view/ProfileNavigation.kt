@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.profile
+package com.prac.githubrepo.ui.profile.view
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
