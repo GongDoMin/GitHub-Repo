@@ -10,7 +10,7 @@ import com.prac.githubrepo.common.stateModel
 import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.LOGIN_FAIL
 import com.prac.githubrepo.di.IODispatcher
-import com.prac.githubrepo.di.LoginReducerProcessor
+import com.prac.githubrepo.di.LoginReducerAnnotation
 import com.prac.githubrepo.ui.login.model.Action
 import com.prac.githubrepo.ui.login.model.Event
 import com.prac.githubrepo.ui.login.model.Event.OpenBrowser
@@ -30,7 +30,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val tokenRepository: TokenRepository,
-    @LoginReducerProcessor private val loginReducerProcessor: Reducer<Mutation, UiState>,
+    @LoginReducerAnnotation private val loginReducerProcessor: Reducer<Mutation, UiState>,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
     private val stateModel by stateModel(

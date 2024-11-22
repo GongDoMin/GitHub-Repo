@@ -1,7 +1,7 @@
 package com.prac.githubrepo.di
 
 import com.prac.githubrepo.common.Reducer
-import com.prac.githubrepo.ui.login.LoginReducer
+import com.prac.githubrepo.ui.login.LoginReducerProcessor
 import com.prac.githubrepo.ui.login.model.Mutation
 import com.prac.githubrepo.ui.login.view.UiState
 import dagger.Module
@@ -12,14 +12,14 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
-annotation class LoginReducerProcessor
+annotation class LoginReducerAnnotation
 
 @Module
 @InstallIn(SingletonComponent::class)
 class ReducerProcessorModule {
     @Provides
-    @LoginReducerProcessor
+    @LoginReducerAnnotation
     fun providesLoginReducerProcessor(): Reducer<Mutation, UiState> {
-        return LoginReducer()
+        return LoginReducerProcessor()
     }
 }
