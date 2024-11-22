@@ -24,30 +24,26 @@ class EventModel<Event>(
 }
 
 inline fun <reified Event> ViewModel.eventModel(
-    reply: Int = 0,
+    replay: Int = 0,
     extraBufferCapacity: Int = 0,
     onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND
 ) =
     EventModelProperty<Event>(
         coroutineScope = this.viewModelScope,
-        reply = reply,
-        extraBufferCapacity = extraBufferCapacity,
-        onBufferOverflow = onBufferOverflow
+        event = MutableSharedFlow<Event>(
+            replay = replay,
+            extraBufferCapacity = extraBufferCapacity,
+            onBufferOverflow = onBufferOverflow
+        )
     )
 
 class EventModelProperty<Event>(
     private val coroutineScope: CoroutineScope,
-    private val reply: Int = 0,
-    private val extraBufferCapacity: Int = 0,
-    private val onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND
+    private val event: MutableSharedFlow<Event>
 ) : ReadOnlyProperty<Any, EventModel<Event>> {
     override fun getValue(thisRef: Any, property: KProperty<*>): EventModel<Event> =
         EventModel(
             coroutineScope = coroutineScope,
-            _event = MutableSharedFlow<Event>(
-                replay = reply,
-                extraBufferCapacity = extraBufferCapacity,
-                onBufferOverflow = onBufferOverflow
-            )
+            _event = event
         )
 }
