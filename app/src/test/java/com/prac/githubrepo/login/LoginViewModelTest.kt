@@ -1,12 +1,14 @@
 package com.prac.githubrepo.login
 
 import app.cash.turbine.test
+import com.prac.data.repository.TokenRepository
+import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.ui.login.LoginViewModel
 import com.prac.githubrepo.ui.login.model.Action
 import com.prac.githubrepo.ui.login.model.Event
 import com.prac.githubrepo.util.StandardTestDispatcherRule
-import com.prac.shared_test.ui.FakeLoginActionProcessor
-import com.prac.shared_test.ui.FakeUserActionProcessor
+import com.prac.shared_test.data.FakeTokenRepository
+import com.prac.shared_test.ui.FakeLoginReducerProcessor
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -22,13 +24,15 @@ class LoginViewModelTest {
 
     private lateinit var loginViewModel: LoginViewModel
 
+    private val loginActionProcessor = FakeLoginReducerProcessor()
+    private lateinit var tokenRepository: TokenRepository
+
     @Test
     fun process_actionIsCheckAutoLogin_emitLoginSuccess() = runTest {
-        val loginActionProcessor = FakeLoginActionProcessor(
-            isLoggedIn = true
+        tokenRepository = FakeTokenRepository(
+            token = "test"
         )
-        val userActionProcessor = FakeUserActionProcessor()
-        loginViewModel = LoginViewModel(loginActionProcessor, userActionProcessor, standardTestDispatcherRule.testDispatcher)
+        loginViewModel = LoginViewModel(tokenRepository, loginActionProcessor, standardTestDispatcherRule.testDispatcher)
 
         loginViewModel.process(Action.InternalAction.CheckAutoLogin)
 
@@ -38,11 +42,8 @@ class LoginViewModelTest {
 
     @Test
     fun process_actionIsCheckAutoLogin_emitNothing() = runTest {
-        val loginActionProcessor = FakeLoginActionProcessor(
-            isLoggedIn = false
-        )
-        val userActionProcessor = FakeUserActionProcessor()
-        loginViewModel = LoginViewModel(loginActionProcessor, userActionProcessor, standardTestDispatcherRule.testDispatcher)
+        tokenRepository = FakeTokenRepository()
+        loginViewModel = LoginViewModel(tokenRepository, loginActionProcessor, standardTestDispatcherRule.testDispatcher)
 
         loginViewModel.process(Action.InternalAction.CheckAutoLogin)
 
@@ -53,13 +54,10 @@ class LoginViewModelTest {
 
     @Test
     fun process_actionIsOAuthAuthenticated_emitLoginSuccess() = runTest {
-        val loginActionProcessor = FakeLoginActionProcessor(
-            isLoggedIn = false
-        )
-        val userActionProcessor = FakeUserActionProcessor()
-        loginViewModel = LoginViewModel(loginActionProcessor, userActionProcessor, standardTestDispatcherRule.testDispatcher)
+        tokenRepository = FakeTokenRepository()
+        loginViewModel = LoginViewModel(tokenRepository, loginActionProcessor, standardTestDispatcherRule.testDispatcher)
 
-        loginViewModel.process(Action.InternalAction.AuthenticateOAuth("test"))
+        loginViewModel.process(Action.InternalAction.AuthenticateOAuth("success"))
 
         loginViewModel.eventFlow.test {
             val result = awaitItem()
@@ -69,15 +67,10 @@ class LoginViewModelTest {
 
     @Test
     fun process_actionIsOAuthAuthenticated_emitError() = runTest {
-        val errorMessage = "error"
-        val loginActionProcessor = FakeLoginActionProcessor(
-            isLoggedIn = false,
-            errorMessage = errorMessage
-        )
-        val userActionProcessor = FakeUserActionProcessor()
-        loginViewModel = LoginViewModel(loginActionProcessor, userActionProcessor, standardTestDispatcherRule.testDispatcher)
+        tokenRepository = FakeTokenRepository()
+        loginViewModel = LoginViewModel(tokenRepository, loginActionProcessor, standardTestDispatcherRule.testDispatcher)
 
-        loginViewModel.process(Action.InternalAction.AuthenticateOAuth("test"))
+        loginViewModel.process(Action.InternalAction.AuthenticateOAuth("ioException"))
 
         loginViewModel.uiStateFlow.test {
             awaitItem() // idle
@@ -85,17 +78,14 @@ class LoginViewModelTest {
             assertTrue(loading.isLoading)
             val result = awaitItem()
             assertTrue(result.isError)
-            assertEquals(result.errorMessage, errorMessage)
+            assertEquals(result.errorMessage, CONNECTION_FAIL)
         }
     }
 
     @Test
     fun process_actionIsDialogDismiss_emitIdle() = runTest {
-        val loginActionProcessor = FakeLoginActionProcessor(
-            isLoggedIn = false
-        )
-        val userActionProcessor = FakeUserActionProcessor()
-        loginViewModel = LoginViewModel(loginActionProcessor, userActionProcessor, standardTestDispatcherRule.testDispatcher)
+        tokenRepository = FakeTokenRepository()
+        loginViewModel = LoginViewModel(tokenRepository, loginActionProcessor, standardTestDispatcherRule.testDispatcher)
 
         loginViewModel.process(Action.UserAction.DialogDismiss)
 

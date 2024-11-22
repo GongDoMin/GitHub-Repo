@@ -18,7 +18,7 @@ annotation class LoginReducerProcessor
 @InstallIn(SingletonComponent::class)
 class ReducerProcessorModule {
     @Provides
-    @LoginActionAnnotation
+    @LoginReducerProcessor
     fun providesLoginReducerProcessor(): Reducer<Mutation, UiState> {
         return LoginReducer()
     }

@@ -1,30 +1,91 @@
 package com.prac.githubrepo.ui.login
 
 import androidx.lifecycle.ViewModel
-import com.prac.githubrepo.common.ActionProcessor
-import com.prac.githubrepo.common.model
+import androidx.lifecycle.viewModelScope
+import com.prac.data.exception.CommonException
+import com.prac.data.repository.TokenRepository
+import com.prac.githubrepo.common.Reducer
+import com.prac.githubrepo.common.eventModel
+import com.prac.githubrepo.common.stateModel
+import com.prac.githubrepo.constants.CONNECTION_FAIL
+import com.prac.githubrepo.constants.LOGIN_FAIL
 import com.prac.githubrepo.di.IODispatcher
-import com.prac.githubrepo.di.LoginActionAnnotation
-import com.prac.githubrepo.di.UserActionAnnotation
+import com.prac.githubrepo.di.LoginReducerProcessor
 import com.prac.githubrepo.ui.login.model.Action
 import com.prac.githubrepo.ui.login.model.Event
+import com.prac.githubrepo.ui.login.model.Event.OpenBrowser
+import com.prac.githubrepo.ui.login.model.Event.SuccessLogin
+import com.prac.githubrepo.ui.login.model.Mutation
+import com.prac.githubrepo.ui.login.model.Mutation.ShowError
+import com.prac.githubrepo.ui.login.model.Mutation.ShowIdle
+import com.prac.githubrepo.ui.login.model.Mutation.ShowLoading
 import com.prac.githubrepo.ui.login.model.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    @LoginActionAnnotation private val loginActionProcessor: ActionProcessor<Action, UiState, Event>,
-    @UserActionAnnotation  private val userActionProcessor: ActionProcessor<Action, UiState, Event>,
+    private val tokenRepository: TokenRepository,
+    @LoginReducerProcessor private val loginReducerProcessor: Reducer<Mutation, UiState>,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val model by model(listOf(loginActionProcessor, userActionProcessor), ioDispatcher, UiState())
+    private val stateModel by stateModel(
+        reducerProcessor = loginReducerProcessor,
+        initialState = UiState()
+    )
+    private val eventModel by eventModel<Event>()
 
-    internal val uiStateFlow: StateFlow<UiState> get() = model.uiState
-    internal val eventFlow: SharedFlow<Event> get() = model.event
+    internal val uiStateFlow: StateFlow<UiState> get() = stateModel.uiState
+    internal val eventFlow: SharedFlow<Event> get() = eventModel.event
 
-    fun process(action: Action) = model.process(action)
+    fun process(action: Action) {
+        when (action) {
+            is Action.UserAction.OnClickLoginButton -> onClickLoginButton()
+            is Action.UserAction.DialogDismiss -> dialogDismiss()
+            is Action.InternalAction.AuthenticateOAuth -> authenticateOAuth(action.code)
+            is Action.InternalAction.CheckAutoLogin -> checkAuthLogin()
+        }
+    }
+
+    private fun onClickLoginButton() {
+        OpenBrowser.handleEvent()
+    }
+
+    private fun dialogDismiss() {
+        ShowIdle.handleMutation()
+    }
+
+    private fun authenticateOAuth(code: String) {
+        viewModelScope.launch(ioDispatcher) {
+            ShowLoading.handleMutation()
+
+            tokenRepository.authorizeOAuth(code = code)
+                .onSuccess {
+                    SuccessLogin.handleEvent()
+                }.onFailure {
+                    val errorMessage = handleLoginErrorMessage(it)
+                    ShowError(errorMessage).handleMutation()
+                }
+        }
+    }
+
+    private fun checkAuthLogin() {
+        viewModelScope.launch(ioDispatcher) {
+            if (tokenRepository.isLoggedIn()) SuccessLogin.handleEvent()
+        }
+    }
+
+    private fun handleLoginErrorMessage(t: Throwable) =
+        when (t) {
+            is CommonException.NetworkError -> CONNECTION_FAIL
+            else -> LOGIN_FAIL
+        }
+
+    private fun Mutation.handleMutation() = stateModel.process(this)
+
+    private fun Event.handleEvent() = eventModel.process(this)
 }
