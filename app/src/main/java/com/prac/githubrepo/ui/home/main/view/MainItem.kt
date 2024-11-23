@@ -1,15 +1,13 @@
-package com.prac.githubrepo.ui.home.main
+package com.prac.githubrepo.ui.home.main.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
@@ -20,156 +18,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
 import com.prac.data.entity.RepoEntity
 import com.prac.githubrepo.R
-import com.prac.githubrepo.components.ErrorAlertDialog
 import com.prac.githubrepo.components.UserProfile
 import com.prac.githubrepo.constants.CONNECTION_FAIL
-import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.util.drawableID
 
 @Composable
-fun MainScreen(
-    viewModel: MainViewModel = hiltViewModel(),
-    onNavigateToLogin: () -> Unit,
-    onClickRepository: (String, String) -> Unit
-) {
-    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
-    val repositories = uiState.value.repositories.collectAsLazyPagingItems()
-
-    MainContent(
-        repositories = repositories.itemSnapshotList.items,
-        itemCount = repositories.itemCount,
-        itemKey = repositories.itemKey { it.id },
-        loadState = repositories.loadState,
-        retry = repositories::retry,
-        handleLoadState = viewModel::handleLoadStates,
-        starStateRequest = viewModel::fetchStarState,
-        onClickStar = viewModel::unStarRepository,
-        onClickUnStar = viewModel::starRepository,
-        onClickRepository = { onClickRepository(it.owner.login, it.name) },
-        dialogMessage = uiState.value.dialogMessage,
-        onDismissRequest = { dialogMessage -> if (dialogMessage == INVALID_TOKEN) onNavigateToLogin() }
-    )
-}
-
-@Composable
-fun MainContent(
-    repositories: List<RepoEntity>,
-    itemCount: Int,
-    itemKey: ((Int) -> Any)?,
-    loadState: CombinedLoadStates,
-    retry: () -> Unit,
-    handleLoadState: (CombinedLoadStates) -> LoadState?,
-    starStateRequest: (RepoEntity) -> Unit,
-    onClickStar: (RepoEntity) -> Unit,
-    onClickUnStar: (RepoEntity) -> Unit,
-    onClickRepository: (RepoEntity) -> Unit,
-    dialogMessage: String,
-    onDismissRequest: (String) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        MainContentHeader()
-
-        MainContentBody(
-            repositories = repositories,
-            itemCount = itemCount,
-            itemKey = itemKey,
-            loadState = loadState,
-            retry = retry,
-            handleLoadState = handleLoadState,
-            starStateRequest = starStateRequest,
-            onClickStar = onClickStar,
-            onClickUnStar = onClickUnStar,
-            onClickRepository = onClickRepository
-        )
-
-        if (dialogMessage.isNotEmpty()) {
-            ErrorAlertDialog(
-                onDismissRequest = onDismissRequest,
-                errorMessage = dialogMessage
-            )
-        }
-    }
-}
-
-@Composable
-fun MainContentHeader() {
-    Text(
-        modifier = Modifier
-            .padding(
-                top = dimensionResource(id = R.dimen.padding_normal),
-                bottom = dimensionResource(id = R.dimen.padding_normal)
-            ),
-        text = stringResource(id = R.string.repository)
-    )
-
-    HorizontalDivider()
-}
-
-@Composable
-fun MainContentBody(
-    repositories: List<RepoEntity>,
-    itemCount: Int,
-    itemKey: ((Int) -> Any)?,
-    loadState: CombinedLoadStates,
-    retry: () -> Unit,
-    handleLoadState: (CombinedLoadStates) -> LoadState?,
-    starStateRequest: (RepoEntity) -> Unit,
-    onClickStar: (RepoEntity) -> Unit,
-    onClickUnStar: (RepoEntity) -> Unit,
-    onClickRepository: (RepoEntity) -> Unit
-) {
-    LazyColumn(
-        modifier = Modifier
-            .testTag("lazyColumn")
-    ) {
-        items(
-            count = itemCount,
-            key = itemKey
-        ) { index ->
-            repositories[index].let { repository ->
-                MainContentItem(
-                    repository = repository,
-                    onClickStar = onClickStar,
-                    onClickUnStar = onClickUnStar,
-                    onClickRepository = onClickRepository,
-                    modifier = Modifier
-                        .padding(
-                            bottom = dimensionResource(id = R.dimen.padding_small)
-                        )
-                )
-
-                if (repository.isStarred == null) starStateRequest(repository)
-            }
-        }
-
-        item {
-            LoadStateFooter(
-                loadState = handleLoadState(loadState),
-                onRetryClick = retry
-            )
-        }
-    }
-}
-
-@Composable
-fun MainContentItem(
+fun MainItem(
     repository: RepoEntity,
     onClickStar: (RepoEntity) -> Unit,
     onClickUnStar: (RepoEntity) -> Unit,
@@ -190,30 +51,30 @@ fun MainContentItem(
                 end = dimensionResource(id = R.dimen.padding_normal)
             )
     ) {
-        MainContentItemUser(
+        MainItemUser(
             uri = repository.owner.avatarUrl,
             userName = repository.owner.login,
             modifier = modifier
         )
 
-        MainContentItemRepoName(
+        MainItemRepoName(
             repoName = repository.name,
             modifier = modifier
         )
 
-        MainContentItemStar(
+        MainItemStar(
             repo = repository,
             onClickStar = onClickStar,
             onClickUnStar = onClickUnStar,
             modifier = modifier
         )
 
-        MainContentItemDefaultBranch(
+        MainItemDefaultBranch(
             defaultBranch = repository.defaultBranch,
             modifier = modifier
         )
 
-        MainContentItemUpdatedAt(
+        MainItemUpdatedAt(
             updatedAt = repository.updatedAt,
             modifier = modifier
         )
@@ -223,7 +84,7 @@ fun MainContentItem(
 }
 
 @Composable
-fun MainContentItemUser(
+fun MainItemUser(
     uri: String,
     userName: String,
     modifier: Modifier = Modifier
@@ -243,7 +104,7 @@ fun MainContentItemUser(
 }
 
 @Composable
-fun MainContentItemRepoName(
+fun MainItemRepoName(
     repoName: String,
     modifier: Modifier = Modifier
 ) {
@@ -254,7 +115,7 @@ fun MainContentItemRepoName(
 }
 
 @Composable
-fun MainContentItemStar(
+fun MainItemStar(
     repo: RepoEntity,
     onClickStar: (RepoEntity) -> Unit,
     onClickUnStar: (RepoEntity) -> Unit,
@@ -293,7 +154,7 @@ fun MainContentItemStar(
 }
 
 @Composable
-fun MainContentItemDefaultBranch(
+fun MainItemDefaultBranch(
     defaultBranch: String,
     modifier: Modifier = Modifier
 ) {
@@ -304,7 +165,7 @@ fun MainContentItemDefaultBranch(
 }
 
 @Composable
-fun MainContentItemUpdatedAt(
+fun MainItemUpdatedAt(
     updatedAt: String,
     modifier: Modifier = Modifier
 ) {
