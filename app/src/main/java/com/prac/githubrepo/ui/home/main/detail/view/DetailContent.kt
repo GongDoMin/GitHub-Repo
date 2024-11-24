@@ -31,6 +31,7 @@ import com.prac.githubrepo.util.drawableID
 @Composable
 fun DetailContent(
     isLoading: Boolean,
+    isError: Boolean,
     errorMessage: String,
     repoDetail: RepoDetailEntity?,
     onClickStar: (RepoDetailEntity) -> Unit,
@@ -68,7 +69,7 @@ fun DetailContent(
             }
         }
 
-        if (errorMessage.isNotEmpty()) {
+        if (isError) {
             ErrorAlertDialog(
                 onDismissRequest = onDismissRequest,
                 errorMessage = errorMessage
@@ -175,6 +176,7 @@ fun DetailContentPreview() {
 
     DetailContent(
         isLoading = false,
+        isError = false,
         errorMessage = "",
         repoDetail = repository,
         onClickStar = {},
@@ -188,6 +190,7 @@ fun DetailContentPreview() {
 fun DetailContentLoadingPreview() {
     DetailContent(
         isLoading = true,
+        isError = false,
         errorMessage = "",
         repoDetail = RepoDetailEntity(),
         onClickStar = {},
@@ -201,6 +204,7 @@ fun DetailContentLoadingPreview() {
 fun DetailContentErrorPreview() {
     DetailContent(
         isLoading = false,
+        isError = true,
         errorMessage = INVALID_REPOSITORY,
         repoDetail = RepoDetailEntity(),
         onClickStar = {},

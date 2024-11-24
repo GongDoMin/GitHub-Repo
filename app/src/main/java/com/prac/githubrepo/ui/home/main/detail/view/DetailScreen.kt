@@ -28,6 +28,7 @@ fun DetailScreen(
 
     DetailContent(
         isLoading = uiState.value.isLoading,
+        isError = uiState.value.isError,
         errorMessage = uiState.value.errorMessage,
         repoDetail = uiState.value.repository,
         onClickStar = { viewModel.process(Action.UserAction.OnClickStar(it)) },
