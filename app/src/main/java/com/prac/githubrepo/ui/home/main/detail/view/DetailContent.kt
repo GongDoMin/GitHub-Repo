@@ -16,13 +16,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoDetailEntity
 import com.prac.githubrepo.R
 import com.prac.githubrepo.components.ErrorAlertDialog
 import com.prac.githubrepo.components.LoadingContent
 import com.prac.githubrepo.components.UserProfile
+import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.util.drawableID
 
 @Composable
@@ -126,7 +129,10 @@ fun DetailContentStarAndFork(
                         else onClickUnStar(repoDetail)
                     }
                 )
-                .semantics { drawableID = if (repoDetail.isStarred == true) R.drawable.img_star else R.drawable.img_unstar },
+                .semantics {
+                    drawableID =
+                        if (repoDetail.isStarred == true) R.drawable.img_star else R.drawable.img_unstar
+                },
             painter = painterResource(id = if (repoDetail.isStarred == true) R.drawable.img_star else R.drawable.img_unstar),
             contentDescription = null
         )
@@ -150,4 +156,55 @@ fun DetailContentStarAndFork(
             text = repoDetail.forksCount.toString()
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DetailContentPreview() {
+    val repository = RepoDetailEntity(
+        id = 1,
+        name = "test1",
+        owner = OwnerEntity(
+            login = "test1",
+            avatarUrl = "test1"
+        ),
+        stargazersCount = 10,
+        forksCount = 10,
+        isStarred = false
+    )
+
+    DetailContent(
+        isLoading = false,
+        errorMessage = "",
+        repoDetail = repository,
+        onClickStar = {},
+        onClickUnStar = {},
+        onDismissRequest = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DetailContentLoadingPreview() {
+    DetailContent(
+        isLoading = true,
+        errorMessage = "",
+        repoDetail = RepoDetailEntity(),
+        onClickStar = {},
+        onClickUnStar = {},
+        onDismissRequest = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DetailContentErrorPreview() {
+    DetailContent(
+        isLoading = false,
+        errorMessage = INVALID_REPOSITORY,
+        repoDetail = RepoDetailEntity(),
+        onClickStar = {},
+        onClickUnStar = {},
+        onDismissRequest = {}
+    )
 }
