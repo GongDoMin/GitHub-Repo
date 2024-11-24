@@ -8,7 +8,7 @@ sealed interface Action {
         data class OnClickRepository(val repoEntity: RepoEntity) : Action
         data class OnClickUnStar(val repoEntity: RepoEntity) : Action
         data class OnClickStar(val repoEntity: RepoEntity) : Action
-        data class OnClickRetry(val repoEntity: RepoEntity) : Action
+        data object OnClickRetry : Action
         data object LogoutDialogDismiss : Action
         data object DialogDismiss : Action
     }
