@@ -14,7 +14,7 @@ import com.prac.githubrepo.R
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.REPO_NAME
 import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.USER_NAME
-import com.prac.githubrepo.ui.home.main.detail.DetailScreen
+import com.prac.githubrepo.ui.home.main.detail.view.DetailScreen
 import com.prac.githubrepo.ui.home.main.detail.DetailViewModel
 import com.prac.githubrepo.util.BackOffWorkManager
 import com.prac.githubrepo.util.hasDrawable

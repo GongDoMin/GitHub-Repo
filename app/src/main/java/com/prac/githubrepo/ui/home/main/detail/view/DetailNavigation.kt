@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.home.main.detail
+package com.prac.githubrepo.ui.home.main.detail.view
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
