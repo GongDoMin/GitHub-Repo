@@ -18,7 +18,7 @@ annotation class MainReducerAnnotation
 @InstallIn(SingletonComponent::class)
 class MainReducerProcessorModule {
     @Provides
-    @ProfileReducerAnnotation
+    @MainReducerAnnotation
     fun providesMainReducerProcessor(): Reducer<Mutation, UiState> {
         return MainReducerProcessor()
     }
