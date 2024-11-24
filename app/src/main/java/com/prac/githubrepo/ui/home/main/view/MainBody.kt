@@ -16,9 +16,8 @@ fun MainContentBody(
     repositories: List<RepoEntity>,
     itemCount: Int,
     itemKey: ((Int) -> Any)?,
-    loadState: CombinedLoadStates,
+    loadState: LoadState,
     retry: () -> Unit,
-    handleLoadState: (CombinedLoadStates) -> LoadState?,
     starStateRequest: (RepoEntity) -> Unit,
     onClickStar: (RepoEntity) -> Unit,
     onClickUnStar: (RepoEntity) -> Unit,
@@ -50,7 +49,7 @@ fun MainContentBody(
 
         item {
             LoadStateFooter(
-                loadState = handleLoadState(loadState),
+                loadState = loadState,
                 onRetryClick = retry
             )
         }

@@ -12,17 +12,25 @@ import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
+import com.prac.githubrepo.common.Reducer
+import com.prac.githubrepo.common.eventModel
+import com.prac.githubrepo.common.stateModel
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.constants.UNKNOWN
 import com.prac.githubrepo.di.IODispatcher
+import com.prac.githubrepo.di.MainReducerAnnotation
+import com.prac.githubrepo.ui.home.main.model.Action
+import com.prac.githubrepo.ui.home.main.model.Event
+import com.prac.githubrepo.ui.home.main.model.Mutation
+import com.prac.githubrepo.ui.home.main.view.UiState
 import com.prac.githubrepo.util.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -33,37 +41,67 @@ class MainViewModel @Inject constructor(
     private val repoRepository: RepoRepository,
     private val tokenRepository: TokenRepository,
     private val backOffWorkManager: BackOffWorkManager,
+    @MainReducerAnnotation private val mainReducerProcessor: Reducer<Mutation, UiState>,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    data class UiState(
-        val repositories : Flow<PagingData<RepoEntity>> = flow { emit(PagingData.empty()) },
-        val dialogMessage: String = ""
+    private val stateModel by stateModel(
+        reducerProcessor = mainReducerProcessor,
+        initialState = UiState()
     )
 
-    private val _uiState = MutableStateFlow(UiState())
-    val uiState = _uiState.asStateFlow()
+    private val eventModel by eventModel<Event>()
+
+    internal val uiStateFlow: StateFlow<UiState> = stateModel.uiState
+    internal val eventFlow: SharedFlow<Event> = eventModel.event
+
+    private val _repositories = MutableStateFlow<PagingData<RepoEntity>>(PagingData.empty())
+    val repositories = _repositories.asStateFlow()
 
     private val _starRequestJobManager: SparseArray<Unit> = SparseArray()
 
-    private fun getRepositories() {
-        viewModelScope.launch {
-            _uiState.update { UiState(repositories = repoRepository.getRepositories().cachedIn(viewModelScope)) }
+    fun process(action: Action) {
+        when (action) {
+            is Action.InternalAction.Load -> load()
+            is Action.InternalAction.FetchStarState -> fetchStarState(action.repoEntity)
+            is Action.InternalAction.UpdateRepositories -> updateRepositories(action.repositories, action.loadState)
+            is Action.UserAction.OnClickRepository -> onClickRepository(action.repoEntity)
+            is Action.UserAction.OnClickUnStar -> onClickUnStar(action.repoEntity)
+            is Action.UserAction.OnClickStar -> onClickStar(action.repoEntity)
+            is Action.UserAction.OnClickRetry -> onClickRetry()
+            is Action.UserAction.DialogDismiss -> dialogDismiss()
+            is Action.UserAction.LogoutDialogDismiss -> logoutDialogDismiss()
         }
     }
 
-    fun fetchStarState(repoEntity: RepoEntity) {
-        if (_starRequestJobManager[repoEntity.id] == null) {
-            _starRequestJobManager.put(repoEntity.id, Unit)
-
-            viewModelScope.launch(ioDispatcher) {
-                repoRepository.isStarred(repoEntity.id, repoEntity.name)
-
-                _starRequestJobManager.remove(repoEntity.id)
+    private fun load() {
+        viewModelScope.launch {
+            repoRepository.getRepositories().cachedIn(viewModelScope).collect { pagingData ->
+                _repositories.update { pagingData }
             }
         }
     }
 
-    fun starRepository(repoEntity: RepoEntity) {
+    private fun fetchStarState(repoEntity: RepoEntity) {
+        _starRequestJobManager.put(repoEntity.id, Unit)
+
+        viewModelScope.launch(ioDispatcher) {
+            repoRepository.isStarred(repoEntity.id, repoEntity.name)
+
+            _starRequestJobManager.remove(repoEntity.id)
+        }
+    }
+
+    private fun updateRepositories(repositories: List<RepoEntity>, loadState: LoadState) {
+        viewModelScope.launch(ioDispatcher) {
+            Mutation.UpdateRepositories(repositories, loadState).handleMutation()
+        }
+    }
+
+    private fun onClickRepository(repoEntity: RepoEntity) {
+        Event.OpenRepositoryDetail(repoEntity.owner.login, repoEntity.name).handleEvent()
+    }
+
+    private fun onClickUnStar(repoEntity: RepoEntity) {
         viewModelScope.launch(ioDispatcher) {
             repoRepository.starLocalRepository(repoEntity.id, repoEntity.stargazersCount + 1)
 
@@ -74,7 +112,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun unStarRepository(repoEntity: RepoEntity) {
+    private fun onClickStar(repoEntity: RepoEntity) {
         viewModelScope.launch(ioDispatcher) {
             repoRepository.unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount - 1)
 
@@ -85,41 +123,16 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun handleLoadStates(combinedLoadStates: CombinedLoadStates) : LoadState? {
-        if (combinedLoadStates.refresh is LoadState.Error) {
-            if ((combinedLoadStates.refresh as LoadState.Error).error !is IOException) {
-                viewModelScope.launch(ioDispatcher) {
-                    logout()
-                }
-                return null
-            }
-            return combinedLoadStates.refresh
-        }
-
-        if (combinedLoadStates.refresh is LoadState.Loading) {
-            return combinedLoadStates.refresh
-        }
-
-        if (combinedLoadStates.append is LoadState.Error) {
-            if ((combinedLoadStates.append as LoadState.Error).error !is IOException) {
-                viewModelScope.launch(ioDispatcher) {
-                    logout()
-                }
-                return null
-            }
-            return combinedLoadStates.append
-        }
-
-        return combinedLoadStates.append
+    private fun onClickRetry() {
+        Event.Reload.handleEvent()
     }
 
-    private suspend fun logout() {
-        tokenRepository.clearToken()
-        backOffWorkManager.clearWork()
+    private fun dialogDismiss() {
+        Mutation.ShowRepositories.handleMutation()
+    }
 
-        _uiState.update {
-            it.copy(dialogMessage = INVALID_TOKEN)
-        }
+    private fun logoutDialogDismiss() {
+        Event.Logout.handleEvent()
     }
 
     private suspend fun handleStarRepositoryFailure(t: Throwable, repoEntity: RepoEntity) {
@@ -131,17 +144,17 @@ class MainViewModel @Inject constructor(
                 )
             }
             is CommonException.AuthorizationError -> {
-                logout()
+                Event.Logout.handleEvent()
             }
             is RepositoryException.NotFoundRepository -> {
                 repoRepository.unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
 
-                _uiState.update { it.copy(dialogMessage = INVALID_REPOSITORY) }
+                Mutation.ShowError(INVALID_REPOSITORY).handleMutation()
             }
             else -> {
                 repoRepository.unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
 
-                _uiState.update { it.copy(dialogMessage = UNKNOWN) }
+                Mutation.ShowError(UNKNOWN).handleMutation()
             }
         }
     }
@@ -155,22 +168,59 @@ class MainViewModel @Inject constructor(
                 )
             }
             is CommonException.AuthorizationError -> {
-                logout()
+                Event.Logout.handleEvent()
             }
             is RepositoryException.NotFoundRepository -> {
                 repoRepository.starLocalRepository(repoEntity.id, repoEntity.stargazersCount)
 
-                _uiState.update { it.copy(dialogMessage = INVALID_REPOSITORY) }
+                Mutation.ShowError(INVALID_REPOSITORY).handleMutation()
             }
             else -> {
                 repoRepository.starLocalRepository(repoEntity.id, repoEntity.stargazersCount)
 
-                _uiState.update { it.copy(dialogMessage = UNKNOWN) }
+                Mutation.ShowError(UNKNOWN).handleMutation()
             }
         }
     }
 
+    private fun Mutation.handleMutation() = stateModel.process(this)
+
+    private fun Event.handleEvent() = eventModel.process(this)
+
+    fun handleLoadStates(combinedLoadStates: CombinedLoadStates) : LoadState {
+        if (combinedLoadStates.refresh is LoadState.Error) {
+            if ((combinedLoadStates.refresh as LoadState.Error).error !is IOException) {
+                Event.Logout.handleEvent()
+                return combinedLoadStates.refresh
+            }
+            return combinedLoadStates.refresh
+        }
+
+        if (combinedLoadStates.refresh is LoadState.Loading) {
+            return combinedLoadStates.refresh
+        }
+
+        if (combinedLoadStates.append is LoadState.Error) {
+            if ((combinedLoadStates.append as LoadState.Error).error !is IOException) {
+                Event.Logout.handleEvent()
+                return combinedLoadStates.append
+            }
+            return combinedLoadStates.append
+        }
+
+        return combinedLoadStates.append
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            tokenRepository.clearToken()
+            backOffWorkManager.clearWork()
+
+            Mutation.ShowError(INVALID_TOKEN).handleMutation()
+        }
+    }
+
     init {
-        getRepositories()
+        process(Action.InternalAction.Load)
     }
 }
