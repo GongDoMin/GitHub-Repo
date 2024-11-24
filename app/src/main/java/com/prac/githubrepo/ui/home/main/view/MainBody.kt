@@ -6,10 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
-import androidx.paging.CombinedLoadStates
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.LoadState
+import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.githubrepo.R
+import java.io.IOException
 
 @Composable
 fun MainContentBody(
@@ -54,4 +56,66 @@ fun MainContentBody(
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MainContentBodyPreview() {
+    val repositories = listOf(
+        RepoEntity(
+            id = 0,
+            name = "test",
+            owner = OwnerEntity(
+                login = "test",
+                avatarUrl = ""
+            ),
+            stargazersCount = 0,
+            defaultBranch = "test",
+            updatedAt = "test",
+            isStarred = false,
+        )
+    )
+
+    MainContentBody(
+        repositories = repositories,
+        itemCount = repositories.size,
+        itemKey = { repositories[it].id },
+        loadState = LoadState.NotLoading(true),
+        retry = {},
+        starStateRequest = {},
+        onClickStar = {},
+        onClickUnStar = {},
+        onClickRepository = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MainContentBodyLoadStatePreview() {
+    val repositories = listOf(
+        RepoEntity(
+            id = 0,
+            name = "test",
+            owner = OwnerEntity(
+                login = "test",
+                avatarUrl = ""
+            ),
+            stargazersCount = 0,
+            defaultBranch = "test",
+            updatedAt = "test",
+            isStarred = false,
+        )
+    )
+
+    MainContentBody(
+        repositories = repositories,
+        itemCount = repositories.size,
+        itemKey = { repositories[it].id },
+        loadState = LoadState.Error(IOException()),
+        retry = {},
+        starStateRequest = {},
+        onClickStar = {},
+        onClickUnStar = {},
+        onClickRepository = {},
+    )
 }
