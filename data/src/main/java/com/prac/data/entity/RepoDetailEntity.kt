@@ -1,10 +1,10 @@
 package com.prac.data.entity
 
 data class RepoDetailEntity(
-    val id: Int,
-    val name: String,
-    val owner: OwnerEntity,
-    val stargazersCount: Int,
-    val forksCount: Int,
-    var isStarred: Boolean?
+    val id: Int = 0,
+    val name: String = "",
+    val owner: OwnerEntity = OwnerEntity(),
+    val stargazersCount: Int = 0,
+    val forksCount: Int = 0,
+    var isStarred: Boolean? = null
 )
