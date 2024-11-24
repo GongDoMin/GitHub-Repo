@@ -22,7 +22,10 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
+import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.githubrepo.R
 import com.prac.githubrepo.components.UserProfile
@@ -237,4 +240,31 @@ fun LoadErrorFooter(
             Text(text = stringResource(id = R.string.retry))
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MainItemPreview() {
+    val repository =
+        RepoEntity(
+            id = 0,
+            name = "test",
+            owner = OwnerEntity(
+                login = "test",
+                avatarUrl = ""
+            ),
+            stargazersCount = 0,
+            defaultBranch = "test",
+            updatedAt = "test",
+            isStarred = false,
+        )
+
+    MainItem(
+        repository = repository,
+        onClickStar = {},
+        onClickUnStar = {},
+        onClickRepository = {},
+        modifier = Modifier
+            .padding(bottom = 8.dp)
+    )
 }
