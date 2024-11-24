@@ -11,6 +11,7 @@ class DetailReducerProcessor : Reducer<Mutation, UiState> {
             is Mutation.ShowRepository -> currentState.showRepository(mutation.repository)
             is Mutation.ShowLoading -> currentState.showLoading()
             is Mutation.ShowError -> currentState.showError(mutation.errorMessage)
+            is Mutation.DismissError -> currentState.dismissError()
         }
 
     private fun UiState.showRepository(repository: RepoDetailEntity) =
@@ -33,5 +34,11 @@ class DetailReducerProcessor : Reducer<Mutation, UiState> {
             isLoading = false,
             isError = true,
             errorMessage = errorMessage
+        )
+
+    private fun UiState.dismissError() =
+        copy(
+            isError = false,
+            errorMessage = ""
         )
 }
