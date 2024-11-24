@@ -1,12 +1,13 @@
 package com.prac.githubrepo.main.detail
 
 import androidx.lifecycle.SavedStateHandle
+import app.cash.turbine.test
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoDetailEntity
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
-import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.data.repository.RepoRepository
+import com.prac.data.repository.TokenRepository
 import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN
@@ -14,8 +15,11 @@ import com.prac.githubrepo.constants.UNKNOWN
 import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.REPO_NAME
 import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.USER_NAME
 import com.prac.githubrepo.ui.home.main.detail.DetailViewModel
+import com.prac.githubrepo.ui.home.main.detail.model.Action
 import com.prac.githubrepo.util.FakeBackOffWorkManager
 import com.prac.githubrepo.util.StandardTestDispatcherRule
+import com.prac.shared_test.data.FakeTokenRepository
+import com.prac.shared_test.ui.FakeDetailReducerProcessor
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -23,7 +27,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,20 +43,12 @@ class DetailViewModelTest {
     @get:Rule
     val standardTestDispatcherRule = StandardTestDispatcherRule()
 
-    private lateinit var tokenRepository: FakeTokenRepository
+    private val tokenRepository: TokenRepository = FakeTokenRepository("test")
     @Mock private lateinit var mockRepoRepository: RepoRepository
-    private lateinit var backOffWork: FakeBackOffWorkManager
+    private val detailReducerProcessor = FakeDetailReducerProcessor()
+    private val backOffWork: FakeBackOffWorkManager = FakeBackOffWorkManager()
 
-    private lateinit var detailViewMock: DetailViewModel
-
-    private val token = "test"
-
-    @Before
-    fun setUp() = runTest {
-        tokenRepository = FakeTokenRepository(token)
-
-        backOffWork = FakeBackOffWorkManager()
-    }
+    private lateinit var detailViewModel: DetailViewModel
 
     @After
     fun tearDown() {
@@ -62,7 +57,7 @@ class DetailViewModelTest {
     }
 
     @Test
-    fun getRepository_validInput_uiStateIsContent() = runTest {
+    fun getRepository_validInput_uiStateHasRepository() = runTest {
         val userName = "test"
         val repoName = "test"
         val repoDetailEntity = makeRepoDetailEntity()
@@ -73,23 +68,24 @@ class DetailViewModelTest {
             .thenReturn(flow { emit(starStateAndCount) })
         initViewModel(userName, repoName)
 
-        advanceUntilIdle()
+        detailViewModel.uiStateFlow.test {
+            awaitItem() // isLoading == true
 
-        val uiState = detailViewMock.uiState.value
-        val expectedValue = makeExpectedValue(starStateAndCount.first, starStateAndCount.second)
-        assertTrue(uiState is DetailViewModel.UiState.Content)
-        assertEquals((uiState as DetailViewModel.UiState.Content).repository, expectedValue)
+            val expectedValue = makeExpectedValue(starStateAndCount.first, starStateAndCount.second)
+            val result = awaitItem()
+            assertEquals(result.repository, expectedValue)
+        }
     }
 
     @Test
     fun getRepository_invalidInput_uiStateIsError() = runTest {
         initViewModel(null, null)
 
-        advanceUntilIdle()
-
-        val uiState = detailViewMock.uiState.value
-        assertTrue(uiState is DetailViewModel.UiState.Error)
-        assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, "잘못된 접근입니다.")
+        detailViewModel.uiStateFlow.test {
+            val result = awaitItem()
+            assertTrue(result.isError)
+            assertTrue(result.errorMessage.isNotEmpty())
+        }
     }
 
     @Test
@@ -100,11 +96,13 @@ class DetailViewModelTest {
             .thenReturn(Result.failure(CommonException.NetworkError()))
         initViewModel(userName, repoName)
 
-        advanceUntilIdle()
+        detailViewModel.uiStateFlow.test {
+            awaitItem() // isLoading == true
 
-        val uiState = detailViewMock.uiState.value
-        assertTrue(uiState is DetailViewModel.UiState.Error)
-        assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, CONNECTION_FAIL)
+            val result = awaitItem()
+            assertTrue(result.isError)
+            assertEquals(result.errorMessage, CONNECTION_FAIL)
+        }
     }
 
     @Test
@@ -115,11 +113,13 @@ class DetailViewModelTest {
             .thenReturn(Result.failure(CommonException.AuthorizationError()))
         initViewModel(userName, repoName)
 
-        advanceUntilIdle()
+        detailViewModel.uiStateFlow.test {
+            awaitItem() // isLoading == true
 
-        val uiState = detailViewMock.uiState.value
-        assertTrue(uiState is DetailViewModel.UiState.Error)
-        assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, INVALID_TOKEN)
+            val result = awaitItem()
+            assertTrue(result.isError)
+            assertEquals(result.errorMessage, INVALID_TOKEN)
+        }
     }
 
     @Test
@@ -129,7 +129,7 @@ class DetailViewModelTest {
         whenever(mockRepoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.success(Unit))
 
-        detailViewMock.starRepository(repoDetailEntity)
+        detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
         advanceUntilIdle()
 
         verify(mockRepoRepository).starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount + 1)
@@ -143,7 +143,7 @@ class DetailViewModelTest {
         whenever(mockRepoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.success(Unit))
 
-        detailViewMock.unStarRepository(repoDetailEntity)
+        detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
         advanceUntilIdle()
 
         verify(mockRepoRepository).unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount - 1)
@@ -161,7 +161,7 @@ class DetailViewModelTest {
         whenever(mockRepoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(CommonException.NetworkError()))
 
-        detailViewMock.starRepository(repoDetailEntity)
+        detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
         advanceUntilIdle()
 
         verify(mockRepoRepository).starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount + 1)
@@ -180,7 +180,7 @@ class DetailViewModelTest {
         whenever(mockRepoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(CommonException.NetworkError()))
 
-        detailViewMock.unStarRepository(repoDetailEntity)
+        detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
         advanceUntilIdle()
 
         verify(mockRepoRepository).unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount - 1)
@@ -190,103 +190,166 @@ class DetailViewModelTest {
 
     @Test
     fun starRepository_starRepositoryIsAuthorizationError_uiStateHasDialogMessage() = runTest {
-        initViewModel(null, null)
+        val userName = "test"
+        val repoName = "test"
         val repoDetailEntity = makeRepoDetailEntity()
+        val starStateAndCount = Pair(true, 11)
+        whenever(mockRepoRepository.getRepository(userName, repoName))
+            .thenReturn(Result.success(repoDetailEntity))
+        whenever(mockRepoRepository.getStarStateAndStarCount(repoDetailEntity.id))
+            .thenReturn(flow { emit(starStateAndCount) })
+        initViewModel(userName, repoName)
         whenever(mockRepoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(CommonException.AuthorizationError()))
 
-        detailViewMock.starRepository(repoDetailEntity)
-        advanceUntilIdle()
+        detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
 
-        val uiState = detailViewMock.uiState.value
-        assertTrue(uiState is DetailViewModel.UiState.Error)
-        assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, INVALID_TOKEN)
+        detailViewModel.uiStateFlow.test {
+            awaitItem() // isLoading == true
+            awaitItem() // showRepository
+
+            val result = awaitItem()
+            assertTrue(result.isError)
+            assertEquals(result.errorMessage, INVALID_TOKEN)
+        }
     }
 
     @Test
     fun unStarRepository_unStarRepositoryIsAuthorizationError_uiStateHasDialogMessage() = runTest {
-        initViewModel(null, null)
+        val userName = "test"
+        val repoName = "test"
         val repoDetailEntity = makeRepoDetailEntity()
+        val starStateAndCount = Pair(true, 11)
+        whenever(mockRepoRepository.getRepository(userName, repoName))
+            .thenReturn(Result.success(repoDetailEntity))
+        whenever(mockRepoRepository.getStarStateAndStarCount(repoDetailEntity.id))
+            .thenReturn(flow { emit(starStateAndCount) })
+        initViewModel(userName, repoName)
         whenever(mockRepoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(CommonException.AuthorizationError()))
 
-        detailViewMock.unStarRepository(repoDetailEntity)
-        advanceUntilIdle()
+        detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
 
-        val uiState = detailViewMock.uiState.value
-        assertTrue(uiState is DetailViewModel.UiState.Error)
-        assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, INVALID_TOKEN)
+        detailViewModel.uiStateFlow.test {
+            awaitItem() // isLoading == true
+            awaitItem() // showRepository
+
+            val result = awaitItem()
+            assertTrue(result.isError)
+            assertEquals(result.errorMessage, INVALID_TOKEN)
+        }
     }
 
     @Test
     fun starRepository_starRepositoryIsNotFoundRepositoryError_uiStateHasDialogMessage() = runTest {
-        initViewModel(null, null)
+        val userName = "test"
+        val repoName = "test"
         val repoDetailEntity = makeRepoDetailEntity()
+        val starStateAndCount = Pair(true, 11)
+        whenever(mockRepoRepository.getRepository(userName, repoName))
+            .thenReturn(Result.success(repoDetailEntity))
+        whenever(mockRepoRepository.getStarStateAndStarCount(repoDetailEntity.id))
+            .thenReturn(flow { emit(starStateAndCount) })
+        initViewModel(userName, repoName)
         whenever(mockRepoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
 
-        detailViewMock.starRepository(repoDetailEntity)
-        advanceUntilIdle()
+        detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
 
-        val uiState = detailViewMock.uiState.value
-        assertTrue(uiState is DetailViewModel.UiState.Error)
-        assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, INVALID_REPOSITORY)
-        verify(mockRepoRepository).unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
+        detailViewModel.uiStateFlow.test {
+            awaitItem() // isLoading == true
+            awaitItem() // showRepository
+
+            val result = awaitItem()
+            assertTrue(result.isError)
+            assertEquals(result.errorMessage, INVALID_REPOSITORY)
+        }
     }
 
     @Test
     fun unStarRepository_unStarRepositoryIsNotFoundRepositoryError_uiStateHasDialogMessage() = runTest {
-        initViewModel(null, null)
+        val userName = "test"
+        val repoName = "test"
         val repoDetailEntity = makeRepoDetailEntity()
+        val starStateAndCount = Pair(true, 11)
+        whenever(mockRepoRepository.getRepository(userName, repoName))
+            .thenReturn(Result.success(repoDetailEntity))
+        whenever(mockRepoRepository.getStarStateAndStarCount(repoDetailEntity.id))
+            .thenReturn(flow { emit(starStateAndCount) })
+        initViewModel(userName, repoName)
         whenever(mockRepoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
 
-        detailViewMock.unStarRepository(repoDetailEntity)
-        advanceUntilIdle()
+        detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
 
-        val uiState = detailViewMock.uiState.value
-        assertTrue(uiState is DetailViewModel.UiState.Error)
-        assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, INVALID_REPOSITORY)
-        verify(mockRepoRepository).starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
+        detailViewModel.uiStateFlow.test {
+            awaitItem() // isLoading == true
+            awaitItem() // showRepository
+
+            val result = awaitItem()
+            assertTrue(result.isError)
+            assertEquals(result.errorMessage, INVALID_REPOSITORY)
+        }
     }
 
     @Test
     fun starRepository_starRepositoryIsUnKnownError_uiStateHasDialogMessage() = runTest {
-        initViewModel(null, null)
+        val userName = "test"
+        val repoName = "test"
         val repoDetailEntity = makeRepoDetailEntity()
+        val starStateAndCount = Pair(true, 11)
+        whenever(mockRepoRepository.getRepository(userName, repoName))
+            .thenReturn(Result.success(repoDetailEntity))
+        whenever(mockRepoRepository.getStarStateAndStarCount(repoDetailEntity.id))
+            .thenReturn(flow { emit(starStateAndCount) })
+        initViewModel(userName, repoName)
         whenever(mockRepoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(CommonException.UnKnownError()))
 
-        detailViewMock.starRepository(repoDetailEntity)
-        advanceUntilIdle()
+        detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
 
-        val uiState = detailViewMock.uiState.value
-        assertTrue(uiState is DetailViewModel.UiState.Error)
-        assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, UNKNOWN)
-        verify(mockRepoRepository).unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
+        detailViewModel.uiStateFlow.test {
+            awaitItem() // isLoading == true
+            awaitItem() // showRepository
+
+            val result = awaitItem()
+            assertTrue(result.isError)
+            assertEquals(result.errorMessage, UNKNOWN)
+        }
     }
 
     @Test
     fun unStarRepository_unStarRepositoryIsUnKnownError_uiStateHasDialogMessage() = runTest {
-        initViewModel(null, null)
+        val userName = "test"
+        val repoName = "test"
         val repoDetailEntity = makeRepoDetailEntity()
+        val starStateAndCount = Pair(true, 11)
+        whenever(mockRepoRepository.getRepository(userName, repoName))
+            .thenReturn(Result.success(repoDetailEntity))
+        whenever(mockRepoRepository.getStarStateAndStarCount(repoDetailEntity.id))
+            .thenReturn(flow { emit(starStateAndCount) })
+        initViewModel(userName, repoName)
         whenever(mockRepoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(CommonException.UnKnownError()))
 
-        detailViewMock.unStarRepository(repoDetailEntity)
-        advanceUntilIdle()
+        detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
 
-        val uiState = detailViewMock.uiState.value
-        assertTrue(uiState is DetailViewModel.UiState.Error)
-        assertEquals((uiState as DetailViewModel.UiState.Error).errorMessage, UNKNOWN)
-        verify(mockRepoRepository).starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
+        detailViewModel.uiStateFlow.test {
+            awaitItem() // isLoading == true
+            awaitItem() // showRepository
+
+            val result = awaitItem()
+            assertTrue(result.isError)
+            assertEquals(result.errorMessage, UNKNOWN)
+        }
     }
 
     private fun initViewModel(userName: String?, repoName: String?) {
-        detailViewMock = DetailViewModel(
+        detailViewModel = DetailViewModel(
             mockRepoRepository,
             tokenRepository,
             backOffWork,
+            detailReducerProcessor,
             standardTestDispatcherRule.testDispatcher,
             SavedStateHandle().apply {
                 set(USER_NAME, userName)

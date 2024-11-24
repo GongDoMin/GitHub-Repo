@@ -8,19 +8,26 @@ import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
+import com.prac.githubrepo.common.Reducer
+import com.prac.githubrepo.common.eventModel
+import com.prac.githubrepo.common.stateModel
 import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN
 import com.prac.githubrepo.constants.UNKNOWN
+import com.prac.githubrepo.di.DetailReducerAnnotation
 import com.prac.githubrepo.di.IODispatcher
 import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.REPO_NAME
 import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.USER_NAME
+import com.prac.githubrepo.ui.home.main.detail.model.Action
+import com.prac.githubrepo.ui.home.main.detail.model.Event
+import com.prac.githubrepo.ui.home.main.detail.model.Mutation
+import com.prac.githubrepo.ui.home.main.detail.view.UiState
 import com.prac.githubrepo.util.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,33 +36,38 @@ class DetailViewModel @Inject constructor(
     private val repoRepository: RepoRepository,
     private val tokenRepository: TokenRepository,
     private val backOffWorkManager: BackOffWorkManager,
+    @DetailReducerAnnotation detailReducerProcessor: Reducer<Mutation, UiState>,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
-    savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    sealed class UiState {
-        data object Idle : UiState()
+    private val stateModel by stateModel(
+        reducerProcessor = detailReducerProcessor,
+        initialState = UiState()
+    )
 
-        data object Loading : UiState()
+    private val eventModel by eventModel<Event>()
 
-        data class Content(
-            val repository : RepoDetailEntity
-        ) : UiState()
+    internal val uiStateFlow: StateFlow<UiState> = stateModel.uiState
+    internal val eventFlow: SharedFlow<Event> = eventModel.event
 
-        data class Error(
-            val errorMessage: String
-        ) : UiState()
+    fun process(action: Action) {
+        when (action) {
+            is Action.InternalAction.GetRepository -> getRepository()
+            is Action.UserAction.OnClickUnStar -> onClickUnStar(action.repoDetailEntity)
+            is Action.UserAction.OnClickStar -> onClickStar(action.repoDetailEntity)
+            is Action.UserAction.DialogDismiss -> dialogDismiss()
+            is Action.UserAction.LogoutDialogDismiss -> logoutDialogDismiss()
+        }
     }
 
-    private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
-    val uiState = _uiState.asStateFlow()
+    private fun getRepository() {
+        val userName = savedStateHandle.get<String>(USER_NAME)
+        val repoName = savedStateHandle.get<String>(REPO_NAME)
 
-    private fun getRepository(userName: String?, repoName: String?) {
-        if (_uiState.value != UiState.Idle) return
-
-        _uiState.update { UiState.Loading }
+        Mutation.ShowLoading.handleMutation()
 
         if (userName == null || repoName == null) {
-            _uiState.update { UiState.Error("잘못된 접근입니다.") }
+            Mutation.ShowError("잘못된 접근입니다.").handleMutation()
             return
         }
 
@@ -70,7 +82,7 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    fun starRepository(repoDetailEntity: RepoDetailEntity) {
+    private fun onClickUnStar(repoDetailEntity: RepoDetailEntity) {
         viewModelScope.launch(ioDispatcher) {
             repoRepository.starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount + 1)
 
@@ -81,7 +93,7 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    fun unStarRepository(repoDetailEntity: RepoDetailEntity) {
+    private fun onClickStar(repoDetailEntity: RepoDetailEntity) {
         viewModelScope.launch(ioDispatcher) {
             repoRepository.unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount - 1)
 
@@ -92,13 +104,12 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun logout() {
-        tokenRepository.clearToken()
-        backOffWorkManager.clearWork()
+    private fun dialogDismiss() {
+        Mutation.DismissError.handleMutation()
+    }
 
-        _uiState.update {
-            UiState.Error(errorMessage = INVALID_TOKEN)
-        }
+    private fun logoutDialogDismiss() {
+        Event.Logout.handleEvent()
     }
 
     private suspend fun handleGetRepositorySuccess(repoDetailEntity: RepoDetailEntity) {
@@ -108,40 +119,38 @@ class DetailViewModel @Inject constructor(
 
             // Room 에서 repoDetailEntity.id 값이 없을 경우에 null 을 반환한다.
             if (stargazersCount == null) {
-                _uiState.update { UiState.Error(errorMessage = INVALID_REPOSITORY) }
+                Mutation.ShowError(INVALID_REPOSITORY).handleMutation()
                 return@collect
             }
 
             // List 화면에서 Star Check 가 완료되기 전에 사용자가 Detail 화면으로 넘어온 경우 null 을 반환한다.
             if (isStarred == null) {
                 repoRepository.isStarred(repoDetailEntity.id, repoDetailEntity.name)
-                return@collect
             }
 
-            _uiState.update {
-                UiState.Content(
-                    repoDetailEntity.copy(
+            Mutation.ShowRepository(
+                repository = repoDetailEntity
+                    .copy(
                         isStarred = isStarred,
                         stargazersCount = stargazersCount
                     )
-                )
-            }
+            ).handleMutation()
         }
     }
 
-    private suspend fun handleGetRepositoryFailure(t: Throwable) {
+    private fun handleGetRepositoryFailure(t: Throwable) {
         when (t) {
             is CommonException.NetworkError -> {
-                _uiState.update { UiState.Error(errorMessage = CONNECTION_FAIL) }
+                Mutation.ShowError(CONNECTION_FAIL).handleMutation()
             }
             is CommonException.AuthorizationError -> {
-                logout()
+                Mutation.ShowError(INVALID_TOKEN).handleMutation()
             }
             is RepositoryException.NotFoundRepository -> {
-                _uiState.update { UiState.Error(errorMessage = INVALID_REPOSITORY) }
+                Mutation.ShowError(INVALID_REPOSITORY).handleMutation()
             }
             else -> {
-                _uiState.update { UiState.Error(errorMessage = UNKNOWN) }
+                Mutation.ShowError(UNKNOWN).handleMutation()
             }
         }
     }
@@ -155,17 +164,17 @@ class DetailViewModel @Inject constructor(
                 )
             }
             is CommonException.AuthorizationError -> {
-                logout()
+                Mutation.ShowError(INVALID_TOKEN).handleMutation()
             }
             is RepositoryException.NotFoundRepository -> {
                 repoRepository.unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
 
-                _uiState.update { UiState.Error(errorMessage = INVALID_REPOSITORY) }
+                Mutation.ShowError(errorMessage = INVALID_REPOSITORY).handleMutation()
             }
             else -> {
                 repoRepository.unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
 
-                _uiState.update { UiState.Error(errorMessage = UNKNOWN) }
+                Mutation.ShowError(errorMessage = UNKNOWN).handleMutation()
             }
         }
     }
@@ -179,25 +188,33 @@ class DetailViewModel @Inject constructor(
                 )
             }
             is CommonException.AuthorizationError -> {
-                logout()
+                Mutation.ShowError(INVALID_TOKEN).handleMutation()
             }
             is RepositoryException.NotFoundRepository -> {
                 repoRepository.starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
 
-                _uiState.update { UiState.Error(errorMessage = INVALID_REPOSITORY) }
+                Mutation.ShowError(errorMessage = INVALID_REPOSITORY).handleMutation()
             }
             else -> {
                 repoRepository.starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
 
-                _uiState.update { UiState.Error(errorMessage = UNKNOWN) }
+                Mutation.ShowError(errorMessage = UNKNOWN).handleMutation()
             }
         }
     }
 
+    private fun Mutation.handleMutation() = stateModel.process(this)
+
+    private fun Event.handleEvent() = eventModel.process(this)
+
+    fun logout() {
+        viewModelScope.launch {
+            tokenRepository.clearToken()
+            backOffWorkManager.clearWork()
+        }
+    }
+
     init {
-        getRepository(
-            userName = savedStateHandle.get<String>(USER_NAME),
-            repoName = savedStateHandle.get<String>(REPO_NAME)
-        )
+        process(Action.InternalAction.GetRepository)
     }
 }
