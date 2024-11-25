@@ -20,9 +20,8 @@ fun LoadingContent(
     isLoading: Boolean,
     content: @Composable () -> Unit
 ) {
-    content()
-
     if (isLoading) Loading()
+    else content()
 }
 
 @Composable
