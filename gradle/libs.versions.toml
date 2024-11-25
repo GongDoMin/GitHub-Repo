@@ -1,4 +1,6 @@
 [versions]
+androidGradlePlugin = "8.1.1"
+ksp = "1.9.10-1.0.13"
 agp = "8.4.0"
 compose = "1.0.0-beta01"
 hamcrest = "2.2"
@@ -47,8 +49,12 @@ protobuf = "0.9.1"
 hilt = "2.51.1"
 junitKtx = "1.2.1"
 uiTestJunit4Android = "1.7.4"
+jetbrainsKotlinJvm = "2.0.0"
 
 [libraries]
+android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-espresso-contrib = { module = "androidx.test.espresso:espresso-contrib", version.ref = "espressoCore" }
 androidx-espresso-intents = { module = "androidx.test.espresso:espresso-intents", version.ref = "espressoCore" }
@@ -116,3 +122,4 @@ dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "plugin-serialization" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobuf" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
