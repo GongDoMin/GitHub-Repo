@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.util.Consumer
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.prac.githubrepo.BuildConfig
@@ -25,6 +26,7 @@ fun LoginScreen(
 ) {
     val uiState by viewModel.uiStateFlow.collectAsStateWithLifecycle()
     val activity = LocalContext.current as ComponentActivity
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     LoginContent(
         isLoading = uiState.isLoading,
@@ -34,8 +36,8 @@ fun LoginScreen(
         onDismissRequest = { viewModel.process(Action.UserAction.DialogDismiss) }
     )
 
-    LaunchedEffect(activity) {
-        activity.repeatOnLifecycle(Lifecycle.State.STARTED) {
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.eventFlow.collect {
                 when (it) {
                     is Event.SuccessLogin -> onNavigateToMain()
