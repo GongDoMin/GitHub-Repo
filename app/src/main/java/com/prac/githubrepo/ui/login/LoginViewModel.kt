@@ -88,4 +88,8 @@ class LoginViewModel @Inject constructor(
     private fun Mutation.handleMutation() = stateModel.process(this)
 
     private fun Event.handleEvent() = eventModel.process(this)
+
+    init {
+        process(Action.InternalAction.CheckAutoLogin)
+    }
 }

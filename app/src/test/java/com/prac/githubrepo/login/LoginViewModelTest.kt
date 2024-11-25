@@ -33,8 +33,6 @@ class LoginViewModelTest {
         loginViewModel = LoginViewModel(tokenRepository, loginActionProcessor, standardTestDispatcherRule.testDispatcher)
 
         loginViewModel.eventFlow.test {
-            loginViewModel.process(Action.InternalAction.CheckAutoLogin)
-
             val result = awaitItem()
             assertTrue(result is Event.SuccessLogin)
         }
@@ -46,8 +44,6 @@ class LoginViewModelTest {
         loginViewModel = LoginViewModel(tokenRepository, loginActionProcessor, standardTestDispatcherRule.testDispatcher)
 
         loginViewModel.eventFlow.test {
-            loginViewModel.process(Action.InternalAction.CheckAutoLogin)
-
             expectNoEvents()
         }
     }

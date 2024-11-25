@@ -49,10 +49,6 @@ fun LoginScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.process(Action.InternalAction.CheckAutoLogin)
-    }
-
     DisposableEffect(activity) {
         val listener = Consumer<Intent> {
             it.let { intent ->
