@@ -18,6 +18,7 @@ import com.prac.githubrepo.ui.home.main.detail.view.DetailScreen
 import com.prac.githubrepo.ui.home.main.detail.DetailViewModel
 import com.prac.githubrepo.util.BackOffWorkManager
 import com.prac.githubrepo.util.hasDrawable
+import com.prac.shared_test.ui.FakeDetailReducerProcessor
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +41,8 @@ class DetailScreenTest {
     private val activity get() = composeTestRule.activity
 
     private lateinit var viewModel: DetailViewModel
+
+    private val detailReducerProcessor = FakeDetailReducerProcessor()
 
     private var isMainScreen = false
 
@@ -67,6 +70,7 @@ class DetailScreenTest {
             repoRepository = repoRepository,
             tokenRepository = tokenRepository,
             backOffWorkManager = FakeBackOffWorkManager(),
+            detailReducerProcessor = detailReducerProcessor,
             ioDispatcher = Dispatchers.IO,
             savedStateHandle = SavedStateHandle().apply {
                 set(USER_NAME, "login -1")
@@ -86,9 +90,9 @@ class DetailScreenTest {
 
         composeTestRule.onNodeWithText(activity.getString(R.string.check)).performClick()
 
-        composeTestRule.awaitIdle()
-
-        assertTrue(isMainScreen)
+        composeTestRule.waitUntil {
+            isMainScreen
+        }
     }
 
     @Test
@@ -97,6 +101,7 @@ class DetailScreenTest {
             repoRepository = repoRepository,
             tokenRepository = tokenRepository,
             backOffWorkManager = FakeBackOffWorkManager(),
+            detailReducerProcessor = detailReducerProcessor,
             ioDispatcher = Dispatchers.IO,
             savedStateHandle = SavedStateHandle().apply {
                 set(USER_NAME, "login 0")
@@ -128,6 +133,7 @@ class DetailScreenTest {
             repoRepository = repoRepository,
             tokenRepository = tokenRepository,
             backOffWorkManager = FakeBackOffWorkManager(),
+            detailReducerProcessor = detailReducerProcessor,
             ioDispatcher = Dispatchers.IO,
             savedStateHandle = SavedStateHandle().apply {
                 set(USER_NAME, "login 1")

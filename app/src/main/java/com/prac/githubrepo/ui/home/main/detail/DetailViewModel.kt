@@ -105,7 +105,7 @@ class DetailViewModel @Inject constructor(
     }
 
     private fun dialogDismiss() {
-        Mutation.DismissError.handleMutation()
+        Event.Error.handleEvent()
     }
 
     private fun logoutDialogDismiss() {
