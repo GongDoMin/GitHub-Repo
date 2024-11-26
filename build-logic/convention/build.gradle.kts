@@ -30,6 +30,11 @@ gradlePlugin {
             implementationClass = "AndroidLibraryConventionPlugin"
         }
 
+        register("AndroidLibraryComposePlugin") {
+            id = "githubrepo.android.library.compose"
+            implementationClass = "AndroidLibraryComposeConventionPlugin"
+        }
+
         register("AndroidHiltPlugin") {
             id = "githubrepo.android.hilt"
             implementationClass = "AndroidHiltConventionPlugin"
