@@ -93,8 +93,6 @@ dependencies {
     implementation(libs.jetbrains.kotlinx.coroutines)
     implementation(libs.jetbrains.kotlinx.coroutines.test)
 
-    implementation(libs.glide)
-
     implementation(libs.dagger.hilt.android)
     androidTestImplementation(libs.hilt.android.testing)
     testImplementation(libs.hilt.android.testing)
@@ -107,9 +105,8 @@ dependencies {
 
     implementation(libs.androidx.paging)
 
-    val composeBom = platform("androidx.compose:compose-bom:2024.09.02")
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
+    implementation(platform(libs.compose.bom))
+    androidTestImplementation(platform(libs.compose.bom))
 
     implementation(libs.androidx.runtime)
     implementation(libs.androidx.ui)
@@ -121,7 +118,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.paging.compose)
-    implementation(libs.compose)
+    implementation(libs.compose.glide)
 
     implementation(libs.jetbrains.kotlinx.serialization)
 }
