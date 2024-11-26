@@ -66,11 +66,11 @@ android {
 }
 
 dependencies {
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.ui.test.junit4.android)
     implementation(libs.androidx.navigation.testing)
     testImplementation(libs.junit)
@@ -122,7 +122,6 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.paging.compose)
     implementation(libs.compose)
-    implementation(libs.compose.constraintLayout)
 
     implementation(libs.jetbrains.kotlinx.serialization)
 }
