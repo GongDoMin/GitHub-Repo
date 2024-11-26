@@ -135,9 +135,8 @@ protobuf = { id = "com.google.protobuf", version.ref = "protobuf" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 
+
 [bundles]
-datastore = ["androidx-datastore", "androidx-datastore-preferences"]
-network = ["okhttp", "retrofit", "logging-interceptor", "retrofit-serialization-converter"]
 coroutines = ["jetbrains-kotlinx-coroutines", "jetbrains-kotlinx-coroutines-test"]
 compose = ["androidx-foundation", "androidx-foundation", "androidx-runtime", "androidx-ui", "androidx-material3", "androidx-runtime-livedata", "androidx-hilt-navigation-compose", "androidx-navigation-compose"]
 compose-debug = ["androidx-ui-tooling"]
