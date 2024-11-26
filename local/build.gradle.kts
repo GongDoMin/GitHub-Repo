@@ -1,23 +1,15 @@
 import com.google.protobuf.gradle.id
 
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.jetbrains.kotlin.kapt)
-    alias(libs.plugins.dagger.hilt)
+    id("githubrepo.android.library")
+    id("githubrepo.android.room")
     alias(libs.plugins.protobuf)
 }
 
 android {
     namespace = "com.prac.local"
-    compileSdk = 34
 
     defaultConfig {
-        minSdk = 28
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments(
@@ -32,55 +24,19 @@ android {
     sourceSets {
         getByName("androidTest").assets.srcDirs(files("$projectDir/schemas"))
     }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }
 
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    testImplementation(libs.junit)
-    testImplementation(libs.androidx.junit)
+    testImplementation(project(":shared-test"))
+
     androidTestImplementation(libs.androidx.runner)
     androidTestImplementation(libs.androidx.rules)
     androidTestImplementation(libs.androidx.junit)
 
-    testImplementation(project(":shared-test"))
-
-    implementation(libs.jetbrains.kotlinx.coroutines)
-    implementation(libs.jetbrains.kotlinx.coroutines.test)
-
-    implementation(libs.dagger.hilt.android)
-    implementation(libs.hilt.android.testing)
-    kapt(libs.dagger.hilt.compiler)
-
     implementation(libs.androidx.datastore)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.protobuf)
-
-    implementation(libs.androidx.paging)
-
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    implementation(libs.androidx.room.paging)
-    kapt(libs.androidx.room.compiler)
-    androidTestImplementation(libs.androidx.room.testing)
 }
 
 protobuf {
