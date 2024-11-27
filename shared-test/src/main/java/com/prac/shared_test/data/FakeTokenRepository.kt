@@ -1,7 +1,7 @@
 package com.prac.shared_test.data
 
-import com.prac.exception.CommonException
 import com.prac.data.repository.TokenRepository
+import com.prac.exception.CommonException
 
 class FakeTokenRepository(
     private var token: String = ""
@@ -23,8 +23,8 @@ class FakeTokenRepository(
         }
 
         return when (code) {
-            "ioException" -> Result.failure(com.prac.exception.CommonException.NetworkError())
-            else -> Result.failure(com.prac.exception.CommonException.AuthorizationError())
+            "ioException" -> Result.failure(CommonException.NetworkError())
+            else -> Result.failure(CommonException.AuthorizationError())
         }
     }
 

@@ -12,6 +12,7 @@ dependencies {
     implementation(project(":app"))
     implementation(project(":core:common"))
     implementation(project(":core:data"))
+    implementation(project(":core:exception"))
     implementation(project(":core:local"))
     implementation(project(":core:network"))
 
