@@ -33,3 +33,4 @@ include(":core:exception")
 
 include(":feature:login")
 include(":feature:profile")
+include(":feature:main")
