@@ -13,7 +13,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:local"))
-    implementation(project(":network"))
+    implementation(project(":core:network"))
 
     implementation(libs.retrofit)
 }

@@ -33,7 +33,7 @@ android {
 dependencies {
 
     implementation(project(":core:local"))
-    implementation(project(":network"))
+    implementation(project(":core:network"))
     testImplementation(project(":shared-test"))
     androidTestImplementation(project(":shared-test"))
 
