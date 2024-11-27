@@ -29,5 +29,6 @@ include(":core:designsystem")
 include(":core:data")
 include(":core:local")
 include(":core:network")
+include(":core:exception")
 
 include(":feature:login")
