@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.prac.core.designsystem.component.BasicAlertDialog
 import com.prac.githubrepo.R
-import com.prac.githubrepo.components.BasicAlertDialog
 import com.prac.githubrepo.components.BounceButton
 import com.prac.githubrepo.components.LoadingContent
 
@@ -45,7 +45,9 @@ fun ProfileContent(
             BasicAlertDialog(
                 onDismissRequest = onDismissRequest,
                 onClickCheckButton = onClickCheckButton,
-                dialogMessage = dialogMessage
+                dialogMessage = dialogMessage,
+                cancelButtonText = stringResource(id = R.string.cancel),
+                confirmButtonText = stringResource(id = R.string.check)
             )
         }
     }

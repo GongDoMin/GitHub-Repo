@@ -4,13 +4,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.LoadState
+import com.prac.core.designsystem.component.ErrorAlertDialog
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
-import com.prac.githubrepo.components.ErrorAlertDialog
+import com.prac.githubrepo.R
 import com.prac.githubrepo.constants.INVALID_TOKEN
 import java.io.IOException
 
@@ -52,7 +53,8 @@ fun MainContent(
         if (isError) {
             ErrorAlertDialog(
                 onDismissRequest = onDismissRequest,
-                errorMessage = errorMessage
+                errorMessage = errorMessage,
+                confirmButtonText = stringResource(id = R.string.check)
             )
         }
     }

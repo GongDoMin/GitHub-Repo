@@ -49,6 +49,11 @@ android {
 
 dependencies {
 
+    implementation(project(":data"))
+    implementation(project(":core:designsystem"))
+    testImplementation(project(":shared-test"))
+    androidTestImplementation(project(":shared-test"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -66,10 +71,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.intents)
     androidTestImplementation(libs.androidx.espresso.contrib)
     androidTestImplementation(libs.hamcrest)
-
-    implementation(project(":data"))
-    testImplementation(project(":shared-test"))
-    androidTestImplementation(project(":shared-test"))
 
     kaptTest(libs.hilt.android.compiler)
     kaptAndroidTest(libs.hilt.android.compiler)

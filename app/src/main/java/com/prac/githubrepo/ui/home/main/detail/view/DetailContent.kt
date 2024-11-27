@@ -15,14 +15,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.prac.core.designsystem.component.ErrorAlertDialog
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoDetailEntity
 import com.prac.githubrepo.R
-import com.prac.githubrepo.components.ErrorAlertDialog
 import com.prac.githubrepo.components.LoadingContent
 import com.prac.githubrepo.components.UserProfile
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
@@ -72,7 +73,8 @@ fun DetailContent(
         if (isError) {
             ErrorAlertDialog(
                 onDismissRequest = onDismissRequest,
-                errorMessage = errorMessage
+                errorMessage = errorMessage,
+                confirmButtonText = stringResource(id = R.string.check)
             )
         }
     }
