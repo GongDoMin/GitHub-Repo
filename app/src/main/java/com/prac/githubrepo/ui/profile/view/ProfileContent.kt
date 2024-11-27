@@ -11,8 +11,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.prac.core.designsystem.component.BasicAlertDialog
 import com.prac.core.designsystem.component.BounceButton
+import com.prac.core.designsystem.component.LoadingContent
 import com.prac.githubrepo.R
-import com.prac.githubrepo.components.LoadingContent
 
 @Composable
 fun ProfileContent(

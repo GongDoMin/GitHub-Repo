@@ -21,10 +21,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.prac.core.designsystem.component.ErrorAlertDialog
+import com.prac.core.designsystem.component.LoadingContent
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoDetailEntity
 import com.prac.githubrepo.R
-import com.prac.githubrepo.components.LoadingContent
 import com.prac.githubrepo.components.UserProfile
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.util.drawableID
