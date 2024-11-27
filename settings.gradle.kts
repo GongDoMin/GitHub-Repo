@@ -22,10 +22,10 @@ dependencyResolutionManagement {
 
 rootProject.name = "Github Repo"
 include(":app")
-include(":data")
 include(":local")
 include(":network")
 include(":shared-test")
 
 include(":core:common")
 include(":core:designsystem")
+include(":core:data")
