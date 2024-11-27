@@ -16,7 +16,7 @@ import com.prac.core.navigation.NavigationActions
 import com.prac.core.navigation.Routes
 import com.prac.core.navigation.Routes.LOGIN
 import com.prac.githubrepo.ui.home.homeNavigation
-import com.prac.githubrepo.ui.login.loginScreen
+import com.prac.feature.login.navigation.loginScreen
 import com.prac.githubrepo.ui.profile.profileScreen
 import com.prac.githubrepo.components.GitHubBottomNavigation
 
