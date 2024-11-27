@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":local"))
+    implementation(project(":core:local"))
     testImplementation(project(":shared-test"))
 
     implementation(libs.okhttp)
