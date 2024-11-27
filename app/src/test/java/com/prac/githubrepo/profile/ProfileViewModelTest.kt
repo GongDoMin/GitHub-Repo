@@ -1,9 +1,9 @@
 package com.prac.githubrepo.profile
 
 import app.cash.turbine.test
+import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
-import com.prac.githubrepo.common.Reducer
 import com.prac.githubrepo.ui.profile.ProfileViewModel
 import com.prac.githubrepo.ui.profile.model.Action
 import com.prac.githubrepo.ui.profile.model.Event

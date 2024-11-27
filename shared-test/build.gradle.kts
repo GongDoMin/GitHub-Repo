@@ -10,6 +10,7 @@ android {
 dependencies {
 
     implementation(project(":app"))
+    implementation(project(":core:common"))
     implementation(project(":data"))
     implementation(project(":local"))
     implementation(project(":network"))

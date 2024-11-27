@@ -1,7 +1,7 @@
 package com.prac.shared_test.ui
 
+import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.data.entity.RepoDetailEntity
-import com.prac.githubrepo.common.Reducer
 import com.prac.githubrepo.ui.home.main.detail.model.Mutation
 import com.prac.githubrepo.ui.home.main.detail.view.UiState
 

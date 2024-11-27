@@ -2,11 +2,11 @@ package com.prac.githubrepo.ui.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.prac.core.common.mvi.model.eventModel
+import com.prac.core.common.mvi.model.stateModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
-import com.prac.githubrepo.common.Reducer
-import com.prac.githubrepo.common.eventModel
-import com.prac.githubrepo.common.stateModel
+import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.githubrepo.di.IODispatcher
 import com.prac.githubrepo.di.ProfileReducerAnnotation
 import com.prac.githubrepo.ui.profile.model.Action

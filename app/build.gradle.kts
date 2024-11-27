@@ -50,6 +50,7 @@ android {
 dependencies {
 
     implementation(project(":data"))
+    implementation(project(":core:common"))
     implementation(project(":core:designsystem"))
     testImplementation(project(":shared-test"))
     androidTestImplementation(project(":shared-test"))

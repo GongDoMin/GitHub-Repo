@@ -1,6 +1,6 @@
 package com.prac.shared_test.ui
 
-import com.prac.githubrepo.common.Reducer
+import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.githubrepo.ui.profile.model.Mutation
 import com.prac.githubrepo.ui.profile.view.UiState
 

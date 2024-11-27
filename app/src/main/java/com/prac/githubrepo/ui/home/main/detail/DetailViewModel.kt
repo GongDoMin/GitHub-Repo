@@ -8,9 +8,9 @@ import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
-import com.prac.githubrepo.common.Reducer
-import com.prac.githubrepo.common.eventModel
-import com.prac.githubrepo.common.stateModel
+import com.prac.core.common.mvi.reducer.Reducer
+import com.prac.core.common.mvi.model.stateModel
+import com.prac.core.common.mvi.model.eventModel
 import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.constants.INVALID_TOKEN
