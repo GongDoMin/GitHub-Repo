@@ -12,7 +12,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import com.prac.githubrepo.BuildConfig
 import com.prac.githubrepo.HiltTestActivity
-import com.prac.githubrepo.R
+import com.prac.core.designsystem.R
 import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.core.common.constants.LOGIN_FAIL
 import com.prac.feature.login.view.LoginScreen

@@ -14,9 +14,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.test.espresso.intent.Intents
 import com.prac.githubrepo.HiltTestActivity
-import com.prac.githubrepo.R
 import com.prac.feature.main.view.MainScreen
-import com.prac.githubrepo.util.hasDrawable
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest

@@ -18,6 +18,7 @@ import com.prac.core.navigation.Routes.HOME
 import com.prac.core.navigation.Routes.PROFILE
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
+import com.prac.core.designsystem.R
 import com.prac.githubrepo.ui.GitHubApp
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
