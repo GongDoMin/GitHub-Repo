@@ -1,27 +1,25 @@
-package com.prac.githubrepo.ui.home.main.detail
+package com.prac.feature.detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.prac.data.entity.RepoDetailEntity
-import com.prac.data.repository.RepoRepository
-import com.prac.data.repository.TokenRepository
-import com.prac.core.common.mvi.reducer.Reducer
-import com.prac.core.common.mvi.model.stateModel
-import com.prac.core.common.mvi.model.eventModel
+import com.prac.core.common.backoff.BackOffWorkManager
 import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.common.constants.INVALID_TOKEN
 import com.prac.core.common.constants.UNKNOWN
-import com.prac.githubrepo.di.DetailReducerAnnotation
 import com.prac.core.common.dispatcher.IODispatcher
-import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.REPO_NAME
-import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.USER_NAME
-import com.prac.githubrepo.ui.home.main.detail.model.Action
-import com.prac.githubrepo.ui.home.main.detail.model.Event
-import com.prac.githubrepo.ui.home.main.detail.model.Mutation
-import com.prac.githubrepo.ui.home.main.detail.view.UiState
-import com.prac.core.common.backoff.BackOffWorkManager
+import com.prac.core.common.mvi.model.eventModel
+import com.prac.core.common.mvi.model.stateModel
+import com.prac.core.common.mvi.reducer.Reducer
+import com.prac.data.entity.RepoDetailEntity
+import com.prac.data.repository.RepoRepository
+import com.prac.data.repository.TokenRepository
+import com.prac.feature.detail.di.DetailReducerAnnotation
+import com.prac.feature.detail.model.Action
+import com.prac.feature.detail.model.Event
+import com.prac.feature.detail.model.Mutation
+import com.prac.feature.detail.view.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharedFlow
@@ -59,8 +57,8 @@ class DetailViewModel @Inject constructor(
     }
 
     private fun getRepository() {
-        val userName = savedStateHandle.get<String>(USER_NAME)
-        val repoName = savedStateHandle.get<String>(REPO_NAME)
+        val userName = savedStateHandle.get<String>("userName")
+        val repoName = savedStateHandle.get<String>("repoName")
 
         Mutation.ShowLoading.handleMutation()
 

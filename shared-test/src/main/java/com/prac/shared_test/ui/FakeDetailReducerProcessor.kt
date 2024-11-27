@@ -2,11 +2,11 @@ package com.prac.shared_test.ui
 
 import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.data.entity.RepoDetailEntity
-import com.prac.githubrepo.ui.home.main.detail.model.Mutation
-import com.prac.githubrepo.ui.home.main.detail.view.UiState
+import com.prac.feature.detail.model.Mutation
+import com.prac.feature.detail.view.UiState
 
 class FakeDetailReducerProcessor : Reducer<Mutation, UiState> {
-    override fun invoke(mutation: Mutation, currentState: UiState): UiState =
+    override fun invoke(mutation: Mutation, currentState: UiState): com.prac.feature.detail.view.UiState =
         when (mutation) {
             is Mutation.ShowRepository -> currentState.showRepository(mutation.repository)
             is Mutation.ShowLoading -> currentState.showLoading()

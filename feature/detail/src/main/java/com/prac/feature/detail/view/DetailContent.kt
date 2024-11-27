@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.home.main.detail.view
+package com.prac.feature.detail.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -18,18 +18,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.prac.core.common.constants.INVALID_REPOSITORY
+import com.prac.core.designsystem.R
 import com.prac.core.designsystem.component.ErrorAlertDialog
 import com.prac.core.designsystem.component.LoadingContent
 import com.prac.core.designsystem.component.UserProfile
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoDetailEntity
-import com.prac.githubrepo.R
-import com.prac.core.common.constants.INVALID_REPOSITORY
-import com.prac.githubrepo.util.drawableID
 
 @Composable
 fun DetailContent(
@@ -138,13 +136,11 @@ fun DetailContentStarAndFork(
                         if (repoDetail.isStarred == true) onClickStar(repoDetail)
                         else onClickUnStar(repoDetail)
                     }
-                )
-                .semantics {
-                    drawableID =
-                        if (repoDetail.isStarred == true) R.drawable.img_star else R.drawable.img_unstar
-                },
+                ),
             painter = painterResource(id = if (repoDetail.isStarred == true) R.drawable.img_star else R.drawable.img_unstar),
-            contentDescription = null
+            contentDescription =
+                if (repoDetail.isStarred == true) stringResource(id = R.string.star_image_description)
+                else stringResource(id = R.string.unstar_image_description)
         )
 
         Text(
@@ -155,10 +151,9 @@ fun DetailContentStarAndFork(
         Image(
             modifier = Modifier
                 .size(20.dp)
-                .padding(start = dimensionResource(id = R.dimen.padding_small))
-                .semantics { drawableID = R.drawable.img_fork },
+                .padding(start = dimensionResource(id = R.dimen.padding_small)),
             painter = painterResource(id = R.drawable.img_fork),
-            contentDescription = null
+            contentDescription = stringResource(id = R.string.fork_image_description)
         )
 
         Text(

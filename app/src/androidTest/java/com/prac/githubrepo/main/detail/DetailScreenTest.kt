@@ -1,23 +1,23 @@
 package com.prac.githubrepo.main.detail
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.lifecycle.SavedStateHandle
 import androidx.test.espresso.intent.Intents
+import com.prac.core.common.backoff.BackOffWorkManager
+import com.prac.core.common.constants.INVALID_REPOSITORY
+import com.prac.core.designsystem.R
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
+import com.prac.feature.detail.DetailViewModel
+import com.prac.feature.detail.view.DetailScreen
 import com.prac.githubrepo.HiltTestActivity
-import com.prac.githubrepo.R
-import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.REPO_NAME
 import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.USER_NAME
-import com.prac.githubrepo.ui.home.main.detail.view.DetailScreen
-import com.prac.githubrepo.ui.home.main.detail.DetailViewModel
-import com.prac.core.common.backoff.BackOffWorkManager
-import com.prac.githubrepo.util.hasDrawable
 import com.prac.shared_test.ui.FakeDetailReducerProcessor
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -117,12 +117,12 @@ class DetailScreenTest {
         }
 
         composeTestRule
-            .onNode(hasDrawable(R.drawable.img_star))
+            .onNode(hasContentDescription("image is star"))
             .performClick()
 
         composeTestRule.waitUntil {
             composeTestRule.onNodeWithText(expectedStarCount.toString()).isDisplayed()
-                    && composeTestRule.onNode(hasDrawable(R.drawable.img_unstar)).isDisplayed()
+                    && composeTestRule.onNode(hasContentDescription("image is unstar")).isDisplayed()
         }
     }
 
@@ -149,12 +149,12 @@ class DetailScreenTest {
         }
 
         composeTestRule
-            .onNode(hasDrawable(R.drawable.img_unstar))
+            .onNode(hasContentDescription("image is unstar"))
             .performClick()
 
         composeTestRule.waitUntil {
             composeTestRule.onNodeWithText(expectedStarCount.toString()).isDisplayed()
-                    && composeTestRule.onNode(hasDrawable(R.drawable.img_star)).isDisplayed()
+                    && composeTestRule.onNode(hasContentDescription("image is star")).isDisplayed()
         }
     }
 

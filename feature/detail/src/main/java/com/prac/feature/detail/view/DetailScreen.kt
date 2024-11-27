@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.home.main.detail.view
+package com.prac.feature.detail.view
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -10,12 +10,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
-import com.prac.githubrepo.R
+import com.prac.core.designsystem.R
 import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.core.common.constants.INVALID_REPOSITORY
-import com.prac.githubrepo.ui.home.main.detail.DetailViewModel
-import com.prac.githubrepo.ui.home.main.detail.model.Action
-import com.prac.githubrepo.ui.home.main.detail.model.Event
+import com.prac.feature.detail.DetailViewModel
+import com.prac.feature.detail.model.Action
+import com.prac.feature.detail.model.Event
 
 @Composable
 fun DetailScreen(
@@ -34,7 +34,8 @@ fun DetailScreen(
         onClickStar = { viewModel.process(Action.UserAction.OnClickStar(it)) },
         onClickUnStar = { viewModel.process(Action.UserAction.OnClickUnStar(it)) },
         onDismissRequest = { dialogMessage ->
-            if (dialogMessage == CONNECTION_FAIL || dialogMessage == INVALID_REPOSITORY) viewModel.process(Action.UserAction.DialogDismiss)
+            if (dialogMessage == CONNECTION_FAIL || dialogMessage == INVALID_REPOSITORY) viewModel.process(
+                Action.UserAction.DialogDismiss)
             else viewModel.process(Action.UserAction.LogoutDialogDismiss)
         },
         modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_small))

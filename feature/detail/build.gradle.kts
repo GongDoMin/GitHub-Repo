@@ -27,4 +27,6 @@ dependencies {
 
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.runtime)
+
+    implementation(libs.androidx.paging.compose)
 }

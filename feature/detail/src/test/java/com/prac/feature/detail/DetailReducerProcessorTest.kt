@@ -1,13 +1,10 @@
-package com.prac.githubrepo.main.detail
+package com.prac.feature.detail
 
 import com.prac.data.entity.RepoDetailEntity
-import com.prac.githubrepo.ui.home.main.detail.DetailReducerProcessor
-import com.prac.githubrepo.ui.home.main.detail.model.Mutation
-import com.prac.githubrepo.ui.home.main.detail.view.UiState
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class DetailReducerProcessorTest {
 
@@ -16,7 +13,10 @@ class DetailReducerProcessorTest {
     @Test
     fun invoke_mutationIsShowLoading_uiStateIsLoading() {
 
-        val result = detailReducerProcessorTest.invoke(Mutation.ShowLoading, UiState())
+        val result = detailReducerProcessorTest.invoke(
+            com.prac.feature.detail.model.Mutation.ShowLoading,
+            com.prac.feature.detail.view.UiState()
+        )
 
         assertTrue(result.isLoading)
     }
@@ -25,7 +25,10 @@ class DetailReducerProcessorTest {
     fun invoke_mutationIsShowError_uiStateIsError() {
         val errorMessage = "test"
 
-        val result = detailReducerProcessorTest.invoke(Mutation.ShowError(errorMessage), UiState())
+        val result = detailReducerProcessorTest.invoke(
+            com.prac.feature.detail.model.Mutation.ShowError(errorMessage),
+            com.prac.feature.detail.view.UiState()
+        )
 
         assertTrue(result.isError)
         assertEquals(result.errorMessage, errorMessage)
@@ -35,7 +38,10 @@ class DetailReducerProcessorTest {
     fun invoke_mutationIsShowRepository_uiStateIsShowRepository() {
         val repository = RepoDetailEntity()
 
-        val result = detailReducerProcessorTest.invoke(Mutation.ShowRepository(repository), UiState())
+        val result = detailReducerProcessorTest.invoke(
+            com.prac.feature.detail.model.Mutation.ShowRepository(repository),
+            com.prac.feature.detail.view.UiState()
+        )
 
         assertEquals(result.repository, repository)
         assertFalse(result.isLoading)
@@ -47,7 +53,10 @@ class DetailReducerProcessorTest {
     fun invoke_mutationIsDialogDismiss_uiStateIsShowRepository() {
         val repository = RepoDetailEntity()
 
-        val result = detailReducerProcessorTest.invoke(Mutation.DismissError, UiState(repository = repository))
+        val result = detailReducerProcessorTest.invoke(
+            com.prac.feature.detail.model.Mutation.DismissError,
+            com.prac.feature.detail.view.UiState(repository = repository)
+        )
 
         assertEquals(result.repository, repository)
         assertFalse(result.isLoading)

@@ -1,9 +1,9 @@
-package com.prac.githubrepo.ui.home.main.detail
+package com.prac.feature.detail
 
 import com.prac.data.entity.RepoDetailEntity
 import com.prac.core.common.mvi.reducer.Reducer
-import com.prac.githubrepo.ui.home.main.detail.model.Mutation
-import com.prac.githubrepo.ui.home.main.detail.view.UiState
+import com.prac.feature.detail.model.Mutation
+import com.prac.feature.detail.view.UiState
 
 class DetailReducerProcessor : Reducer<Mutation, UiState> {
     override fun invoke(mutation: Mutation, currentState: UiState): UiState =

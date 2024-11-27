@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.home.main.detail.view
+package com.prac.feature.detail.view
 
 import com.prac.data.entity.RepoDetailEntity
 

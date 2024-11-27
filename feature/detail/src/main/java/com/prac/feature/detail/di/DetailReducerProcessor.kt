@@ -1,9 +1,6 @@
-package com.prac.githubrepo.di
+package com.prac.feature.detail.di
 
 import com.prac.core.common.mvi.reducer.Reducer
-import com.prac.githubrepo.ui.home.main.detail.DetailReducerProcessor
-import com.prac.githubrepo.ui.home.main.detail.model.Mutation
-import com.prac.githubrepo.ui.home.main.detail.view.UiState
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +16,7 @@ annotation class DetailReducerAnnotation
 class DetailReducerProcessorModule {
     @Provides
     @DetailReducerAnnotation
-    fun providesDetailReducerProcessor(): Reducer<Mutation, UiState> {
-        return DetailReducerProcessor()
+    fun providesDetailReducerProcessor(): Reducer<com.prac.feature.detail.model.Mutation, com.prac.feature.detail.view.UiState> {
+        return com.prac.feature.detail.DetailReducerProcessor()
     }
 }

@@ -1,22 +1,18 @@
-package com.prac.githubrepo.main.detail
+package com.prac.feature.detail
 
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
-import com.prac.data.entity.OwnerEntity
-import com.prac.data.entity.RepoDetailEntity
-import com.prac.data.repository.RepoRepository
-import com.prac.data.repository.TokenRepository
 import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.common.constants.INVALID_TOKEN
 import com.prac.core.common.constants.UNKNOWN
-import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.REPO_NAME
-import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.USER_NAME
-import com.prac.githubrepo.ui.home.main.detail.DetailViewModel
-import com.prac.githubrepo.ui.home.main.detail.model.Action
-import com.prac.shared_test.ui.FakeBackOffWorkManager
-import com.prac.githubrepo.util.StandardTestDispatcherRule
+import com.prac.data.entity.OwnerEntity
+import com.prac.data.entity.RepoDetailEntity
+import com.prac.data.repository.RepoRepository
+import com.prac.data.repository.TokenRepository
 import com.prac.shared_test.data.FakeTokenRepository
+import com.prac.shared_test.rules.StandardTestDispatcherRule
+import com.prac.shared_test.ui.FakeBackOffWorkManager
 import com.prac.shared_test.ui.FakeDetailReducerProcessor
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
@@ -127,7 +123,7 @@ class DetailViewModelTest {
         whenever(mockRepoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.success(Unit))
 
-        detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
+        detailViewModel.process(com.prac.feature.detail.model.Action.UserAction.OnClickUnStar(repoDetailEntity))
         advanceUntilIdle()
 
         verify(mockRepoRepository).starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount + 1)
@@ -141,7 +137,7 @@ class DetailViewModelTest {
         whenever(mockRepoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.success(Unit))
 
-        detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
+        detailViewModel.process(com.prac.feature.detail.model.Action.UserAction.OnClickStar(repoDetailEntity))
         advanceUntilIdle()
 
         verify(mockRepoRepository).unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount - 1)
@@ -159,7 +155,7 @@ class DetailViewModelTest {
         whenever(mockRepoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(com.prac.exception.CommonException.NetworkError()))
 
-        detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
+        detailViewModel.process(com.prac.feature.detail.model.Action.UserAction.OnClickUnStar(repoDetailEntity))
         advanceUntilIdle()
 
         verify(mockRepoRepository).starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount + 1)
@@ -178,7 +174,7 @@ class DetailViewModelTest {
         whenever(mockRepoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(com.prac.exception.CommonException.NetworkError()))
 
-        detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
+        detailViewModel.process(com.prac.feature.detail.model.Action.UserAction.OnClickStar(repoDetailEntity))
         advanceUntilIdle()
 
         verify(mockRepoRepository).unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount - 1)
@@ -200,7 +196,7 @@ class DetailViewModelTest {
         whenever(mockRepoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(com.prac.exception.CommonException.AuthorizationError()))
 
-        detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
+        detailViewModel.process(com.prac.feature.detail.model.Action.UserAction.OnClickUnStar(repoDetailEntity))
 
         detailViewModel.uiStateFlow.test {
             awaitItem() // isLoading == true
@@ -226,7 +222,7 @@ class DetailViewModelTest {
         whenever(mockRepoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(com.prac.exception.CommonException.AuthorizationError()))
 
-        detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
+        detailViewModel.process(com.prac.feature.detail.model.Action.UserAction.OnClickStar(repoDetailEntity))
 
         detailViewModel.uiStateFlow.test {
             awaitItem() // isLoading == true
@@ -252,7 +248,7 @@ class DetailViewModelTest {
         whenever(mockRepoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(com.prac.exception.RepositoryException.NotFoundRepository()))
 
-        detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
+        detailViewModel.process(com.prac.feature.detail.model.Action.UserAction.OnClickUnStar(repoDetailEntity))
 
         detailViewModel.uiStateFlow.test {
             awaitItem() // isLoading == true
@@ -278,7 +274,7 @@ class DetailViewModelTest {
         whenever(mockRepoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(com.prac.exception.RepositoryException.NotFoundRepository()))
 
-        detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
+        detailViewModel.process(com.prac.feature.detail.model.Action.UserAction.OnClickStar(repoDetailEntity))
 
         detailViewModel.uiStateFlow.test {
             awaitItem() // isLoading == true
@@ -304,7 +300,7 @@ class DetailViewModelTest {
         whenever(mockRepoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(com.prac.exception.CommonException.UnKnownError()))
 
-        detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
+        detailViewModel.process(com.prac.feature.detail.model.Action.UserAction.OnClickUnStar(repoDetailEntity))
 
         detailViewModel.uiStateFlow.test {
             awaitItem() // isLoading == true
@@ -330,7 +326,7 @@ class DetailViewModelTest {
         whenever(mockRepoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
             .thenReturn(Result.failure(com.prac.exception.CommonException.UnKnownError()))
 
-        detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
+        detailViewModel.process(com.prac.feature.detail.model.Action.UserAction.OnClickStar(repoDetailEntity))
 
         detailViewModel.uiStateFlow.test {
             awaitItem() // isLoading == true
@@ -343,15 +339,15 @@ class DetailViewModelTest {
     }
 
     private fun initViewModel(userName: String?, repoName: String?) {
-        detailViewModel = DetailViewModel(
+        detailViewModel = com.prac.feature.detail.DetailViewModel(
             mockRepoRepository,
             tokenRepository,
             backOffWork,
             detailReducerProcessor,
             standardTestDispatcherRule.testDispatcher,
             SavedStateHandle().apply {
-                set(USER_NAME, userName)
-                set(REPO_NAME, repoName)
+                set("userName", userName)
+                set("repoName", repoName)
             }
         )
     }
