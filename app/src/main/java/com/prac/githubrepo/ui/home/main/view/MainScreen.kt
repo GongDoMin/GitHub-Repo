@@ -13,7 +13,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.prac.data.entity.RepoEntity
-import com.prac.githubrepo.constants.INVALID_TOKEN
+import com.prac.core.common.constants.INVALID_TOKEN
 import com.prac.githubrepo.ui.home.main.MainViewModel
 import com.prac.githubrepo.ui.home.main.model.Action
 import com.prac.githubrepo.ui.home.main.model.Event

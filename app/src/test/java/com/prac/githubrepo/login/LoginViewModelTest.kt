@@ -2,14 +2,13 @@ package com.prac.githubrepo.login
 
 import app.cash.turbine.test
 import com.prac.data.repository.TokenRepository
-import com.prac.githubrepo.constants.CONNECTION_FAIL
+import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.githubrepo.ui.login.LoginViewModel
 import com.prac.githubrepo.ui.login.model.Action
 import com.prac.githubrepo.ui.login.model.Event
 import com.prac.githubrepo.util.StandardTestDispatcherRule
 import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.shared_test.ui.FakeLoginReducerProcessor
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse

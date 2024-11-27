@@ -7,8 +7,8 @@ import com.prac.data.repository.TokenRepository
 import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.core.common.mvi.model.stateModel
 import com.prac.core.common.mvi.model.eventModel
-import com.prac.githubrepo.constants.CONNECTION_FAIL
-import com.prac.githubrepo.constants.LOGIN_FAIL
+import com.prac.core.common.constants.CONNECTION_FAIL
+import com.prac.core.common.constants.LOGIN_FAIL
 import com.prac.githubrepo.di.IODispatcher
 import com.prac.githubrepo.di.LoginReducerAnnotation
 import com.prac.githubrepo.ui.login.model.Action

@@ -1,4 +1,4 @@
-package com.prac.githubrepo.constants
+package com.prac.core.common.constants
 
 // common
 const val CONNECTION_FAIL = "연결에 실패했습니다."

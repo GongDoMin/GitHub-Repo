@@ -8,8 +8,8 @@ import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
-import com.prac.githubrepo.constants.INVALID_REPOSITORY
-import com.prac.githubrepo.constants.UNKNOWN
+import com.prac.core.common.constants.INVALID_REPOSITORY
+import com.prac.core.common.constants.UNKNOWN
 import com.prac.githubrepo.ui.home.main.MainViewModel
 import com.prac.githubrepo.ui.home.main.model.Action
 import com.prac.githubrepo.ui.home.main.model.Event

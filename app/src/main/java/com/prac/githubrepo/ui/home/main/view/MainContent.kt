@@ -12,7 +12,7 @@ import com.prac.core.designsystem.component.ErrorAlertDialog
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.githubrepo.R
-import com.prac.githubrepo.constants.INVALID_TOKEN
+import com.prac.core.common.constants.INVALID_TOKEN
 import java.io.IOException
 
 @Composable

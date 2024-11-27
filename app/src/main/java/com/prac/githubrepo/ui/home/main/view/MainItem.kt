@@ -31,7 +31,7 @@ import com.prac.core.designsystem.component.UserProfile
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.githubrepo.R
-import com.prac.githubrepo.constants.CONNECTION_FAIL
+import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.githubrepo.util.drawableID
 
 @Composable

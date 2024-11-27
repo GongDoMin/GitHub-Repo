@@ -11,8 +11,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import com.prac.githubrepo.R
-import com.prac.githubrepo.constants.CONNECTION_FAIL
-import com.prac.githubrepo.constants.INVALID_REPOSITORY
+import com.prac.core.common.constants.CONNECTION_FAIL
+import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.ui.home.main.detail.DetailViewModel
 import com.prac.githubrepo.ui.home.main.detail.model.Action
 import com.prac.githubrepo.ui.home.main.detail.model.Event
