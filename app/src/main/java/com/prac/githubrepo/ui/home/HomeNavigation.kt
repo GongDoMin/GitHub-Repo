@@ -3,7 +3,7 @@ package com.prac.githubrepo.ui.home
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navigation
 import com.prac.githubrepo.ui.NavigationActions
-import com.prac.githubrepo.ui.NavigationDestinations.HOME
+import com.prac.core.navigation.NavigationDestinations.HOME
 import com.prac.githubrepo.ui.home.main.detail.detailScreen
 import com.prac.githubrepo.ui.home.main.mainScreen
 

@@ -17,8 +17,8 @@ import androidx.test.espresso.Espresso.pressBack
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.githubrepo.ui.GitHubApp
-import com.prac.githubrepo.ui.NavigationDestinations.HOME
-import com.prac.githubrepo.ui.NavigationDestinations.PROFILE
+import com.prac.core.navigation.NavigationDestinations.HOME
+import com.prac.core.navigation.NavigationDestinations.PROFILE
 import com.prac.githubrepo.util.hasDrawable
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

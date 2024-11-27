@@ -24,9 +24,9 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.prac.githubrepo.R
 import com.prac.githubrepo.ui.NavigationActions
-import com.prac.githubrepo.ui.NavigationDestinations
-import com.prac.githubrepo.ui.NavigationDestinations.HOME
-import com.prac.githubrepo.ui.NavigationDestinations.PROFILE
+import com.prac.core.navigation.NavigationDestinations
+import com.prac.core.navigation.NavigationDestinations.HOME
+import com.prac.core.navigation.NavigationDestinations.PROFILE
 
 sealed class BottomNavItem(
     @StringRes val title: Int,

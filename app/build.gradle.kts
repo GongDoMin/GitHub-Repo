@@ -54,6 +54,7 @@ dependencies {
     implementation(project(":feature:main"))
     implementation(project(":feature:detail"))
 
+    implementation(project(":core:navigation"))
     implementation(project(":core:common"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:data"))

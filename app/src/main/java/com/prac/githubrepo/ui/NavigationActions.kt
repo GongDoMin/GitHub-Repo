@@ -1,9 +1,10 @@
 package com.prac.githubrepo.ui
 
 import androidx.navigation.NavController
-import com.prac.githubrepo.ui.NavigationDestinations.HOME
-import com.prac.githubrepo.ui.NavigationDestinations.LOGIN
-import com.prac.githubrepo.ui.NavigationDestinations.PROFILE
+import com.prac.core.navigation.NavigationDestinations
+import com.prac.core.navigation.NavigationDestinations.HOME
+import com.prac.core.navigation.NavigationDestinations.LOGIN
+import com.prac.core.navigation.NavigationDestinations.PROFILE
 
 class NavigationActions(private val navController: NavController) {
     fun popBackStack() {
