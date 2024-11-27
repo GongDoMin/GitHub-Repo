@@ -1,15 +1,16 @@
-package com.prac.githubrepo.ui.profile
+package com.prac.feature.profile.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.prac.core.navigation.NavigationActions
 import com.prac.core.navigation.Routes.PROFILE
+import com.prac.feature.profile.view.ProfileScreen
 
 fun NavGraphBuilder.profileScreen(
     navigationActions: NavigationActions
 ) {
     composable<PROFILE> {
-        com.prac.feature.profile.view.ProfileScreen(
+        ProfileScreen(
             onNavigateToLogin = { navigationActions.navigateToLogin() }
         )
     }
