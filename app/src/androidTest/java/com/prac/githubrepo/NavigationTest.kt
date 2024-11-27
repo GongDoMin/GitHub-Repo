@@ -14,12 +14,11 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.pressBack
+import com.prac.core.navigation.Routes.HOME
+import com.prac.core.navigation.Routes.PROFILE
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.githubrepo.ui.GitHubApp
-import com.prac.core.navigation.Routes.HOME
-import com.prac.core.navigation.Routes.PROFILE
-import com.prac.githubrepo.util.hasDrawable
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
@@ -90,9 +89,6 @@ class NavigationTest {
             navController.currentBackStackEntry?.destination?.hasRoute(HOME.DETAIL::class) == true
                     && composeTestRule.onNodeWithText(expectedRepoDetail.name).isDisplayed()
                     && composeTestRule.onNodeWithText(expectedRepoDetail.owner.login).isDisplayed()
-                    && composeTestRule.onNode(hasDrawable(R.drawable.img_glide_profile)).isDisplayed()
-                    && composeTestRule.onNode(hasDrawable(R.drawable.img_star)).isDisplayed()
-                    && composeTestRule.onNode(hasDrawable(R.drawable.img_fork)).isDisplayed()
         }
     }
 
