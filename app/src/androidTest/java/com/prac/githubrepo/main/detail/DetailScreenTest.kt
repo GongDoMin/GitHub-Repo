@@ -16,8 +16,8 @@ import com.prac.data.repository.TokenRepository
 import com.prac.feature.detail.DetailViewModel
 import com.prac.feature.detail.view.DetailScreen
 import com.prac.githubrepo.HiltTestActivity
-import com.prac.core.navigation.NavigationDestinations.HOME.DETAIL.Companion.REPO_NAME
-import com.prac.core.navigation.NavigationDestinations.HOME.DETAIL.Companion.USER_NAME
+import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.REPO_NAME
+import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.USER_NAME
 import com.prac.shared_test.ui.FakeDetailReducerProcessor
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

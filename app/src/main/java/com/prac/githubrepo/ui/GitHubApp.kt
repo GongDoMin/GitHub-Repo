@@ -12,8 +12,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.prac.core.navigation.NavigationDestinations
-import com.prac.core.navigation.NavigationDestinations.LOGIN
+import com.prac.core.navigation.Routes
+import com.prac.core.navigation.Routes.LOGIN
 import com.prac.githubrepo.ui.home.homeNavigation
 import com.prac.githubrepo.ui.login.loginScreen
 import com.prac.githubrepo.ui.profile.profileScreen
@@ -23,7 +23,7 @@ import com.prac.githubrepo.components.GitHubBottomNavigation
 fun GitHubApp(
     navController: NavHostController = rememberNavController(),
     navigationActions: NavigationActions = remember(navController) { NavigationActions(navController) },
-    startDestination: NavigationDestinations = LOGIN
+    startDestination: Routes = LOGIN
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 

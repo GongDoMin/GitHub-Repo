@@ -3,7 +3,7 @@ package com.prac.githubrepo.ui.login
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.prac.githubrepo.ui.NavigationActions
-import com.prac.core.navigation.NavigationDestinations.LOGIN
+import com.prac.core.navigation.Routes.LOGIN
 
 fun NavGraphBuilder.loginScreen(
     navigationActions: NavigationActions

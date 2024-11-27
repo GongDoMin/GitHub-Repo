@@ -3,7 +3,7 @@ package com.prac.githubrepo.ui.profile
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.prac.githubrepo.ui.NavigationActions
-import com.prac.core.navigation.NavigationDestinations.PROFILE
+import com.prac.core.navigation.Routes.PROFILE
 
 fun NavGraphBuilder.profileScreen(
     navigationActions: NavigationActions
