@@ -1,9 +1,9 @@
-package com.prac.githubrepo.di
+package com.prac.feature.main.di
 
 import com.prac.core.common.mvi.reducer.Reducer
-import com.prac.githubrepo.ui.home.main.MainReducerProcessor
-import com.prac.githubrepo.ui.home.main.model.Mutation
-import com.prac.githubrepo.ui.home.main.view.UiState
+import com.prac.feature.main.MainReducerProcessor
+import com.prac.feature.main.model.Mutation
+import com.prac.feature.main.view.UiState
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -4,6 +4,7 @@ import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -14,7 +15,7 @@ import androidx.compose.ui.test.performScrollToIndex
 import androidx.test.espresso.intent.Intents
 import com.prac.githubrepo.HiltTestActivity
 import com.prac.githubrepo.R
-import com.prac.githubrepo.ui.home.main.view.MainScreen
+import com.prac.feature.main.view.MainScreen
 import com.prac.githubrepo.util.hasDrawable
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -64,14 +65,14 @@ class MainScreenTest {
         composeTestRule
             .onNodeWithText("test $clickPosition")
             .onChild()
-            .assert(hasDrawable(R.drawable.img_star))
+            .assert(hasContentDescription("image is star"))
             .performClick()
 
         composeTestRule.waitUntil {
             composeTestRule
                 .onNodeWithText("test $clickPosition")
                 .onChild()
-                .isChangedStarStateAndCount(hasDrawable(R.drawable.img_unstar), expectedStarCount)
+                .isChangedStarStateAndCount(hasContentDescription("image is unstar"), expectedStarCount)
         }
     }
 
@@ -88,14 +89,14 @@ class MainScreenTest {
         composeTestRule
             .onNodeWithText("test $clickPosition")
             .onChild()
-            .assert(hasDrawable(R.drawable.img_unstar))
+            .assert(hasContentDescription("image is unstar"))
             .performClick()
 
         composeTestRule.waitUntil {
             composeTestRule
                 .onNodeWithText("test $clickPosition")
                 .onChild()
-                .isChangedStarStateAndCount(hasDrawable(R.drawable.img_star), expectedStarCount)
+                .isChangedStarStateAndCount(hasContentDescription("image is star"), expectedStarCount)
         }
     }
 

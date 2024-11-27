@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.home.main.view
+package com.prac.feature.main.view
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,9 +8,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.LoadState
+import com.prac.core.designsystem.R
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
-import com.prac.githubrepo.R
 import java.io.IOException
 
 @Composable

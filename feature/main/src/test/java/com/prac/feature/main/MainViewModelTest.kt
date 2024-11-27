@@ -1,19 +1,18 @@
-package com.prac.githubrepo.main
+package com.prac.feature.main
 
 import androidx.paging.PagingData
 import app.cash.turbine.test
+import com.prac.core.common.constants.INVALID_REPOSITORY
+import com.prac.core.common.constants.UNKNOWN
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
-import com.prac.core.common.constants.INVALID_REPOSITORY
-import com.prac.core.common.constants.UNKNOWN
-import com.prac.githubrepo.ui.home.main.MainViewModel
-import com.prac.githubrepo.ui.home.main.model.Action
-import com.prac.githubrepo.ui.home.main.model.Event
-import com.prac.shared_test.ui.FakeBackOffWorkManager
-import com.prac.githubrepo.util.StandardTestDispatcherRule
+import com.prac.feature.main.model.Action
+import com.prac.feature.main.model.Event
 import com.prac.shared_test.data.FakeTokenRepository
+import com.prac.shared_test.rules.StandardTestDispatcherRule
+import com.prac.shared_test.ui.FakeBackOffWorkManager
 import com.prac.shared_test.ui.FakeMainReducerProcessor
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
@@ -21,6 +20,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -30,7 +30,6 @@ import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(MockitoJUnitRunner::class)

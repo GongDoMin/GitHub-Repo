@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.home.main.model
+package com.prac.feature.main.model
 
 sealed interface Event {
     data class OpenRepositoryDetail(

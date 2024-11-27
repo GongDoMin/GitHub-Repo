@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.home.main.view
+package com.prac.feature.main.view
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,9 +14,9 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.prac.data.entity.RepoEntity
 import com.prac.core.common.constants.INVALID_TOKEN
-import com.prac.githubrepo.ui.home.main.MainViewModel
-import com.prac.githubrepo.ui.home.main.model.Action
-import com.prac.githubrepo.ui.home.main.model.Event
+import com.prac.feature.main.MainViewModel
+import com.prac.feature.main.model.Action
+import com.prac.feature.main.model.Event
 
 @Composable
 fun MainScreen(

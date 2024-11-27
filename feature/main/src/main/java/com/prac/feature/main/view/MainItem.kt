@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.home.main.view
+package com.prac.feature.main.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -30,9 +30,8 @@ import androidx.paging.LoadState
 import com.prac.core.designsystem.component.UserProfile
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
-import com.prac.githubrepo.R
+import com.prac.core.designsystem.R
 import com.prac.core.common.constants.CONNECTION_FAIL
-import com.prac.githubrepo.util.drawableID
 
 @Composable
 fun MainItem(
@@ -145,13 +144,11 @@ fun MainItemStar(
                         if (repo.isStarred == true) onClickStar(repo)
                         else onClickUnStar(repo)
                     }
-                )
-                .semantics {
-                    drawableID =
-                        if (repo.isStarred == true) R.drawable.img_star else R.drawable.img_unstar
-                },
+                ),
             painter = painterResource(id = if (repo.isStarred == true) R.drawable.img_star else R.drawable.img_unstar),
-            contentDescription = null
+            contentDescription =
+                if (repo.isStarred == true) stringResource(id = R.string.star_image_description)
+                else stringResource(id = R.string.unstar_image_description)
         )
 
         Text(

@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.home.main.model
+package com.prac.feature.main.model
 
 import androidx.paging.LoadState
 import com.prac.data.entity.RepoEntity

@@ -1,14 +1,13 @@
-package com.prac.githubrepo.main
+package com.prac.feature.main
 
 import androidx.paging.LoadState
 import com.prac.data.entity.RepoEntity
-import com.prac.githubrepo.ui.home.main.MainReducerProcessor
-import com.prac.githubrepo.ui.home.main.model.Mutation
-import com.prac.githubrepo.ui.home.main.view.UiState
+import com.prac.feature.main.model.Mutation
+import com.prac.feature.main.view.UiState
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class MainReducerProcessorTest {
 

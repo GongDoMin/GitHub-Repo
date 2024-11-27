@@ -3,8 +3,8 @@ package com.prac.shared_test.ui
 import androidx.paging.LoadState
 import com.prac.data.entity.RepoEntity
 import com.prac.core.common.mvi.reducer.Reducer
-import com.prac.githubrepo.ui.home.main.model.Mutation
-import com.prac.githubrepo.ui.home.main.view.UiState
+import com.prac.feature.main.model.Mutation
+import com.prac.feature.main.view.UiState
 
 class FakeMainReducerProcessor : Reducer<Mutation, UiState> {
     override fun invoke(mutation: Mutation, currentState: UiState): UiState =
