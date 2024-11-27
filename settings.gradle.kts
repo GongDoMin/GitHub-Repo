@@ -27,4 +27,5 @@ include(":local")
 include(":network")
 include(":shared-test")
 
+include(":core:common")
 include(":core:designsystem")
