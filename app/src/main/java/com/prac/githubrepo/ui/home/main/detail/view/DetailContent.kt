@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -22,10 +24,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.prac.core.designsystem.component.ErrorAlertDialog
 import com.prac.core.designsystem.component.LoadingContent
+import com.prac.core.designsystem.component.UserProfile
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoDetailEntity
 import com.prac.githubrepo.R
-import com.prac.githubrepo.components.UserProfile
 import com.prac.githubrepo.constants.INVALID_REPOSITORY
 import com.prac.githubrepo.util.drawableID
 
@@ -90,7 +92,12 @@ fun DetailContentUser(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        UserProfile(uri = uri)
+        UserProfile(
+            modifier = Modifier
+                .size(dimensionResource(id = R.dimen.user_profile))
+                .clip(CircleShape),
+            uri = uri
+        )
 
         Text(
             modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_small)),

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -25,10 +27,10 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
+import com.prac.core.designsystem.component.UserProfile
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.githubrepo.R
-import com.prac.githubrepo.components.UserProfile
 import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.util.drawableID
 
@@ -96,7 +98,12 @@ fun MainItemUser(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        UserProfile(uri = uri)
+        UserProfile(
+            modifier = Modifier
+                .size(dimensionResource(id = R.dimen.user_profile))
+                .clip(CircleShape),
+            uri = uri
+        )
 
         Text(
             modifier = Modifier
