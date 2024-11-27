@@ -1,25 +1,25 @@
-package com.prac.githubrepo.ui.login
+package com.prac.feature.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.prac.exception.CommonException
-import com.prac.data.repository.TokenRepository
-import com.prac.core.common.mvi.reducer.Reducer
-import com.prac.core.common.mvi.model.stateModel
-import com.prac.core.common.mvi.model.eventModel
 import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.core.common.constants.LOGIN_FAIL
 import com.prac.core.common.dispatcher.IODispatcher
-import com.prac.githubrepo.di.LoginReducerAnnotation
-import com.prac.githubrepo.ui.login.model.Action
-import com.prac.githubrepo.ui.login.model.Event
-import com.prac.githubrepo.ui.login.model.Event.OpenBrowser
-import com.prac.githubrepo.ui.login.model.Event.SuccessLogin
-import com.prac.githubrepo.ui.login.model.Mutation
-import com.prac.githubrepo.ui.login.model.Mutation.ShowError
-import com.prac.githubrepo.ui.login.model.Mutation.ShowIdle
-import com.prac.githubrepo.ui.login.model.Mutation.ShowLoading
-import com.prac.githubrepo.ui.login.view.UiState
+import com.prac.core.common.mvi.model.eventModel
+import com.prac.core.common.mvi.model.stateModel
+import com.prac.core.common.mvi.reducer.Reducer
+import com.prac.data.repository.TokenRepository
+import com.prac.exception.CommonException
+import com.prac.feature.login.di.LoginReducerAnnotation
+import com.prac.feature.login.model.Action
+import com.prac.feature.login.model.Event
+import com.prac.feature.login.model.Event.OpenBrowser
+import com.prac.feature.login.model.Event.SuccessLogin
+import com.prac.feature.login.model.Mutation
+import com.prac.feature.login.model.Mutation.ShowError
+import com.prac.feature.login.model.Mutation.ShowIdle
+import com.prac.feature.login.model.Mutation.ShowLoading
+import com.prac.feature.login.view.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharedFlow
@@ -81,7 +81,7 @@ class LoginViewModel @Inject constructor(
 
     private fun handleLoginErrorMessage(t: Throwable) =
         when (t) {
-            is com.prac.exception.CommonException.NetworkError -> CONNECTION_FAIL
+            is CommonException.NetworkError -> CONNECTION_FAIL
             else -> LOGIN_FAIL
         }
 

@@ -15,7 +15,7 @@ import com.prac.githubrepo.HiltTestActivity
 import com.prac.githubrepo.R
 import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.core.common.constants.LOGIN_FAIL
-import com.prac.githubrepo.ui.login.view.LoginScreen
+import com.prac.feature.login.view.LoginScreen
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest

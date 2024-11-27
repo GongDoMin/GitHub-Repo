@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.login.model
+package com.prac.feature.login.model
 
 sealed interface Mutation {
     data object ShowIdle : Mutation

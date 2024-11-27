@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.login.view
+package com.prac.feature.login.view
 
 data class UiState(
     var isLoading: Boolean = false,

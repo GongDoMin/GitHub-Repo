@@ -1,8 +1,8 @@
 package com.prac.shared_test.ui
 
 import com.prac.core.common.mvi.reducer.Reducer
-import com.prac.githubrepo.ui.login.model.Mutation
-import com.prac.githubrepo.ui.login.view.UiState
+import com.prac.feature.login.model.Mutation
+import com.prac.feature.login.view.UiState
 
 class FakeLoginReducerProcessor : Reducer<Mutation, UiState> {
     override fun invoke(mutation: Mutation, currentState: UiState): UiState =

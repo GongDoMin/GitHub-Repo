@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.login.view
+package com.prac.feature.login.view
 
 import android.content.Intent
 import android.net.Uri
@@ -14,10 +14,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
-import com.prac.githubrepo.BuildConfig
-import com.prac.githubrepo.ui.login.LoginViewModel
-import com.prac.githubrepo.ui.login.model.Action
-import com.prac.githubrepo.ui.login.model.Event
+import com.prac.feature.login.BuildConfig
+import com.prac.feature.login.LoginViewModel
+import com.prac.feature.login.model.Action
+import com.prac.feature.login.model.Event
 
 @Composable
 fun LoginScreen(

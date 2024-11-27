@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.login.view
+package com.prac.feature.login.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -13,14 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import com.prac.core.common.constants.CONNECTION_FAIL
+import com.prac.core.designsystem.R
 import com.prac.core.designsystem.component.BounceButton
 import com.prac.core.designsystem.component.ErrorAlertDialog
 import com.prac.core.designsystem.component.LoadingContent
-import com.prac.githubrepo.R
-import com.prac.core.common.constants.CONNECTION_FAIL
-import com.prac.githubrepo.util.drawableID
 
 @Composable
 fun LoginContent(
@@ -48,8 +46,7 @@ fun LoginContent(
                     .size(dimensionResource(id = R.dimen.login_icon))
                     .padding(
                         bottom = dimensionResource(id = R.dimen.padding_normal)
-                    )
-                    .semantics { drawableID = R.drawable.img_github_icon },
+                    ),
                 painter = painterResource(id = R.drawable.img_github_icon),
                 contentDescription = null
             )

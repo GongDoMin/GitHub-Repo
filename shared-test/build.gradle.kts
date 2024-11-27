@@ -10,6 +10,9 @@ android {
 dependencies {
 
     implementation(project(":app"))
+
+    implementation(project(":feature:login"))
+
     implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:exception"))

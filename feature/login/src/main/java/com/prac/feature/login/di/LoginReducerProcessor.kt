@@ -1,9 +1,6 @@
-package com.prac.githubrepo.di
+package com.prac.feature.login.di
 
 import com.prac.core.common.mvi.reducer.Reducer
-import com.prac.githubrepo.ui.login.LoginReducerProcessor
-import com.prac.githubrepo.ui.login.model.Mutation
-import com.prac.githubrepo.ui.login.view.UiState
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +16,7 @@ annotation class LoginReducerAnnotation
 class LoginReducerProcessorModule {
     @Provides
     @LoginReducerAnnotation
-    fun providesLoginReducerProcessor(): Reducer<Mutation, UiState> {
-        return LoginReducerProcessor()
+    fun providesLoginReducerProcessor(): Reducer<com.prac.feature.login.model.Mutation, com.prac.feature.login.view.UiState> {
+        return com.prac.feature.login.LoginReducerProcessor()
     }
 }

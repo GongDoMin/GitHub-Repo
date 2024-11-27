@@ -14,7 +14,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.prac.githubrepo.ui.NavigationDestinations.LOGIN
 import com.prac.githubrepo.ui.home.homeNavigation
-import com.prac.githubrepo.ui.login.view.loginScreen
+import com.prac.githubrepo.ui.login.loginScreen
 import com.prac.githubrepo.ui.profile.view.profileScreen
 import com.prac.githubrepo.components.GitHubBottomNavigation
 

@@ -1,12 +1,11 @@
-package com.prac.githubrepo.login
+package com.prac.feature.login
 
-import com.prac.githubrepo.ui.login.LoginReducerProcessor
-import com.prac.githubrepo.ui.login.model.Mutation
-import com.prac.githubrepo.ui.login.view.UiState
+import com.prac.feature.login.model.Mutation
+import com.prac.feature.login.view.UiState
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class LoginReducerProcessorTest {
 
@@ -15,7 +14,10 @@ class LoginReducerProcessorTest {
     @Test
     fun invoke_mutationIsShowIdle_uiStateIsIdle() {
 
-        val result = loginReducerProcessorTest.invoke(Mutation.ShowIdle, UiState())
+        val result = loginReducerProcessorTest.invoke(
+            Mutation.ShowIdle,
+            UiState()
+        )
 
         assertFalse(result.isLoading)
         assertFalse(result.isError)
@@ -25,7 +27,10 @@ class LoginReducerProcessorTest {
     @Test
     fun invoke_mutationIsShowLoading_uiStateIsLoading() {
 
-        val result = loginReducerProcessorTest.invoke(Mutation.ShowLoading, UiState())
+        val result = loginReducerProcessorTest.invoke(
+            Mutation.ShowLoading,
+            UiState()
+        )
 
         assertTrue(result.isLoading)
         assertFalse(result.isError)
@@ -36,7 +41,10 @@ class LoginReducerProcessorTest {
     fun invoke_mutationIsShowError_uiStateIsError() {
         val errorMessage = "test"
 
-        val result = loginReducerProcessorTest.invoke(Mutation.ShowError(errorMessage), UiState())
+        val result = loginReducerProcessorTest.invoke(
+            Mutation.ShowError(errorMessage),
+            UiState()
+        )
 
         assertFalse(result.isLoading)
         assertTrue(result.isError)
