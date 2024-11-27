@@ -19,7 +19,6 @@ import com.prac.data.entity.RepoEntity
 import com.prac.githubrepo.ui.GitHubApp
 import com.prac.githubrepo.ui.NavigationDestinations.HOME
 import com.prac.githubrepo.ui.NavigationDestinations.PROFILE
-import com.prac.githubrepo.util.hasButton
 import com.prac.githubrepo.util.hasDrawable
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -147,7 +146,7 @@ class NavigationTest {
 
         composeTestRule.waitUntil {
             navController.currentBackStackEntry?.destination?.hasRoute(PROFILE::class) == true
-                    && composeTestRule.onNode(hasButton(activity.getString(R.string.logout))).isDisplayed()
+                    && composeTestRule.onNodeWithText(activity.getString(R.string.logout)).isDisplayed()
         }
     }
 

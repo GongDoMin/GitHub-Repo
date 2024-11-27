@@ -16,7 +16,6 @@ import com.prac.githubrepo.R
 import com.prac.githubrepo.constants.CONNECTION_FAIL
 import com.prac.githubrepo.constants.LOGIN_FAIL
 import com.prac.githubrepo.ui.login.view.LoginScreen
-import com.prac.githubrepo.util.hasButton
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
@@ -51,7 +50,7 @@ class LoginScreenTest {
 
     @Test
     fun loginButtonClick_openBrowser() = runTest {
-        composeTestRule.onNode(hasButton(activity.getString(R.string.login))).performClick()
+        composeTestRule.onNodeWithText(activity.getString(R.string.login)).performClick()
 
         intended(hasAction(Intent.ACTION_VIEW))
         intended(hasData(Uri.parse(BuildConfig.GITHUB_OAUTH_URI)))

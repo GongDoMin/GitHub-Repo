@@ -7,8 +7,5 @@ import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 val DrawableID = SemanticsPropertyKey<Int>("drawableID")
 var SemanticsPropertyReceiver.drawableID by DrawableID
 
-val ButtonID = SemanticsPropertyKey<String>("buttonID")
-var SemanticsPropertyReceiver.buttonID by ButtonID
-
 val IconID = SemanticsPropertyKey<ImageVector>("iconID")
 var SemanticsPropertyReceiver.iconID by IconID
