@@ -1,9 +1,6 @@
-package com.prac.githubrepo.di
+package com.prac.feature.profile.di
 
 import com.prac.core.common.mvi.reducer.Reducer
-import com.prac.githubrepo.ui.profile.ProfileReducerProcessor
-import com.prac.githubrepo.ui.profile.model.Mutation
-import com.prac.githubrepo.ui.profile.view.UiState
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +16,7 @@ annotation class ProfileReducerAnnotation
 class ProfileReducerProcessorModule {
     @Provides
     @ProfileReducerAnnotation
-    fun providesProfileReducerProcessor(): Reducer<Mutation, UiState> {
-        return ProfileReducerProcessor()
+    fun providesProfileReducerProcessor(): Reducer<com.prac.feature.profile.model.Mutation, com.prac.feature.profile.view.UiState> {
+        return com.prac.feature.profile.ProfileReducerProcessor()
     }
 }

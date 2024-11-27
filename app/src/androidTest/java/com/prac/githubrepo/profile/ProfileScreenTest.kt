@@ -7,7 +7,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.prac.githubrepo.HiltTestActivity
 import com.prac.githubrepo.R
-import com.prac.githubrepo.ui.profile.view.ProfileScreen
+import com.prac.feature.profile.view.ProfileScreen
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
@@ -68,7 +68,7 @@ class ProfileScreenTest {
 
     private fun setContent() {
         composeTestRule.setContent {
-            ProfileScreen(
+            com.prac.feature.profile.view.ProfileScreen(
                 onNavigateToLogin = { isMainScreen = true }
             )
         }

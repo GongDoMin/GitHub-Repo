@@ -1,17 +1,16 @@
-package com.prac.githubrepo.ui.profile.view
+package com.prac.feature.profile.view
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
-import com.prac.githubrepo.ui.profile.ProfileViewModel
-import com.prac.githubrepo.ui.profile.model.Action
-import com.prac.githubrepo.ui.profile.model.Event
+import com.prac.feature.profile.ProfileViewModel
+import com.prac.feature.profile.model.Action
+import com.prac.feature.profile.model.Event
 
 @Composable
 fun ProfileScreen(

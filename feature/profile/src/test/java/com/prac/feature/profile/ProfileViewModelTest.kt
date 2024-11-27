@@ -1,29 +1,28 @@
-package com.prac.githubrepo.profile
+package com.prac.feature.profile
 
 import app.cash.turbine.test
+import com.prac.core.common.backoff.BackOffWorkManager
 import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
-import com.prac.githubrepo.ui.profile.ProfileViewModel
-import com.prac.githubrepo.ui.profile.model.Action
-import com.prac.githubrepo.ui.profile.model.Event
-import com.prac.githubrepo.ui.profile.model.Mutation
-import com.prac.githubrepo.ui.profile.view.UiState
-import com.prac.core.common.backoff.BackOffWorkManager
-import com.prac.shared_test.ui.FakeBackOffWorkManager
-import com.prac.githubrepo.util.StandardTestDispatcherRule
+import com.prac.feature.profile.model.Action
+import com.prac.feature.profile.model.Event
+import com.prac.feature.profile.model.Mutation
+import com.prac.feature.profile.view.UiState
 import com.prac.shared_test.data.FakeTokenRepository
+import com.prac.shared_test.rules.StandardTestDispatcherRule
+import com.prac.shared_test.ui.FakeBackOffWorkManager
 import com.prac.shared_test.ui.FakeProfileReducerProcessor
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @RunWith(MockitoJUnitRunner::class)
 class ProfileViewModelTest {
@@ -40,7 +39,13 @@ class ProfileViewModelTest {
 
     @Before
     fun setup() {
-        profileViewModel = ProfileViewModel(tokenRepository, mockRepoRepository, profileReducerProcessor, standardTestDispatcherRule.testDispatcher, backOffWorkManager)
+        profileViewModel = ProfileViewModel(
+            tokenRepository,
+            mockRepoRepository,
+            profileReducerProcessor,
+            standardTestDispatcherRule.testDispatcher,
+            backOffWorkManager
+        )
     }
 
     @Test

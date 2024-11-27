@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.profile.view
+package com.prac.feature.profile.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,10 +9,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.prac.core.designsystem.R
 import com.prac.core.designsystem.component.BasicAlertDialog
 import com.prac.core.designsystem.component.BounceButton
 import com.prac.core.designsystem.component.LoadingContent
-import com.prac.githubrepo.R
 
 @Composable
 fun ProfileContent(

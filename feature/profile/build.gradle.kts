@@ -1,6 +1,7 @@
 plugins {
     id("githubrepo.android.library")
     id("githubrepo.android.library.compose")
+    id("githubrepo.android.mockito")
 }
 
 android {
@@ -26,4 +27,6 @@ dependencies {
 
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.lifecycle.runtime)
+
+    implementation(libs.androidx.paging.compose)
 }

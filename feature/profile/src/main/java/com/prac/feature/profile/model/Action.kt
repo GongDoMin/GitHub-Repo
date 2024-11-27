@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.profile.model
+package com.prac.feature.profile.model
 
 sealed interface Action {
     data object UserAction {

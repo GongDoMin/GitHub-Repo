@@ -50,6 +50,7 @@ android {
 dependencies {
 
     implementation(project(":feature:login"))
+    implementation(project(":feature:profile"))
 
     implementation(project(":core:common"))
     implementation(project(":core:designsystem"))

@@ -12,6 +12,7 @@ dependencies {
     implementation(project(":app"))
 
     implementation(project(":feature:login"))
+    implementation(project(":feature:profile"))
 
     implementation(project(":core:common"))
     implementation(project(":core:data"))

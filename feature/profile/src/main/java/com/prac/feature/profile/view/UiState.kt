@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.profile.view
+package com.prac.feature.profile.view
 
 data class UiState(
     var isLoading: Boolean = false,
