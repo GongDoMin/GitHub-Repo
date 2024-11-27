@@ -20,7 +20,9 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
+import com.prac.core.designsystem.R
 
 private enum class ButtonState(val targetFloat: Float) {
     Pressed(0.95f),
@@ -47,8 +49,8 @@ fun BounceButton(
         Text(
             modifier = Modifier
                 .padding(
-                    top = 8.dp,
-                    bottom = 8.dp
+                    top = dimensionResource(id = R.dimen.padding_small),
+                    bottom = dimensionResource(id = R.dimen.padding_small)
                 ),
             text = text
         )

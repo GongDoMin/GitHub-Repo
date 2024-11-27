@@ -12,7 +12,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
+import com.prac.core.designsystem.R
 
 @Composable
 fun LoadingContent(
@@ -40,7 +42,7 @@ private fun Loading() {
     ) {
         CircularProgressIndicator(
             modifier = Modifier
-                .size(36.dp),
+                .size(dimensionResource(id = R.dimen.progressbar)),
             trackColor = Color.Transparent,
             color = Color.Black
         )
