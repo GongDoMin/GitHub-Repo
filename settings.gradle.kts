@@ -32,3 +32,4 @@ include(":core:network")
 include(":core:exception")
 
 include(":feature:login")
+include(":feature:profile")
