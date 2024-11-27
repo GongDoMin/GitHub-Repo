@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui
+package com.prac.core.navigation
 
 import androidx.navigation.NavController
 import com.prac.core.navigation.Routes
