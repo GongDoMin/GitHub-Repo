@@ -1,4 +1,4 @@
-package com.prac.githubrepo.di
+package com.prac.core.common.dispatcher
 
 import dagger.Module
 import dagger.Provides

@@ -7,7 +7,7 @@ import com.prac.core.common.mvi.model.stateModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.core.common.mvi.reducer.Reducer
-import com.prac.githubrepo.di.IODispatcher
+import com.prac.core.common.dispatcher.IODispatcher
 import com.prac.githubrepo.di.ProfileReducerAnnotation
 import com.prac.githubrepo.ui.profile.model.Action
 import com.prac.githubrepo.ui.profile.model.Event

@@ -16,7 +16,7 @@ import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.common.constants.INVALID_TOKEN
 import com.prac.core.common.constants.UNKNOWN
 import com.prac.githubrepo.di.DetailReducerAnnotation
-import com.prac.githubrepo.di.IODispatcher
+import com.prac.core.common.dispatcher.IODispatcher
 import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.REPO_NAME
 import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.USER_NAME
 import com.prac.githubrepo.ui.home.main.detail.model.Action

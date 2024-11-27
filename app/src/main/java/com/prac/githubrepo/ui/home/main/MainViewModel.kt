@@ -18,7 +18,7 @@ import com.prac.core.common.mvi.model.eventModel
 import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.common.constants.INVALID_TOKEN
 import com.prac.core.common.constants.UNKNOWN
-import com.prac.githubrepo.di.IODispatcher
+import com.prac.core.common.dispatcher.IODispatcher
 import com.prac.githubrepo.di.MainReducerAnnotation
 import com.prac.githubrepo.ui.home.main.model.Action
 import com.prac.githubrepo.ui.home.main.model.Event
