@@ -4,8 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoDetailEntity
-import com.prac.exception.CommonException
-import com.prac.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.core.common.constants.CONNECTION_FAIL
@@ -16,7 +14,7 @@ import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.REPO_
 import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.USER_NAME
 import com.prac.githubrepo.ui.home.main.detail.DetailViewModel
 import com.prac.githubrepo.ui.home.main.detail.model.Action
-import com.prac.githubrepo.util.FakeBackOffWorkManager
+import com.prac.shared_test.ui.FakeBackOffWorkManager
 import com.prac.githubrepo.util.StandardTestDispatcherRule
 import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.shared_test.ui.FakeDetailReducerProcessor

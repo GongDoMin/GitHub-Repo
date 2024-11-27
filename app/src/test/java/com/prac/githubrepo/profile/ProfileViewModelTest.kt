@@ -10,7 +10,7 @@ import com.prac.githubrepo.ui.profile.model.Event
 import com.prac.githubrepo.ui.profile.model.Mutation
 import com.prac.githubrepo.ui.profile.view.UiState
 import com.prac.core.common.backoff.BackOffWorkManager
-import com.prac.githubrepo.util.FakeBackOffWorkManager
+import com.prac.shared_test.ui.FakeBackOffWorkManager
 import com.prac.githubrepo.util.StandardTestDispatcherRule
 import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.shared_test.ui.FakeProfileReducerProcessor

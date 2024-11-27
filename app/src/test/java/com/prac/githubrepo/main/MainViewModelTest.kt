@@ -4,8 +4,6 @@ import androidx.paging.PagingData
 import app.cash.turbine.test
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
-import com.prac.exception.CommonException
-import com.prac.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.core.common.constants.INVALID_REPOSITORY
@@ -13,7 +11,7 @@ import com.prac.core.common.constants.UNKNOWN
 import com.prac.githubrepo.ui.home.main.MainViewModel
 import com.prac.githubrepo.ui.home.main.model.Action
 import com.prac.githubrepo.ui.home.main.model.Event
-import com.prac.githubrepo.util.FakeBackOffWorkManager
+import com.prac.shared_test.ui.FakeBackOffWorkManager
 import com.prac.githubrepo.util.StandardTestDispatcherRule
 import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.shared_test.ui.FakeMainReducerProcessor

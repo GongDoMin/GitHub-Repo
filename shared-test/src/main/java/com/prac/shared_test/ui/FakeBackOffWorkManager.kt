@@ -1,4 +1,4 @@
-package com.prac.githubrepo.util
+package com.prac.shared_test.ui
 
 import com.prac.core.common.backoff.BackOffWorkManager
 import kotlinx.coroutines.CoroutineScope
