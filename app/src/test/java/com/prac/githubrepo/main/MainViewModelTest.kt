@@ -4,8 +4,8 @@ import androidx.paging.PagingData
 import app.cash.turbine.test
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
-import com.prac.data.exception.CommonException
-import com.prac.data.exception.RepositoryException
+import com.prac.exception.CommonException
+import com.prac.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.core.common.constants.INVALID_REPOSITORY
@@ -92,7 +92,7 @@ class MainViewModelTest {
         val expectedCallTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
         val expectedDelayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
         whenever(mockRepoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
-            .thenReturn(Result.failure(CommonException.NetworkError()))
+            .thenReturn(Result.failure(com.prac.exception.CommonException.NetworkError()))
 
         mainViewModel.process(Action.UserAction.OnClickUnStar(repoEntity))
         advanceUntilIdle()
@@ -110,7 +110,7 @@ class MainViewModelTest {
         val expectedCallTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
         val expectedDelayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
         whenever(mockRepoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
-            .thenReturn(Result.failure(CommonException.NetworkError()))
+            .thenReturn(Result.failure(com.prac.exception.CommonException.NetworkError()))
 
         mainViewModel.process(Action.UserAction.OnClickStar(repoEntity))
         advanceUntilIdle()
@@ -124,7 +124,7 @@ class MainViewModelTest {
     fun starRepository_starRepositoryIsAuthorizationError_eventIsLogout() = runTest {
         val repoEntity = makeRepoEntity()
         whenever(mockRepoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
-            .thenReturn(Result.failure(CommonException.AuthorizationError()))
+            .thenReturn(Result.failure(com.prac.exception.CommonException.AuthorizationError()))
 
         mainViewModel.process(Action.UserAction.OnClickUnStar(repoEntity))
 
@@ -138,7 +138,7 @@ class MainViewModelTest {
     fun unStarRepository_unStarRepositoryIsAuthorizationError_uiStateHasDialogMessage() = runTest {
         val repoEntity = makeRepoEntity()
         whenever(mockRepoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
-            .thenReturn(Result.failure(CommonException.AuthorizationError()))
+            .thenReturn(Result.failure(com.prac.exception.CommonException.AuthorizationError()))
 
         mainViewModel.process(Action.UserAction.OnClickStar(repoEntity))
 
@@ -152,7 +152,7 @@ class MainViewModelTest {
     fun starRepository_starRepositoryIsNotFoundRepositoryError_uiStateIsError() = runTest {
         val repoEntity = makeRepoEntity()
         whenever(mockRepoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
-            .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
+            .thenReturn(Result.failure(com.prac.exception.RepositoryException.NotFoundRepository()))
 
         mainViewModel.process(Action.UserAction.OnClickUnStar(repoEntity))
 
@@ -169,7 +169,7 @@ class MainViewModelTest {
     fun unStarRepository_unStarRepositoryIsNotFoundRepositoryError_uiStateIsError() = runTest {
         val repoEntity = makeRepoEntity()
         whenever(mockRepoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
-            .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
+            .thenReturn(Result.failure(com.prac.exception.RepositoryException.NotFoundRepository()))
 
         mainViewModel.process(Action.UserAction.OnClickStar(repoEntity))
 
@@ -186,7 +186,7 @@ class MainViewModelTest {
     fun starRepository_starRepositoryIsUnKnownError_uiStateIsError() = runTest {
         val repoEntity = makeRepoEntity()
         whenever(mockRepoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
-            .thenReturn(Result.failure(CommonException.UnKnownError()))
+            .thenReturn(Result.failure(com.prac.exception.CommonException.UnKnownError()))
 
         mainViewModel.process(Action.UserAction.OnClickUnStar(repoEntity))
 
@@ -203,7 +203,7 @@ class MainViewModelTest {
     fun unStarRepository_unStarRepositoryIsUnKnownError_uiStateIsError() = runTest {
         val repoEntity = makeRepoEntity()
         whenever(mockRepoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
-            .thenReturn(Result.failure(CommonException.UnKnownError()))
+            .thenReturn(Result.failure(com.prac.exception.CommonException.UnKnownError()))
 
         mainViewModel.process(Action.UserAction.OnClickStar(repoEntity))
 

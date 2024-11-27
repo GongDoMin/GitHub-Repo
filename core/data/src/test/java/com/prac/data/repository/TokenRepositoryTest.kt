@@ -1,6 +1,6 @@
 package com.prac.data.repository
 
-import com.prac.data.exception.CommonException
+import com.prac.exception.CommonException
 import com.prac.data.repository.impl.TokenRepositoryImpl
 import com.prac.local.datastore.token.TokenLocalDto
 import com.prac.shared_test.local.source.FakeTokenLocalDataSource
@@ -11,7 +11,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Test
 import java.io.IOException
 import java.time.Instant
@@ -75,7 +74,7 @@ class TokenRepositoryTest {
         assertEquals(token.refreshTokenExpiresInSeconds, 0)
         assertTrue(userName.isEmpty())
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is CommonException.NetworkError)
+        assertTrue(result.exceptionOrNull() is com.prac.exception.CommonException.NetworkError)
     }
 
     @Test
@@ -94,7 +93,7 @@ class TokenRepositoryTest {
         assertEquals(token.refreshTokenExpiresInSeconds, 0)
         assertTrue(userName.isEmpty())
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is CommonException.AuthorizationError)
+        assertTrue(result.exceptionOrNull() is com.prac.exception.CommonException.AuthorizationError)
     }
 
     @Test
@@ -112,7 +111,7 @@ class TokenRepositoryTest {
         assertEquals(token.refreshTokenExpiresInSeconds, 0)
         assertTrue(userName.isEmpty())
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is CommonException.NetworkError)
+        assertTrue(result.exceptionOrNull() is com.prac.exception.CommonException.NetworkError)
     }
 
     @Test
@@ -131,7 +130,7 @@ class TokenRepositoryTest {
         assertEquals(token.refreshTokenExpiresInSeconds, 0)
         assertTrue(userName.isEmpty())
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is CommonException.AuthorizationError)
+        assertTrue(result.exceptionOrNull() is com.prac.exception.CommonException.AuthorizationError)
     }
 
     @Test

@@ -1,4 +1,4 @@
-package com.prac.data.exception
+package com.prac.exception
 
 sealed class RepositoryException :Exception() {
     class NotFoundRepository : RepositoryException()

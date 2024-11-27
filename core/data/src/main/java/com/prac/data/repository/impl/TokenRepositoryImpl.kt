@@ -1,6 +1,6 @@
 package com.prac.data.repository.impl
 
-import com.prac.data.exception.CommonException
+import com.prac.exception.CommonException
 import com.prac.data.repository.TokenRepository
 import com.prac.local.TokenLocalDataSource
 import com.prac.local.UserLocalDataSource
@@ -30,10 +30,10 @@ internal class TokenRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             when (e) {
                 is IOException -> {
-                    Result.failure(CommonException.NetworkError())
+                    Result.failure(com.prac.exception.CommonException.NetworkError())
                 }
                 else -> {
-                    Result.failure(CommonException.AuthorizationError())
+                    Result.failure(com.prac.exception.CommonException.AuthorizationError())
                 }
             }
         }

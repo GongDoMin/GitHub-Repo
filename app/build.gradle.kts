@@ -52,6 +52,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:data"))
+    implementation(project(":core:exception"))
     testImplementation(project(":shared-test"))
     androidTestImplementation(project(":shared-test"))
 

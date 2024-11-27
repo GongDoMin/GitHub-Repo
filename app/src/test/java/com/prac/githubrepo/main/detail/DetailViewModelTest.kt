@@ -4,8 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoDetailEntity
-import com.prac.data.exception.CommonException
-import com.prac.data.exception.RepositoryException
+import com.prac.exception.CommonException
+import com.prac.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.core.common.constants.CONNECTION_FAIL
@@ -93,7 +93,7 @@ class DetailViewModelTest {
         val userName = "test"
         val repoName = "test"
         whenever(mockRepoRepository.getRepository(userName, repoName))
-            .thenReturn(Result.failure(CommonException.NetworkError()))
+            .thenReturn(Result.failure(com.prac.exception.CommonException.NetworkError()))
         initViewModel(userName, repoName)
 
         detailViewModel.uiStateFlow.test {
@@ -110,7 +110,7 @@ class DetailViewModelTest {
         val userName = "test"
         val repoName = "test"
         whenever(mockRepoRepository.getRepository(userName, repoName))
-            .thenReturn(Result.failure(CommonException.AuthorizationError()))
+            .thenReturn(Result.failure(com.prac.exception.CommonException.AuthorizationError()))
         initViewModel(userName, repoName)
 
         detailViewModel.uiStateFlow.test {
@@ -159,7 +159,7 @@ class DetailViewModelTest {
         val expectedCallTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
         val expectedDelayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
         whenever(mockRepoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
-            .thenReturn(Result.failure(CommonException.NetworkError()))
+            .thenReturn(Result.failure(com.prac.exception.CommonException.NetworkError()))
 
         detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
         advanceUntilIdle()
@@ -178,7 +178,7 @@ class DetailViewModelTest {
         val expectedCallTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
         val expectedDelayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
         whenever(mockRepoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
-            .thenReturn(Result.failure(CommonException.NetworkError()))
+            .thenReturn(Result.failure(com.prac.exception.CommonException.NetworkError()))
 
         detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
         advanceUntilIdle()
@@ -200,7 +200,7 @@ class DetailViewModelTest {
             .thenReturn(flow { emit(starStateAndCount) })
         initViewModel(userName, repoName)
         whenever(mockRepoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
-            .thenReturn(Result.failure(CommonException.AuthorizationError()))
+            .thenReturn(Result.failure(com.prac.exception.CommonException.AuthorizationError()))
 
         detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
 
@@ -226,7 +226,7 @@ class DetailViewModelTest {
             .thenReturn(flow { emit(starStateAndCount) })
         initViewModel(userName, repoName)
         whenever(mockRepoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
-            .thenReturn(Result.failure(CommonException.AuthorizationError()))
+            .thenReturn(Result.failure(com.prac.exception.CommonException.AuthorizationError()))
 
         detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
 
@@ -252,7 +252,7 @@ class DetailViewModelTest {
             .thenReturn(flow { emit(starStateAndCount) })
         initViewModel(userName, repoName)
         whenever(mockRepoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
-            .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
+            .thenReturn(Result.failure(com.prac.exception.RepositoryException.NotFoundRepository()))
 
         detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
 
@@ -278,7 +278,7 @@ class DetailViewModelTest {
             .thenReturn(flow { emit(starStateAndCount) })
         initViewModel(userName, repoName)
         whenever(mockRepoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
-            .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
+            .thenReturn(Result.failure(com.prac.exception.RepositoryException.NotFoundRepository()))
 
         detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
 
@@ -304,7 +304,7 @@ class DetailViewModelTest {
             .thenReturn(flow { emit(starStateAndCount) })
         initViewModel(userName, repoName)
         whenever(mockRepoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
-            .thenReturn(Result.failure(CommonException.UnKnownError()))
+            .thenReturn(Result.failure(com.prac.exception.CommonException.UnKnownError()))
 
         detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
 
@@ -330,7 +330,7 @@ class DetailViewModelTest {
             .thenReturn(flow { emit(starStateAndCount) })
         initViewModel(userName, repoName)
         whenever(mockRepoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name))
-            .thenReturn(Result.failure(CommonException.UnKnownError()))
+            .thenReturn(Result.failure(com.prac.exception.CommonException.UnKnownError()))
 
         detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
 

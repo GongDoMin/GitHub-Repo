@@ -7,17 +7,15 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingState
 import androidx.paging.map
-import androidx.room.withTransaction
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoDetailEntity
 import com.prac.data.entity.RepoEntity
-import com.prac.data.exception.CommonException
-import com.prac.data.exception.RepositoryException
+import com.prac.exception.CommonException
+import com.prac.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.local.RemoteKeyLocalDataSource
 import com.prac.local.RepositoryLocalDataSource
 import com.prac.local.UserLocalDataSource
-import com.prac.local.room.database.RepositoryDatabase
 import com.prac.local.room.entity.Owner
 import com.prac.local.room.entity.RemoteKey
 import com.prac.local.room.entity.Repository
@@ -196,13 +194,13 @@ internal class RepoRepositoryImpl @Inject constructor(
         return when (e) {
             is HttpException -> {
                 when (e.code()) {
-                    401 -> Result.failure(CommonException.AuthorizationError())
-                    404 -> Result.failure(RepositoryException.NotFoundRepository())
-                    else -> Result.failure(CommonException.UnKnownError())
+                    401 -> Result.failure(com.prac.exception.CommonException.AuthorizationError())
+                    404 -> Result.failure(com.prac.exception.RepositoryException.NotFoundRepository())
+                    else -> Result.failure(com.prac.exception.CommonException.UnKnownError())
                 }
             }
-            is IOException -> Result.failure(CommonException.NetworkError())
-            else -> Result.failure(CommonException.UnKnownError())
+            is IOException -> Result.failure(com.prac.exception.CommonException.NetworkError())
+            else -> Result.failure(com.prac.exception.CommonException.UnKnownError())
         }
     }
 

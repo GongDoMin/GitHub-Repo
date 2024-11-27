@@ -1,10 +1,9 @@
 package com.prac.githubrepo.util
 
-import com.prac.data.exception.CommonException
+import com.prac.exception.CommonException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.io.IOException
 
 class FakeBackOffWorkManager : BackOffWorkManager {
     private val _workMap = mutableMapOf<String, Job>()
@@ -38,7 +37,7 @@ class FakeBackOffWorkManager : BackOffWorkManager {
                         return@launch
                     }
                     .onFailure {
-                        if (it !is CommonException.NetworkError) {
+                        if (it !is com.prac.exception.CommonException.NetworkError) {
                             removeWork(uniqueID)
                             return@launch
                         }

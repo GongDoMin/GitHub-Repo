@@ -2,7 +2,7 @@ package com.prac.githubrepo.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.prac.data.exception.CommonException
+import com.prac.exception.CommonException
 import com.prac.data.repository.TokenRepository
 import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.core.common.mvi.model.stateModel
@@ -81,7 +81,7 @@ class LoginViewModel @Inject constructor(
 
     private fun handleLoginErrorMessage(t: Throwable) =
         when (t) {
-            is CommonException.NetworkError -> CONNECTION_FAIL
+            is com.prac.exception.CommonException.NetworkError -> CONNECTION_FAIL
             else -> LOGIN_FAIL
         }
 

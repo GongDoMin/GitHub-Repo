@@ -8,8 +8,8 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.prac.data.entity.RepoEntity
-import com.prac.data.exception.CommonException
-import com.prac.data.exception.RepositoryException
+import com.prac.exception.CommonException
+import com.prac.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.core.common.mvi.reducer.Reducer
@@ -137,16 +137,16 @@ class MainViewModel @Inject constructor(
 
     private suspend fun handleStarRepositoryFailure(t: Throwable, repoEntity: RepoEntity) {
         when (t) {
-            is CommonException.NetworkError -> {
+            is com.prac.exception.CommonException.NetworkError -> {
                 backOffWorkManager.addWork(
                     uniqueID = "star_${repoEntity.id}",
                     work = { repoRepository.starRepository(repoEntity.owner.login, repoEntity.name) }
                 )
             }
-            is CommonException.AuthorizationError -> {
+            is com.prac.exception.CommonException.AuthorizationError -> {
                 Event.Logout.handleEvent()
             }
-            is RepositoryException.NotFoundRepository -> {
+            is com.prac.exception.RepositoryException.NotFoundRepository -> {
                 repoRepository.unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
 
                 Mutation.ShowError(INVALID_REPOSITORY).handleMutation()
@@ -161,16 +161,16 @@ class MainViewModel @Inject constructor(
 
     private suspend fun handleUnStarRepositoryFailure(t: Throwable, repoEntity: RepoEntity) {
         when (t) {
-            is CommonException.NetworkError -> {
+            is com.prac.exception.CommonException.NetworkError -> {
                 backOffWorkManager.addWork(
                     uniqueID = "star_${repoEntity.id}",
                     work = { repoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name) }
                 )
             }
-            is CommonException.AuthorizationError -> {
+            is com.prac.exception.CommonException.AuthorizationError -> {
                 Event.Logout.handleEvent()
             }
-            is RepositoryException.NotFoundRepository -> {
+            is com.prac.exception.RepositoryException.NotFoundRepository -> {
                 repoRepository.starLocalRepository(repoEntity.id, repoEntity.stargazersCount)
 
                 Mutation.ShowError(INVALID_REPOSITORY).handleMutation()

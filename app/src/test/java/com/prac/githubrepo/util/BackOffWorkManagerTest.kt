@@ -1,6 +1,6 @@
 package com.prac.githubrepo.util
 
-import com.prac.data.exception.CommonException
+import com.prac.exception.CommonException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -9,7 +9,6 @@ import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BackOffWorkManagerTest {
@@ -39,7 +38,7 @@ class BackOffWorkManagerTest {
             work = {
                 if (retryTimes < maxRetryTimes) {
                     retryTimes++
-                    Result.failure<Unit>(CommonException.NetworkError())
+                    Result.failure<Unit>(com.prac.exception.CommonException.NetworkError())
                 } else {
                     Result.success("success")
                 }
@@ -62,7 +61,7 @@ class BackOffWorkManagerTest {
             work = {
                 if (fRetryTimes < fMaxRetryTimes) {
                     fRetryTimes++
-                    Result.failure<Unit>(CommonException.NetworkError())
+                    Result.failure<Unit>(com.prac.exception.CommonException.NetworkError())
                 } else {
                     Result.success("success")
                 }
@@ -77,7 +76,7 @@ class BackOffWorkManagerTest {
             work = {
                 if (sRetryTimes < sMaxRetryTimes) {
                     sRetryTimes++
-                    Result.failure<Unit>(CommonException.NetworkError())
+                    Result.failure<Unit>(com.prac.exception.CommonException.NetworkError())
                 } else {
                     Result.success("success")
                 }
@@ -103,7 +102,7 @@ class BackOffWorkManagerTest {
             work = {
                 if (retryTimes < maxRetryTimes) {
                     retryTimes++
-                    Result.failure<Unit>(CommonException.NetworkError())
+                    Result.failure<Unit>(com.prac.exception.CommonException.NetworkError())
                 } else {
                     Result.failure<Unit>(IllegalArgumentException()) // IOException 이 아닌 다른 에러
                 }

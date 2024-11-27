@@ -1,11 +1,7 @@
 package com.prac.shared_test.data
 
-import com.prac.data.exception.CommonException
+import com.prac.exception.CommonException
 import com.prac.data.repository.TokenRepository
-import com.prac.local.datastore.token.TokenLocalDto
-import java.time.Instant
-import java.time.ZoneId
-import java.time.ZonedDateTime
 
 class FakeTokenRepository(
     private var token: String = ""
@@ -27,8 +23,8 @@ class FakeTokenRepository(
         }
 
         return when (code) {
-            "ioException" -> Result.failure(CommonException.NetworkError())
-            else -> Result.failure(CommonException.AuthorizationError())
+            "ioException" -> Result.failure(com.prac.exception.CommonException.NetworkError())
+            else -> Result.failure(com.prac.exception.CommonException.AuthorizationError())
         }
     }
 
