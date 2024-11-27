@@ -16,7 +16,7 @@ import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.REPO_
 import com.prac.githubrepo.ui.NavigationDestinations.HOME.DETAIL.Companion.USER_NAME
 import com.prac.githubrepo.ui.home.main.detail.view.DetailScreen
 import com.prac.githubrepo.ui.home.main.detail.DetailViewModel
-import com.prac.githubrepo.util.BackOffWorkManager
+import com.prac.core.common.backoff.BackOffWorkManager
 import com.prac.githubrepo.util.hasDrawable
 import com.prac.shared_test.ui.FakeDetailReducerProcessor
 import dagger.hilt.android.testing.HiltAndroidRule

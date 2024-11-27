@@ -1,7 +1,6 @@
-package com.prac.githubrepo.di
+package com.prac.core.common.backoff
 
 import com.prac.exception.CommonException
-import com.prac.githubrepo.util.BackOffWorkManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,7 +15,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class BackOffModule {
+class BackOffWorkManagerModule {
     @Provides
     @Singleton
     fun provideBackOffWorkManager() : BackOffWorkManager {
@@ -45,7 +44,7 @@ class BackOffModule {
                                 return@launch
                             }
                             .onFailure {
-                                if (it !is com.prac.exception.CommonException) {
+                                if (it !is CommonException.NetworkError) {
                                     cancelAndRemoveJob(uniqueID)
                                     return@launch
                                 }

@@ -15,7 +15,7 @@ import com.prac.githubrepo.ui.profile.model.Event.*
 import com.prac.githubrepo.ui.profile.model.Mutation
 import com.prac.githubrepo.ui.profile.model.Mutation.*
 import com.prac.githubrepo.ui.profile.view.UiState
-import com.prac.githubrepo.util.BackOffWorkManager
+import com.prac.core.common.backoff.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharedFlow

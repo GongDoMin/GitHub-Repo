@@ -4,8 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.prac.data.entity.RepoDetailEntity
-import com.prac.exception.CommonException
-import com.prac.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.core.common.mvi.reducer.Reducer
@@ -23,7 +21,7 @@ import com.prac.githubrepo.ui.home.main.detail.model.Action
 import com.prac.githubrepo.ui.home.main.detail.model.Event
 import com.prac.githubrepo.ui.home.main.detail.model.Mutation
 import com.prac.githubrepo.ui.home.main.detail.view.UiState
-import com.prac.githubrepo.util.BackOffWorkManager
+import com.prac.core.common.backoff.BackOffWorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharedFlow
