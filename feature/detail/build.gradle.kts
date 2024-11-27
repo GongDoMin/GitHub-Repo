@@ -14,6 +14,7 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:data"))
     implementation(project(":core:exception"))
+    implementation(project(":core:navigation"))
     testImplementation(project(":shared-test"))
     androidTestImplementation(project(":shared-test"))
 

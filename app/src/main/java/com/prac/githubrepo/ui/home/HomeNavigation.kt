@@ -4,7 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navigation
 import com.prac.core.navigation.NavigationActions
 import com.prac.core.navigation.Routes.HOME
-import com.prac.githubrepo.ui.home.main.detail.detailScreen
+import com.prac.feature.detail.navigation.detailScreen
 import com.prac.feature.main.navigation.mainScreen
 
 fun NavGraphBuilder.homeNavigation(
