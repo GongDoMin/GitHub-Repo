@@ -18,7 +18,6 @@ import com.prac.core.navigation.Routes.LOGIN
 import com.prac.feature.home.navigation.homeNavigation
 import com.prac.feature.login.navigation.loginScreen
 import com.prac.feature.profile.navigation.profileScreen
-import com.prac.githubrepo.components.GitHubBottomNavigation
 
 @Composable
 fun GitHubApp(

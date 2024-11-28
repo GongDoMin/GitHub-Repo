@@ -1,4 +1,4 @@
-package com.prac.githubrepo.components
+package com.prac.githubrepo.ui
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.size
