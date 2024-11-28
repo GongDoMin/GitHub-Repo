@@ -7,11 +7,11 @@ import com.prac.core.navigation.Routes.PROFILE
 import com.prac.feature.profile.view.ProfileScreen
 
 fun NavGraphBuilder.profileScreen(
-    navigationActions: NavigationActions
+    onNavigateToLogin: () -> Unit
 ) {
     composable<PROFILE> {
         ProfileScreen(
-            onNavigateToLogin = { navigationActions.navigateToLogin() }
+            onNavigateToLogin = onNavigateToLogin
         )
     }
 }

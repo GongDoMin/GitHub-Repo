@@ -55,7 +55,7 @@ fun GitHubApp(
             )
 
             profileScreen(
-                navigationActions = navigationActions
+                onNavigateToLogin = navigationActions::navigateToLogin
             )
         }
     }
