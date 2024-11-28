@@ -21,7 +21,7 @@ import com.prac.feature.detail.model.Event
 fun DetailScreen(
     viewModel: DetailViewModel = hiltViewModel(),
     onNavigateToLogin: () -> Unit,
-    onBack: () -> Unit
+    onNavigateToBackStack: () -> Unit
 ) {
     val uiState = viewModel.uiStateFlow.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -45,7 +45,7 @@ fun DetailScreen(
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.eventFlow.collect {
                 when (it) {
-                    is Event.Error -> onBack()
+                    is Event.Error -> onNavigateToBackStack()
                     is Event.Logout -> onNavigateToLogin()
                 }
             }

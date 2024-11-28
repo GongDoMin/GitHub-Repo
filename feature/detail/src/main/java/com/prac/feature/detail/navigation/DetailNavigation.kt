@@ -12,7 +12,7 @@ fun NavGraphBuilder.detailScreen(
     composable<HOME.DETAIL> {
         DetailScreen(
             onNavigateToLogin = onNavigateToLogin,
-            onBack = onNavigateToBackStack
+            onNavigateToBackStack = onNavigateToBackStack
         )
     }
 }

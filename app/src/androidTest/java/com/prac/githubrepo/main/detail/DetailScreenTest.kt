@@ -81,7 +81,7 @@ class DetailScreenTest {
             DetailScreen(
                 viewModel = viewModel,
                 onNavigateToLogin = { },
-                onBack = { isMainScreen = true }
+                onNavigateToBackStack = { isMainScreen = true }
             )
         }
 
@@ -112,7 +112,7 @@ class DetailScreenTest {
             DetailScreen(
                 viewModel = viewModel,
                 onNavigateToLogin = { },
-                onBack = { }
+                onNavigateToBackStack = { }
             )
         }
 
@@ -144,7 +144,7 @@ class DetailScreenTest {
             DetailScreen(
                 viewModel = viewModel,
                 onNavigateToLogin = { },
-                onBack = { }
+                onNavigateToBackStack = { }
             )
         }
 
