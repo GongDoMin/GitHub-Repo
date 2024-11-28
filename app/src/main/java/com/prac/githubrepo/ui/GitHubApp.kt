@@ -45,7 +45,7 @@ fun GitHubApp(
             startDestination = startDestination,
         ) {
             loginScreen(
-                navigationActions = navigationActions
+                onNavigateToMain = navigationActions::navigateToMain,
             )
 
             homeNavigation(
