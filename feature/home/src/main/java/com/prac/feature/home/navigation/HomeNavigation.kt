@@ -18,8 +18,8 @@ fun NavGraphBuilder.homeNavigation(
         )
 
         detailScreen(
-            onLogout = onNavigateToLogin,
-            onBack = onNavigateToBackStack
+            onNavigateToLogin = onNavigateToLogin,
+            onNavigateToBackStack = onNavigateToBackStack
         )
     }
 }
