@@ -6,13 +6,13 @@ import com.prac.core.navigation.Routes.HOME
 import com.prac.feature.main.view.MainScreen
 
 fun NavGraphBuilder.mainScreen(
-    onLogout: () -> Unit,
-    onClickRepository: (String, String) -> Unit
+    onNavigateToLogin: () -> Unit,
+    onNavigateToDetail: (userName: String, repoName: String) -> Unit
 ) {
     composable<HOME.MAIN> {
         MainScreen(
-            onNavigateToLogin = onLogout,
-            onClickRepository = onClickRepository
+            onNavigateToLogin = onNavigateToLogin,
+            onClickRepository = onNavigateToDetail
         )
     }
 }
