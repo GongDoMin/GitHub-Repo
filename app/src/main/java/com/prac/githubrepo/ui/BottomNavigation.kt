@@ -40,7 +40,7 @@ sealed class BottomNavItem(
 @Composable
 fun GitHubBottomNavigation(
     modifier: Modifier = Modifier,
-    navigationActions: NavigationActions,
+    onNavigationToBottom: (Routes) -> Unit,
     currentDestination: NavDestination?
 ) {
     val items = listOf(
@@ -72,7 +72,7 @@ fun GitHubBottomNavigation(
                 },
                 onClick = {
                     if (currentDestination?.hierarchyHasRoute(item.route) == false) {
-                        navigationActions.navigateToBottom(item.route)
+                        onNavigationToBottom(item.route)
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(

@@ -33,7 +33,7 @@ fun GitHubApp(
             if (navBackStackEntry?.destination?.hasRoute(LOGIN::class) == true) return@Scaffold
 
             GitHubBottomNavigation(
-                navigationActions = navigationActions,
+                onNavigationToBottom = navigationActions::navigateToBottom,
                 currentDestination = navBackStackEntry?.destination
             )
         }
