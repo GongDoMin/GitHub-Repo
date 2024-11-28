@@ -1,4 +1,4 @@
-package com.prac.githubrepo.ui.home
+package com.prac.feature.home.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navigation
