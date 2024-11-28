@@ -8,23 +8,19 @@ import com.prac.feature.detail.navigation.detailScreen
 import com.prac.feature.main.navigation.mainScreen
 
 fun NavGraphBuilder.homeNavigation(
-    navigationActions: NavigationActions
+    onNavigateToLogin: () -> Unit,
+    onNavigateToDetail: (userName: String, repoName: String) -> Unit,
+    onNavigateToBackStack: () -> Unit
 ) {
     navigation<HOME>(startDestination = HOME.MAIN) {
         mainScreen(
-            onLogout = {
-                navigationActions.navigateToLogin()
-            },
-            onClickRepository = { userName, repoName ->
-                navigationActions.navigateToDetail(userName, repoName)
-            }
+            onLogout = onNavigateToLogin,
+            onClickRepository = onNavigateToDetail
         )
 
         detailScreen(
-            onLogout = {
-                navigationActions.navigateToLogin()
-            },
-            onBack = { navigationActions.popBackStack() }
+            onLogout = onNavigateToLogin,
+            onBack = onNavigateToBackStack
         )
     }
 }

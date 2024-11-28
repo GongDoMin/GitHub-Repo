@@ -49,7 +49,9 @@ fun GitHubApp(
             )
 
             homeNavigation(
-                navigationActions = navigationActions
+                onNavigateToLogin = navigationActions::navigateToLogin,
+                onNavigateToDetail = navigationActions::navigateToDetail,
+                onNavigateToBackStack = navigationActions::popBackStack
             )
 
             profileScreen(
