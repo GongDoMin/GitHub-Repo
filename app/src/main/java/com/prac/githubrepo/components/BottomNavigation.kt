@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
-import com.prac.githubrepo.R
+import com.prac.core.designsystem.R
 import com.prac.core.navigation.NavigationActions
 import com.prac.core.navigation.Routes
 import com.prac.core.navigation.Routes.HOME
