@@ -1,5 +1,6 @@
-package com.prac.githubrepo.util
+package com.prac.core.common
 
+import com.prac.exception.CommonException
 import com.prac.shared_test.ui.FakeBackOffWorkManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -61,7 +62,7 @@ class BackOffWorkManagerTest {
             work = {
                 if (fRetryTimes < fMaxRetryTimes) {
                     fRetryTimes++
-                    Result.failure<Unit>(com.prac.exception.CommonException.NetworkError())
+                    Result.failure<Unit>(CommonException.NetworkError())
                 } else {
                     Result.success("success")
                 }
@@ -76,7 +77,7 @@ class BackOffWorkManagerTest {
             work = {
                 if (sRetryTimes < sMaxRetryTimes) {
                     sRetryTimes++
-                    Result.failure<Unit>(com.prac.exception.CommonException.NetworkError())
+                    Result.failure<Unit>(CommonException.NetworkError())
                 } else {
                     Result.success("success")
                 }
@@ -102,7 +103,7 @@ class BackOffWorkManagerTest {
             work = {
                 if (retryTimes < maxRetryTimes) {
                     retryTimes++
-                    Result.failure<Unit>(com.prac.exception.CommonException.NetworkError())
+                    Result.failure<Unit>(CommonException.NetworkError())
                 } else {
                     Result.failure<Unit>(IllegalArgumentException()) // IOException 이 아닌 다른 에러
                 }

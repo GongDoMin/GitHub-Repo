@@ -10,6 +10,7 @@ android {
 dependencies {
 
     implementation(project(":core:exception"))
+    testImplementation(project(":shared-test"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
