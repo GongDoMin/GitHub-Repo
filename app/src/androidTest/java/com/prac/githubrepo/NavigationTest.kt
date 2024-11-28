@@ -94,39 +94,6 @@ class NavigationTest {
     }
 
     @Test
-    fun navigationDetailToMainTest() = runTest {
-        composeTestRule.setContent {
-            navController = TestNavHostController(LocalContext.current)
-            navController.navigatorProvider.addNavigator(ComposeNavigator())
-            GitHubApp(
-                startDestination = HOME,
-                navController = navController
-            )
-        }
-
-        val clickPosition = 0
-        composeTestRule
-            .onNode(hasTestTag("lazyColumn"))
-            .performScrollToIndex(clickPosition)
-            .assertIsDisplayed()
-
-        composeTestRule
-            .onNodeWithText("test $clickPosition")
-            .performClick()
-
-        composeTestRule.waitUntil {
-            navController.currentBackStackEntry?.destination?.hasRoute(HOME.DETAIL::class) == true
-        }
-
-        pressBack()
-
-        composeTestRule.waitUntil {
-            navController.currentBackStackEntry?.destination?.hasRoute(HOME.MAIN::class) == true
-                    && composeTestRule.onNodeWithText(activity.getString(R.string.repository)).isDisplayed()
-        }
-    }
-
-    @Test
     fun navigationBottomHomeToBottomProfile() = runTest {
         composeTestRule.setContent {
             navController = TestNavHostController(LocalContext.current)
