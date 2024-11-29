@@ -1,4 +1,4 @@
-package com.prac.githubrepo.main.detail
+package com.prac.feature.detail
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasContentDescription
@@ -7,7 +7,6 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.lifecycle.SavedStateHandle
-import androidx.test.espresso.intent.Intents
 import com.prac.core.common.backoff.BackOffWorkManager
 import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.designsystem.R
@@ -15,15 +14,12 @@ import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.REPO_NAME
 import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.USER_NAME
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
-import com.prac.feature.detail.DetailReducerProcessor
-import com.prac.feature.detail.DetailViewModel
 import com.prac.feature.detail.view.DetailScreen
-import com.prac.githubrepo.HiltTestActivity
+import com.prac.shared_test.HiltTestActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -51,12 +47,6 @@ class DetailScreenTest {
     @Before
     fun setup() {
         hiltRule.inject()
-        Intents.init()
-    }
-
-    @After
-    fun tearDown() {
-        Intents.release()
     }
 
     @Test
