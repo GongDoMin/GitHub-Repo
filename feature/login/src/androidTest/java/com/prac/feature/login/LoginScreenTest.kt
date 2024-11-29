@@ -1,4 +1,4 @@
-package com.prac.githubrepo.login
+package com.prac.feature.login
 
 import android.content.Intent
 import android.net.Uri
@@ -10,12 +10,11 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
-import com.prac.githubrepo.BuildConfig
-import com.prac.githubrepo.HiltTestActivity
-import com.prac.core.designsystem.R
 import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.core.common.constants.LOGIN_FAIL
+import com.prac.core.designsystem.R
 import com.prac.feature.login.view.LoginScreen
+import com.prac.shared_test.HiltTestActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
