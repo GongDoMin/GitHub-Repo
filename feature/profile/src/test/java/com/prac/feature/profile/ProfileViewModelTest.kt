@@ -12,7 +12,6 @@ import com.prac.feature.profile.view.UiState
 import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.shared_test.rules.StandardTestDispatcherRule
 import com.prac.shared_test.ui.FakeBackOffWorkManager
-import com.prac.shared_test.ui.FakeProfileReducerProcessor
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -32,7 +31,7 @@ class ProfileViewModelTest {
 
     private val tokenRepository: TokenRepository = FakeTokenRepository("test")
     @Mock private lateinit var mockRepoRepository: RepoRepository
-    private val profileReducerProcessor: Reducer<Mutation, UiState> = FakeProfileReducerProcessor()
+    private val profileReducerProcessor: Reducer<Mutation, UiState> = ProfileReducerProcessor()
     private val backOffWorkManager: BackOffWorkManager = FakeBackOffWorkManager()
 
     private lateinit var profileViewModel: ProfileViewModel

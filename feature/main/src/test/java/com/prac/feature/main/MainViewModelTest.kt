@@ -13,7 +13,6 @@ import com.prac.feature.main.model.Event
 import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.shared_test.rules.StandardTestDispatcherRule
 import com.prac.shared_test.ui.FakeBackOffWorkManager
-import com.prac.shared_test.ui.FakeMainReducerProcessor
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -41,7 +40,7 @@ class MainViewModelTest {
     private val tokenRepository: TokenRepository = FakeTokenRepository("test")
     @Mock private lateinit var mockRepoRepository: RepoRepository
     private val backOffWork: FakeBackOffWorkManager = FakeBackOffWorkManager()
-    private val mainReducerProcessor = FakeMainReducerProcessor()
+    private val mainReducerProcessor = MainReducerProcessor()
 
     private lateinit var mainViewModel: MainViewModel
 

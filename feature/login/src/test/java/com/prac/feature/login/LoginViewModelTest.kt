@@ -7,7 +7,6 @@ import com.prac.feature.login.model.Action
 import com.prac.feature.login.model.Event
 import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.shared_test.rules.StandardTestDispatcherRule
-import com.prac.shared_test.ui.FakeLoginReducerProcessor
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -22,7 +21,7 @@ class LoginViewModelTest {
 
     private lateinit var loginViewModel: LoginViewModel
 
-    private val loginActionProcessor = FakeLoginReducerProcessor()
+    private val loginActionProcessor = LoginReducerProcessor()
     private lateinit var tokenRepository: TokenRepository
 
     @Test

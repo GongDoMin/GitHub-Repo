@@ -11,14 +11,14 @@ import androidx.test.espresso.intent.Intents
 import com.prac.core.common.backoff.BackOffWorkManager
 import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.designsystem.R
+import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.REPO_NAME
+import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.USER_NAME
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
+import com.prac.feature.detail.DetailReducerProcessor
 import com.prac.feature.detail.DetailViewModel
 import com.prac.feature.detail.view.DetailScreen
 import com.prac.githubrepo.HiltTestActivity
-import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.REPO_NAME
-import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.USER_NAME
-import com.prac.shared_test.ui.FakeDetailReducerProcessor
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.Dispatchers
@@ -41,7 +41,7 @@ class DetailScreenTest {
 
     private lateinit var viewModel: DetailViewModel
 
-    private val detailReducerProcessor = FakeDetailReducerProcessor()
+    private val detailReducerProcessor = DetailReducerProcessor()
 
     private var isMainScreen = false
 
