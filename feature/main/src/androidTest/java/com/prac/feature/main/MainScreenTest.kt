@@ -1,4 +1,4 @@
-package com.prac.githubrepo.main
+package com.prac.feature.main
 
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
@@ -12,13 +12,11 @@ import androidx.compose.ui.test.onChild
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
-import androidx.test.espresso.intent.Intents
-import com.prac.githubrepo.HiltTestActivity
 import com.prac.feature.main.view.MainScreen
+import com.prac.shared_test.HiltTestActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -41,13 +39,7 @@ class MainScreenTest {
     @Before
     fun setup() {
         hiltRule.inject()
-        Intents.init()
         setContent()
-    }
-
-    @After
-    fun tearDown() {
-        Intents.release()
     }
 
     @Test
