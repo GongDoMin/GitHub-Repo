@@ -27,6 +27,7 @@ runner = "1.5.0"
 serialization-converter = "1.0.0"
 kotlinx-serialization = "1.7.1"
 turbine = "1.0.0"
+uiTestManifest = "1.7.5"
 viewModel = "2.4.0"
 runtime = "2.8.3"
 datastore = "1.0.0"
@@ -75,6 +76,7 @@ androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle
 androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-android", version.ref = "runtime" }
 androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigationTesting" }
 androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
+androidx-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "uiTestManifest" }
 
 androidx-paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
 

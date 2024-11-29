@@ -5,17 +5,24 @@ plugins {
 
 android {
     namespace = "com.prac.shared_test"
+
+    sourceSets {
+        getByName("debug") {
+            java.srcDirs("src/debug/java")
+        }
+    }
 }
 
 dependencies {
-
-    implementation(project(":app"))
 
     implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:exception"))
     implementation(project(":core:local"))
     implementation(project(":core:network"))
+
+    implementation(libs.androidx.runner)
+    debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.retrofit)
 }
