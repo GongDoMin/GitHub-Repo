@@ -12,7 +12,7 @@ import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.shared_test.rules.StandardTestDispatcherRule
-import com.prac.shared_test.ui.FakeBackOffWorkManager
+import com.prac.shared_test.common.FakeBackOffWorkManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.advanceUntilIdle

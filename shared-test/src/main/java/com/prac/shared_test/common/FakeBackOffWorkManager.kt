@@ -1,4 +1,4 @@
-package com.prac.shared_test.ui
+package com.prac.shared_test.common
 
 import com.prac.core.common.backoff.BackOffWorkManager
 import kotlinx.coroutines.CoroutineScope

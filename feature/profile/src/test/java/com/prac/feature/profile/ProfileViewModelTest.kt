@@ -11,7 +11,7 @@ import com.prac.feature.profile.model.Mutation
 import com.prac.feature.profile.view.UiState
 import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.shared_test.rules.StandardTestDispatcherRule
-import com.prac.shared_test.ui.FakeBackOffWorkManager
+import com.prac.shared_test.common.FakeBackOffWorkManager
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
