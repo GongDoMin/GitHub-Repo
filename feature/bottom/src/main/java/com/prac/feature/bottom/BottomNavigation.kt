@@ -14,9 +14,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavDestination.Companion.hierarchy
 import com.prac.core.designsystem.R
 import com.prac.core.navigation.Routes
 
@@ -24,19 +21,15 @@ import com.prac.core.navigation.Routes
 fun GitHubBottomNavigation(
     modifier: Modifier = Modifier,
     onNavigationToBottom: (Routes) -> Unit,
-    currentDestination: NavDestination?
+    bottomNavItemList: List<BottomNavItem>,
+    currentBottomNavItem: BottomNavItem
 ) {
-    val items = listOf(
-        BottomNavItem.Home,
-        BottomNavItem.Profile
-    )
-
     NavigationBar(
         modifier = modifier
     ) {
-        items.forEach { item ->
+        bottomNavItemList.forEach { item ->
             NavigationBarItem(
-                selected = currentDestination?.hierarchyHasRoute(item.route) == true,
+                selected = currentBottomNavItem == item,
                 label = {
                     Text(
                         text = stringResource(id = item.title),
@@ -54,7 +47,7 @@ fun GitHubBottomNavigation(
                     )
                 },
                 onClick = {
-                    if (currentDestination?.hierarchyHasRoute(item.route) == false) {
+                    if (currentBottomNavItem != item) {
                         onNavigationToBottom(item.route)
                     }
                 },
@@ -69,6 +62,3 @@ fun GitHubBottomNavigation(
         }
     }
 }
-
-private fun NavDestination?.hierarchyHasRoute(route: Routes) =
-    this?.hierarchy?.any { it.hasRoute(route::class) }
