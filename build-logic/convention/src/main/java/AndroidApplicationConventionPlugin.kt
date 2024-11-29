@@ -21,7 +21,7 @@ internal class AndroidApplicationConventionPlugin : Plugin<Project> {
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)
                 defaultConfig.targetSdk = 34
-                defaultConfig.testInstrumentationRunner = "com.prac.githubrepo.CustomTestRunner"
+                defaultConfig.testInstrumentationRunner = "com.prac.shared_test.CustomTestRunner"
                 buildFeatures.buildConfig = true
             }
 

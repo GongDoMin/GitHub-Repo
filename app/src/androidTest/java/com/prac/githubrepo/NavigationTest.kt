@@ -13,13 +13,13 @@ import androidx.compose.ui.test.performScrollToIndex
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
-import androidx.test.espresso.Espresso.pressBack
+import com.prac.core.designsystem.R
 import com.prac.core.navigation.Routes.HOME
 import com.prac.core.navigation.Routes.PROFILE
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
-import com.prac.core.designsystem.R
 import com.prac.githubrepo.ui.GitHubApp
+import com.prac.shared_test.HiltTestActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest

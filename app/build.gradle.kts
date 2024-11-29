@@ -40,11 +40,6 @@ android {
             buildConfigField("String", "GITHUB_OAUTH_URI", "" + localProperties["GITHUB_OAUTH_URI"] + "")
         }
     }
-    sourceSets {
-        getByName("debug") {
-            java.srcDirs("src/debug/java")
-        }
-    }
 }
 
 dependencies {
@@ -60,6 +55,7 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:data"))
     implementation(project(":core:exception"))
+    implementation(project(":shared-test"))
     testImplementation(project(":shared-test"))
     androidTestImplementation(project(":shared-test"))
 
