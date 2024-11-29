@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.prac.core.navigation.NavigationActions
 import com.prac.core.navigation.Routes
 import com.prac.core.navigation.Routes.LOGIN
+import com.prac.feature.bottom.GitHubBottomNavigation
 import com.prac.feature.home.navigation.homeNavigation
 import com.prac.feature.login.navigation.loginScreen
 import com.prac.feature.profile.navigation.profileScreen

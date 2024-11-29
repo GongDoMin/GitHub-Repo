@@ -1,10 +1,6 @@
-package com.prac.githubrepo.ui
+package com.prac.feature.bottom
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -13,7 +9,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -23,19 +18,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.prac.core.designsystem.R
-import com.prac.core.navigation.NavigationActions
 import com.prac.core.navigation.Routes
-import com.prac.core.navigation.Routes.HOME
-import com.prac.core.navigation.Routes.PROFILE
-
-sealed class BottomNavItem(
-    @StringRes val title: Int,
-    val icon: ImageVector,
-    val route: Routes
-) {
-    data object Home : BottomNavItem(R.string.bottom_home, Icons.Default.Home, HOME)
-    data object Profile : BottomNavItem(R.string.bottom_profile, Icons.Default.AccountCircle, PROFILE)
-}
 
 @Composable
 fun GitHubBottomNavigation(
