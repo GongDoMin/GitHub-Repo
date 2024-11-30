@@ -12,6 +12,8 @@ import com.prac.core.common.dispatcher.IODispatcher
 import com.prac.core.common.mvi.model.eventModel
 import com.prac.core.common.mvi.model.stateModel
 import com.prac.core.common.mvi.reducer.Reducer
+import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.REPO_NAME
+import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.USER_NAME
 import com.prac.data.model.RepoDetailModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
@@ -24,6 +26,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -57,8 +60,8 @@ class DetailViewModel @Inject constructor(
     }
 
     private fun getRepository() {
-        val userName = savedStateHandle.get<String>("userName")
-        val repoName = savedStateHandle.get<String>("repoName")
+        val userName = savedStateHandle.get<String>(USER_NAME)
+        val repoName = savedStateHandle.get<String>(REPO_NAME)
 
         Mutation.ShowLoading.handleMutation()
 
