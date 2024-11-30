@@ -1,7 +1,7 @@
 package com.prac.feature.login.view
 
 data class UiState(
-    var isLoading: Boolean = false,
-    var isError: Boolean = false,
-    var errorMessage: String = ""
+    val isLoading: Boolean = false,
+    val isError: Boolean = false,
+    val errorMessage: String = ""
 )
