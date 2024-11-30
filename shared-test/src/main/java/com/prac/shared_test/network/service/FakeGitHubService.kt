@@ -1,5 +1,7 @@
 package com.prac.shared_test.network.service
 
+import com.prac.network.dto.IssueDto
+import com.prac.network.dto.PullDto
 import com.prac.network.dto.RepoDetailDto
 import com.prac.network.dto.RepoDto
 import com.prac.network.service.GitHubService
@@ -36,5 +38,13 @@ class FakeGitHubService(
 
     override suspend fun unStarRepository(userName: String, repoName: String) {
         throw NotImplementedError("this method is not supported in FakeGitHubService")
+    }
+
+    override suspend fun getRepoIssues(userName: String, repoName: String): List<IssueDto> {
+        return listOf(IssueDto(), IssueDto())
+    }
+
+    override suspend fun getRepoPulls(userName: String, repoName: String): List<PullDto> {
+        return listOf(PullDto(), PullDto())
     }
 }

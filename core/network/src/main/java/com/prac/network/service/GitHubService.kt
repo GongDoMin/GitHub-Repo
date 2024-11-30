@@ -1,5 +1,7 @@
 package com.prac.network.service
 
+import com.prac.network.dto.IssueDto
+import com.prac.network.dto.PullDto
 import com.prac.network.dto.RepoDetailDto
 import com.prac.network.dto.RepoDto
 import retrofit2.http.DELETE
@@ -39,4 +41,16 @@ interface GitHubService {
         @Path("userName") userName: String,
         @Path("repoName") repoName: String
     )
+
+    @GET("repos/{userName}/{repoName}/issues")
+    suspend fun getRepoIssues(
+        @Path("userName") userName: String,
+        @Path("repoName") repoName: String
+    ): List<IssueDto>
+
+    @GET("repos/{userName}/{repoName}/pulls")
+    suspend fun getRepoPulls(
+        @Path("userName") userName: String,
+        @Path("repoName") repoName: String
+    ): List<PullDto>
 }
