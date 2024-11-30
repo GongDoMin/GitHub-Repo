@@ -21,11 +21,16 @@ import com.prac.local.room.entity.RemoteKey
 import com.prac.local.room.entity.Repository
 import com.prac.network.RepoApiDataSource
 import com.prac.network.RepoStarApiDataSource
+import com.prac.network.dto.RepoDetailDto
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
+import kotlin.coroutines.EmptyCoroutineContext
 
 internal class RepoRepositoryImpl @Inject constructor(
     private val repoApiDataSource: RepoApiDataSource,
@@ -54,16 +59,27 @@ internal class RepoRepositoryImpl @Inject constructor(
 
     override suspend fun getRepository(userName: String, repoName: String): Result<RepoDetailModel> {
         return try {
-            val model = repoApiDataSource.getRepository(userName, repoName)
+            withContext(EmptyCoroutineContext) {
+                val issueCount: Int
+                val pullCount: Int
+                val repoDetailDto: RepoDetailDto
 
-            // 디테일 화면에 들어오는 동안 Star Count 가 변경될 수 있기 때문에 Star Count update
-            repositoryLocalDataSource.updateStarCount(model.id, model.stargazersCount)
+                val deferredIssueCount = async { repoApiDataSource.getRepoIssueSize(userName, repoName) }
+                val deferredPullCount = async { repoApiDataSource.getRepoPullSize(userName, repoName) }
+                val deferredRepoDetailDto = async { repoApiDataSource.getRepository(userName, repoName) }
 
-            Result.success(
-                RepoDetailModel(
-                    model.id, model.name, OwnerModel(model.owner.login, model.owner.avatarUrl), model.stargazersCount, model.forksCount, null
+                issueCount = deferredIssueCount.await()
+                pullCount = deferredPullCount.await()
+                repoDetailDto = deferredRepoDetailDto.await()
+
+                repositoryLocalDataSource.updateStarCount(repoDetailDto.id, repoDetailDto.stargazersCount)
+
+                Result.success(
+                    RepoDetailModel(
+                        repoDetailDto.id, repoDetailDto.name, OwnerModel(repoDetailDto.owner.login, repoDetailDto.owner.avatarUrl), repoDetailDto.stargazersCount, repoDetailDto.forksCount, null, issueCount, pullCount
+                    )
                 )
-            )
+            }
         } catch (e: Exception) {
             handleRepositoryError(e)
         }
