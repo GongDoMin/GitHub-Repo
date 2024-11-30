@@ -75,7 +75,7 @@ internal class RepoRepositoryImpl @Inject constructor(
 
                 Result.success(
                     RepoDetailModel(
-                        repoDetailDto.id, repoDetailDto.name, OwnerModel(repoDetailDto.owner.login, repoDetailDto.owner.avatarUrl), repoDetailDto.stargazersCount, repoDetailDto.forksCount, null, issueCount, pullCount
+                        repoDetailDto.id, repoDetailDto.name, OwnerModel(repoDetailDto.owner.login, repoDetailDto.owner.avatarUrl), repoDetailDto.stargazersCount, repoDetailDto.forksCount, null, issueCount, pullCount, repoDetailDto.subscribersCount
                     )
                 )
             }
