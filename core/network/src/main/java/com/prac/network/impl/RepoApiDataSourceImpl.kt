@@ -21,4 +21,16 @@ internal class RepoApiDataSourceImpl @Inject constructor(
         return response
     }
 
+    override suspend fun getRepoIssueSize(userName: String, repoName: String): Int {
+        val issueSize = gitHubService.getRepoIssues(userName, repoName).size
+
+        return issueSize
+    }
+
+    override suspend fun getRepoPullSize(userName: String, repoName: String): Int {
+        val pullSize = gitHubService.getRepoPulls(userName, repoName).size
+
+        return pullSize
+    }
+
 }
