@@ -84,13 +84,13 @@ fun DetailContent(
                 DetailInfo(
                     imageVector = ImageVector.vectorResource(id = R.drawable.pull_request_24),
                     title = stringResource(id = R.string.pull_request),
-                    value = repoDetail.issueCount
+                    value = repoDetail.pullCount
                 )
 
                 DetailInfo(
                     imageVector = ImageVector.vectorResource(id = R.drawable.subscribe_24),
                     title = stringResource(id = R.string.subscribe),
-                    value = repoDetail.issueCount
+                    value = repoDetail.subscribeCount
                 )
             }
         }
