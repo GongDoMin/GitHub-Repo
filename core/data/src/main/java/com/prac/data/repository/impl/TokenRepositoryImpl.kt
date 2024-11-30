@@ -40,6 +40,7 @@ internal class TokenRepositoryImpl @Inject constructor(
     }
 
     override suspend fun isLoggedIn(): Boolean {
+        println(tokenLocalDataSource.getToken().accessToken)
         return tokenLocalDataSource.getToken().accessToken.isNotEmpty()
     }
 

@@ -111,7 +111,7 @@ class DetailScreenTest {
             .performClick()
 
         composeTestRule.waitUntil {
-            composeTestRule.onNodeWithText(expectedStarCount.toString()).isDisplayed()
+            composeTestRule.onNodeWithText(activity.getString(R.string.star_count, expectedStarCount)).isDisplayed()
                     && composeTestRule.onNode(hasContentDescription("image is unstar")).isDisplayed()
         }
     }
@@ -143,7 +143,7 @@ class DetailScreenTest {
             .performClick()
 
         composeTestRule.waitUntil {
-            composeTestRule.onNodeWithText(expectedStarCount.toString()).isDisplayed()
+            composeTestRule.onNodeWithText(activity.getString(R.string.star_count, expectedStarCount)).isDisplayed()
                     && composeTestRule.onNode(hasContentDescription("image is star")).isDisplayed()
         }
     }

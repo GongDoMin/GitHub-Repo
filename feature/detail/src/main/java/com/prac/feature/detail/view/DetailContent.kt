@@ -15,6 +15,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -145,8 +148,20 @@ fun DetailContentStarAndFork(
         )
 
         Text(
-            modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_small)),
-            text = repoDetail.stargazersCount.toString()
+            modifier = Modifier
+                .padding(start = dimensionResource(id = R.dimen.padding_small))
+                .drawBehind {
+                    val strokeWidthPx = 1.dp.toPx()
+                    val verticalOffset = size.height - 1.sp.toPx()
+                    drawLine(
+                        color = Color.Black,
+                        strokeWidth = strokeWidthPx,
+                        start = Offset(0f, verticalOffset),
+                        end = Offset(size.width, verticalOffset)
+                    )
+                }
+            ,
+            text = stringResource(id = R.string.star_count, repoDetail.stargazersCount)
         )
 
         Image(
@@ -158,8 +173,20 @@ fun DetailContentStarAndFork(
         )
 
         Text(
-            modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_small)),
-            text = repoDetail.forksCount.toString()
+            modifier = Modifier
+                .padding(start = dimensionResource(id = R.dimen.padding_small))
+                .drawBehind {
+                    val strokeWidthPx = 1.dp.toPx()
+                    val verticalOffset = size.height - 1.sp.toPx()
+                    drawLine(
+                        color = Color.Black,
+                        strokeWidth = strokeWidthPx,
+                        start = Offset(0f, verticalOffset),
+                        end = Offset(size.width, verticalOffset)
+                    )
+                }
+            ,
+            text = stringResource(id = R.string.fork_count, repoDetail.forksCount)
         )
     }
 }
