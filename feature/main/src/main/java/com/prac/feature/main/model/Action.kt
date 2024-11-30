@@ -1,6 +1,5 @@
 package com.prac.feature.main.model
 
-import androidx.paging.LoadState
 import com.prac.data.entity.RepoEntity
 
 sealed interface Action {
@@ -14,10 +13,6 @@ sealed interface Action {
     }
     data object InternalAction {
         data object Load : Action
-        data class UpdateRepositories(
-            val repositories: List<RepoEntity>,
-            val loadState: LoadState
-        ) : Action
         data class FetchStarState(val repoEntity: RepoEntity) : Action
     }
 }

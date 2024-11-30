@@ -61,7 +61,6 @@ class MainViewModel @Inject constructor(
         when (action) {
             is Action.InternalAction.Load -> load()
             is Action.InternalAction.FetchStarState -> fetchStarState(action.repoEntity)
-            is Action.InternalAction.UpdateRepositories -> updateRepositories(action.repositories, action.loadState)
             is Action.UserAction.OnClickRepository -> onClickRepository(action.repoEntity)
             is Action.UserAction.OnClickUnStar -> onClickUnStar(action.repoEntity)
             is Action.UserAction.OnClickStar -> onClickStar(action.repoEntity)
@@ -86,12 +85,6 @@ class MainViewModel @Inject constructor(
             viewModelScope.launch(ioDispatcher) {
                 repoRepository.isStarred(repoEntity.id, repoEntity.name)
             }
-        }
-    }
-
-    private fun updateRepositories(repositories: List<RepoEntity>, loadState: LoadState) {
-        viewModelScope.launch(ioDispatcher) {
-            Mutation.UpdateRepositories(repositories, loadState).handleMutation()
         }
     }
 

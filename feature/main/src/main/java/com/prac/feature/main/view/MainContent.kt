@@ -7,20 +7,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
+import androidx.paging.LoadStates
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.prac.core.designsystem.component.ErrorAlertDialog
 import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.core.designsystem.R
 import com.prac.core.common.constants.INVALID_TOKEN
+import kotlinx.coroutines.flow.flowOf
 import java.io.IOException
 
 @Composable
 fun MainContent(
-    repositories: List<RepoEntity>,
-    itemCount: Int,
-    itemKey: ((Int) -> Any)?,
-    loadState: LoadState,
+    repositories: LazyPagingItems<RepoEntity>,
+    handleLoadState: (CombinedLoadStates) -> LoadState,
     retry: () -> Unit,
     starStateRequest: (RepoEntity) -> Unit,
     onClickStar: (RepoEntity) -> Unit,
@@ -40,9 +44,7 @@ fun MainContent(
 
         MainContentBody(
             repositories = repositories,
-            itemCount = itemCount,
-            itemKey = itemKey,
-            loadState = loadState,
+            handleLoadState = handleLoadState,
             retry = retry,
             starStateRequest = starStateRequest,
             onClickStar = onClickStar,
@@ -63,26 +65,17 @@ fun MainContent(
 @Preview(showBackground = true)
 @Composable
 fun MainContentPreview() {
-    val repositories = listOf(
-        RepoEntity(
-            id = 0,
-            name = "test",
-            owner = OwnerEntity(
-                login = "test",
-                avatarUrl = ""
-            ),
-            stargazersCount = 0,
-            defaultBranch = "test",
-            updatedAt = "test",
-            isStarred = false,
+    val repositories = flowOf(PagingData.from(
+            listOf(
+                RepoEntity(stargazersCount = 5),
+                RepoEntity(stargazersCount = 6)
+            )
         )
-    )
+    ).collectAsLazyPagingItems()
 
     MainContent(
         repositories = repositories,
-        itemCount = repositories.size,
-        itemKey = { repositories[it].id },
-        loadState = LoadState.NotLoading(true),
+        handleLoadState = { LoadState.NotLoading(true) },
         retry = {},
         starStateRequest = {},
         onClickStar = {},
@@ -97,26 +90,17 @@ fun MainContentPreview() {
 @Preview(showBackground = true)
 @Composable
 fun MainContentErrorPreview() {
-    val repositories = listOf(
-        RepoEntity(
-            id = 0,
-            name = "test",
-            owner = OwnerEntity(
-                login = "test",
-                avatarUrl = ""
-            ),
-            stargazersCount = 0,
-            defaultBranch = "test",
-            updatedAt = "test",
-            isStarred = false,
+    val repositories = flowOf(PagingData.from(
+            listOf(
+                RepoEntity(stargazersCount = 5),
+                RepoEntity(stargazersCount = 6)
+            )
         )
-    )
+    ).collectAsLazyPagingItems()
 
     MainContent(
         repositories = repositories,
-        itemCount = repositories.size,
-        itemKey = { repositories[it].id },
-        loadState = LoadState.NotLoading(true),
+        handleLoadState = { LoadState.NotLoading(true) },
         retry = {},
         starStateRequest = {},
         onClickStar = {},
@@ -131,26 +115,17 @@ fun MainContentErrorPreview() {
 @Preview(showBackground = true)
 @Composable
 fun MainContentLoadStatePreview() {
-    val repositories = listOf(
-        RepoEntity(
-            id = 0,
-            name = "test",
-            owner = OwnerEntity(
-                login = "test",
-                avatarUrl = ""
-            ),
-            stargazersCount = 0,
-            defaultBranch = "test",
-            updatedAt = "test",
-            isStarred = false,
+    val repositories = flowOf(PagingData.from(
+        listOf(
+            RepoEntity(stargazersCount = 5),
+            RepoEntity(stargazersCount = 6)
         )
     )
+    ).collectAsLazyPagingItems()
 
     MainContent(
         repositories = repositories,
-        itemCount = repositories.size,
-        itemKey = { repositories[it].id },
-        loadState = LoadState.Error(IOException()),
+        handleLoadState = { LoadState.NotLoading(true) },
         retry = {},
         starStateRequest = {},
         onClickStar = {},

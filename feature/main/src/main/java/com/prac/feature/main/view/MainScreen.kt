@@ -29,10 +29,8 @@ fun MainScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     MainContent(
-        repositories = uiState.value.repositories,
-        itemCount = uiState.value.repositories.size,
-        itemKey = { uiState.value.repositories[it].id },
-        loadState = uiState.value.loadState,
+        repositories = repositories,
+        handleLoadState = { viewModel.handleLoadStates(it) },
         retry = { viewModel.process(Action.UserAction.OnClickRetry) },
         starStateRequest = { viewModel.process(Action.InternalAction.FetchStarState(it)) },
         onClickStar = { viewModel.process(Action.UserAction.OnClickStar(it)) },
@@ -53,29 +51,5 @@ fun MainScreen(
                 }
             }
         }
-    }
-
-    HandleRepositoryUpdate(
-        repositories = repositories,
-        handleCombineLoadState = viewModel::handleLoadStates,
-        process = { list, loadState ->
-            viewModel.process(
-                action = Action.InternalAction.UpdateRepositories(
-                    repositories = list,
-                    loadState = loadState
-                )
-            )
-        }
-    )
-}
-
-@Composable
-private fun HandleRepositoryUpdate(
-    repositories: LazyPagingItems<RepoEntity>,
-    handleCombineLoadState: (CombinedLoadStates) -> LoadState,
-    process: (List<RepoEntity>, LoadState) -> Unit
-) {
-    LaunchedEffect(repositories.itemSnapshotList, repositories.loadState) {
-        process(repositories.itemSnapshotList.items, handleCombineLoadState(repositories.loadState))
     }
 }
