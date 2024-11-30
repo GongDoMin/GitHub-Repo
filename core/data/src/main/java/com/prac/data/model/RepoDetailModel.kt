@@ -6,5 +6,8 @@ data class RepoDetailModel(
     val owner: OwnerModel = OwnerModel(),
     val stargazersCount: Int = 0,
     val forksCount: Int = 0,
-    var isStarred: Boolean? = null
+    var isStarred: Boolean? = null,
+    val issueSize: Int = 0,
+    val pullSize: Int = 0,
+    val subscribeSize: Int = 0
 )
