@@ -1,9 +1,9 @@
-package com.prac.data.entity
+package com.prac.data.model
 
-data class RepoDetailEntity(
+data class RepoDetailModel(
     val id: Int = 0,
     val name: String = "",
-    val owner: OwnerEntity = OwnerEntity(),
+    val owner: OwnerModel = OwnerModel(),
     val stargazersCount: Int = 0,
     val forksCount: Int = 0,
     var isStarred: Boolean? = null

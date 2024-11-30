@@ -15,7 +15,7 @@ import com.prac.core.common.dispatcher.IODispatcher
 import com.prac.core.common.mvi.model.eventModel
 import com.prac.core.common.mvi.model.stateModel
 import com.prac.core.common.mvi.reducer.Reducer
-import com.prac.data.entity.RepoEntity
+import com.prac.data.model.RepoModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.feature.main.di.MainReducerAnnotation
@@ -52,7 +52,7 @@ class MainViewModel @Inject constructor(
     internal val uiStateFlow: StateFlow<UiState> = stateModel.uiState
     internal val eventFlow: SharedFlow<Event> = eventModel.event
 
-    private val _repositories = MutableStateFlow<PagingData<RepoEntity>>(PagingData.empty())
+    private val _repositories = MutableStateFlow<PagingData<RepoModel>>(PagingData.empty())
     val repositories = _repositories.asStateFlow()
 
     private val _starRequestJobManager: SparseArray<Unit> = SparseArray()
@@ -60,10 +60,10 @@ class MainViewModel @Inject constructor(
     fun process(action: Action) {
         when (action) {
             is Action.InternalAction.Load -> load()
-            is Action.InternalAction.FetchStarState -> fetchStarState(action.repoEntity)
-            is Action.UserAction.OnClickRepository -> onClickRepository(action.repoEntity)
-            is Action.UserAction.OnClickUnStar -> onClickUnStar(action.repoEntity)
-            is Action.UserAction.OnClickStar -> onClickStar(action.repoEntity)
+            is Action.InternalAction.FetchStarState -> fetchStarState(action.repoModel)
+            is Action.UserAction.OnClickRepository -> onClickRepository(action.repoModel)
+            is Action.UserAction.OnClickUnStar -> onClickUnStar(action.repoModel)
+            is Action.UserAction.OnClickStar -> onClickStar(action.repoModel)
             is Action.UserAction.OnClickRetry -> onClickRetry()
             is Action.UserAction.DialogDismiss -> dialogDismiss()
             is Action.UserAction.LogoutDialogDismiss -> logoutDialogDismiss()
@@ -78,38 +78,38 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun fetchStarState(repoEntity: RepoEntity) {
-        if (_starRequestJobManager[repoEntity.id] == null) {
-            _starRequestJobManager.put(repoEntity.id, Unit)
+    private fun fetchStarState(repoModel: RepoModel) {
+        if (_starRequestJobManager[repoModel.id] == null) {
+            _starRequestJobManager.put(repoModel.id, Unit)
 
             viewModelScope.launch(ioDispatcher) {
-                repoRepository.isStarred(repoEntity.id, repoEntity.name)
+                repoRepository.isStarred(repoModel.id, repoModel.name)
             }
         }
     }
 
-    private fun onClickRepository(repoEntity: RepoEntity) {
-        Event.OpenRepositoryDetail(repoEntity.owner.login, repoEntity.name).handleEvent()
+    private fun onClickRepository(repoModel: RepoModel) {
+        Event.OpenRepositoryDetail(repoModel.owner.login, repoModel.name).handleEvent()
     }
 
-    private fun onClickUnStar(repoEntity: RepoEntity) {
+    private fun onClickUnStar(repoModel: RepoModel) {
         viewModelScope.launch(ioDispatcher) {
-            repoRepository.starLocalRepository(repoEntity.id, repoEntity.stargazersCount + 1)
+            repoRepository.starLocalRepository(repoModel.id, repoModel.stargazersCount + 1)
 
-            repoRepository.starRepository(repoEntity.owner.login, repoEntity.name)
+            repoRepository.starRepository(repoModel.owner.login, repoModel.name)
                 .onFailure {
-                    handleStarRepositoryFailure(it, repoEntity)
+                    handleStarRepositoryFailure(it, repoModel)
                 }
         }
     }
 
-    private fun onClickStar(repoEntity: RepoEntity) {
+    private fun onClickStar(repoModel: RepoModel) {
         viewModelScope.launch(ioDispatcher) {
-            repoRepository.unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount - 1)
+            repoRepository.unStarLocalRepository(repoModel.id, repoModel.stargazersCount - 1)
 
-            repoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name)
+            repoRepository.unStarRepository(repoModel.owner.login, repoModel.name)
                 .onFailure {
-                    handleUnStarRepositoryFailure(it, repoEntity)
+                    handleUnStarRepositoryFailure(it, repoModel)
                 }
         }
     }
@@ -126,48 +126,48 @@ class MainViewModel @Inject constructor(
         Event.Logout.handleEvent()
     }
 
-    private suspend fun handleStarRepositoryFailure(t: Throwable, repoEntity: RepoEntity) {
+    private suspend fun handleStarRepositoryFailure(t: Throwable, repoModel: RepoModel) {
         when (t) {
             is com.prac.exception.CommonException.NetworkError -> {
                 backOffWorkManager.addWork(
-                    uniqueID = "star_${repoEntity.id}",
-                    work = { repoRepository.starRepository(repoEntity.owner.login, repoEntity.name) }
+                    uniqueID = "star_${repoModel.id}",
+                    work = { repoRepository.starRepository(repoModel.owner.login, repoModel.name) }
                 )
             }
             is com.prac.exception.CommonException.AuthorizationError -> {
                 Event.Logout.handleEvent()
             }
             is com.prac.exception.RepositoryException.NotFoundRepository -> {
-                repoRepository.unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
+                repoRepository.unStarLocalRepository(repoModel.id, repoModel.stargazersCount)
 
                 Mutation.ShowError(INVALID_REPOSITORY).handleMutation()
             }
             else -> {
-                repoRepository.unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
+                repoRepository.unStarLocalRepository(repoModel.id, repoModel.stargazersCount)
 
                 Mutation.ShowError(UNKNOWN).handleMutation()
             }
         }
     }
 
-    private suspend fun handleUnStarRepositoryFailure(t: Throwable, repoEntity: RepoEntity) {
+    private suspend fun handleUnStarRepositoryFailure(t: Throwable, repoModel: RepoModel) {
         when (t) {
             is com.prac.exception.CommonException.NetworkError -> {
                 backOffWorkManager.addWork(
-                    uniqueID = "star_${repoEntity.id}",
-                    work = { repoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name) }
+                    uniqueID = "star_${repoModel.id}",
+                    work = { repoRepository.unStarRepository(repoModel.owner.login, repoModel.name) }
                 )
             }
             is com.prac.exception.CommonException.AuthorizationError -> {
                 Event.Logout.handleEvent()
             }
             is com.prac.exception.RepositoryException.NotFoundRepository -> {
-                repoRepository.starLocalRepository(repoEntity.id, repoEntity.stargazersCount)
+                repoRepository.starLocalRepository(repoModel.id, repoModel.stargazersCount)
 
                 Mutation.ShowError(INVALID_REPOSITORY).handleMutation()
             }
             else -> {
-                repoRepository.starLocalRepository(repoEntity.id, repoEntity.stargazersCount)
+                repoRepository.starLocalRepository(repoModel.id, repoModel.stargazersCount)
 
                 Mutation.ShowError(UNKNOWN).handleMutation()
             }

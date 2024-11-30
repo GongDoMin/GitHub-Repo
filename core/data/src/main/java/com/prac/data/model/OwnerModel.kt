@@ -1,6 +1,6 @@
-package com.prac.data.entity
+package com.prac.data.model
 
-data class OwnerEntity(
+data class OwnerModel(
     val login: String = "",
     val avatarUrl: String = ""
 )

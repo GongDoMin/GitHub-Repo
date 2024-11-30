@@ -6,8 +6,8 @@ import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.common.constants.INVALID_TOKEN
 import com.prac.core.common.constants.UNKNOWN
-import com.prac.data.entity.OwnerEntity
-import com.prac.data.entity.RepoDetailEntity
+import com.prac.data.model.OwnerModel
+import com.prac.data.model.RepoDetailModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.shared_test.data.FakeTokenRepository
@@ -352,20 +352,20 @@ class DetailViewModelTest {
     }
 
     private fun makeRepoDetailEntity() =
-        RepoDetailEntity(
+        RepoDetailModel(
             id = 1,
             name = "test",
-            owner = OwnerEntity(login = "test", avatarUrl = "test"),
+            owner = OwnerModel(login = "test", avatarUrl = "test"),
             stargazersCount = 10,
             forksCount = 10,
             isStarred = true
         )
 
     private fun makeExpectedValue(isStarred: Boolean, stargazersCount: Int) =
-        RepoDetailEntity(
+        RepoDetailModel(
             id = 1,
             name = "test",
-            owner = OwnerEntity(login = "test", avatarUrl = "test"),
+            owner = OwnerModel(login = "test", avatarUrl = "test"),
             stargazersCount = stargazersCount,
             forksCount = 10,
             isStarred = isStarred

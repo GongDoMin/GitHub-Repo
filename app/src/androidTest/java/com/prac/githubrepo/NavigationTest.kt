@@ -16,8 +16,8 @@ import androidx.navigation.testing.TestNavHostController
 import com.prac.core.designsystem.R
 import com.prac.core.navigation.Routes.HOME
 import com.prac.core.navigation.Routes.PROFILE
-import com.prac.data.entity.OwnerEntity
-import com.prac.data.entity.RepoEntity
+import com.prac.data.model.OwnerModel
+import com.prac.data.model.RepoModel
 import com.prac.githubrepo.ui.GitHubApp
 import com.prac.shared_test.HiltTestActivity
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -84,7 +84,7 @@ class NavigationTest {
             .onNodeWithText("test $clickPosition")
             .performClick()
 
-        val expectedRepoDetail = RepoEntity(id = 0, name = "test 0", owner = OwnerEntity("login 0", "avatarUrl 0"), stargazersCount = 5, defaultBranch = "master", updatedAt = "update", isStarred = true)
+        val expectedRepoDetail = RepoModel(id = 0, name = "test 0", owner = OwnerModel("login 0", "avatarUrl 0"), stargazersCount = 5, defaultBranch = "master", updatedAt = "update", isStarred = true)
 
         composeTestRule.waitUntil {
             navController.currentBackStackEntry?.destination?.hasRoute(HOME.DETAIL::class) == true

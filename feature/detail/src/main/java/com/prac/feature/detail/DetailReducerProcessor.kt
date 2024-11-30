@@ -1,6 +1,6 @@
 package com.prac.feature.detail
 
-import com.prac.data.entity.RepoDetailEntity
+import com.prac.data.model.RepoDetailModel
 import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.feature.detail.model.Mutation
 import com.prac.feature.detail.view.UiState
@@ -14,7 +14,7 @@ class DetailReducerProcessor : Reducer<Mutation, UiState> {
             is Mutation.DismissError -> currentState.dismissError()
         }
 
-    private fun UiState.showRepository(repository: RepoDetailEntity) =
+    private fun UiState.showRepository(repository: RepoDetailModel) =
         copy(
             repository = repository,
             isLoading = false,

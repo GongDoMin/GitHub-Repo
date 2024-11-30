@@ -1,7 +1,7 @@
 package com.prac.feature.main
 
 import androidx.paging.LoadState
-import com.prac.data.entity.RepoEntity
+import com.prac.data.model.RepoModel
 import com.prac.feature.main.model.Mutation
 import com.prac.feature.main.view.UiState
 import org.junit.Assert.assertEquals
@@ -16,7 +16,7 @@ class MainReducerProcessorTest {
     @Test
     fun invoke_mutationIsShowRepositories_uiStateIsShowRepositories() {
         val repositories = listOf(
-            RepoEntity()
+            RepoModel()
         )
 
         val result = mainReducerProcessorTest.invoke(Mutation.ShowRepositories, UiState(repositories = repositories))
@@ -39,7 +39,7 @@ class MainReducerProcessorTest {
     @Test
     fun invoke_mutationIsUpdateRepositories_uiStateIsShowRepositories() {
         val repositories = listOf(
-            RepoEntity()
+            RepoModel()
         )
         val loadState = LoadState.NotLoading(true)
 

@@ -28,18 +28,19 @@ import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.designsystem.R
 import com.prac.core.designsystem.component.ErrorAlertDialog
 import com.prac.core.designsystem.component.LoadingContent
+
 import com.prac.core.designsystem.component.UserProfile
-import com.prac.data.entity.OwnerEntity
-import com.prac.data.entity.RepoDetailEntity
+import com.prac.data.model.OwnerModel
+import com.prac.data.model.RepoDetailModel
 
 @Composable
 fun DetailContent(
     isLoading: Boolean,
     isError: Boolean,
     errorMessage: String,
-    repoDetail: RepoDetailEntity?,
-    onClickStar: (RepoDetailEntity) -> Unit,
-    onClickUnStar: (RepoDetailEntity) -> Unit,
+    repoDetail: RepoDetailModel?,
+    onClickStar: (RepoDetailModel) -> Unit,
+    onClickUnStar: (RepoDetailModel) -> Unit,
     onDismissRequest: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -121,10 +122,10 @@ fun DetailContentRepoName(
 
 @Composable
 fun DetailContentStarAndFork(
-    repoDetail: RepoDetailEntity,
+    repoDetail: RepoDetailModel,
     modifier: Modifier,
-    onClickStar: (RepoDetailEntity) -> Unit,
-    onClickUnStar: (RepoDetailEntity) -> Unit
+    onClickStar: (RepoDetailModel) -> Unit,
+    onClickUnStar: (RepoDetailModel) -> Unit
 ) {
     Row(
         modifier = modifier,
@@ -194,10 +195,10 @@ fun DetailContentStarAndFork(
 @Preview(showBackground = true)
 @Composable
 fun DetailContentPreview() {
-    val repository = RepoDetailEntity(
+    val repository = RepoDetailModel(
         id = 1,
         name = "test1",
-        owner = OwnerEntity(
+        owner = OwnerModel(
             login = "test1",
             avatarUrl = "test1"
         ),
@@ -224,7 +225,7 @@ fun DetailContentLoadingPreview() {
         isLoading = true,
         isError = false,
         errorMessage = "",
-        repoDetail = RepoDetailEntity(),
+        repoDetail = RepoDetailModel(),
         onClickStar = {},
         onClickUnStar = {},
         onDismissRequest = {}
@@ -238,7 +239,7 @@ fun DetailContentErrorPreview() {
         isLoading = false,
         isError = true,
         errorMessage = INVALID_REPOSITORY,
-        repoDetail = RepoDetailEntity(),
+        repoDetail = RepoDetailModel(),
         onClickStar = {},
         onClickUnStar = {},
         onDismissRequest = {}

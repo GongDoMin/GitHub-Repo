@@ -8,9 +8,9 @@ import androidx.paging.PagingData
 import androidx.paging.PagingState
 import androidx.paging.map
 import androidx.room.withTransaction
-import com.prac.data.entity.OwnerEntity
-import com.prac.data.entity.RepoDetailEntity
-import com.prac.data.entity.RepoEntity
+import com.prac.data.model.OwnerModel
+import com.prac.data.model.RepoDetailModel
+import com.prac.data.model.RepoModel
 import com.prac.data.repository.RepoRepository
 import com.prac.local.room.database.RepositoryDatabase
 import com.prac.local.room.entity.Owner
@@ -26,7 +26,7 @@ class FakeRepoRepository @Inject constructor(
     private val repositoryDatabase: RepositoryDatabase
 ): RepoRepository() {
     @OptIn(ExperimentalPagingApi::class)
-    override suspend fun getRepositories(): Flow<PagingData<RepoEntity>> {
+    override suspend fun getRepositories(): Flow<PagingData<RepoModel>> {
         return Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
@@ -38,12 +38,12 @@ class FakeRepoRepository @Inject constructor(
         ).flow
             .map { pagingData ->
                 pagingData.map { repository ->
-                    RepoEntity(repository.id, repository.name, OwnerEntity(repository.owner.login, repository.owner.avatarUrl), repository.stargazersCount, repository.defaultBranch, repository.updatedAt, repository.isStarred)
+                    RepoModel(repository.id, repository.name, OwnerModel(repository.owner.login, repository.owner.avatarUrl), repository.stargazersCount, repository.defaultBranch, repository.updatedAt, repository.isStarred)
                 }
             }
     }
 
-    override suspend fun getRepository(userName: String, repoName: String): Result<RepoDetailEntity> {
+    override suspend fun getRepository(userName: String, repoName: String): Result<RepoDetailModel> {
         // DetailScreen 테스트를 위한 임시 데이터
         val repositories = makeRepoEntityList(1).map {
             Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.defaultBranch, it.updatedAt, null)
@@ -51,7 +51,7 @@ class FakeRepoRepository @Inject constructor(
         repositoryDatabase.repositoryDao().insertRepositories(repositories)
 
         val id = userName.split(" ")[1]
-        val entity = RepoDetailEntity(id.toInt(), "test $id", OwnerEntity("login $id", "avatarUrl $id"), 5, 5, null)
+        val entity = RepoDetailModel(id.toInt(), "test $id", OwnerModel("login $id", "avatarUrl $id"), 5, 5, null)
 
         return Result.success(entity)
     }

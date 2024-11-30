@@ -13,20 +13,20 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.prac.core.designsystem.component.ErrorAlertDialog
-import com.prac.data.entity.RepoEntity
+import com.prac.data.model.RepoModel
 import com.prac.core.designsystem.R
 import com.prac.core.common.constants.INVALID_TOKEN
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun MainContent(
-    repositories: LazyPagingItems<RepoEntity>,
+    repositories: LazyPagingItems<RepoModel>,
     handleLoadState: (CombinedLoadStates) -> LoadState,
     onClickRetry: () -> Unit,
-    starStateRequest: (RepoEntity) -> Unit,
-    onClickStar: (RepoEntity) -> Unit,
-    onClickUnStar: (RepoEntity) -> Unit,
-    onClickRepository: (RepoEntity) -> Unit,
+    starStateRequest: (RepoModel) -> Unit,
+    onClickStar: (RepoModel) -> Unit,
+    onClickUnStar: (RepoModel) -> Unit,
+    onClickRepository: (RepoModel) -> Unit,
     isError: Boolean,
     errorMessage: String,
     onDismissRequest: (String) -> Unit
@@ -64,8 +64,8 @@ fun MainContent(
 fun MainContentPreview() {
     val repositories = flowOf(PagingData.from(
             listOf(
-                RepoEntity(stargazersCount = 5),
-                RepoEntity(stargazersCount = 6)
+                RepoModel(stargazersCount = 5),
+                RepoModel(stargazersCount = 6)
             )
         )
     ).collectAsLazyPagingItems()
@@ -89,8 +89,8 @@ fun MainContentPreview() {
 fun MainContentErrorPreview() {
     val repositories = flowOf(PagingData.from(
             listOf(
-                RepoEntity(stargazersCount = 5),
-                RepoEntity(stargazersCount = 6)
+                RepoModel(stargazersCount = 5),
+                RepoModel(stargazersCount = 6)
             )
         )
     ).collectAsLazyPagingItems()
@@ -114,8 +114,8 @@ fun MainContentErrorPreview() {
 fun MainContentLoadStatePreview() {
     val repositories = flowOf(PagingData.from(
         listOf(
-            RepoEntity(stargazersCount = 5),
-            RepoEntity(stargazersCount = 6)
+            RepoModel(stargazersCount = 5),
+            RepoModel(stargazersCount = 6)
         )
     )
     ).collectAsLazyPagingItems()

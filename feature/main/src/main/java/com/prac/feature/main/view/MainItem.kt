@@ -23,22 +23,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import com.prac.core.designsystem.component.UserProfile
-import com.prac.data.entity.OwnerEntity
-import com.prac.data.entity.RepoEntity
+import com.prac.data.model.OwnerModel
+import com.prac.data.model.RepoModel
 import com.prac.core.designsystem.R
 import com.prac.core.common.constants.CONNECTION_FAIL
 
 @Composable
 fun MainItem(
-    repository: RepoEntity,
-    onClickStar: (RepoEntity) -> Unit,
-    onClickUnStar: (RepoEntity) -> Unit,
-    onClickRepository: (RepoEntity) -> Unit,
+    repository: RepoModel,
+    onClickStar: (RepoModel) -> Unit,
+    onClickUnStar: (RepoModel) -> Unit,
+    onClickRepository: (RepoModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -125,9 +124,9 @@ fun MainItemRepoName(
 
 @Composable
 fun MainItemStar(
-    repo: RepoEntity,
-    onClickStar: (RepoEntity) -> Unit,
-    onClickUnStar: (RepoEntity) -> Unit,
+    repo: RepoModel,
+    onClickStar: (RepoModel) -> Unit,
+    onClickUnStar: (RepoModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -250,10 +249,10 @@ fun LoadErrorFooter(
 @Composable
 fun MainItemPreview() {
     val repository =
-        RepoEntity(
+        RepoModel(
             id = 0,
             name = "test",
-            owner = OwnerEntity(
+            owner = OwnerModel(
                 login = "test",
                 avatarUrl = ""
             ),

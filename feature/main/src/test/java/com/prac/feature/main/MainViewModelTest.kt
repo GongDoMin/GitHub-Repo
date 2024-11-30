@@ -4,8 +4,8 @@ import androidx.paging.PagingData
 import app.cash.turbine.test
 import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.common.constants.UNKNOWN
-import com.prac.data.entity.OwnerEntity
-import com.prac.data.entity.RepoEntity
+import com.prac.data.model.OwnerModel
+import com.prac.data.model.RepoModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.feature.main.model.Action
@@ -46,7 +46,7 @@ class MainViewModelTest {
 
     @Before
     fun setUp() = runTest {
-        val pagingData = PagingData.from(emptyList<RepoEntity>())
+        val pagingData = PagingData.from(emptyList<RepoModel>())
         whenever(mockRepoRepository.getRepositories()).thenReturn(flow { emit(pagingData) } )
 
         mainViewModel = MainViewModel(mockRepoRepository, tokenRepository, backOffWork, mainReducerProcessor, standardTestDispatcherRule.testDispatcher)
@@ -213,10 +213,10 @@ class MainViewModelTest {
     }
 
     private fun makeRepoEntity() =
-        RepoEntity(
+        RepoModel(
             id = 1,
             name = "name",
-            owner = OwnerEntity(login = "login", avatarUrl = "avatarUrl"),
+            owner = OwnerModel(login = "login", avatarUrl = "avatarUrl"),
             stargazersCount = 10,
             defaultBranch = "master",
             updatedAt = "updatedAt",

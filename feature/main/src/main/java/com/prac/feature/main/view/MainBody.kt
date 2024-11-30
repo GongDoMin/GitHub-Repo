@@ -14,18 +14,18 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.prac.core.designsystem.R
-import com.prac.data.entity.RepoEntity
+import com.prac.data.model.RepoModel
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun MainContentBody(
-    repositories: LazyPagingItems<RepoEntity>,
+    repositories: LazyPagingItems<RepoModel>,
     handleLoadState: (CombinedLoadStates) -> LoadState,
     onClickRetry: () -> Unit,
-    starStateRequest: (RepoEntity) -> Unit,
-    onClickStar: (RepoEntity) -> Unit,
-    onClickUnStar: (RepoEntity) -> Unit,
-    onClickRepository: (RepoEntity) -> Unit
+    starStateRequest: (RepoModel) -> Unit,
+    onClickStar: (RepoModel) -> Unit,
+    onClickUnStar: (RepoModel) -> Unit,
+    onClickRepository: (RepoModel) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -68,8 +68,8 @@ fun MainContentBodyPreview() {
     val repositories = flowOf(
         PagingData.from(
         listOf(
-            RepoEntity(stargazersCount = 5),
-            RepoEntity(stargazersCount = 6)
+            RepoModel(stargazersCount = 5),
+            RepoModel(stargazersCount = 6)
         )
     )
     ).collectAsLazyPagingItems()
@@ -90,8 +90,8 @@ fun MainContentBodyPreview() {
 fun MainContentBodyLoadStatePreview() {
     val repositories = flowOf(PagingData.from(
         listOf(
-            RepoEntity(stargazersCount = 5),
-            RepoEntity(stargazersCount = 6)
+            RepoModel(stargazersCount = 5),
+            RepoModel(stargazersCount = 6)
         )
     )
     ).collectAsLazyPagingItems()

@@ -7,11 +7,9 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingState
 import androidx.paging.map
-import com.prac.data.entity.OwnerEntity
-import com.prac.data.entity.RepoDetailEntity
-import com.prac.data.entity.RepoEntity
-import com.prac.exception.CommonException
-import com.prac.exception.RepositoryException
+import com.prac.data.model.OwnerModel
+import com.prac.data.model.RepoDetailModel
+import com.prac.data.model.RepoModel
 import com.prac.data.repository.RepoRepository
 import com.prac.local.RemoteKeyLocalDataSource
 import com.prac.local.RepositoryLocalDataSource
@@ -36,7 +34,7 @@ internal class RepoRepositoryImpl @Inject constructor(
 ) : RepoRepository() {
 
     @OptIn(ExperimentalPagingApi::class)
-    override suspend fun getRepositories(): Flow<PagingData<RepoEntity>> {
+    override suspend fun getRepositories(): Flow<PagingData<RepoModel>> {
         return Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
@@ -51,12 +49,12 @@ internal class RepoRepositoryImpl @Inject constructor(
         ).flow
             .map { pagingData ->
                 pagingData.map { repository ->
-                    RepoEntity(repository.id, repository.name, OwnerEntity(repository.owner.login, repository.owner.avatarUrl), repository.stargazersCount, repository.defaultBranch, repository.updatedAt, repository.isStarred)
+                    RepoModel(repository.id, repository.name, OwnerModel(repository.owner.login, repository.owner.avatarUrl), repository.stargazersCount, repository.defaultBranch, repository.updatedAt, repository.isStarred)
                 }
             }
     }
 
-    override suspend fun getRepository(userName: String, repoName: String): Result<RepoDetailEntity> {
+    override suspend fun getRepository(userName: String, repoName: String): Result<RepoDetailModel> {
         return try {
             val model = repoApiDataSource.getRepository(userName, repoName)
 
@@ -64,8 +62,8 @@ internal class RepoRepositoryImpl @Inject constructor(
             repositoryLocalDataSource.updateStarCount(model.id, model.stargazersCount)
 
             Result.success(
-                RepoDetailEntity(
-                    model.id, model.name, OwnerEntity(model.owner.login, model.owner.avatarUrl), model.stargazersCount, model.forksCount, null
+                RepoDetailModel(
+                    model.id, model.name, OwnerModel(model.owner.login, model.owner.avatarUrl), model.stargazersCount, model.forksCount, null
                 )
             )
         } catch (e: Exception) {

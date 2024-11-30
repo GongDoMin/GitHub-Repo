@@ -1,6 +1,6 @@
 package com.prac.feature.detail
 
-import com.prac.data.entity.RepoDetailEntity
+import com.prac.data.model.RepoDetailModel
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -36,7 +36,7 @@ class DetailReducerProcessorTest {
 
     @Test
     fun invoke_mutationIsShowRepository_uiStateIsShowRepository() {
-        val repository = RepoDetailEntity()
+        val repository = RepoDetailModel()
 
         val result = detailReducerProcessorTest.invoke(
             com.prac.feature.detail.model.Mutation.ShowRepository(repository),
@@ -51,7 +51,7 @@ class DetailReducerProcessorTest {
 
     @Test
     fun invoke_mutationIsDialogDismiss_uiStateIsShowRepository() {
-        val repository = RepoDetailEntity()
+        val repository = RepoDetailModel()
 
         val result = detailReducerProcessorTest.invoke(
             com.prac.feature.detail.model.Mutation.DismissError,

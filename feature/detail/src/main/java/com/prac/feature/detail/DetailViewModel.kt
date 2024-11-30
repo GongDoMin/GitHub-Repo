@@ -12,7 +12,7 @@ import com.prac.core.common.dispatcher.IODispatcher
 import com.prac.core.common.mvi.model.eventModel
 import com.prac.core.common.mvi.model.stateModel
 import com.prac.core.common.mvi.reducer.Reducer
-import com.prac.data.entity.RepoDetailEntity
+import com.prac.data.model.RepoDetailModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.feature.detail.di.DetailReducerAnnotation
@@ -49,8 +49,8 @@ class DetailViewModel @Inject constructor(
     fun process(action: Action) {
         when (action) {
             is Action.InternalAction.GetRepository -> getRepository()
-            is Action.UserAction.OnClickUnStar -> onClickUnStar(action.repoDetailEntity)
-            is Action.UserAction.OnClickStar -> onClickStar(action.repoDetailEntity)
+            is Action.UserAction.OnClickUnStar -> onClickUnStar(action.repoDetailModel)
+            is Action.UserAction.OnClickStar -> onClickStar(action.repoDetailModel)
             is Action.UserAction.DialogDismiss -> dialogDismiss()
             is Action.UserAction.LogoutDialogDismiss -> logoutDialogDismiss()
         }
@@ -78,24 +78,24 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun onClickUnStar(repoDetailEntity: RepoDetailEntity) {
+    private fun onClickUnStar(repoDetailModel: RepoDetailModel) {
         viewModelScope.launch(ioDispatcher) {
-            repoRepository.starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount + 1)
+            repoRepository.starLocalRepository(repoDetailModel.id, repoDetailModel.stargazersCount + 1)
 
-            repoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name)
+            repoRepository.starRepository(repoDetailModel.owner.login, repoDetailModel.name)
                 .onFailure {
-                    handleStarRepositoryFailure(it, repoDetailEntity)
+                    handleStarRepositoryFailure(it, repoDetailModel)
                 }
         }
     }
 
-    private fun onClickStar(repoDetailEntity: RepoDetailEntity) {
+    private fun onClickStar(repoDetailModel: RepoDetailModel) {
         viewModelScope.launch(ioDispatcher) {
-            repoRepository.unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount - 1)
+            repoRepository.unStarLocalRepository(repoDetailModel.id, repoDetailModel.stargazersCount - 1)
 
-            repoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name)
+            repoRepository.unStarRepository(repoDetailModel.owner.login, repoDetailModel.name)
                 .onFailure {
-                    handleUnStarRepositoryFailure(it, repoDetailEntity)
+                    handleUnStarRepositoryFailure(it, repoDetailModel)
                 }
         }
     }
@@ -108,8 +108,8 @@ class DetailViewModel @Inject constructor(
         Event.Logout.handleEvent()
     }
 
-    private suspend fun handleGetRepositorySuccess(repoDetailEntity: RepoDetailEntity) {
-        repoRepository.getStarStateAndStarCount(repoDetailEntity.id).collect { pair ->
+    private suspend fun handleGetRepositorySuccess(repoDetailModel: RepoDetailModel) {
+        repoRepository.getStarStateAndStarCount(repoDetailModel.id).collect { pair ->
             val isStarred = pair.first
             val stargazersCount = pair.second
 
@@ -121,11 +121,11 @@ class DetailViewModel @Inject constructor(
 
             // List 화면에서 Star Check 가 완료되기 전에 사용자가 Detail 화면으로 넘어온 경우 null 을 반환한다.
             if (isStarred == null) {
-                repoRepository.isStarred(repoDetailEntity.id, repoDetailEntity.name)
+                repoRepository.isStarred(repoDetailModel.id, repoDetailModel.name)
             }
 
             Mutation.ShowRepository(
-                repository = repoDetailEntity
+                repository = repoDetailModel
                     .copy(
                         isStarred = isStarred,
                         stargazersCount = stargazersCount
@@ -151,48 +151,48 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleStarRepositoryFailure(t: Throwable, repoDetailEntity: RepoDetailEntity) {
+    private suspend fun handleStarRepositoryFailure(t: Throwable, repoDetailModel: RepoDetailModel) {
         when (t) {
             is com.prac.exception.CommonException.NetworkError -> {
                 backOffWorkManager.addWork(
-                    uniqueID = "star_${repoDetailEntity.id}",
-                    work = { repoRepository.starRepository(repoDetailEntity.owner.login, repoDetailEntity.name) }
+                    uniqueID = "star_${repoDetailModel.id}",
+                    work = { repoRepository.starRepository(repoDetailModel.owner.login, repoDetailModel.name) }
                 )
             }
             is com.prac.exception.CommonException.AuthorizationError -> {
                 Mutation.ShowError(INVALID_TOKEN).handleMutation()
             }
             is com.prac.exception.RepositoryException.NotFoundRepository -> {
-                repoRepository.unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
+                repoRepository.unStarLocalRepository(repoDetailModel.id, repoDetailModel.stargazersCount)
 
                 Mutation.ShowError(errorMessage = INVALID_REPOSITORY).handleMutation()
             }
             else -> {
-                repoRepository.unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
+                repoRepository.unStarLocalRepository(repoDetailModel.id, repoDetailModel.stargazersCount)
 
                 Mutation.ShowError(errorMessage = UNKNOWN).handleMutation()
             }
         }
     }
 
-    private suspend fun handleUnStarRepositoryFailure(t: Throwable, repoDetailEntity: RepoDetailEntity) {
+    private suspend fun handleUnStarRepositoryFailure(t: Throwable, repoDetailModel: RepoDetailModel) {
         when (t) {
             is com.prac.exception.CommonException.NetworkError -> {
                 backOffWorkManager.addWork(
-                    uniqueID = "star_${repoDetailEntity.id}",
-                    work = { repoRepository.unStarRepository(repoDetailEntity.owner.login, repoDetailEntity.name) }
+                    uniqueID = "star_${repoDetailModel.id}",
+                    work = { repoRepository.unStarRepository(repoDetailModel.owner.login, repoDetailModel.name) }
                 )
             }
             is com.prac.exception.CommonException.AuthorizationError -> {
                 Mutation.ShowError(INVALID_TOKEN).handleMutation()
             }
             is com.prac.exception.RepositoryException.NotFoundRepository -> {
-                repoRepository.starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
+                repoRepository.starLocalRepository(repoDetailModel.id, repoDetailModel.stargazersCount)
 
                 Mutation.ShowError(errorMessage = INVALID_REPOSITORY).handleMutation()
             }
             else -> {
-                repoRepository.starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount)
+                repoRepository.starLocalRepository(repoDetailModel.id, repoDetailModel.stargazersCount)
 
                 Mutation.ShowError(errorMessage = UNKNOWN).handleMutation()
             }
