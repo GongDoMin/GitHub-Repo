@@ -30,17 +30,16 @@ internal class TokenRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             when (e) {
                 is IOException -> {
-                    Result.failure(com.prac.exception.CommonException.NetworkError())
+                    Result.failure(CommonException.NetworkError())
                 }
                 else -> {
-                    Result.failure(com.prac.exception.CommonException.AuthorizationError())
+                    Result.failure(CommonException.AuthorizationError())
                 }
             }
         }
     }
 
     override suspend fun isLoggedIn(): Boolean {
-        println(tokenLocalDataSource.getToken().accessToken)
         return tokenLocalDataSource.getToken().accessToken.isNotEmpty()
     }
 
