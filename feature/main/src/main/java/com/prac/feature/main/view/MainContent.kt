@@ -9,23 +9,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import androidx.paging.LoadStates
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.prac.core.designsystem.component.ErrorAlertDialog
-import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import com.prac.core.designsystem.R
 import com.prac.core.common.constants.INVALID_TOKEN
 import kotlinx.coroutines.flow.flowOf
-import java.io.IOException
 
 @Composable
 fun MainContent(
     repositories: LazyPagingItems<RepoEntity>,
     handleLoadState: (CombinedLoadStates) -> LoadState,
-    retry: () -> Unit,
+    onClickRetry: () -> Unit,
     starStateRequest: (RepoEntity) -> Unit,
     onClickStar: (RepoEntity) -> Unit,
     onClickUnStar: (RepoEntity) -> Unit,
@@ -45,7 +42,7 @@ fun MainContent(
         MainContentBody(
             repositories = repositories,
             handleLoadState = handleLoadState,
-            retry = retry,
+            onClickRetry = onClickRetry,
             starStateRequest = starStateRequest,
             onClickStar = onClickStar,
             onClickUnStar = onClickUnStar,
@@ -76,7 +73,7 @@ fun MainContentPreview() {
     MainContent(
         repositories = repositories,
         handleLoadState = { LoadState.NotLoading(true) },
-        retry = {},
+        onClickRetry = {},
         starStateRequest = {},
         onClickStar = {},
         onClickUnStar = {},
@@ -101,7 +98,7 @@ fun MainContentErrorPreview() {
     MainContent(
         repositories = repositories,
         handleLoadState = { LoadState.NotLoading(true) },
-        retry = {},
+        onClickRetry = {},
         starStateRequest = {},
         onClickStar = {},
         onClickUnStar = {},
@@ -126,7 +123,7 @@ fun MainContentLoadStatePreview() {
     MainContent(
         repositories = repositories,
         handleLoadState = { LoadState.NotLoading(true) },
-        retry = {},
+        onClickRetry = {},
         starStateRequest = {},
         onClickStar = {},
         onClickUnStar = {},

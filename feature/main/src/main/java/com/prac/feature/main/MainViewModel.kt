@@ -115,7 +115,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun onClickRetry() {
-        Event.Reload.handleEvent()
+        Event.Retry.handleEvent()
     }
 
     private fun dialogDismiss() {

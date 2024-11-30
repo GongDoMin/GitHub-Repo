@@ -5,6 +5,6 @@ sealed interface Event {
         val userName: String,
         val repoName: String
     ) : Event
-    data object Reload : Event
+    data object Retry : Event
     data object Logout : Event
 }

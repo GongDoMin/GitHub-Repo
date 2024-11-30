@@ -14,16 +14,14 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.prac.core.designsystem.R
-import com.prac.data.entity.OwnerEntity
 import com.prac.data.entity.RepoEntity
 import kotlinx.coroutines.flow.flowOf
-import java.io.IOException
 
 @Composable
 fun MainContentBody(
     repositories: LazyPagingItems<RepoEntity>,
     handleLoadState: (CombinedLoadStates) -> LoadState,
-    retry: () -> Unit,
+    onClickRetry: () -> Unit,
     starStateRequest: (RepoEntity) -> Unit,
     onClickStar: (RepoEntity) -> Unit,
     onClickUnStar: (RepoEntity) -> Unit,
@@ -58,7 +56,7 @@ fun MainContentBody(
         item {
             LoadStateFooter(
                 loadState = handleLoadState(repositories.loadState),
-                onRetryClick = retry
+                onRetryClick = onClickRetry
             )
         }
     }
@@ -79,7 +77,7 @@ fun MainContentBodyPreview() {
     MainContentBody(
         repositories = repositories,
         handleLoadState = { LoadState.NotLoading(true) },
-        retry = {},
+        onClickRetry = {},
         starStateRequest = {},
         onClickStar = {},
         onClickUnStar = {},
@@ -101,7 +99,7 @@ fun MainContentBodyLoadStatePreview() {
     MainContentBody(
         repositories = repositories,
         handleLoadState = { LoadState.NotLoading(true) },
-        retry = {},
+        onClickRetry = {},
         starStateRequest = {},
         onClickStar = {},
         onClickUnStar = {},

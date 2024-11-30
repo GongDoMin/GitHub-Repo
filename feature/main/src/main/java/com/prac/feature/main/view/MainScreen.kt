@@ -8,11 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.paging.CombinedLoadStates
-import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.prac.data.entity.RepoEntity
 import com.prac.core.common.constants.INVALID_TOKEN
 import com.prac.feature.main.MainViewModel
 import com.prac.feature.main.model.Action
@@ -31,7 +27,7 @@ fun MainScreen(
     MainContent(
         repositories = repositories,
         handleLoadState = { viewModel.handleLoadStates(it) },
-        retry = { viewModel.process(Action.UserAction.OnClickRetry) },
+        onClickRetry = { viewModel.process(Action.UserAction.OnClickRetry) },
         starStateRequest = { viewModel.process(Action.InternalAction.FetchStarState(it)) },
         onClickStar = { viewModel.process(Action.UserAction.OnClickStar(it)) },
         onClickUnStar = { viewModel.process(Action.UserAction.OnClickUnStar(it)) },
@@ -45,7 +41,7 @@ fun MainScreen(
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.eventFlow.collect {
                 when (it) {
-                    is Event.Reload -> repositories.retry()
+                    is Event.Retry -> repositories.retry()
                     is Event.OpenRepositoryDetail -> onClickRepository(it.userName, it.repoName)
                     is Event.Logout -> viewModel.logout()
                 }
