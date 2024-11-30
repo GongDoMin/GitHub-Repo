@@ -56,6 +56,14 @@ class FakeRepoRepository @Inject constructor(
         return Result.success(entity)
     }
 
+    override suspend fun getRepoIssueSize(userName: String, repoName: String): Result<Int> {
+        return Result.success(10)
+    }
+
+    override suspend fun getRepoPullSize(userName: String, repoName: String): Result<Int> {
+        return Result.success(10)
+    }
+
     override suspend fun clearRepositories() {
         repositoryDatabase.repositoryDao().clearRepositories()
         repositoryDatabase.remoteKeyDao().clearRemoteKeys()

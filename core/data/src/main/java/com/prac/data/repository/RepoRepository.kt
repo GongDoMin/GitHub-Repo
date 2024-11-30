@@ -14,6 +14,10 @@ abstract class RepoRepository : RemoteMediator<Int, Repository>() {
 
     abstract suspend fun getRepository(userName: String, repoName: String) : Result<RepoDetailModel>
 
+    abstract suspend fun getRepoIssueSize(userName: String, repoName: String) : Result<Int>
+
+    abstract suspend fun getRepoPullSize(userName: String, repoName: String) : Result<Int>
+
     abstract suspend fun clearRepositories()
 
     abstract suspend fun getStarStateAndStarCount(id: Int) : Flow<Pair<Boolean?, Int?>>

@@ -11,6 +11,8 @@ import com.prac.data.model.OwnerModel
 import com.prac.data.model.RepoDetailModel
 import com.prac.data.model.RepoModel
 import com.prac.data.repository.RepoRepository
+import com.prac.exception.CommonException
+import com.prac.exception.RepositoryException
 import com.prac.local.RemoteKeyLocalDataSource
 import com.prac.local.RepositoryLocalDataSource
 import com.prac.local.UserLocalDataSource
@@ -39,10 +41,6 @@ internal class RepoRepositoryImpl @Inject constructor(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
                 enablePlaceholders = true
-                // Warning: If you use a RemoteMediator to fetch data from a network service, make sure to provide realistically sized placeholder items.
-                // If you use a RemoteMediator, it will be repeatedly invoked to fetch new data, up until the screen has been filled with content.
-                // If small placeholders are provided (or no placeholder at all), the screen might never be filled, and your app will fetch many pages of data.
-                // false -> true
             ),
             remoteMediator = this,
             pagingSourceFactory = { repositoryLocalDataSource.getRepositories() }
@@ -68,6 +66,26 @@ internal class RepoRepositoryImpl @Inject constructor(
             )
         } catch (e: Exception) {
             handleRepositoryError(e)
+        }
+    }
+
+    override suspend fun getRepoIssueSize(userName: String, repoName: String): Result<Int> {
+        return try {
+            val size = repoApiDataSource.getRepoIssueSize(repoName, userName)
+
+            Result.success(size)
+        } catch (e: Exception) {
+            handleRepositorySubContentError(e)
+        }
+    }
+
+    override suspend fun getRepoPullSize(userName: String, repoName: String): Result<Int> {
+        return try {
+            val size = repoApiDataSource.getRepoPullSize(repoName, userName)
+
+            Result.success(size)
+        } catch (e: Exception) {
+            handleRepositorySubContentError(e)
         }
     }
 
@@ -188,17 +206,29 @@ internal class RepoRepositoryImpl @Inject constructor(
             }
     }
 
-    private fun <T> handleRepositoryError(e: Exception): Result<T> {
+    private fun <T> handleRepositoryError(e: Exception) : Result<T> {
         return when (e) {
             is HttpException -> {
                 when (e.code()) {
-                    401 -> Result.failure(com.prac.exception.CommonException.AuthorizationError())
-                    404 -> Result.failure(com.prac.exception.RepositoryException.NotFoundRepository())
-                    else -> Result.failure(com.prac.exception.CommonException.UnKnownError())
+                    401 -> Result.failure(CommonException.AuthorizationError())
+                    404 -> Result.failure(RepositoryException.NotFoundRepository())
+                    else -> Result.failure(CommonException.UnKnownError())
                 }
             }
-            is IOException -> Result.failure(com.prac.exception.CommonException.NetworkError())
-            else -> Result.failure(com.prac.exception.CommonException.UnKnownError())
+            is IOException -> Result.failure(CommonException.NetworkError())
+            else -> Result.failure(CommonException.UnKnownError())
+        }
+    }
+
+    private fun <T> handleRepositorySubContentError(e: Exception) : Result<T> {
+        return when (e) {
+            is HttpException -> {
+                when (e.code()) {
+                    404 -> Result.failure(RepositoryException.NotFoundRepository())
+                    else -> Result.failure(CommonException.UnKnownError())
+                }
+            }
+            else -> Result.failure(CommonException.UnKnownError())
         }
     }
 
