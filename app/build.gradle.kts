@@ -1,10 +1,3 @@
-import java.io.FileInputStream
-import java.util.Properties
-
-val localProperties = Properties().apply {
-    load(FileInputStream(rootProject.file("local.properties")))
-}
-
 plugins {
     id("githubrepo.android.application")
     id("githubrepo.android.application.compose")
@@ -26,8 +19,6 @@ android {
     buildTypes {
         debug {
             isMinifyEnabled = false
-
-            buildConfigField("String", "GITHUB_OAUTH_URI", "" + localProperties["GITHUB_OAUTH_URI"] + "")
         }
 
         release {
@@ -36,8 +27,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-
-            buildConfigField("String", "GITHUB_OAUTH_URI", "" + localProperties["GITHUB_OAUTH_URI"] + "")
         }
     }
 }
