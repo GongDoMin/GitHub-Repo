@@ -125,6 +125,7 @@ fun DetailContentStarAndFork(
 ) {
     Row(
         modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
             modifier = Modifier
