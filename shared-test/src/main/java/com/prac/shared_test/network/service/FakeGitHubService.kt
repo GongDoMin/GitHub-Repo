@@ -5,6 +5,7 @@ import com.prac.network.dto.PullDto
 import com.prac.network.dto.RepoDetailDto
 import com.prac.network.dto.RepoDto
 import com.prac.network.service.GitHubService
+import kotlin.math.sign
 
 class FakeGitHubService(
     private val repoList: List<RepoDto>
@@ -24,7 +25,8 @@ class FakeGitHubService(
             name = repository.name,
             owner = repository.owner,
             stargazersCount = repository.stargazersCount,
-            forksCount = 0
+            forksCount = 0,
+            subscribersCount = 0
         )
     }
 

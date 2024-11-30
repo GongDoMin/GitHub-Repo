@@ -41,6 +41,7 @@ class FakeRepoApiDataSource : RepoApiDataSource {
             repoDto.name,
             OwnerDto(repoDto.owner.login, repoDto.owner.avatarUrl),
             starCount ?: repoDto.stargazersCount,
+            0,
             0
         )
     }
