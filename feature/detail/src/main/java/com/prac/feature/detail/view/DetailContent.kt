@@ -34,7 +34,6 @@ import com.prac.core.designsystem.R
 import com.prac.core.designsystem.component.ErrorAlertDialog
 import com.prac.core.designsystem.component.LoadingContent
 import com.prac.core.designsystem.component.UserProfile
-import com.prac.data.model.OwnerModel
 import com.prac.data.model.RepoDetailModel
 
 @Composable
@@ -79,19 +78,19 @@ fun DetailContent(
                 DetailInfo(
                     imageVector = ImageVector.vectorResource(id = R.drawable.issue_24),
                     title = stringResource(id = R.string.issue),
-                    value = repoDetail.issueSize
+                    value = repoDetail.issueCount
                 )
 
                 DetailInfo(
                     imageVector = ImageVector.vectorResource(id = R.drawable.pull_request_24),
                     title = stringResource(id = R.string.pull_request),
-                    value = repoDetail.issueSize
+                    value = repoDetail.issueCount
                 )
 
                 DetailInfo(
                     imageVector = ImageVector.vectorResource(id = R.drawable.subscribe_24),
                     title = stringResource(id = R.string.subscribe),
-                    value = repoDetail.issueSize
+                    value = repoDetail.issueCount
                 )
             }
         }
