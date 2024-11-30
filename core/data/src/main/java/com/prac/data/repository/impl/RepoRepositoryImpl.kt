@@ -63,8 +63,8 @@ internal class RepoRepositoryImpl @Inject constructor(
                 val pullCount: Int
                 val repoDetailDto: RepoDetailDto
 
-                val deferredIssueCount = async { repoApiDataSource.getRepoIssueSize(userName, repoName) }
-                val deferredPullCount = async { repoApiDataSource.getRepoPullSize(userName, repoName) }
+                val deferredIssueCount = async { repoApiDataSource.getRepoIssueCount(userName, repoName) }
+                val deferredPullCount = async { repoApiDataSource.getRepoPullCount(userName, repoName) }
                 val deferredRepoDetailDto = async { repoApiDataSource.getRepository(userName, repoName) }
 
                 issueCount = deferredIssueCount.await()

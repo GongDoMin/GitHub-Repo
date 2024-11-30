@@ -8,7 +8,7 @@ interface RepoApiDataSource {
 
     suspend fun getRepository(userName: String, repoName: String) : RepoDetailDto
 
-    suspend fun getRepoIssueSize(userName: String, repoName: String) : Int
+    suspend fun getRepoIssueCount(userName: String, repoName: String) : Int
 
-    suspend fun getRepoPullSize(userName: String, repoName: String) : Int
+    suspend fun getRepoPullCount(userName: String, repoName: String) : Int
 }

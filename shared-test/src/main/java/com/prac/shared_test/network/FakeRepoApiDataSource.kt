@@ -45,13 +45,13 @@ class FakeRepoApiDataSource : RepoApiDataSource {
         )
     }
 
-    override suspend fun getRepoIssueSize(userName: String, repoName: String): Int {
+    override suspend fun getRepoIssueCount(userName: String, repoName: String): Int {
         if (::throwable.isInitialized) throw throwable
 
         return 5
     }
 
-    override suspend fun getRepoPullSize(userName: String, repoName: String): Int {
+    override suspend fun getRepoPullCount(userName: String, repoName: String): Int {
         if (::throwable.isInitialized) throw throwable
 
         return 5
