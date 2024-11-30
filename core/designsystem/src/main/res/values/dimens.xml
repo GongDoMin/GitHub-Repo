@@ -4,6 +4,8 @@
 
     <dimen name="bottom_icon">24dp</dimen>
 
+    <dimen name="info_icon">24dp</dimen>
+
     <dimen name="progressbar">36dp</dimen>
 
     <dimen name="user_profile">32dp</dimen>

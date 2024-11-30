@@ -5,10 +5,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -18,9 +21,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,7 +33,6 @@ import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.designsystem.R
 import com.prac.core.designsystem.component.ErrorAlertDialog
 import com.prac.core.designsystem.component.LoadingContent
-
 import com.prac.core.designsystem.component.UserProfile
 import com.prac.data.model.OwnerModel
 import com.prac.data.model.RepoDetailModel
@@ -70,6 +74,24 @@ fun DetailContent(
                     modifier = modifier,
                     onClickStar = onClickStar,
                     onClickUnStar = onClickUnStar
+                )
+
+                DetailInfo(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.issue_24),
+                    title = stringResource(id = R.string.issue),
+                    value = repoDetail.issueSize
+                )
+
+                DetailInfo(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.pull_request_24),
+                    title = stringResource(id = R.string.pull_request),
+                    value = repoDetail.issueSize
+                )
+
+                DetailInfo(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.subscribe_24),
+                    title = stringResource(id = R.string.subscribe),
+                    value = repoDetail.issueSize
                 )
             }
         }
@@ -192,26 +214,55 @@ fun DetailContentStarAndFork(
     }
 }
 
+@Composable
+fun DetailInfo(
+    imageVector: ImageVector,
+    title: String,
+    value: Int
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(
+                    vertical = dimensionResource(id = R.dimen.padding_normal)
+                ),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                modifier = Modifier
+                    .size(dimensionResource(id = R.dimen.info_icon)),
+                imageVector = imageVector,
+                contentDescription = title
+            )
+
+            Spacer(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small)))
+
+            Text(
+                text = title
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Text(
+                text = value.toString()
+            )
+        }
+
+        HorizontalDivider()
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun DetailContentPreview() {
-    val repository = RepoDetailModel(
-        id = 1,
-        name = "test1",
-        owner = OwnerModel(
-            login = "test1",
-            avatarUrl = "test1"
-        ),
-        stargazersCount = 10,
-        forksCount = 10,
-        isStarred = false
-    )
-
     DetailContent(
         isLoading = false,
         isError = false,
         errorMessage = "",
-        repoDetail = repository,
+        repoDetail = RepoDetailModel(),
         onClickStar = {},
         onClickUnStar = {},
         onDismissRequest = {}
