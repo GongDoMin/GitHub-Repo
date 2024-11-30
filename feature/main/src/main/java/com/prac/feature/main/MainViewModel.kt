@@ -80,12 +80,12 @@ class MainViewModel @Inject constructor(
     }
 
     private fun fetchStarState(repoEntity: RepoEntity) {
-        _starRequestJobManager.put(repoEntity.id, Unit)
+        if (_starRequestJobManager[repoEntity.id] == null) {
+            _starRequestJobManager.put(repoEntity.id, Unit)
 
-        viewModelScope.launch(ioDispatcher) {
-            repoRepository.isStarred(repoEntity.id, repoEntity.name)
-
-            _starRequestJobManager.remove(repoEntity.id)
+            viewModelScope.launch(ioDispatcher) {
+                repoRepository.isStarred(repoEntity.id, repoEntity.name)
+            }
         }
     }
 
