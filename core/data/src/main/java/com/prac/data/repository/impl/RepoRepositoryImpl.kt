@@ -22,7 +22,6 @@ import com.prac.local.room.entity.Repository
 import com.prac.network.RepoApiDataSource
 import com.prac.network.RepoStarApiDataSource
 import com.prac.network.dto.RepoDetailDto
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -82,26 +81,6 @@ internal class RepoRepositoryImpl @Inject constructor(
             }
         } catch (e: Exception) {
             handleRepositoryError(e)
-        }
-    }
-
-    override suspend fun getRepoIssueSize(userName: String, repoName: String): Result<Int> {
-        return try {
-            val size = repoApiDataSource.getRepoIssueSize(repoName, userName)
-
-            Result.success(size)
-        } catch (e: Exception) {
-            handleRepositorySubContentError(e)
-        }
-    }
-
-    override suspend fun getRepoPullSize(userName: String, repoName: String): Result<Int> {
-        return try {
-            val size = repoApiDataSource.getRepoPullSize(repoName, userName)
-
-            Result.success(size)
-        } catch (e: Exception) {
-            handleRepositorySubContentError(e)
         }
     }
 
@@ -232,18 +211,6 @@ internal class RepoRepositoryImpl @Inject constructor(
                 }
             }
             is IOException -> Result.failure(CommonException.NetworkError())
-            else -> Result.failure(CommonException.UnKnownError())
-        }
-    }
-
-    private fun <T> handleRepositorySubContentError(e: Exception) : Result<T> {
-        return when (e) {
-            is HttpException -> {
-                when (e.code()) {
-                    404 -> Result.failure(RepositoryException.NotFoundRepository())
-                    else -> Result.failure(CommonException.UnKnownError())
-                }
-            }
             else -> Result.failure(CommonException.UnKnownError())
         }
     }
