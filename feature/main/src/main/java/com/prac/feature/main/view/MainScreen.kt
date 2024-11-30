@@ -34,7 +34,10 @@ fun MainScreen(
         onClickRepository = { onClickRepository(it.owner.login, it.name) },
         isError = uiState.value.isError,
         errorMessage = uiState.value.errorMessage,
-        onDismissRequest = { dialogMessage -> if (dialogMessage == INVALID_TOKEN) onNavigateToLogin() }
+        onDismissRequest = { dialogMessage ->
+            if (dialogMessage == INVALID_TOKEN) viewModel.process(Action.UserAction.LogoutDialogDismiss)
+            else viewModel.process(Action.UserAction.DialogDismiss)
+        }
     )
 
     LaunchedEffect(lifecycleOwner) {
