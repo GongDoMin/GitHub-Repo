@@ -29,4 +29,5 @@
     <string name="star_image_description">image is star</string>
     <string name="unstar_image_description">image is unstar</string>
     <string name="fork_image_description">image is fork</string>
+    <string name="lazy_column_description">repository item list</string>
 </resources>

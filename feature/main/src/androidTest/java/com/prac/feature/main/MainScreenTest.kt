@@ -5,13 +5,13 @@ import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasContentDescription
-import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onChild
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToIndex
+import com.prac.core.designsystem.R
 import com.prac.feature.main.view.MainScreen
 import com.prac.shared_test.HiltTestActivity
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -31,6 +31,7 @@ class MainScreenTest {
 
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
+    private val activity get() = composeTestRule.activity
 
     private var isDetailScreen = false
     private var userName = ""
@@ -48,21 +49,21 @@ class MainScreenTest {
         val expectedStarCount = 4
 
         composeTestRule
-            .onNode(hasTestTag("lazyColumn"))
+            .onNode(hasContentDescription(activity.getString(R.string.lazy_column_description)))
             .performScrollToIndex(clickPosition)
             .assertIsDisplayed()
 
         composeTestRule
             .onNodeWithText("test $clickPosition")
             .onChild()
-            .assert(hasContentDescription("image is star"))
+            .assert(hasContentDescription(activity.getString(R.string.star_image_description)))
             .performClick()
 
         composeTestRule.waitUntil {
             composeTestRule
                 .onNodeWithText("test $clickPosition")
                 .onChild()
-                .isChangedStarStateAndCount(hasContentDescription("image is unstar"), expectedStarCount)
+                .isChangedStarStateAndCount(hasContentDescription(activity.getString(R.string.unstar_image_description)), expectedStarCount)
         }
     }
 
@@ -72,21 +73,21 @@ class MainScreenTest {
         val expectedStarCount = 6
 
         composeTestRule
-            .onNode(hasTestTag("lazyColumn"))
+            .onNode(hasContentDescription(activity.getString(R.string.lazy_column_description)))
             .performScrollToIndex(clickPosition)
             .assertIsDisplayed()
 
         composeTestRule
             .onNodeWithText("test $clickPosition")
             .onChild()
-            .assert(hasContentDescription("image is unstar"))
+            .assert(hasContentDescription(activity.getString(R.string.unstar_image_description)))
             .performClick()
 
         composeTestRule.waitUntil {
             composeTestRule
                 .onNodeWithText("test $clickPosition")
                 .onChild()
-                .isChangedStarStateAndCount(hasContentDescription("image is star"), expectedStarCount)
+                .isChangedStarStateAndCount(hasContentDescription(activity.getString(R.string.star_image_description)), expectedStarCount)
         }
     }
 
@@ -95,7 +96,7 @@ class MainScreenTest {
         val clickPosition = 0
 
         composeTestRule
-            .onNode(hasTestTag("lazyColumn"))
+            .onNode(hasContentDescription(activity.getString(R.string.lazy_column_description)))
             .performScrollToIndex(clickPosition)
             .assertIsDisplayed()
 

@@ -6,6 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
@@ -16,6 +19,7 @@ import androidx.paging.compose.itemKey
 import com.prac.core.designsystem.R
 import com.prac.data.model.RepoModel
 import kotlinx.coroutines.flow.flowOf
+import org.mockito.kotlin.description
 
 @Composable
 fun MainContentBody(
@@ -27,9 +31,11 @@ fun MainContentBody(
     onClickUnStar: (RepoModel) -> Unit,
     onClickRepository: (RepoModel) -> Unit
 ) {
+    val lazyColumnDescription = stringResource(id = R.string.lazy_column_description)
+
     LazyColumn(
         modifier = Modifier
-            .testTag("lazyColumn")
+            .semantics { contentDescription = lazyColumnDescription }
     ) {
         items(
             count = repositories.itemCount,
