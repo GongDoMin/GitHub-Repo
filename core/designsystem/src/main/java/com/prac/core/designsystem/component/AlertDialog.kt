@@ -10,6 +10,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
 @Composable
+fun HandleBasicAlertDialog(
+    isDialog: Boolean,
+    onDismissRequest: () -> Unit,
+    onClickCheckButton: () -> Unit,
+    dialogMessage: String,
+    cancelButtonText: String,
+    confirmButtonText: String
+) {
+    if (isDialog)
+        BasicAlertDialog(
+            onDismissRequest = onDismissRequest,
+            onClickCheckButton = onClickCheckButton,
+            dialogMessage = dialogMessage,
+            cancelButtonText = cancelButtonText,
+            confirmButtonText = confirmButtonText
+        )
+}
+
+@Composable
 fun BasicAlertDialog(
     onDismissRequest: () -> Unit,
     onClickCheckButton: () -> Unit,
@@ -54,6 +73,21 @@ fun BasicAlertDialog(
             }
         }
     )
+}
+
+@Composable
+fun HandleErrorAlertDialog(
+    isError: Boolean,
+    onDismissRequest: (String) -> Unit,
+    errorMessage: String,
+    confirmButtonText: String
+) {
+    if (isError)
+        ErrorAlertDialog(
+            onDismissRequest = onDismissRequest,
+            errorMessage = errorMessage,
+            confirmButtonText = confirmButtonText
+        )
 }
 
 @Composable

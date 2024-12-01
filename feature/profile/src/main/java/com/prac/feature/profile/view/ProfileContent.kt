@@ -10,8 +10,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.prac.core.designsystem.R
-import com.prac.core.designsystem.component.BasicAlertDialog
 import com.prac.core.designsystem.component.BounceButton
+import com.prac.core.designsystem.component.HandleBasicAlertDialog
 import com.prac.core.designsystem.component.LoadingContent
 
 @Composable
@@ -40,16 +40,14 @@ fun ProfileContent(
             )
         }
 
-        if (isDialog) {
-            val dialogMessage = stringResource(id = R.string.logout_confirm)
-            BasicAlertDialog(
-                onDismissRequest = onDismissRequest,
-                onClickCheckButton = onClickCheckButton,
-                dialogMessage = dialogMessage,
-                cancelButtonText = stringResource(id = R.string.cancel),
-                confirmButtonText = stringResource(id = R.string.check)
-            )
-        }
+        HandleBasicAlertDialog(
+            isDialog = isDialog,
+            onDismissRequest = onDismissRequest,
+            onClickCheckButton = onClickCheckButton,
+            dialogMessage = stringResource(id = R.string.logout_confirm),
+            cancelButtonText = stringResource(id = R.string.cancel),
+            confirmButtonText = stringResource(id = R.string.check)
+        )
     }
 }
 
