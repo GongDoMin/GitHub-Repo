@@ -44,18 +44,18 @@ class LoginViewModel @Inject constructor(
 
     fun process(action: Action) {
         when (action) {
-            is Action.UserAction.OnClickLoginButton -> onClickLoginButton()
-            is Action.UserAction.DialogDismiss -> dialogDismiss()
+            is Action.UserAction.OnClickLoginButton -> handleLoginButtonClick()
+            is Action.UserAction.DialogDismiss -> handleDialogDismiss()
             is Action.InternalAction.AuthenticateOAuth -> authenticateOAuth(action.code)
             is Action.InternalAction.CheckAutoLogin -> checkAuthLogin()
         }
     }
 
-    private fun onClickLoginButton() {
+    private fun handleLoginButtonClick() {
         OpenBrowser.handleEvent()
     }
 
-    private fun dialogDismiss() {
+    private fun handleDialogDismiss() {
         ShowIdle.handleMutation()
     }
 

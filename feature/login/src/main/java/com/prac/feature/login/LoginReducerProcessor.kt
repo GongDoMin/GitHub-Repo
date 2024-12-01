@@ -21,9 +21,7 @@ class LoginReducerProcessor : Reducer<Mutation, UiState> {
 
     private fun UiState.showLoading() =
         copy(
-            isLoading = true,
-            isError = false,
-            errorMessage = ""
+            isLoading = true
         )
 
     private fun UiState.showError(errorMessage: String) =
