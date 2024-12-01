@@ -37,12 +37,14 @@ class FakeRepoApiDataSource : RepoApiDataSource {
         val repoDto = repoDtoList.find { it.owner.login == userName && it.name == repoName } ?: throw Exception("repository is not found")
 
         return RepoDetailDto(
-            repoDto.id,
-            repoDto.name,
-            OwnerDto(repoDto.owner.login, repoDto.owner.avatarUrl),
-            starCount ?: repoDto.stargazersCount,
-            0,
-            0
+            id = repoDto.id,
+            name = repoDto.name,
+            owner = OwnerDto(
+                login = repoDto.owner.login,
+                avatarUrl = repoDto.owner.avatarUrl),
+            stargazersCount = starCount ?: repoDto.stargazersCount,
+            forksCount = 0,
+            subscribersCount = 0
         )
     }
 
