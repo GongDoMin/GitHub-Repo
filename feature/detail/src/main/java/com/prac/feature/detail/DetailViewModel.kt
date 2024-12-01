@@ -28,7 +28,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -54,10 +53,10 @@ class DetailViewModel @Inject constructor(
     fun process(action: Action) {
         when (action) {
             is Action.InternalAction.GetRepository -> getRepository()
-            is Action.UserAction.OnClickUnStar -> onClickUnStar(action.repoDetailModel)
-            is Action.UserAction.OnClickStar -> onClickStar(action.repoDetailModel)
-            is Action.UserAction.DialogDismiss -> dialogDismiss()
-            is Action.UserAction.LogoutDialogDismiss -> logoutDialogDismiss()
+            is Action.UserAction.OnClickUnStar -> handleClickUnStar(action.repoDetailModel)
+            is Action.UserAction.OnClickStar -> handleClickStar(action.repoDetailModel)
+            is Action.UserAction.DialogDismiss -> handleDialogDismiss()
+            is Action.UserAction.LogoutDialogDismiss -> handleLogoutDialogDismiss()
         }
     }
 
@@ -83,7 +82,7 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun onClickUnStar(repoDetailModel: RepoDetailModel) {
+    private fun handleClickUnStar(repoDetailModel: RepoDetailModel) {
         viewModelScope.launch(ioDispatcher) {
             repoRepository.starLocalRepository(repoDetailModel.id, repoDetailModel.stargazersCount + 1)
 
@@ -94,7 +93,7 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun onClickStar(repoDetailModel: RepoDetailModel) {
+    private fun handleClickStar(repoDetailModel: RepoDetailModel) {
         viewModelScope.launch(ioDispatcher) {
             repoRepository.unStarLocalRepository(repoDetailModel.id, repoDetailModel.stargazersCount - 1)
 
@@ -105,11 +104,11 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun dialogDismiss() {
+    private fun handleDialogDismiss() {
         Event.Error.handleEvent()
     }
 
-    private fun logoutDialogDismiss() {
+    private fun handleLogoutDialogDismiss() {
         Event.Logout.handleEvent()
     }
 
