@@ -58,4 +58,25 @@ class RepoApiDataSourceTest {
         assertEquals(result.owner.avatarUrl, expectedRepo.owner.avatarUrl)
         assertEquals(result.stargazersCount, expectedRepo.stargazersCount)
     }
+
+    @Test
+    fun getIssueCount_whenCalled_returnInt() = runTest {
+        val result = repoApiDatasource.getRepoIssueCount("", "")
+
+        assertEquals(result, 2)
+    }
+
+    @Test
+    fun getPullCount_whenCalled_returnInt() = runTest {
+        val result = repoApiDatasource.getRepoPullCount("", "")
+
+        assertEquals(result, 2)
+    }
+
+    @Test
+    fun getRepoReadme_whenCalled_returnInt() = runTest {
+        val result = repoApiDatasource.getRepoReadme("", "")
+
+        assertEquals(result, "hi!")
+    }
 }
