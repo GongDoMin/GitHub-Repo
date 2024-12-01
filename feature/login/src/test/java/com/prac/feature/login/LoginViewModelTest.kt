@@ -21,16 +21,16 @@ class LoginViewModelTest {
 
     private lateinit var loginViewModel: LoginViewModel
 
-    private val loginActionProcessor = LoginReducerProcessor()
+    private val loginReducerProcessor = LoginReducerProcessor()
     private lateinit var tokenRepository: TokenRepository
 
     @Test
     fun process_actionIsCheckAutoLogin_eventIsSuccessLogin() = runTest {
         tokenRepository = FakeTokenRepository(token = "test")
         loginViewModel = LoginViewModel(
-            tokenRepository,
-            loginActionProcessor,
-            standardTestDispatcherRule.testDispatcher
+            tokenRepository = tokenRepository,
+            loginReducerProcessor = loginReducerProcessor,
+            ioDispatcher = standardTestDispatcherRule.testDispatcher
         )
 
         loginViewModel.eventFlow.test {
@@ -43,9 +43,9 @@ class LoginViewModelTest {
     fun process_actionIsCheckAutoLogin_emitNothing() = runTest {
         tokenRepository = FakeTokenRepository()
         loginViewModel = LoginViewModel(
-            tokenRepository,
-            loginActionProcessor,
-            standardTestDispatcherRule.testDispatcher
+            tokenRepository = tokenRepository,
+            loginReducerProcessor = loginReducerProcessor,
+            ioDispatcher = standardTestDispatcherRule.testDispatcher
         )
 
         loginViewModel.eventFlow.test {
@@ -57,9 +57,9 @@ class LoginViewModelTest {
     fun process_actionIsOAuthAuthenticated_eventIsLoginSuccess() = runTest {
         tokenRepository = FakeTokenRepository()
         loginViewModel = LoginViewModel(
-            tokenRepository,
-            loginActionProcessor,
-            standardTestDispatcherRule.testDispatcher
+            tokenRepository = tokenRepository,
+            loginReducerProcessor = loginReducerProcessor,
+            ioDispatcher = standardTestDispatcherRule.testDispatcher
         )
 
         loginViewModel.eventFlow.test {
@@ -74,9 +74,9 @@ class LoginViewModelTest {
     fun process_actionIsOAuthAuthenticated_uiStateIsError() = runTest {
         tokenRepository = FakeTokenRepository()
         loginViewModel = LoginViewModel(
-            tokenRepository,
-            loginActionProcessor,
-            standardTestDispatcherRule.testDispatcher
+            tokenRepository = tokenRepository,
+            loginReducerProcessor = loginReducerProcessor,
+            ioDispatcher = standardTestDispatcherRule.testDispatcher
         )
 
         loginViewModel.uiStateFlow.test {
@@ -84,7 +84,7 @@ class LoginViewModelTest {
 
             loginViewModel.process(Action.InternalAction.AuthenticateOAuth("ioException"))
 
-            awaitItem() // isLoading == true
+            awaitItem() // loadingState
 
             val result = awaitItem()
             assertTrue(result.isError)
@@ -96,23 +96,24 @@ class LoginViewModelTest {
     fun process_actionIsDialogDismiss_emitIdle() = runTest {
         tokenRepository = FakeTokenRepository()
         loginViewModel = LoginViewModel(
-            tokenRepository,
-            loginActionProcessor,
-            standardTestDispatcherRule.testDispatcher
+            tokenRepository = tokenRepository,
+            loginReducerProcessor = loginReducerProcessor,
+            ioDispatcher = standardTestDispatcherRule.testDispatcher
         )
 
         loginViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
             loginViewModel.process(Action.InternalAction.AuthenticateOAuth("ioException"))
-            awaitItem() // isLoading == true
-            awaitItem() // isError == true
+            awaitItem() // loadingState
+            awaitItem() // errorState
 
             loginViewModel.process(Action.UserAction.DialogDismiss)
 
             val result = awaitItem()
             assertFalse(result.isLoading)
             assertFalse(result.isError)
+            assertTrue(result.errorMessage.isEmpty())
         }
     }
 }
