@@ -249,12 +249,11 @@ fun DetailInfo(
         ) {
             Image(
                 modifier = Modifier
-                    .size(dimensionResource(id = R.dimen.info_icon)),
+                    .size(dimensionResource(id = R.dimen.info_icon))
+                    .padding(end = dimensionResource(id = R.dimen.padding_small)),
                 imageVector = imageVector,
                 contentDescription = title
             )
-
-            Spacer(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small)))
 
             Text(
                 text = title
