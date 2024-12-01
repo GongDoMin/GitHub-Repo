@@ -32,4 +32,5 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime)
 
     implementation(libs.androidx.paging.compose)
+    implementation(libs.compose.markdown)
 }
