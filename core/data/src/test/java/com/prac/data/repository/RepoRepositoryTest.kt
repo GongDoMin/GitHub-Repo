@@ -48,13 +48,7 @@ internal class RepoRepositoryTest {
 
     @Before
     fun setUp() {
-        repoApiDataSource = FakeRepoApiDataSource()
-        repoStarApiDataSource = FakeRepoStarApiDataSource()
-        userLocalDataSource = FakeUserLocalDataSource()
-        repositoryLocalDataSource = FakeRepositoryLocalDataSource()
-        remoteKeyLocalDataSource = FakeRemoteKeyLocalDataSource()
-
-        repoRepository = RepoRepositoryImpl(repoApiDataSource, repoStarApiDataSource, repositoryLocalDataSource, remoteKeyLocalDataSource, userLocalDataSource)
+        initRepoRepository()
     }
 
     @OptIn(ExperimentalPagingApi::class)
@@ -404,6 +398,9 @@ internal class RepoRepositoryTest {
         val repository = repositoryLocalDataSource.getRepository(repoDto.id).first()
         assertEquals(repository?.stargazersCount, 0)
         assertTrue(result.isSuccess)
+        assertEquals(result.getOrThrow().issueCount, 5)
+        assertEquals(result.getOrThrow().pullCount, 5)
+        assertEquals(result.getOrThrow().readme, "hi!")
     }
 
     @Test
@@ -421,6 +418,9 @@ internal class RepoRepositoryTest {
         val repository = repositoryLocalDataSource.getRepository(repoDto.id).first()
         assertEquals(repository?.stargazersCount, starCount)
         assertTrue(result.isSuccess)
+        assertEquals(result.getOrThrow().issueCount, 5)
+        assertEquals(result.getOrThrow().pullCount, 5)
+        assertEquals(result.getOrThrow().readme, "hi!")
     }
 
     @Test
@@ -486,11 +486,30 @@ internal class RepoRepositoryTest {
         }
     }
 
+    private fun initRepoRepository() {
+        repoApiDataSource = FakeRepoApiDataSource()
+        repoStarApiDataSource = FakeRepoStarApiDataSource()
+        userLocalDataSource = FakeUserLocalDataSource()
+        repositoryLocalDataSource = FakeRepositoryLocalDataSource()
+        remoteKeyLocalDataSource = FakeRemoteKeyLocalDataSource()
+
+        repoRepository = RepoRepositoryImpl(repoApiDataSource, repoStarApiDataSource, repositoryLocalDataSource, remoteKeyLocalDataSource, userLocalDataSource)
+    }
+
     private fun getRepoDtoListForPage(page : Int, loadSize: Int) : List<RepoDto> =
         mutableListOf<RepoDto>().apply {
             repeat(loadSize) {
                 add(
-                    RepoDto(it + (10 * page), "test ${it + (10 * page)}", OwnerDto("login ${it + (10 * page)}", "avatarUrl ${it + (10 * page)}"), 0, "master", "2022-01-01")
+                    RepoDto(
+                        id = it + (10 * page),
+                        name = "test ${it + (10 * page)}",
+                        owner = OwnerDto(
+                            login = "login ${it + (10 * page)}",
+                            avatarUrl = "avatarUrl ${it + (10 * page)}"),
+                        stargazersCount = 0,
+                        defaultBranch = "master",
+                        updatedAt = "2022-01-01",
+                    )
                 )
             }
         }
