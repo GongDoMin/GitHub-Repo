@@ -37,7 +37,6 @@ import com.prac.core.designsystem.component.ErrorAlertDialog
 import com.prac.core.designsystem.component.LoadingContent
 import com.prac.core.designsystem.component.UserProfile
 import com.prac.data.model.RepoDetailModel
-import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
 fun DetailContent(
@@ -96,20 +95,7 @@ fun DetailContent(
                 value = repoDetail.subscribeCount
             )
 
-            if (repoDetail.readme.isNotEmpty()) {
-                Text(
-                    modifier = Modifier
-                        .padding(top = dimensionResource(id = R.dimen.padding_normal)),
-                    text = stringResource(id = R.string.readme)
-                )
-
-                HorizontalDivider(
-                    modifier = Modifier
-                        .padding(vertical = dimensionResource(id = R.dimen.padding_normal))
-                )
-
-                MarkdownText(markdown = repoDetail.readme)
-            }
+            ReadMe(readme = repoDetail.readme)
         }
 
         if (isError) {
@@ -277,7 +263,7 @@ fun DetailContentPreview() {
         isLoading = false,
         isError = false,
         errorMessage = "",
-        repoDetail = RepoDetailModel(),
+        repoDetail = RepoDetailModel(readme = "hi!!"),
         onClickStar = {},
         onClickUnStar = {},
         onDismissRequest = {}
@@ -305,7 +291,7 @@ fun DetailContentErrorPreview() {
         isLoading = false,
         isError = true,
         errorMessage = INVALID_REPOSITORY,
-        repoDetail = RepoDetailModel(),
+        repoDetail = RepoDetailModel(readme = "hi!!"),
         onClickStar = {},
         onClickUnStar = {},
         onDismissRequest = {}
