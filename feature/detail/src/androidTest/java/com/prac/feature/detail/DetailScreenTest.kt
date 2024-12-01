@@ -16,6 +16,7 @@ import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.feature.detail.view.DetailScreen
 import com.prac.shared_test.HiltTestActivity
+import com.prac.shared_test.common.FakeBackOffWorkManager
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.Dispatchers
@@ -55,17 +56,7 @@ class DetailScreenTest {
         // RepoEntity(id = 0, name = "test 0", owner = OwnerEntity("login 0", "avatarUrl 0"), stargazersCount = 5, defaultBranch = "master", updatedAt = "update", isStarred = true),
         // RepoEntity(id = 1, name = "test 1", owner = OwnerEntity("login 1", "avatarUrl 1"), stargazersCount = 5, defaultBranch = "master", updatedAt = "update", isStarred = false),
         // ....
-        viewModel = DetailViewModel(
-            repoRepository = repoRepository,
-            tokenRepository = tokenRepository,
-            backOffWorkManager = FakeBackOffWorkManager(),
-            detailReducerProcessor = detailReducerProcessor,
-            ioDispatcher = Dispatchers.IO,
-            savedStateHandle = SavedStateHandle().apply {
-                set(USER_NAME, "login -1")
-                set(REPO_NAME, "test -1")
-            }
-        )
+        initViewModel("login -1", "test -1")
 
         composeTestRule.setContent {
             DetailScreen(
@@ -86,17 +77,7 @@ class DetailScreenTest {
 
     @Test
     fun clickStarImageView_starImageDrawableToUnStarImageDrawable_starCountMinusOne() {
-        viewModel = DetailViewModel(
-            repoRepository = repoRepository,
-            tokenRepository = tokenRepository,
-            backOffWorkManager = FakeBackOffWorkManager(),
-            detailReducerProcessor = detailReducerProcessor,
-            ioDispatcher = Dispatchers.IO,
-            savedStateHandle = SavedStateHandle().apply {
-                set(USER_NAME, "login 0")
-                set(REPO_NAME, "test 0")
-            }
-        )
+        initViewModel("login 0", "test 0")
         val expectedStarCount = 4
         composeTestRule.setContent {
             DetailScreen(
@@ -107,28 +88,18 @@ class DetailScreenTest {
         }
 
         composeTestRule
-            .onNode(hasContentDescription("image is star"))
+            .onNode(hasContentDescription(activity.getString(R.string.star_image_description)))
             .performClick()
 
         composeTestRule.waitUntil {
             composeTestRule.onNodeWithText(activity.getString(R.string.star_count, expectedStarCount)).isDisplayed()
-                    && composeTestRule.onNode(hasContentDescription("image is unstar")).isDisplayed()
+                    && composeTestRule.onNode(hasContentDescription(activity.getString(R.string.unstar_image_description))).isDisplayed()
         }
     }
 
     @Test
     fun clickUnStarImageView_unStarImageDrawableToStarImageDrawable_starCountMinusOne() {
-        viewModel = DetailViewModel(
-            repoRepository = repoRepository,
-            tokenRepository = tokenRepository,
-            backOffWorkManager = FakeBackOffWorkManager(),
-            detailReducerProcessor = detailReducerProcessor,
-            ioDispatcher = Dispatchers.IO,
-            savedStateHandle = SavedStateHandle().apply {
-                set(USER_NAME, "login 1")
-                set(REPO_NAME, "test 1")
-            }
-        )
+        initViewModel("login 1", "test 1")
         val expectedStarCount = 6
         composeTestRule.setContent {
             DetailScreen(
@@ -139,22 +110,26 @@ class DetailScreenTest {
         }
 
         composeTestRule
-            .onNode(hasContentDescription("image is unstar"))
+            .onNode(hasContentDescription(activity.getString(R.string.unstar_image_description)))
             .performClick()
 
         composeTestRule.waitUntil {
             composeTestRule.onNodeWithText(activity.getString(R.string.star_count, expectedStarCount)).isDisplayed()
-                    && composeTestRule.onNode(hasContentDescription("image is star")).isDisplayed()
+                    && composeTestRule.onNode(hasContentDescription(activity.getString(R.string.star_image_description))).isDisplayed()
         }
     }
 
-    private class FakeBackOffWorkManager : BackOffWorkManager {
-        override fun addWork(uniqueID: String, times: Int, initialDelay: Long, maxDelay: Long, factor: Double, work: suspend () -> Result<*>) {
-            TODO("Not yet implemented")
-        }
-
-        override fun clearWork() {
-            TODO("Not yet implemented")
-        }
+    private fun initViewModel(userName: String, repoName: String) {
+        viewModel = DetailViewModel(
+            repoRepository = repoRepository,
+            tokenRepository = tokenRepository,
+            backOffWorkManager = FakeBackOffWorkManager(),
+            detailReducerProcessor = detailReducerProcessor,
+            ioDispatcher = Dispatchers.IO,
+            savedStateHandle = SavedStateHandle().apply {
+                set(USER_NAME, userName)
+                set(REPO_NAME, repoName)
+            }
+        )
     }
 }
