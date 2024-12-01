@@ -62,20 +62,23 @@ internal class RepoRepositoryImpl @Inject constructor(
                 val issueCount: Int
                 val pullCount: Int
                 val repoDetailDto: RepoDetailDto
+                val readme: String
 
                 val deferredIssueCount = async { repoApiDataSource.getRepoIssueCount(userName, repoName) }
                 val deferredPullCount = async { repoApiDataSource.getRepoPullCount(userName, repoName) }
                 val deferredRepoDetailDto = async { repoApiDataSource.getRepository(userName, repoName) }
+                val deferredReadme = async { repoApiDataSource.getRepoReadme(userName, repoName) }
 
                 issueCount = deferredIssueCount.await()
                 pullCount = deferredPullCount.await()
                 repoDetailDto = deferredRepoDetailDto.await()
+                readme = deferredReadme.await()
 
                 repositoryLocalDataSource.updateStarCount(repoDetailDto.id, repoDetailDto.stargazersCount)
 
                 Result.success(
                     RepoDetailModel(
-                        repoDetailDto.id, repoDetailDto.name, OwnerModel(repoDetailDto.owner.login, repoDetailDto.owner.avatarUrl), repoDetailDto.stargazersCount, repoDetailDto.forksCount, null, issueCount, pullCount, repoDetailDto.subscribersCount
+                        repoDetailDto.id, repoDetailDto.name, OwnerModel(repoDetailDto.owner.login, repoDetailDto.owner.avatarUrl), repoDetailDto.stargazersCount, repoDetailDto.forksCount, null, issueCount, pullCount, repoDetailDto.subscribersCount, readme
                     )
                 )
             }

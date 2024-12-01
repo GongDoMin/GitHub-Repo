@@ -9,5 +9,6 @@ data class RepoDetailModel(
     var isStarred: Boolean? = null,
     val issueCount: Int = 0,
     val pullCount: Int = 0,
-    val subscribeCount: Int = 0
+    val subscribeCount: Int = 0,
+    val readme: String = ""
 )
