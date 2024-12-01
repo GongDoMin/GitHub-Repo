@@ -7,8 +7,6 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.prac.core.designsystem.R
 
-const val USER_PROFILE_DESCRIPTION = "User Profile"
-
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun UserProfile(
@@ -20,6 +18,6 @@ fun UserProfile(
         model = uri,
         loading = placeholder(R.drawable.img_glide_profile),
         failure = placeholder(R.drawable.img_glide_error),
-        contentDescription = USER_PROFILE_DESCRIPTION
+        contentDescription = null
     )
 }
