@@ -2,6 +2,7 @@ package com.prac.network.service
 
 import com.prac.network.dto.IssueDto
 import com.prac.network.dto.PullDto
+import com.prac.network.dto.ReadmeDto
 import com.prac.network.dto.RepoDetailDto
 import com.prac.network.dto.RepoDto
 import retrofit2.http.DELETE
@@ -53,4 +54,10 @@ interface GitHubService {
         @Path("userName") userName: String,
         @Path("repoName") repoName: String
     ): List<PullDto>
+
+    @GET("repos/{userName}/{repoName}/readme")
+    suspend fun getRepoReadme(
+        @Path("userName") userName: String,
+        @Path("repoName") repoName: String
+    ): ReadmeDto
 }

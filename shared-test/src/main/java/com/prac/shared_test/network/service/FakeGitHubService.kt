@@ -2,6 +2,7 @@ package com.prac.shared_test.network.service
 
 import com.prac.network.dto.IssueDto
 import com.prac.network.dto.PullDto
+import com.prac.network.dto.ReadmeDto
 import com.prac.network.dto.RepoDetailDto
 import com.prac.network.dto.RepoDto
 import com.prac.network.service.GitHubService
@@ -48,5 +49,9 @@ class FakeGitHubService(
 
     override suspend fun getRepoPulls(userName: String, repoName: String): List<PullDto> {
         return listOf(PullDto(), PullDto())
+    }
+
+    override suspend fun getRepoReadme(userName: String, repoName: String): ReadmeDto {
+        return ReadmeDto(content = "hi!")
     }
 }
