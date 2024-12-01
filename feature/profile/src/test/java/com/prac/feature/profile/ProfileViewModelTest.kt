@@ -38,13 +38,7 @@ class ProfileViewModelTest {
 
     @Before
     fun setup() {
-        profileViewModel = ProfileViewModel(
-            tokenRepository,
-            mockRepoRepository,
-            profileReducerProcessor,
-            standardTestDispatcherRule.testDispatcher,
-            backOffWorkManager
-        )
+        initViewModel()
     }
 
     @Test
@@ -83,5 +77,15 @@ class ProfileViewModelTest {
             val result = awaitItem()
             assertEquals(result, Event.Logout)
         }
+    }
+
+    private fun initViewModel() {
+        profileViewModel = ProfileViewModel(
+            tokenRepository,
+            mockRepoRepository,
+            profileReducerProcessor,
+            standardTestDispatcherRule.testDispatcher,
+            backOffWorkManager
+        )
     }
 }
