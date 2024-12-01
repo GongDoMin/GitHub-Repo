@@ -17,6 +17,8 @@ import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.USER_NAME
 import com.prac.data.model.RepoDetailModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
+import com.prac.exception.CommonException
+import com.prac.exception.RepositoryException
 import com.prac.feature.detail.di.DetailReducerAnnotation
 import com.prac.feature.detail.model.Action
 import com.prac.feature.detail.model.Event
@@ -139,13 +141,13 @@ class DetailViewModel @Inject constructor(
 
     private fun handleGetRepositoryFailure(t: Throwable) {
         when (t) {
-            is com.prac.exception.CommonException.NetworkError -> {
+            is CommonException.NetworkError -> {
                 Mutation.ShowError(CONNECTION_FAIL).handleMutation()
             }
-            is com.prac.exception.CommonException.AuthorizationError -> {
+            is CommonException.AuthorizationError -> {
                 Mutation.ShowError(INVALID_TOKEN).handleMutation()
             }
-            is com.prac.exception.RepositoryException.NotFoundRepository -> {
+            is RepositoryException.NotFoundRepository -> {
                 Mutation.ShowError(INVALID_REPOSITORY).handleMutation()
             }
             else -> {
@@ -156,16 +158,16 @@ class DetailViewModel @Inject constructor(
 
     private suspend fun handleStarRepositoryFailure(t: Throwable, repoDetailModel: RepoDetailModel) {
         when (t) {
-            is com.prac.exception.CommonException.NetworkError -> {
+            is CommonException.NetworkError -> {
                 backOffWorkManager.addWork(
                     uniqueID = "star_${repoDetailModel.id}",
                     work = { repoRepository.starRepository(repoDetailModel.owner.login, repoDetailModel.name) }
                 )
             }
-            is com.prac.exception.CommonException.AuthorizationError -> {
+            is CommonException.AuthorizationError -> {
                 Mutation.ShowError(INVALID_TOKEN).handleMutation()
             }
-            is com.prac.exception.RepositoryException.NotFoundRepository -> {
+            is RepositoryException.NotFoundRepository -> {
                 repoRepository.unStarLocalRepository(repoDetailModel.id, repoDetailModel.stargazersCount)
 
                 Mutation.ShowError(errorMessage = INVALID_REPOSITORY).handleMutation()
@@ -180,16 +182,16 @@ class DetailViewModel @Inject constructor(
 
     private suspend fun handleUnStarRepositoryFailure(t: Throwable, repoDetailModel: RepoDetailModel) {
         when (t) {
-            is com.prac.exception.CommonException.NetworkError -> {
+            is CommonException.NetworkError -> {
                 backOffWorkManager.addWork(
                     uniqueID = "star_${repoDetailModel.id}",
                     work = { repoRepository.unStarRepository(repoDetailModel.owner.login, repoDetailModel.name) }
                 )
             }
-            is com.prac.exception.CommonException.AuthorizationError -> {
+            is CommonException.AuthorizationError -> {
                 Mutation.ShowError(INVALID_TOKEN).handleMutation()
             }
-            is com.prac.exception.RepositoryException.NotFoundRepository -> {
+            is RepositoryException.NotFoundRepository -> {
                 repoRepository.starLocalRepository(repoDetailModel.id, repoDetailModel.stargazersCount)
 
                 Mutation.ShowError(errorMessage = INVALID_REPOSITORY).handleMutation()

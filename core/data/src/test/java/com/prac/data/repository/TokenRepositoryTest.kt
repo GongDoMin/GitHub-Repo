@@ -74,7 +74,7 @@ class TokenRepositoryTest {
         assertEquals(token.refreshTokenExpiresInSeconds, 0)
         assertTrue(userName.isEmpty())
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is com.prac.exception.CommonException.NetworkError)
+        assertTrue(result.exceptionOrNull() is CommonException.NetworkError)
     }
 
     @Test
@@ -93,7 +93,7 @@ class TokenRepositoryTest {
         assertEquals(token.refreshTokenExpiresInSeconds, 0)
         assertTrue(userName.isEmpty())
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is com.prac.exception.CommonException.AuthorizationError)
+        assertTrue(result.exceptionOrNull() is CommonException.AuthorizationError)
     }
 
     @Test
@@ -111,7 +111,7 @@ class TokenRepositoryTest {
         assertEquals(token.refreshTokenExpiresInSeconds, 0)
         assertTrue(userName.isEmpty())
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is com.prac.exception.CommonException.NetworkError)
+        assertTrue(result.exceptionOrNull() is CommonException.NetworkError)
     }
 
     @Test
@@ -130,7 +130,7 @@ class TokenRepositoryTest {
         assertEquals(token.refreshTokenExpiresInSeconds, 0)
         assertTrue(userName.isEmpty())
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is com.prac.exception.CommonException.AuthorizationError)
+        assertTrue(result.exceptionOrNull() is CommonException.AuthorizationError)
     }
 
     @Test

@@ -262,7 +262,7 @@ internal class RepoRepositoryTest {
         val result = repoRepository.starRepository(userName, repoName)
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is com.prac.exception.CommonException.NetworkError)
+        assertTrue(result.exceptionOrNull() is CommonException.NetworkError)
     }
 
     @Test
@@ -274,7 +274,7 @@ internal class RepoRepositoryTest {
         val result = repoRepository.starRepository(userName, repoName)
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is com.prac.exception.CommonException.AuthorizationError)
+        assertTrue(result.exceptionOrNull() is CommonException.AuthorizationError)
     }
 
     @Test
@@ -286,7 +286,7 @@ internal class RepoRepositoryTest {
         val result = repoRepository.starRepository(userName, repoName)
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is com.prac.exception.RepositoryException.NotFoundRepository)
+        assertTrue(result.exceptionOrNull() is RepositoryException.NotFoundRepository)
     }
 
     @Test
@@ -298,7 +298,7 @@ internal class RepoRepositoryTest {
         val result = repoRepository.starRepository(userName, repoName)
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is com.prac.exception.CommonException.UnKnownError)
+        assertTrue(result.exceptionOrNull() is CommonException.UnKnownError)
     }
 
     @Test
@@ -320,7 +320,7 @@ internal class RepoRepositoryTest {
         val result = repoRepository.unStarRepository(userName, repoName)
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is com.prac.exception.CommonException.NetworkError)
+        assertTrue(result.exceptionOrNull() is CommonException.NetworkError)
     }
 
     @Test
@@ -332,7 +332,7 @@ internal class RepoRepositoryTest {
         val result = repoRepository.unStarRepository(userName, repoName)
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is com.prac.exception.CommonException.AuthorizationError)
+        assertTrue(result.exceptionOrNull() is CommonException.AuthorizationError)
     }
 
     @Test
@@ -344,7 +344,7 @@ internal class RepoRepositoryTest {
         val result = repoRepository.unStarRepository(userName, repoName)
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is com.prac.exception.RepositoryException.NotFoundRepository)
+        assertTrue(result.exceptionOrNull() is RepositoryException.NotFoundRepository)
     }
 
     @Test
@@ -356,7 +356,7 @@ internal class RepoRepositoryTest {
         val result = repoRepository.unStarRepository(userName, repoName)
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is com.prac.exception.CommonException.UnKnownError)
+        assertTrue(result.exceptionOrNull() is CommonException.UnKnownError)
     }
 
     @Test
@@ -432,7 +432,7 @@ internal class RepoRepositoryTest {
         val result = repoRepository.getRepository(userName, repoName)
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is com.prac.exception.CommonException.NetworkError)
+        assertTrue(result.exceptionOrNull() is CommonException.NetworkError)
     }
 
     @Test
@@ -444,7 +444,7 @@ internal class RepoRepositoryTest {
         val result = repoRepository.getRepository(userName, repoName)
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is com.prac.exception.CommonException.AuthorizationError)
+        assertTrue(result.exceptionOrNull() is CommonException.AuthorizationError)
     }
 
     @Test
@@ -456,7 +456,7 @@ internal class RepoRepositoryTest {
         val result = repoRepository.getRepository(userName, repoName)
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is com.prac.exception.RepositoryException.NotFoundRepository)
+        assertTrue(result.exceptionOrNull() is RepositoryException.NotFoundRepository)
     }
 
     @Test
@@ -468,7 +468,7 @@ internal class RepoRepositoryTest {
         val result = repoRepository.getRepository(userName, repoName)
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is com.prac.exception.CommonException.UnKnownError)
+        assertTrue(result.exceptionOrNull() is CommonException.UnKnownError)
     }
 
     @Test

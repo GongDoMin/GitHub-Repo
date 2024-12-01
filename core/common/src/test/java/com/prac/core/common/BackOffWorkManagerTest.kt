@@ -39,7 +39,7 @@ class BackOffWorkManagerTest {
             work = {
                 if (retryTimes < maxRetryTimes) {
                     retryTimes++
-                    Result.failure<Unit>(com.prac.exception.CommonException.NetworkError())
+                    Result.failure<Unit>(CommonException.NetworkError())
                 } else {
                     Result.success("success")
                 }
