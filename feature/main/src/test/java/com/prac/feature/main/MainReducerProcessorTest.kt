@@ -1,7 +1,5 @@
 package com.prac.feature.main
 
-import androidx.paging.LoadState
-import com.prac.data.model.RepoModel
 import com.prac.feature.main.model.Mutation
 import com.prac.feature.main.view.UiState
 import org.junit.Assert.assertEquals
@@ -15,13 +13,8 @@ class MainReducerProcessorTest {
 
     @Test
     fun invoke_mutationIsShowRepositories_uiStateIsShowRepositories() {
-        val repositories = listOf(
-            RepoModel()
-        )
+        val result = mainReducerProcessorTest.invoke(Mutation.ShowRepositories, UiState())
 
-        val result = mainReducerProcessorTest.invoke(Mutation.ShowRepositories, UiState(repositories = repositories))
-
-        assertEquals(result.repositories, repositories)
         assertFalse(result.isError)
         assertTrue(result.errorMessage.isEmpty())
     }
@@ -34,18 +27,5 @@ class MainReducerProcessorTest {
 
         assertTrue(result.isError)
         assertEquals(result.errorMessage, errorMessage)
-    }
-
-    @Test
-    fun invoke_mutationIsUpdateRepositories_uiStateIsShowRepositories() {
-        val repositories = listOf(
-            RepoModel()
-        )
-        val loadState = LoadState.NotLoading(true)
-
-        val result = mainReducerProcessorTest.invoke(Mutation.UpdateRepositories(repositories, loadState), UiState())
-
-        assertEquals(result.repositories, repositories)
-        assertEquals(result.loadState, loadState)
     }
 }

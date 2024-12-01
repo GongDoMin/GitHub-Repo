@@ -8,6 +8,8 @@ import com.prac.data.model.OwnerModel
 import com.prac.data.model.RepoModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
+import com.prac.exception.CommonException
+import com.prac.exception.RepositoryException
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
 import com.prac.shared_test.data.FakeTokenRepository
@@ -44,9 +46,11 @@ class MainViewModelTest {
 
     private lateinit var mainViewModel: MainViewModel
 
+    private val repositories = listOf(RepoModel(stargazersCount = 1))
+
     @Before
     fun setUp() = runTest {
-        val pagingData = PagingData.from(emptyList<RepoModel>())
+        val pagingData = PagingData.from(repositories)
         whenever(mockRepoRepository.getRepositories()).thenReturn(flow { emit(pagingData) } )
 
         mainViewModel = MainViewModel(mockRepoRepository, tokenRepository, backOffWork, mainReducerProcessor, standardTestDispatcherRule.testDispatcher)
@@ -60,71 +64,71 @@ class MainViewModelTest {
 
     @Test
     fun starRepository_starRepositoryIsSuccess_callStarLocalAndRemoteRepository() = runTest {
-        val repoEntity = makeRepoEntity()
+        val repository = repositories[0]
 
-        mainViewModel.process(Action.UserAction.OnClickUnStar(repoEntity))
+        mainViewModel.process(Action.UserAction.OnClickUnStar(repository))
         advanceUntilIdle()
 
-        verify(mockRepoRepository).starLocalRepository(repoEntity.id, repoEntity.stargazersCount + 1)
-        verify(mockRepoRepository).starRepository(repoEntity.owner.login, repoEntity.name)
+        verify(mockRepoRepository).starLocalRepository(repository.id, repository.stargazersCount + 1)
+        verify(mockRepoRepository).starRepository(repository.owner.login, repository.name)
     }
 
     @Test
     fun unStarRepository_unStarRepositoryIsSuccess_callStarLocalAndRemoteRepository() = runTest {
-        val repoEntity = makeRepoEntity()
+        val repository = repositories[0]
 
-        mainViewModel.process(Action.UserAction.OnClickStar(repoEntity))
+        mainViewModel.process(Action.UserAction.OnClickStar(repository))
         advanceUntilIdle()
 
-        verify(mockRepoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount - 1)
-        verify(mockRepoRepository).unStarRepository(repoEntity.owner.login, repoEntity.name)
+        verify(mockRepoRepository).unStarLocalRepository(repository.id, repository.stargazersCount - 1)
+        verify(mockRepoRepository).unStarRepository(repository.owner.login, repository.name)
     }
 
     @Test
     fun starRepository_starRepositoryIsNetworkError_callMultipleTimesRemoteRepository() = runTest {
         backOffWork.setScope(this)
-        val repoEntity = makeRepoEntity()
-        val uniqueID = "star_${repoEntity.id}"
+        val repository = repositories[0]
+        val uniqueID = "star_${repository.id}"
         val expectedCallTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
         val expectedDelayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
-        whenever(mockRepoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
-            .thenReturn(Result.failure(com.prac.exception.CommonException.NetworkError()))
+        whenever(mockRepoRepository.starRepository(repository.owner.login, repository.name))
+            .thenReturn(Result.failure(CommonException.NetworkError()))
 
-        mainViewModel.process(Action.UserAction.OnClickUnStar(repoEntity))
+        mainViewModel.process(Action.UserAction.OnClickUnStar(repository))
         advanceUntilIdle()
 
-        verify(mockRepoRepository).starLocalRepository(repoEntity.id, repoEntity.stargazersCount + 1)
-        verify(mockRepoRepository, times(expectedCallTimes)).starRepository(repoEntity.owner.login, repoEntity.name)
+        verify(mockRepoRepository).starLocalRepository(repository.id, repository.stargazersCount + 1)
+        verify(mockRepoRepository, times(expectedCallTimes)).starRepository(repository.owner.login, repository.name)
         assertEquals(backOffWork.getDelayTimes(uniqueID), expectedDelayTimes)
     }
 
     @Test
     fun unStarRepository_unStarRepositoryIsNetworkError_callMultipleTimesRemoteRepository() = runTest {
         backOffWork.setScope(this)
-        val repoEntity = makeRepoEntity()
-        val uniqueID = "star_${repoEntity.id}"
+        val repository = repositories[0]
+        val uniqueID = "star_${repository.id}"
         val expectedCallTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
         val expectedDelayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
-        whenever(mockRepoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
-            .thenReturn(Result.failure(com.prac.exception.CommonException.NetworkError()))
+        whenever(mockRepoRepository.unStarRepository(repository.owner.login, repository.name))
+            .thenReturn(Result.failure(CommonException.NetworkError()))
 
-        mainViewModel.process(Action.UserAction.OnClickStar(repoEntity))
+        mainViewModel.process(Action.UserAction.OnClickStar(repository))
         advanceUntilIdle()
 
-        verify(mockRepoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount - 1)
-        verify(mockRepoRepository, times(expectedCallTimes)).unStarRepository(repoEntity.owner.login, repoEntity.name)
+        verify(mockRepoRepository).unStarLocalRepository(repository.id, repository.stargazersCount - 1)
+        verify(mockRepoRepository, times(expectedCallTimes)).unStarRepository(repository.owner.login, repository.name)
         assertEquals(backOffWork.getDelayTimes(uniqueID), expectedDelayTimes)
     }
 
     @Test
     fun starRepository_starRepositoryIsAuthorizationError_eventIsLogout() = runTest {
-        val repoEntity = makeRepoEntity()
-        whenever(mockRepoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
-            .thenReturn(Result.failure(com.prac.exception.CommonException.AuthorizationError()))
-
-        mainViewModel.process(Action.UserAction.OnClickUnStar(repoEntity))
+        val repository = repositories[0]
+        whenever(mockRepoRepository.starRepository(repository.owner.login, repository.name))
+            .thenReturn(Result.failure(CommonException.AuthorizationError()))
 
         mainViewModel.eventFlow.test {
+            mainViewModel.process(Action.UserAction.OnClickUnStar(repository))
+
             val result = awaitItem()
             assertTrue(result is Event.Logout)
         }
@@ -132,13 +136,13 @@ class MainViewModelTest {
 
     @Test
     fun unStarRepository_unStarRepositoryIsAuthorizationError_uiStateHasDialogMessage() = runTest {
-        val repoEntity = makeRepoEntity()
-        whenever(mockRepoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
-            .thenReturn(Result.failure(com.prac.exception.CommonException.AuthorizationError()))
-
-        mainViewModel.process(Action.UserAction.OnClickStar(repoEntity))
+        val repository = repositories[0]
+        whenever(mockRepoRepository.unStarRepository(repository.owner.login, repository.name))
+            .thenReturn(Result.failure(CommonException.AuthorizationError()))
 
         mainViewModel.eventFlow.test {
+            mainViewModel.process(Action.UserAction.OnClickStar(repository))
+
             val result = awaitItem()
             assertTrue(result is Event.Logout)
         }
@@ -146,80 +150,69 @@ class MainViewModelTest {
 
     @Test
     fun starRepository_starRepositoryIsNotFoundRepositoryError_uiStateIsError() = runTest {
-        val repoEntity = makeRepoEntity()
-        whenever(mockRepoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
-            .thenReturn(Result.failure(com.prac.exception.RepositoryException.NotFoundRepository()))
-
-        mainViewModel.process(Action.UserAction.OnClickUnStar(repoEntity))
+        val repository = repositories[0]
+        whenever(mockRepoRepository.starRepository(repository.owner.login, repository.name))
+            .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
 
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
+            mainViewModel.process(Action.UserAction.OnClickUnStar(repository))
+
             val result = awaitItem()
             assertEquals(result.errorMessage, INVALID_REPOSITORY)
-            verify(mockRepoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
+            verify(mockRepoRepository).unStarLocalRepository(repository.id, repository.stargazersCount)
         }
     }
 
     @Test
     fun unStarRepository_unStarRepositoryIsNotFoundRepositoryError_uiStateIsError() = runTest {
-        val repoEntity = makeRepoEntity()
-        whenever(mockRepoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
-            .thenReturn(Result.failure(com.prac.exception.RepositoryException.NotFoundRepository()))
-
-        mainViewModel.process(Action.UserAction.OnClickStar(repoEntity))
+        val repository = repositories[0]
+        whenever(mockRepoRepository.unStarRepository(repository.owner.login, repository.name))
+            .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
 
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
+            mainViewModel.process(Action.UserAction.OnClickStar(repository))
+
             val result = awaitItem()
             assertEquals(result.errorMessage, INVALID_REPOSITORY)
-            verify(mockRepoRepository).starLocalRepository(repoEntity.id, repoEntity.stargazersCount)
+            verify(mockRepoRepository).starLocalRepository(repository.id, repository.stargazersCount)
         }
     }
 
     @Test
     fun starRepository_starRepositoryIsUnKnownError_uiStateIsError() = runTest {
-        val repoEntity = makeRepoEntity()
-        whenever(mockRepoRepository.starRepository(repoEntity.owner.login, repoEntity.name))
-            .thenReturn(Result.failure(com.prac.exception.CommonException.UnKnownError()))
-
-        mainViewModel.process(Action.UserAction.OnClickUnStar(repoEntity))
+        val repository = repositories[0]
+        whenever(mockRepoRepository.starRepository(repository.owner.login, repository.name))
+            .thenReturn(Result.failure(CommonException.UnKnownError()))
 
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
+            mainViewModel.process(Action.UserAction.OnClickUnStar(repository))
+
             val result = awaitItem()
             assertEquals(result.errorMessage, UNKNOWN)
-            verify(mockRepoRepository).unStarLocalRepository(repoEntity.id, repoEntity.stargazersCount)
+            verify(mockRepoRepository).unStarLocalRepository(repository.id, repository.stargazersCount)
         }
     }
 
     @Test
     fun unStarRepository_unStarRepositoryIsUnKnownError_uiStateIsError() = runTest {
-        val repoEntity = makeRepoEntity()
-        whenever(mockRepoRepository.unStarRepository(repoEntity.owner.login, repoEntity.name))
-            .thenReturn(Result.failure(com.prac.exception.CommonException.UnKnownError()))
-
-        mainViewModel.process(Action.UserAction.OnClickStar(repoEntity))
+        val repository = repositories[0]
+        whenever(mockRepoRepository.unStarRepository(repository.owner.login, repository.name))
+            .thenReturn(Result.failure(CommonException.UnKnownError()))
 
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
+            mainViewModel.process(Action.UserAction.OnClickStar(repository))
+
             val result = awaitItem()
             assertEquals(result.errorMessage, UNKNOWN)
-            verify(mockRepoRepository).starLocalRepository(repoEntity.id, repoEntity.stargazersCount)
+            verify(mockRepoRepository).starLocalRepository(repository.id, repository.stargazersCount)
         }
     }
-
-    private fun makeRepoEntity() =
-        RepoModel(
-            id = 1,
-            name = "name",
-            owner = OwnerModel(login = "login", avatarUrl = "avatarUrl"),
-            stargazersCount = 10,
-            defaultBranch = "master",
-            updatedAt = "updatedAt",
-            isStarred = null
-        )
 }
