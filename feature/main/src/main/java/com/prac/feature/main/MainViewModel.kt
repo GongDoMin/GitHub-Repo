@@ -61,12 +61,12 @@ class MainViewModel @Inject constructor(
         when (action) {
             is Action.InternalAction.Load -> load()
             is Action.InternalAction.FetchStarState -> fetchStarState(action.repoModel)
-            is Action.UserAction.OnClickRepository -> onClickRepository(action.repoModel)
-            is Action.UserAction.OnClickUnStar -> onClickUnStar(action.repoModel)
-            is Action.UserAction.OnClickStar -> onClickStar(action.repoModel)
-            is Action.UserAction.OnClickRetry -> onClickRetry()
-            is Action.UserAction.DialogDismiss -> dialogDismiss()
-            is Action.UserAction.LogoutDialogDismiss -> logoutDialogDismiss()
+            is Action.UserAction.OnClickRepository -> handleClickRepository(action.repoModel)
+            is Action.UserAction.OnClickUnStar -> handleClickUnStar(action.repoModel)
+            is Action.UserAction.OnClickStar -> handleClickStar(action.repoModel)
+            is Action.UserAction.OnClickRetry -> handleClickRetry()
+            is Action.UserAction.DialogDismiss -> handleDialogDismiss()
+            is Action.UserAction.LogoutDialogDismiss -> handleLogoutDialogDismiss()
         }
     }
 
@@ -88,11 +88,11 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun onClickRepository(repoModel: RepoModel) {
+    private fun handleClickRepository(repoModel: RepoModel) {
         Event.OpenRepositoryDetail(repoModel.owner.login, repoModel.name).handleEvent()
     }
 
-    private fun onClickUnStar(repoModel: RepoModel) {
+    private fun handleClickUnStar(repoModel: RepoModel) {
         viewModelScope.launch(ioDispatcher) {
             repoRepository.starLocalRepository(repoModel.id, repoModel.stargazersCount + 1)
 
@@ -103,7 +103,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun onClickStar(repoModel: RepoModel) {
+    private fun handleClickStar(repoModel: RepoModel) {
         viewModelScope.launch(ioDispatcher) {
             repoRepository.unStarLocalRepository(repoModel.id, repoModel.stargazersCount - 1)
 
@@ -114,15 +114,15 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun onClickRetry() {
+    private fun handleClickRetry() {
         Event.Retry.handleEvent()
     }
 
-    private fun dialogDismiss() {
+    private fun handleDialogDismiss() {
         Mutation.ShowRepositories.handleMutation()
     }
 
-    private fun logoutDialogDismiss() {
+    private fun handleLogoutDialogDismiss() {
         Event.Logout.handleEvent()
     }
 
