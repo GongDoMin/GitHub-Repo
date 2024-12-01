@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,13 +37,14 @@ import com.prac.core.designsystem.component.ErrorAlertDialog
 import com.prac.core.designsystem.component.LoadingContent
 import com.prac.core.designsystem.component.UserProfile
 import com.prac.data.model.RepoDetailModel
+import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
 fun DetailContent(
     isLoading: Boolean,
     isError: Boolean,
     errorMessage: String,
-    repoDetail: RepoDetailModel?,
+    repoDetail: RepoDetailModel,
     onClickStar: (RepoDetailModel) -> Unit,
     onClickUnStar: (RepoDetailModel) -> Unit,
     onDismissRequest: (String) -> Unit,
@@ -50,48 +53,62 @@ fun DetailContent(
     LoadingContent(
         isLoading = isLoading
     ) {
-        repoDetail?.let {
-            Column(
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(dimensionResource(id = R.dimen.padding_normal))
+        ) {
+            DetailContentUser(
+                uri = repoDetail.owner.avatarUrl,
+                userName = repoDetail.owner.login,
+                modifier = modifier
+            )
+
+            DetailContentRepoName(
+                repoName = repoDetail.name,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(dimensionResource(id = R.dimen.padding_normal))
-            ) {
-                DetailContentUser(
-                    uri = repoDetail.owner.avatarUrl,
-                    userName = repoDetail.owner.login,
-                    modifier = modifier
-                )
+                    .padding(bottom = dimensionResource(id = R.dimen.padding_normal))
+            )
 
-                DetailContentRepoName(
-                    repoName = repoDetail.name,
+            DetailContentStarAndFork(
+                repoDetail = repoDetail,
+                modifier = modifier,
+                onClickStar = onClickStar,
+                onClickUnStar = onClickUnStar
+            )
+
+            DetailInfo(
+                imageVector = ImageVector.vectorResource(id = R.drawable.issue_24),
+                title = stringResource(id = R.string.issue),
+                value = repoDetail.issueCount
+            )
+
+            DetailInfo(
+                imageVector = ImageVector.vectorResource(id = R.drawable.pull_request_24),
+                title = stringResource(id = R.string.pull_request),
+                value = repoDetail.pullCount
+            )
+
+            DetailInfo(
+                imageVector = ImageVector.vectorResource(id = R.drawable.subscribe_24),
+                title = stringResource(id = R.string.subscribe),
+                value = repoDetail.subscribeCount
+            )
+
+            if (repoDetail.readme.isNotEmpty()) {
+                Text(
                     modifier = Modifier
-                        .padding(bottom = dimensionResource(id = R.dimen.padding_normal))
+                        .padding(top = dimensionResource(id = R.dimen.padding_normal)),
+                    text = stringResource(id = R.string.readme)
                 )
 
-                DetailContentStarAndFork(
-                    repoDetail = repoDetail,
-                    modifier = modifier,
-                    onClickStar = onClickStar,
-                    onClickUnStar = onClickUnStar
+                HorizontalDivider(
+                    modifier = Modifier
+                        .padding(vertical = dimensionResource(id = R.dimen.padding_normal))
                 )
 
-                DetailInfo(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.issue_24),
-                    title = stringResource(id = R.string.issue),
-                    value = repoDetail.issueCount
-                )
-
-                DetailInfo(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.pull_request_24),
-                    title = stringResource(id = R.string.pull_request),
-                    value = repoDetail.pullCount
-                )
-
-                DetailInfo(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.subscribe_24),
-                    title = stringResource(id = R.string.subscribe),
-                    value = repoDetail.subscribeCount
-                )
+                MarkdownText(markdown = repoDetail.readme)
             }
         }
 
