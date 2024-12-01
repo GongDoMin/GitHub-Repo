@@ -3,6 +3,7 @@ package com.prac.feature.login
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.isNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -110,9 +111,7 @@ class LoginScreenTest {
 
         composeTestRule.onNodeWithText(activity.getString(R.string.check)).performClick()
 
-        composeTestRule.waitUntil {
-            composeTestRule.onNodeWithText(LOGIN_FAIL).isNotDisplayed()
-        }
+        composeTestRule.onNodeWithText(LOGIN_FAIL).assertIsNotDisplayed()
     }
 
     private fun setContent() {
