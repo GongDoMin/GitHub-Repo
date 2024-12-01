@@ -4,6 +4,9 @@ import com.prac.network.RepoApiDataSource
 import com.prac.network.dto.RepoDetailDto
 import com.prac.network.dto.RepoDto
 import com.prac.network.service.GitHubService
+import okio.IOException
+import retrofit2.HttpException
+import java.util.Base64
 import javax.inject.Inject
 
 internal class RepoApiDataSourceImpl @Inject constructor(
@@ -33,4 +36,17 @@ internal class RepoApiDataSourceImpl @Inject constructor(
         return pullSize
     }
 
+    override suspend fun getRepoReadme(userName: String, repoName: String): String {
+        return try {
+            val response = gitHubService.getRepoReadme(userName, repoName)
+
+            val cleanedString = response.content.replace("\n", "").replace(" ", "")
+
+            val decodedBytes = Base64.getDecoder().decode(cleanedString)
+
+            String(decodedBytes)
+        } catch (e: HttpException) {
+            ""
+        }
+    }
 }

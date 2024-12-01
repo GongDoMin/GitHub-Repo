@@ -11,4 +11,6 @@ interface RepoApiDataSource {
     suspend fun getRepoIssueCount(userName: String, repoName: String) : Int
 
     suspend fun getRepoPullCount(userName: String, repoName: String) : Int
+
+    suspend fun getRepoReadme(userName: String, repoName: String) : String
 }

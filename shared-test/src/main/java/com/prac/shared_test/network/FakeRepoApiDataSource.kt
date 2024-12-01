@@ -57,4 +57,10 @@ class FakeRepoApiDataSource : RepoApiDataSource {
 
         return 5
     }
+
+    override suspend fun getRepoReadme(userName: String, repoName: String): String {
+        if (::throwable.isInitialized) throw throwable
+
+        return "hi!"
+    }
 }
