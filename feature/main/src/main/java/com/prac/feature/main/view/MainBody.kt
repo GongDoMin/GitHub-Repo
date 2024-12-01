@@ -67,11 +67,11 @@ fun MainContentBody(
 fun MainContentBodyPreview() {
     val repositories = flowOf(
         PagingData.from(
-        listOf(
-            RepoModel(stargazersCount = 5),
-            RepoModel(stargazersCount = 6)
+            listOf(
+                RepoModel(stargazersCount = 5),
+                RepoModel(stargazersCount = 6)
+            )
         )
-    )
     ).collectAsLazyPagingItems()
 
     MainContentBody(
@@ -88,12 +88,13 @@ fun MainContentBodyPreview() {
 @Preview(showBackground = true)
 @Composable
 fun MainContentBodyLoadStatePreview() {
-    val repositories = flowOf(PagingData.from(
-        listOf(
-            RepoModel(stargazersCount = 5),
-            RepoModel(stargazersCount = 6)
+    val repositories = flowOf(
+        PagingData.from(
+            listOf(
+                RepoModel(stargazersCount = 5),
+                RepoModel(stargazersCount = 6)
+            )
         )
-    )
     ).collectAsLazyPagingItems()
 
     MainContentBody(

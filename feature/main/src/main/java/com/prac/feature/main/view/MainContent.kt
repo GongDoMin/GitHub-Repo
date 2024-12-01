@@ -62,7 +62,8 @@ fun MainContent(
 @Preview(showBackground = true)
 @Composable
 fun MainContentPreview() {
-    val repositories = flowOf(PagingData.from(
+    val repositories = flowOf(
+        PagingData.from(
             listOf(
                 RepoModel(stargazersCount = 5),
                 RepoModel(stargazersCount = 6)
@@ -87,7 +88,8 @@ fun MainContentPreview() {
 @Preview(showBackground = true)
 @Composable
 fun MainContentErrorPreview() {
-    val repositories = flowOf(PagingData.from(
+    val repositories = flowOf(
+        PagingData.from(
             listOf(
                 RepoModel(stargazersCount = 5),
                 RepoModel(stargazersCount = 6)
@@ -112,17 +114,11 @@ fun MainContentErrorPreview() {
 @Preview(showBackground = true)
 @Composable
 fun MainContentLoadStatePreview() {
-    val repositories = flowOf(PagingData.from(
-        listOf(
-            RepoModel(stargazersCount = 5),
-            RepoModel(stargazersCount = 6)
-        )
-    )
-    ).collectAsLazyPagingItems()
+    val repositories = flowOf<PagingData<RepoModel>>(PagingData.empty()).collectAsLazyPagingItems()
 
     MainContent(
         repositories = repositories,
-        handleLoadState = { LoadState.NotLoading(true) },
+        handleLoadState = { LoadState.Loading },
         onClickRetry = {},
         starStateRequest = {},
         onClickStar = {},
