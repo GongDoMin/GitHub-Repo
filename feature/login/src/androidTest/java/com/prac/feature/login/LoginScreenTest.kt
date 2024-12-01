@@ -2,7 +2,9 @@ package com.prac.feature.login
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.isDisplayed
+import androidx.compose.ui.test.isNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -91,6 +93,25 @@ class LoginScreenTest {
 
         composeTestRule.waitUntil {
             composeTestRule.onNodeWithText(LOGIN_FAIL).isDisplayed()
+        }
+    }
+
+    @Test
+    fun dismissDialog_showIdle() = runTest {
+        val scheme = "test"
+        val host = "test"
+        val code = "else"
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("$scheme://$host?code=$code"))
+        activity.startActivity(intent)
+
+        composeTestRule.waitUntil {
+            composeTestRule.onNodeWithText(LOGIN_FAIL).isDisplayed()
+        }
+
+        composeTestRule.onNodeWithText(activity.getString(R.string.check)).performClick()
+
+        composeTestRule.waitUntil {
+            composeTestRule.onNodeWithText(LOGIN_FAIL).isNotDisplayed()
         }
     }
 
