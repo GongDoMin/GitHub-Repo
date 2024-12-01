@@ -44,21 +44,21 @@ class ProfileViewModel @Inject constructor(
 
     fun process(action: Action) {
         when (action) {
-            is Action.UserAction.OnClickLogoutButton -> onClickLogoutButton()
-            is Action.UserAction.DialogDismiss -> dialogDismiss()
-            is Action.UserAction.OnClickCheckButton -> onClickCheckButton()
+            is Action.UserAction.OnClickLogoutButton -> handleClickLogoutButton()
+            is Action.UserAction.DialogDismiss -> handleDialogDismiss()
+            is Action.UserAction.OnClickCheckButton -> handleClickCheckButton()
         }
     }
 
-    private fun onClickLogoutButton() {
+    private fun handleClickLogoutButton() {
         ShowDialog.handleMutation()
     }
 
-    private fun dialogDismiss() {
+    private fun handleDialogDismiss() {
         ShowIdle.handleMutation()
     }
 
-    private fun onClickCheckButton() {
+    private fun handleClickCheckButton() {
         viewModelScope.launch(ioDispatcher) {
             ShowLoading.handleMutation()
 
