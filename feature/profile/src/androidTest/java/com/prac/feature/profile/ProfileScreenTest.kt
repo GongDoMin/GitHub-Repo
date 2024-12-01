@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.prac.core.designsystem.R
+import com.prac.feature.profile.view.ProfileScreen
 import com.prac.shared_test.HiltTestActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -24,7 +25,7 @@ class ProfileScreenTest {
     val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
     private val activity get() = composeTestRule.activity
 
-    private var isMainScreen = false
+    private var isLoginScreen = false
 
     @Before
     fun setup() {
@@ -48,7 +49,7 @@ class ProfileScreenTest {
         composeTestRule.onNodeWithText(activity.getString(R.string.cancel)).performClick()
 
         composeTestRule.waitUntil {
-            composeTestRule.onNodeWithText(activity.getString(R.string.logout_confirm)).isNotDisplayed() && !isMainScreen
+            composeTestRule.onNodeWithText(activity.getString(R.string.logout_confirm)).isNotDisplayed() && !isLoginScreen
         }
     }
 
@@ -61,14 +62,14 @@ class ProfileScreenTest {
         composeTestRule.onNodeWithText(activity.getString(R.string.check)).performClick()
 
         composeTestRule.waitUntil {
-            composeTestRule.onNodeWithText(activity.getString(R.string.logout_confirm)).isNotDisplayed() && isMainScreen
+            composeTestRule.onNodeWithText(activity.getString(R.string.logout_confirm)).isNotDisplayed() && isLoginScreen
         }
     }
 
     private fun setContent() {
         composeTestRule.setContent {
-            com.prac.feature.profile.view.ProfileScreen(
-                onNavigateToLogin = { isMainScreen = true }
+            ProfileScreen(
+                onNavigateToLogin = { isLoginScreen = true }
             )
         }
     }
