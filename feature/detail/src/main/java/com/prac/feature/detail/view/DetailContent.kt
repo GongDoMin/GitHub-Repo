@@ -95,7 +95,11 @@ fun DetailContent(
                 value = repoDetail.subscribeCount
             )
 
-            ReadMe(readme = repoDetail.readme)
+            ReadMe(
+                readme = repoDetail.readme,
+                modifier = Modifier
+                    .padding(top = dimensionResource(id = R.dimen.padding_normal))
+            )
         }
 
         HandleErrorAlertDialog(
