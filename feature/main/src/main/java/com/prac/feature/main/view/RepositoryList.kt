@@ -57,7 +57,9 @@ fun RepositoryList(
         item {
             LoadStateFooter(
                 loadState = handleLoadState(repositories.loadState),
-                onRetryClick = onClickRetry
+                onRetryClick = onClickRetry,
+                modifier = Modifier
+                    .padding(dimensionResource(R.dimen.padding_small))
             )
         }
     }
