@@ -24,7 +24,8 @@ fun ProfileScreen(
         isLoading = uiState.isLoading,
         isDialog = uiState.isDialog,
         onClickLogoutButton = { viewModel.process(Action.UserAction.OnClickLogoutButton) },
-        onClickCheckButton = { viewModel.process(Action.UserAction.OnClickCheckButton) },
+        onClickNegativeButton = { viewModel.process(Action.UserAction.OnClickNegativeButton) },
+        onClickPositiveButton = { viewModel.process(Action.UserAction.OnClickPositiveButton) },
         onDismissRequest = { viewModel.process(Action.UserAction.DialogDismiss) }
     )
 

@@ -72,7 +72,7 @@ class ProfileViewModelTest {
     @Test
     fun process_actionIsOnClickCheckButton_EventIsLogout() = runTest {
         profileViewModel.eventFlow.test {
-            profileViewModel.process(Action.UserAction.OnClickCheckButton)
+            profileViewModel.process(Action.UserAction.OnClickPositiveButton)
 
             val result = awaitItem()
             assertEquals(result, Event.Logout)

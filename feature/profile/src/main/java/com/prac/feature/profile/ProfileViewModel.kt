@@ -46,7 +46,8 @@ class ProfileViewModel @Inject constructor(
         when (action) {
             is Action.UserAction.OnClickLogoutButton -> handleClickLogoutButton()
             is Action.UserAction.DialogDismiss -> handleDialogDismiss()
-            is Action.UserAction.OnClickCheckButton -> handleClickCheckButton()
+            is Action.UserAction.OnClickNegativeButton -> handleClickNegativeButton()
+            is Action.UserAction.OnClickPositiveButton -> handleClickCheckButton()
         }
     }
 
@@ -55,6 +56,10 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun handleDialogDismiss() {
+        ShowIdle.handleMutation()
+    }
+
+    private fun handleClickNegativeButton() {
         ShowIdle.handleMutation()
     }
 

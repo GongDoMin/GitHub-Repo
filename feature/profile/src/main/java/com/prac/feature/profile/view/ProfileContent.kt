@@ -19,7 +19,8 @@ fun ProfileContent(
     isLoading: Boolean,
     isDialog: Boolean,
     onClickLogoutButton: () -> Unit,
-    onClickCheckButton: () -> Unit,
+    onClickNegativeButton: () -> Unit,
+    onClickPositiveButton: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
     LoadingContent(
@@ -45,9 +46,9 @@ fun ProfileContent(
                 onDismissRequest = onDismissRequest,
                 message = stringResource(id = R.string.logout_confirm),
                 negativeButtonText = stringResource(id = R.string.cancel),
-                onClickNegativeButton = onClickCheckButton,
+                onClickNegativeButton = onClickNegativeButton,
                 positiveButtonText = stringResource(id = R.string.check),
-                onClickPositiveButton = onClickCheckButton
+                onClickPositiveButton = onClickPositiveButton
             )
         }
     }
@@ -60,7 +61,8 @@ fun ProfileContentPreview() {
         isLoading = false,
         isDialog = false,
         onClickLogoutButton = {},
-        onClickCheckButton = {},
+        onClickNegativeButton = {},
+        onClickPositiveButton = {},
         onDismissRequest = {}
     )
 }
@@ -72,7 +74,8 @@ fun ProfileContentLoadingPreview() {
         isLoading = true,
         isDialog = false,
         onClickLogoutButton = {},
-        onClickCheckButton = {},
+        onClickNegativeButton = {},
+        onClickPositiveButton = {},
         onDismissRequest = {}
     )
 }
@@ -84,7 +87,8 @@ fun ProfileContentDialogPreview() {
         isLoading = true,
         isDialog = true,
         onClickLogoutButton = {},
-        onClickCheckButton = {},
+        onClickNegativeButton = {},
+        onClickPositiveButton = {},
         onDismissRequest = {}
     )
 }
