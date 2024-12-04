@@ -47,7 +47,7 @@ fun MainContent(
 
         HorizontalDivider()
 
-        MainContentBody(
+        RepositoryList(
             repositories = repositories,
             handleLoadState = handleLoadState,
             onClickRetry = onClickRetry,

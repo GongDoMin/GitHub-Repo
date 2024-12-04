@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -19,22 +18,22 @@ import androidx.paging.compose.itemKey
 import com.prac.core.designsystem.R
 import com.prac.data.model.RepoModel
 import kotlinx.coroutines.flow.flowOf
-import org.mockito.kotlin.description
 
 @Composable
-fun MainContentBody(
+fun RepositoryList(
     repositories: LazyPagingItems<RepoModel>,
     handleLoadState: (CombinedLoadStates) -> LoadState,
     onClickRetry: () -> Unit,
     starStateRequest: (RepoModel) -> Unit,
     onClickStar: (RepoModel) -> Unit,
     onClickUnStar: (RepoModel) -> Unit,
-    onClickRepository: (RepoModel) -> Unit
+    onClickRepository: (RepoModel) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val lazyColumnDescription = stringResource(id = R.string.lazy_column_description)
 
     LazyColumn(
-        modifier = Modifier
+        modifier = modifier
             .semantics { contentDescription = lazyColumnDescription }
     ) {
         items(
@@ -70,7 +69,7 @@ fun MainContentBody(
 
 @Preview(showBackground = true)
 @Composable
-fun MainContentBodyPreview() {
+fun RepositoryListPreview() {
     val repositories = flowOf(
         PagingData.from(
             listOf(
@@ -80,7 +79,7 @@ fun MainContentBodyPreview() {
         )
     ).collectAsLazyPagingItems()
 
-    MainContentBody(
+    RepositoryList(
         repositories = repositories,
         handleLoadState = { LoadState.NotLoading(true) },
         onClickRetry = {},
@@ -93,7 +92,7 @@ fun MainContentBodyPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun MainContentBodyLoadStatePreview() {
+fun RepositoryListLoadStatePreview() {
     val repositories = flowOf(
         PagingData.from(
             listOf(
@@ -103,7 +102,7 @@ fun MainContentBodyLoadStatePreview() {
         )
     ).collectAsLazyPagingItems()
 
-    MainContentBody(
+    RepositoryList(
         repositories = repositories,
         handleLoadState = { LoadState.NotLoading(true) },
         onClickRetry = {},
