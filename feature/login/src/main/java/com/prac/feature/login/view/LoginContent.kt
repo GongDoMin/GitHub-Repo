@@ -17,8 +17,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.core.designsystem.R
 import com.prac.core.designsystem.component.BounceButton
-import com.prac.core.designsystem.component.MessageDialog
 import com.prac.core.designsystem.component.ContentWithLoadingIndicator
+import com.prac.core.designsystem.component.MessageDialog
 
 @Composable
 fun LoginContent(
@@ -26,18 +26,17 @@ fun LoginContent(
     isError: Boolean,
     errorMessage: String,
     onClickLogin: () -> Unit,
-    onDismissRequest: (String) -> Unit
+    onDismissRequest: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    loadingModifier: Modifier = Modifier
 ) {
     ContentWithLoadingIndicator(
-        isLoading = isLoading
+        isLoading = isLoading,
+        modifier = loadingModifier
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(
-                    start = dimensionResource(id = R.dimen.padding_normal),
-                    end = dimensionResource(id = R.dimen.padding_normal)
-                ),
+            modifier = modifier
+                .fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -83,7 +82,9 @@ fun LoginContentLoadingPreview() {
         isError = false,
         errorMessage = "",
         onClickLogin = {},
-        onDismissRequest = {}
+        onDismissRequest = {},
+        modifier = Modifier
+            .padding(dimensionResource(id = R.dimen.padding_normal))
     )
 }
 
@@ -95,7 +96,9 @@ fun LoginContentPreview() {
         isError = false,
         errorMessage = "",
         onClickLogin = {},
-        onDismissRequest = {}
+        onDismissRequest = {},
+        modifier = Modifier
+            .padding(dimensionResource(id = R.dimen.padding_normal))
     )
 }
 
@@ -107,6 +110,8 @@ fun LoginContentErrorMessagePreview() {
         isError = true,
         errorMessage = CONNECTION_FAIL,
         onClickLogin = {},
-        onDismissRequest = {}
+        onDismissRequest = {},
+        modifier = Modifier
+            .padding(dimensionResource(id = R.dimen.padding_normal))
     )
 }
