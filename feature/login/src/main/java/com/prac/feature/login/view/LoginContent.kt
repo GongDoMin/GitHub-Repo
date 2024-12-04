@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
@@ -52,7 +53,8 @@ fun LoginContent(
 
             BounceButton(
                 text = stringResource(id = R.string.login),
-                onClickButton = onClickLoginButton
+                onClickButton = onClickLoginButton,
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small)))

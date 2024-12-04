@@ -3,6 +3,7 @@ package com.prac.feature.profile.view
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -37,7 +38,8 @@ fun ProfileContent(
         ) {
             BounceButton(
                 text = stringResource(id = R.string.logout),
-                onClickButton = onClickLogoutButton
+                onClickButton = onClickLogoutButton,
+                modifier = Modifier.fillMaxWidth()
             )
         }
 

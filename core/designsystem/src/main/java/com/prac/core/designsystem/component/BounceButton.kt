@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -21,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import com.prac.core.designsystem.R
 
 private enum class ButtonState(val targetFloat: Float) {
@@ -32,12 +33,12 @@ private enum class ButtonState(val targetFloat: Float) {
 @Composable
 fun BounceButton(
     text: String,
-    onClickButton: () -> Unit
+    onClickButton: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Button(
         onClick = onClickButton,
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .bounceClick(),
         colors = ButtonColors(
             containerColor = Color.Black,
@@ -69,11 +70,6 @@ private fun Modifier.bounceClick() = composed {
             scaleX = scale
             scaleY = scale
         }
-        .clickable(
-            interactionSource = remember { MutableInteractionSource() },
-            indication = null,
-            onClick = {}
-        )
         .pointerInput(buttonState) {
             awaitPointerEventScope {
                 buttonState = if (buttonState == ButtonState.Pressed) {
@@ -85,4 +81,15 @@ private fun Modifier.bounceClick() = composed {
                 }
             }
         }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BounceButtonPreview() {
+    BounceButton(
+        text = "Click Me",
+        onClickButton = {},
+        modifier = Modifier
+            .fillMaxWidth()
+    )
 }
