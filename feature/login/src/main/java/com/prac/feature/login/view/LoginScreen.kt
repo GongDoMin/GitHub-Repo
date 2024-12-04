@@ -36,7 +36,7 @@ fun LoginScreen(
         isLoading = uiState.isLoading,
         isError = uiState.isError,
         errorMessage = uiState.errorMessage,
-        onClickLogin = { viewModel.process(Action.UserAction.OnClickLoginButton) },
+        onClickLoginButton = { viewModel.process(Action.UserAction.OnClickLoginButton) },
         onDismissRequest = { viewModel.process(Action.UserAction.DialogDismiss) },
         modifier = Modifier
             .padding(dimensionResource(id = R.dimen.padding_normal))

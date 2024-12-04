@@ -26,7 +26,7 @@ fun LoginContent(
     isLoading: Boolean,
     isError: Boolean,
     errorMessage: String,
-    onClickLogin: () -> Unit,
+    onClickLoginButton: () -> Unit,
     onDismissRequest: (String) -> Unit,
     modifier: Modifier = Modifier,
     loadingModifier: Modifier = Modifier
@@ -52,7 +52,7 @@ fun LoginContent(
 
             BounceButton(
                 text = stringResource(id = R.string.login),
-                onClickButton = onClickLogin
+                onClickButton = onClickLoginButton
             )
 
             Spacer(modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small)))
@@ -77,7 +77,7 @@ fun LoginContentLoadingPreview() {
         isLoading = true,
         isError = false,
         errorMessage = "",
-        onClickLogin = {},
+        onClickLoginButton = {},
         onDismissRequest = {},
         modifier = Modifier
             .padding(dimensionResource(id = R.dimen.padding_normal))
@@ -91,7 +91,7 @@ fun LoginContentPreview() {
         isLoading = false,
         isError = false,
         errorMessage = "",
-        onClickLogin = {},
+        onClickLoginButton = {},
         onDismissRequest = {},
         modifier = Modifier
             .padding(dimensionResource(id = R.dimen.padding_normal))
@@ -105,7 +105,7 @@ fun LoginContentErrorMessagePreview() {
         isLoading = false,
         isError = true,
         errorMessage = CONNECTION_FAIL,
-        onClickLogin = {},
+        onClickLoginButton = {},
         onDismissRequest = {},
         modifier = Modifier
             .padding(dimensionResource(id = R.dimen.padding_normal))
