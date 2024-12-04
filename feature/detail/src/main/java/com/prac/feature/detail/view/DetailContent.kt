@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -285,7 +287,8 @@ fun RepositoryInformation(
         HorizontalDivider(
             modifier = Modifier
                 .padding(
-                    horizontal = contentPadding.calculateLeftPadding(LayoutDirection.Ltr) + contentPadding.calculateRightPadding(LayoutDirection.Ltr)))
+                    start = contentPadding.calculateStartPadding(LayoutDirection.Ltr),
+                    end = contentPadding.calculateEndPadding(LayoutDirection.Ltr)))
     }
 }
 
