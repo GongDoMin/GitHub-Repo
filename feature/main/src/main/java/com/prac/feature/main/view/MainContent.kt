@@ -1,10 +1,13 @@
 package com.prac.feature.main.view
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.CombinedLoadStates
@@ -36,7 +39,11 @@ fun MainContent(
         modifier = modifier
             .fillMaxSize()
     ) {
-        MainHeader()
+        Spacer(modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small)))
+
+        MainTitle()
+
+        Spacer(modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small)))
 
         HorizontalDivider()
 
