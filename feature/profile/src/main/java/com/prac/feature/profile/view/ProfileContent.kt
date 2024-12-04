@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.prac.core.designsystem.R
 import com.prac.core.designsystem.component.BounceButton
 import com.prac.core.designsystem.component.ConfirmationDialog
@@ -22,24 +23,24 @@ fun ProfileContent(
     onClickLogoutButton: () -> Unit,
     onClickNegativeButton: () -> Unit,
     onClickPositiveButton: () -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
+    loadingModifier: Modifier = Modifier
 ) {
     ContentWithLoadingIndicator(
-        isLoading = isLoading
+        isLoading = isLoading,
+        modifier = loadingModifier
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(
-                    start = dimensionResource(id = R.dimen.padding_normal),
-                    end = dimensionResource(id = R.dimen.padding_normal)
-                ),
+            modifier = modifier
+                .fillMaxSize(),
             verticalArrangement = Arrangement.Center
         ) {
             BounceButton(
                 text = stringResource(id = R.string.logout),
                 onClickButton = onClickLogoutButton,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
             )
         }
 
@@ -65,7 +66,8 @@ fun ProfileContentPreview() {
         onClickLogoutButton = {},
         onClickNegativeButton = {},
         onClickPositiveButton = {},
-        onDismissRequest = {}
+        onDismissRequest = {},
+        modifier = Modifier.padding(horizontal = 16.dp)
     )
 }
 
@@ -78,7 +80,8 @@ fun ProfileContentLoadingPreview() {
         onClickLogoutButton = {},
         onClickNegativeButton = {},
         onClickPositiveButton = {},
-        onDismissRequest = {}
+        onDismissRequest = {},
+        modifier = Modifier.padding(horizontal = 16.dp)
     )
 }
 
@@ -91,6 +94,7 @@ fun ProfileContentDialogPreview() {
         onClickLogoutButton = {},
         onClickNegativeButton = {},
         onClickPositiveButton = {},
-        onDismissRequest = {}
+        onDismissRequest = {},
+        modifier = Modifier.padding(horizontal = 16.dp)
     )
 }
