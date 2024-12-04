@@ -3,6 +3,7 @@ package com.prac.feature.login.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -42,26 +43,21 @@ fun LoginContent(
         ) {
             Image(
                 modifier = Modifier
-                    .size(dimensionResource(id = R.dimen.login_icon))
-                    .padding(
-                        bottom = dimensionResource(id = R.dimen.padding_normal)
-                    ),
+                    .size(dimensionResource(id = R.dimen.login_icon)),
                 painter = painterResource(id = R.drawable.img_github_icon),
                 contentDescription = null
             )
+
+            Spacer(modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_normal)))
 
             BounceButton(
                 text = stringResource(id = R.string.login),
                 onClickButton = onClickLogin
             )
 
-            Text(
-                modifier = Modifier
-                    .padding(
-                        top = dimensionResource(id = R.dimen.padding_small)
-                    ),
-                text = stringResource(id = R.string.login_description)
-            )
+            Spacer(modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small)))
+
+            Text(text = stringResource(id = R.string.login_description))
         }
 
         if (isError) {
