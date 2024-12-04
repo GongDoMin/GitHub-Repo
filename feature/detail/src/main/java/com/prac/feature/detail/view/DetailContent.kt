@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.designsystem.R
 import com.prac.core.designsystem.component.MessageDialog
-import com.prac.core.designsystem.component.LoadingContent
+import com.prac.core.designsystem.component.ContentWithLoadingIndicator
 import com.prac.core.designsystem.component.UserProfile
 import com.prac.data.model.RepoDetailModel
 
@@ -49,7 +49,7 @@ fun DetailContent(
     onDismissRequest: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LoadingContent(
+    ContentWithLoadingIndicator(
         isLoading = isLoading
     ) {
         Column(

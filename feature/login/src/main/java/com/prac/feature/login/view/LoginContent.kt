@@ -18,7 +18,7 @@ import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.core.designsystem.R
 import com.prac.core.designsystem.component.BounceButton
 import com.prac.core.designsystem.component.MessageDialog
-import com.prac.core.designsystem.component.LoadingContent
+import com.prac.core.designsystem.component.ContentWithLoadingIndicator
 
 @Composable
 fun LoginContent(
@@ -28,7 +28,7 @@ fun LoginContent(
     onClickLogin: () -> Unit,
     onDismissRequest: (String) -> Unit
 ) {
-    LoadingContent(
+    ContentWithLoadingIndicator(
         isLoading = isLoading
     ) {
         Column(

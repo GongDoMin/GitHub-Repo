@@ -12,7 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.prac.core.designsystem.R
 import com.prac.core.designsystem.component.BounceButton
 import com.prac.core.designsystem.component.ConfirmationDialog
-import com.prac.core.designsystem.component.LoadingContent
+import com.prac.core.designsystem.component.ContentWithLoadingIndicator
 
 @Composable
 fun ProfileContent(
@@ -23,7 +23,7 @@ fun ProfileContent(
     onClickPositiveButton: () -> Unit,
     onDismissRequest: () -> Unit
 ) {
-    LoadingContent(
+    ContentWithLoadingIndicator(
         isLoading = isLoading
     ) {
         Column(
