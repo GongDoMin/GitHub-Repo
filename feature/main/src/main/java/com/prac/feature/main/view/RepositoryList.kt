@@ -1,7 +1,11 @@
 package com.prac.feature.main.view
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -9,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -28,6 +33,7 @@ fun RepositoryList(
     onClickStar: (RepoModel) -> Unit,
     onClickUnStar: (RepoModel) -> Unit,
     onClickRepository: (RepoModel) -> Unit,
+    contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
     val lazyColumnDescription = stringResource(id = R.string.lazy_column_description)
@@ -46,7 +52,15 @@ fun RepositoryList(
                         repository = repository,
                         onClickStar = onClickStar,
                         onClickUnStar = onClickUnStar,
-                        onClickRepository = onClickRepository
+                        onClickRepository = onClickRepository,
+                        contentPadding = contentPadding
+                    )
+
+                    HorizontalDivider(
+                        modifier = Modifier.padding(
+                            start = contentPadding.calculateStartPadding(LayoutDirection.Ltr),
+                            end = contentPadding.calculateEndPadding(LayoutDirection.Ltr)
+                        )
                     )
 
                     if (repository.isStarred == null) starStateRequest(repository)
@@ -84,7 +98,8 @@ fun RepositoryListPreview() {
         starStateRequest = {},
         onClickStar = {},
         onClickUnStar = {},
-        onClickRepository = {}
+        onClickRepository = {},
+        contentPadding = PaddingValues()
     )
 }
 
@@ -108,5 +123,6 @@ fun RepositoryListLoadStatePreview() {
         onClickStar = {},
         onClickUnStar = {},
         onClickRepository = {},
+        contentPadding = PaddingValues()
     )
 }

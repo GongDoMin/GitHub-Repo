@@ -4,8 +4,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.paging.LoadState
 import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.core.designsystem.R
@@ -39,6 +43,7 @@ fun Repository(
     onClickStar: (RepoModel) -> Unit,
     onClickUnStar: (RepoModel) -> Unit,
     onClickRepository: (RepoModel) -> Unit,
+    contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -52,18 +57,25 @@ fun Repository(
     ) {
         val spacerModifier = Modifier
             .padding(top = dimensionResource(id = R.dimen.padding_small))
+        val itemModifier = Modifier
+            .padding(
+                start = contentPadding.calculateStartPadding(LayoutDirection.Ltr),
+                end = contentPadding.calculateEndPadding(LayoutDirection.Ltr)
+            )
 
-        Spacer(modifier = spacerModifier)
+        Spacer(modifier = Modifier.padding(contentPadding.calculateTopPadding()))
 
         UserProfile(
             uri = repository.owner.avatarUrl,
-            userName = repository.owner.login
+            userName = repository.owner.login,
+            modifier = itemModifier
         )
 
         Spacer(modifier = spacerModifier)
 
         RepositoryName(
-            repoName = repository.name
+            repoName = repository.name,
+            modifier = itemModifier
         )
 
         Spacer(modifier = spacerModifier)
@@ -71,24 +83,25 @@ fun Repository(
         RepositoryStarState(
             repo = repository,
             onClickStar = onClickStar,
-            onClickUnStar = onClickUnStar
+            onClickUnStar = onClickUnStar,
+            modifier = itemModifier
         )
 
         Spacer(modifier = spacerModifier)
 
         RepositoryBranch(
             defaultBranch = repository.defaultBranch,
+            modifier = itemModifier
         )
 
         Spacer(modifier = spacerModifier)
 
         RepositoryUpdatedAt(
-            updatedAt = repository.updatedAt
+            updatedAt = repository.updatedAt,
+            modifier = itemModifier
         )
 
-        Spacer(modifier = spacerModifier)
-
-        HorizontalDivider()
+        Spacer(modifier = Modifier.padding(contentPadding.calculateBottomPadding()))
     }
 }
 
@@ -204,5 +217,6 @@ fun MainItemPreview() {
         onClickStar = {},
         onClickUnStar = {},
         onClickRepository = {},
+        contentPadding = PaddingValues()
     )
 }

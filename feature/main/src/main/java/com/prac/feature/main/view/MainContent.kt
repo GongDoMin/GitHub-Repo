@@ -1,6 +1,7 @@
 package com.prac.feature.main.view
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -55,8 +56,10 @@ fun MainContent(
             onClickStar = onClickStar,
             onClickUnStar = onClickUnStar,
             onClickRepository = onClickRepository,
-            modifier = Modifier
-                .padding(horizontal = dimensionResource(id = R.dimen.padding_normal))
+            contentPadding = PaddingValues(
+                vertical = dimensionResource(id = R.dimen.padding_small),
+                horizontal = dimensionResource(id = R.dimen.padding_normal)
+            )
         )
     }
 
