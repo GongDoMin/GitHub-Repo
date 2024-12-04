@@ -29,10 +29,11 @@ fun MainContent(
     onClickRepository: (RepoModel) -> Unit,
     isError: Boolean,
     errorMessage: String,
-    onDismissRequest: (String) -> Unit
+    onDismissRequest: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
     ) {
         MainHeader()

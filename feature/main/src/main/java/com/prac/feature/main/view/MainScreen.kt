@@ -3,6 +3,7 @@ package com.prac.feature.main.view
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -16,9 +17,10 @@ import com.prac.feature.main.model.Event
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = hiltViewModel(),
     onNavigateToLogin: () -> Unit,
-    onClickRepository: (String, String) -> Unit
+    onClickRepository: (String, String) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: MainViewModel = hiltViewModel()
 ) {
     val uiState = viewModel.uiStateFlow.collectAsStateWithLifecycle()
     val repositories = remember { viewModel.repositories }.collectAsLazyPagingItems()
@@ -37,7 +39,8 @@ fun MainScreen(
         onDismissRequest = { dialogMessage ->
             if (dialogMessage == INVALID_TOKEN) viewModel.process(Action.UserAction.LogoutDialogDismiss)
             else viewModel.process(Action.UserAction.DialogDismiss)
-        }
+        },
+        modifier = modifier
     )
 
     LaunchedEffect(lifecycleOwner) {
