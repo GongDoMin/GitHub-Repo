@@ -10,18 +10,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
-import com.prac.core.designsystem.R
 import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.core.common.constants.INVALID_REPOSITORY
+import com.prac.core.designsystem.R
 import com.prac.feature.detail.DetailViewModel
 import com.prac.feature.detail.model.Action
 import com.prac.feature.detail.model.Event
 
 @Composable
 fun DetailScreen(
-    viewModel: DetailViewModel = hiltViewModel(),
     onNavigateToLogin: () -> Unit,
-    onNavigateToBackStack: () -> Unit
+    onNavigateToBackStack: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: DetailViewModel = hiltViewModel()
 ) {
     val uiState = viewModel.uiStateFlow.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -38,7 +39,8 @@ fun DetailScreen(
                 Action.UserAction.DialogDismiss)
             else viewModel.process(Action.UserAction.LogoutDialogDismiss)
         },
-        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_small))
+        modifier = Modifier
+            .padding(dimensionResource(id = R.dimen.padding_normal))
     )
 
     LaunchedEffect(lifecycleOwner) {

@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +30,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.prac.core.common.constants.INVALID_REPOSITORY
@@ -37,6 +40,7 @@ import com.prac.core.designsystem.component.MessageDialog
 import com.prac.core.designsystem.component.ContentWithLoadingIndicator
 import com.prac.core.designsystem.component.UserProfile
 import com.prac.data.model.RepoDetailModel
+import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
 fun DetailContent(
@@ -47,59 +51,78 @@ fun DetailContent(
     onClickStar: (RepoDetailModel) -> Unit,
     onClickUnStar: (RepoDetailModel) -> Unit,
     onDismissRequest: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    loadingModifier: Modifier = Modifier
 ) {
     ContentWithLoadingIndicator(
-        isLoading = isLoading
+        isLoading = isLoading,
+        modifier = loadingModifier
     ) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(dimensionResource(id = R.dimen.padding_normal))
         ) {
-            DetailContentUser(
+            val spacerModifier = Modifier
+                .padding(top = dimensionResource(id = R.dimen.padding_normal))
+
+            UserProfile(
                 uri = repoDetail.owner.avatarUrl,
-                userName = repoDetail.owner.login,
-                modifier = modifier
+                userName = repoDetail.owner.login
             )
 
-            DetailContentRepoName(
-                repoName = repoDetail.name,
-                modifier = Modifier
-                    .padding(bottom = dimensionResource(id = R.dimen.padding_normal))
+            Spacer(modifier = spacerModifier)
+
+            RepositoryName(
+                repoName = repoDetail.name
             )
 
-            DetailContentStarAndFork(
+            Spacer(modifier = spacerModifier)
+
+            RepositoryStarStateAndFork(
                 repoDetail = repoDetail,
-                modifier = modifier,
                 onClickStar = onClickStar,
                 onClickUnStar = onClickUnStar
             )
 
-            DetailInfo(
+            RepositoryInformation(
                 imageVector = ImageVector.vectorResource(id = R.drawable.issue_24),
                 title = stringResource(id = R.string.issue),
-                value = repoDetail.issueCount
+                value = repoDetail.issueCount,
+                contentPadding = PaddingValues(vertical = dimensionResource(id = R.dimen.padding_normal))
             )
 
-            DetailInfo(
+            RepositoryInformation(
                 imageVector = ImageVector.vectorResource(id = R.drawable.pull_request_24),
                 title = stringResource(id = R.string.pull_request),
-                value = repoDetail.pullCount
+                value = repoDetail.pullCount,
+                contentPadding = PaddingValues(vertical = dimensionResource(id = R.dimen.padding_normal))
             )
 
-            DetailInfo(
+            RepositoryInformation(
                 imageVector = ImageVector.vectorResource(id = R.drawable.subscribe_24),
                 title = stringResource(id = R.string.subscribe),
-                value = repoDetail.subscribeCount
+                value = repoDetail.subscribeCount,
+                contentPadding = PaddingValues(vertical = dimensionResource(id = R.dimen.padding_normal))
             )
 
-            ReadMe(
-                readme = repoDetail.readme,
-                modifier = Modifier
-                    .padding(top = dimensionResource(id = R.dimen.padding_normal))
-            )
+            if (repoDetail.readme.isNotEmpty()) {
+                Spacer(modifier = spacerModifier)
+
+                Text(
+                    text = stringResource(id = R.string.readme)
+                )
+
+                Spacer(modifier = spacerModifier)
+
+                HorizontalDivider()
+
+                Spacer(modifier = spacerModifier)
+
+                MarkdownText(
+                    markdown = repoDetail.readme
+                )
+            }
         }
 
         if (isError) {
@@ -113,7 +136,7 @@ fun DetailContent(
 }
 
 @Composable
-fun DetailContentUser(
+fun UserProfile(
     uri: String,
     userName: String,
     modifier: Modifier = Modifier
@@ -137,7 +160,7 @@ fun DetailContentUser(
 }
 
 @Composable
-fun DetailContentRepoName(
+fun RepositoryName(
     repoName: String,
     modifier: Modifier = Modifier
 ) {
@@ -149,11 +172,11 @@ fun DetailContentRepoName(
 }
 
 @Composable
-fun DetailContentStarAndFork(
+fun RepositoryStarStateAndFork(
     repoDetail: RepoDetailModel,
-    modifier: Modifier,
     onClickStar: (RepoDetailModel) -> Unit,
-    onClickUnStar: (RepoDetailModel) -> Unit
+    onClickUnStar: (RepoDetailModel) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier,
@@ -176,9 +199,10 @@ fun DetailContentStarAndFork(
                 else stringResource(id = R.string.unstar_image_description)
         )
 
+        Spacer(modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_small)))
+
         Text(
             modifier = Modifier
-                .padding(start = dimensionResource(id = R.dimen.padding_small))
                 .drawBehind {
                     val strokeWidthPx = 1.dp.toPx()
                     val verticalOffset = size.height - 1.sp.toPx()
@@ -193,17 +217,19 @@ fun DetailContentStarAndFork(
             text = stringResource(id = R.string.star_count, repoDetail.stargazersCount)
         )
 
+        Spacer(modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_small)))
+
         Image(
             modifier = Modifier
-                .size(20.dp)
-                .padding(start = dimensionResource(id = R.dimen.padding_small)),
+                .size(20.dp),
             painter = painterResource(id = R.drawable.img_fork),
             contentDescription = stringResource(id = R.string.fork_image_description)
         )
 
+        Spacer(modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_small)))
+
         Text(
             modifier = Modifier
-                .padding(start = dimensionResource(id = R.dimen.padding_small))
                 .drawBehind {
                     val strokeWidthPx = 1.dp.toPx()
                     val verticalOffset = size.height - 1.sp.toPx()
@@ -221,20 +247,20 @@ fun DetailContentStarAndFork(
 }
 
 @Composable
-fun DetailInfo(
+fun RepositoryInformation(
     imageVector: ImageVector,
     title: String,
-    value: Int
+    value: Int,
+    contentPadding: PaddingValues,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
     ) {
         Row(
             modifier = Modifier
-                .padding(
-                    vertical = dimensionResource(id = R.dimen.padding_normal)
-                ),
+                .padding(contentPadding),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
@@ -256,7 +282,10 @@ fun DetailInfo(
             )
         }
 
-        HorizontalDivider()
+        HorizontalDivider(
+            modifier = Modifier
+                .padding(
+                    horizontal = contentPadding.calculateLeftPadding(LayoutDirection.Ltr) + contentPadding.calculateRightPadding(LayoutDirection.Ltr)))
     }
 }
 
@@ -270,7 +299,9 @@ fun DetailContentPreview() {
         repoDetail = RepoDetailModel(readme = "hi!!"),
         onClickStar = {},
         onClickUnStar = {},
-        onDismissRequest = {}
+        onDismissRequest = {},
+        modifier = Modifier
+            .padding(16.dp)
     )
 }
 
@@ -284,7 +315,9 @@ fun DetailContentLoadingPreview() {
         repoDetail = RepoDetailModel(),
         onClickStar = {},
         onClickUnStar = {},
-        onDismissRequest = {}
+        onDismissRequest = {},
+        modifier = Modifier
+            .padding(16.dp)
     )
 }
 
@@ -298,6 +331,8 @@ fun DetailContentErrorPreview() {
         repoDetail = RepoDetailModel(readme = "hi!!"),
         onClickStar = {},
         onClickUnStar = {},
-        onDismissRequest = {}
+        onDismissRequest = {},
+        modifier = Modifier
+            .padding(16.dp)
     )
 }
