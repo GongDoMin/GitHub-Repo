@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.prac.core.designsystem.R
 import com.prac.core.designsystem.component.BounceButton
-import com.prac.core.designsystem.component.HandleBasicAlertDialog
+import com.prac.core.designsystem.component.ConfirmationDialog
 import com.prac.core.designsystem.component.LoadingContent
 
 @Composable
@@ -40,14 +40,16 @@ fun ProfileContent(
             )
         }
 
-        HandleBasicAlertDialog(
-            isDialog = isDialog,
-            onDismissRequest = onDismissRequest,
-            onClickCheckButton = onClickCheckButton,
-            dialogMessage = stringResource(id = R.string.logout_confirm),
-            cancelButtonText = stringResource(id = R.string.cancel),
-            confirmButtonText = stringResource(id = R.string.check)
-        )
+        if (isDialog) {
+            ConfirmationDialog(
+                onDismissRequest = onDismissRequest,
+                message = stringResource(id = R.string.logout_confirm),
+                negativeButtonText = stringResource(id = R.string.cancel),
+                onClickNegativeButton = onClickCheckButton,
+                positiveButtonText = stringResource(id = R.string.check),
+                onClickPositiveButton = onClickCheckButton
+            )
+        }
     }
 }
 

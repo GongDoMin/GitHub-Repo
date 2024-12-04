@@ -10,40 +10,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
 @Composable
-fun HandleBasicAlertDialog(
-    isDialog: Boolean,
+fun ConfirmationDialog(
     onDismissRequest: () -> Unit,
-    onClickCheckButton: () -> Unit,
-    dialogMessage: String,
-    cancelButtonText: String,
-    confirmButtonText: String
-) {
-    if (isDialog)
-        BasicAlertDialog(
-            onDismissRequest = onDismissRequest,
-            onClickCheckButton = onClickCheckButton,
-            dialogMessage = dialogMessage,
-            cancelButtonText = cancelButtonText,
-            confirmButtonText = confirmButtonText
-        )
-}
-
-@Composable
-fun BasicAlertDialog(
-    onDismissRequest: () -> Unit,
-    onClickCheckButton: () -> Unit,
-    dialogMessage: String,
-    cancelButtonText: String,
-    confirmButtonText: String
+    message: String,
+    negativeButtonText: String,
+    onClickNegativeButton: () -> Unit,
+    positiveButtonText: String,
+    onClickPositiveButton: () -> Unit,
 ) {
     AlertDialog(
         modifier = Modifier
             .fillMaxWidth(),
         onDismissRequest = onDismissRequest,
-        text = { Text(dialogMessage) },
+        text = { Text(message) },
         confirmButton = {
             Button(
-                onClick = onDismissRequest,
+                onClick = onClickNegativeButton,
                 colors = ButtonColors(
                     containerColor = Color.Red,
                     contentColor = Color.White,
@@ -52,13 +34,13 @@ fun BasicAlertDialog(
                 )
             ) {
                 Text(
-                    text = cancelButtonText,
+                    text = negativeButtonText,
                     color = Color.White
                 )
             }
 
             Button(
-                onClick = onClickCheckButton,
+                onClick = onClickPositiveButton,
                 colors = ButtonColors(
                     containerColor = Color.Black,
                     contentColor = Color.White,
@@ -67,7 +49,7 @@ fun BasicAlertDialog(
                 )
             ) {
                 Text(
-                    text = confirmButtonText,
+                    text = positiveButtonText,
                     color = Color.White
                 )
             }
@@ -76,34 +58,19 @@ fun BasicAlertDialog(
 }
 
 @Composable
-fun HandleErrorAlertDialog(
-    isError: Boolean,
+fun MessageDialog(
     onDismissRequest: (String) -> Unit,
-    errorMessage: String,
-    confirmButtonText: String
-) {
-    if (isError)
-        ErrorAlertDialog(
-            onDismissRequest = onDismissRequest,
-            errorMessage = errorMessage,
-            confirmButtonText = confirmButtonText
-        )
-}
-
-@Composable
-fun ErrorAlertDialog(
-    onDismissRequest: (String) -> Unit,
-    errorMessage: String,
-    confirmButtonText: String
+    message: String,
+    confirmButtonText: String,
+    modifier: Modifier = Modifier
 ) {
     AlertDialog(
-        modifier = Modifier
-            .fillMaxWidth(),
-        onDismissRequest = { onDismissRequest(errorMessage) },
-        text = { Text(errorMessage) },
+        modifier = modifier,
+        onDismissRequest = { onDismissRequest(message) },
+        text = { Text(message) },
         confirmButton = {
             Button(
-                onClick = { onDismissRequest(errorMessage) },
+                onClick = { onDismissRequest(message) },
                 colors = ButtonColors(
                     containerColor = Color.Black,
                     contentColor = Color.White,

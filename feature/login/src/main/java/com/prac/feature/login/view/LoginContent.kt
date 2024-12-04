@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.core.designsystem.R
 import com.prac.core.designsystem.component.BounceButton
-import com.prac.core.designsystem.component.HandleErrorAlertDialog
+import com.prac.core.designsystem.component.MessageDialog
 import com.prac.core.designsystem.component.LoadingContent
 
 @Composable
@@ -65,12 +65,13 @@ fun LoginContent(
             )
         }
 
-        HandleErrorAlertDialog(
-            isError = isError,
-            onDismissRequest = onDismissRequest,
-            errorMessage = errorMessage,
-            confirmButtonText = stringResource(id = R.string.check)
-        )
+        if (isError) {
+            MessageDialog(
+                onDismissRequest = onDismissRequest,
+                message = errorMessage,
+                confirmButtonText = stringResource(id = R.string.check)
+            )
+        }
     }
 }
 

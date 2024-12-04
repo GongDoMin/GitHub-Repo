@@ -14,7 +14,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.prac.core.common.constants.INVALID_TOKEN
 import com.prac.core.designsystem.R
-import com.prac.core.designsystem.component.HandleErrorAlertDialog
+import com.prac.core.designsystem.component.MessageDialog
 import com.prac.data.model.RepoModel
 import kotlinx.coroutines.flow.flowOf
 
@@ -48,11 +48,12 @@ fun MainContent(
             onClickUnStar = onClickUnStar,
             onClickRepository = onClickRepository
         )
+    }
 
-        HandleErrorAlertDialog(
-            isError = isError,
+    if (isError) {
+        MessageDialog(
             onDismissRequest = onDismissRequest,
-            errorMessage = errorMessage,
+            message = errorMessage,
             confirmButtonText = stringResource(id = R.string.check)
         )
     }
