@@ -56,7 +56,7 @@ fun Repository(
 
         Spacer(modifier = spacerModifier)
 
-        MainItemUser(
+        UserProfile(
             uri = repository.owner.avatarUrl,
             userName = repository.owner.login,
             modifier = itemModifier
@@ -64,14 +64,14 @@ fun Repository(
 
         Spacer(modifier = spacerModifier)
 
-        MainItemRepoName(
+        RepositoryName(
             repoName = repository.name,
             modifier = itemModifier
         )
 
         Spacer(modifier = spacerModifier)
 
-        MainItemStar(
+        RepositoryStarState(
             repo = repository,
             onClickStar = onClickStar,
             onClickUnStar = onClickUnStar,
@@ -80,14 +80,14 @@ fun Repository(
 
         Spacer(modifier = spacerModifier)
 
-        MainItemDefaultBranch(
+        RepositoryBranch(
             defaultBranch = repository.defaultBranch,
             modifier = itemModifier
         )
 
         Spacer(modifier = spacerModifier)
 
-        MainItemUpdatedAt(
+        RepositoryUpdatedAt(
             updatedAt = repository.updatedAt,
             modifier = itemModifier
         )
@@ -99,7 +99,7 @@ fun Repository(
 }
 
 @Composable
-fun MainItemUser(
+fun UserProfile(
     uri: String,
     userName: String,
     modifier: Modifier = Modifier
@@ -115,16 +115,14 @@ fun MainItemUser(
             uri = uri
         )
 
-        Text(
-            modifier = Modifier
-                .padding(start = dimensionResource(id = R.dimen.padding_small)),
-            text = userName
-        )
+        Spacer(modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_small)))
+
+        Text(text = userName)
     }
 }
 
 @Composable
-fun MainItemRepoName(
+fun RepositoryName(
     repoName: String,
     modifier: Modifier = Modifier
 ) {
@@ -135,7 +133,7 @@ fun MainItemRepoName(
 }
 
 @Composable
-fun MainItemStar(
+fun RepositoryStarState(
     repo: RepoModel,
     onClickStar: (RepoModel) -> Unit,
     onClickUnStar: (RepoModel) -> Unit,
@@ -162,17 +160,14 @@ fun MainItemStar(
                 else stringResource(id = R.string.unstar_image_description)
         )
 
-        Text(
-            modifier = Modifier
-                .padding(start = dimensionResource(id = R.dimen.padding_small))
-            ,
-            text = repo.stargazersCount.toString()
-        )
+        Spacer(modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_small)))
+
+        Text(text = repo.stargazersCount.toString())
     }
 }
 
 @Composable
-fun MainItemDefaultBranch(
+fun RepositoryBranch(
     defaultBranch: String,
     modifier: Modifier = Modifier
 ) {
@@ -183,7 +178,7 @@ fun MainItemDefaultBranch(
 }
 
 @Composable
-fun MainItemUpdatedAt(
+fun RepositoryUpdatedAt(
     updatedAt: String,
     modifier: Modifier = Modifier
 ) {
