@@ -184,7 +184,7 @@ class MainViewModel @Inject constructor(
         if (combinedLoadStates.refresh is LoadState.Error) {
             if ((combinedLoadStates.refresh as LoadState.Error).error !is IOException) {
                 Event.Logout.handleEvent()
-                return combinedLoadStates.refresh
+                return LoadState.NotLoading(true)
             }
             return combinedLoadStates.refresh
         }
@@ -196,7 +196,7 @@ class MainViewModel @Inject constructor(
         if (combinedLoadStates.append is LoadState.Error) {
             if ((combinedLoadStates.append as LoadState.Error).error !is IOException) {
                 Event.Logout.handleEvent()
-                return combinedLoadStates.append
+                return LoadState.NotLoading(true)
             }
             return combinedLoadStates.append
         }
