@@ -54,7 +54,9 @@ fun MainContent(
             starStateRequest = starStateRequest,
             onClickStar = onClickStar,
             onClickUnStar = onClickUnStar,
-            onClickRepository = onClickRepository
+            onClickRepository = onClickRepository,
+            modifier = Modifier
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_normal))
         )
     }
 

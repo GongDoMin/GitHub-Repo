@@ -25,6 +25,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.paging.LoadState
 import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.core.designsystem.R
@@ -49,8 +50,6 @@ fun Repository(
                 onClick = { onClickRepository(repository) }
             )
     ) {
-        val itemModifier = Modifier
-            .padding(horizontal = dimensionResource(id = R.dimen.padding_normal))
         val spacerModifier = Modifier
             .padding(top = dimensionResource(id = R.dimen.padding_small))
 
@@ -58,15 +57,13 @@ fun Repository(
 
         UserProfile(
             uri = repository.owner.avatarUrl,
-            userName = repository.owner.login,
-            modifier = itemModifier
+            userName = repository.owner.login
         )
 
         Spacer(modifier = spacerModifier)
 
         RepositoryName(
-            repoName = repository.name,
-            modifier = itemModifier
+            repoName = repository.name
         )
 
         Spacer(modifier = spacerModifier)
@@ -74,27 +71,24 @@ fun Repository(
         RepositoryStarState(
             repo = repository,
             onClickStar = onClickStar,
-            onClickUnStar = onClickUnStar,
-            modifier = itemModifier
+            onClickUnStar = onClickUnStar
         )
 
         Spacer(modifier = spacerModifier)
 
         RepositoryBranch(
             defaultBranch = repository.defaultBranch,
-            modifier = itemModifier
         )
 
         Spacer(modifier = spacerModifier)
 
         RepositoryUpdatedAt(
-            updatedAt = repository.updatedAt,
-            modifier = itemModifier
+            updatedAt = repository.updatedAt
         )
 
         Spacer(modifier = spacerModifier)
 
-        HorizontalDivider(modifier = itemModifier)
+        HorizontalDivider()
     }
 }
 
