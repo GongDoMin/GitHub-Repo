@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,16 +25,15 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
+import com.prac.core.common.constants.CONNECTION_FAIL
+import com.prac.core.designsystem.R
 import com.prac.core.designsystem.component.UserProfile
 import com.prac.data.model.OwnerModel
 import com.prac.data.model.RepoModel
-import com.prac.core.designsystem.R
-import com.prac.core.common.constants.CONNECTION_FAIL
 
 @Composable
-fun MainItem(
+fun Repository(
     repository: RepoModel,
     onClickStar: (RepoModel) -> Unit,
     onClickUnStar: (RepoModel) -> Unit,
@@ -41,48 +41,60 @@ fun MainItem(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = { onClickRepository(repository) }
             )
-            .padding(
-                top = dimensionResource(id = R.dimen.padding_normal),
-                start = dimensionResource(id = R.dimen.padding_normal),
-                end = dimensionResource(id = R.dimen.padding_normal)
-            )
     ) {
+        val itemModifier = Modifier
+            .padding(horizontal = dimensionResource(id = R.dimen.padding_normal))
+        val spacerModifier = Modifier
+            .padding(top = dimensionResource(id = R.dimen.padding_small))
+
+        Spacer(modifier = spacerModifier)
+
         MainItemUser(
             uri = repository.owner.avatarUrl,
             userName = repository.owner.login,
-            modifier = modifier
+            modifier = itemModifier
         )
+
+        Spacer(modifier = spacerModifier)
 
         MainItemRepoName(
             repoName = repository.name,
-            modifier = modifier
+            modifier = itemModifier
         )
+
+        Spacer(modifier = spacerModifier)
 
         MainItemStar(
             repo = repository,
             onClickStar = onClickStar,
             onClickUnStar = onClickUnStar,
-            modifier = modifier
+            modifier = itemModifier
         )
+
+        Spacer(modifier = spacerModifier)
 
         MainItemDefaultBranch(
             defaultBranch = repository.defaultBranch,
-            modifier = modifier
+            modifier = itemModifier
         )
+
+        Spacer(modifier = spacerModifier)
 
         MainItemUpdatedAt(
             updatedAt = repository.updatedAt,
-            modifier = modifier
+            modifier = itemModifier
         )
 
-        HorizontalDivider()
+        Spacer(modifier = spacerModifier)
+
+        HorizontalDivider(modifier = itemModifier)
     }
 }
 
@@ -262,12 +274,10 @@ fun MainItemPreview() {
             isStarred = false,
         )
 
-    MainItem(
+    Repository(
         repository = repository,
         onClickStar = {},
         onClickUnStar = {},
         onClickRepository = {},
-        modifier = Modifier
-            .padding(bottom = 8.dp)
     )
 }

@@ -42,15 +42,11 @@ fun RepositoryList(
         ) { index ->
             repositories[index].let { repository ->
                 repository?.let {
-                    MainItem(
+                    Repository(
                         repository = repository,
                         onClickStar = onClickStar,
                         onClickUnStar = onClickUnStar,
-                        onClickRepository = onClickRepository,
-                        modifier = Modifier
-                            .padding(
-                                bottom = dimensionResource(id = R.dimen.padding_small)
-                            )
+                        onClickRepository = onClickRepository
                     )
 
                     if (repository.isStarred == null) starStateRequest(repository)
