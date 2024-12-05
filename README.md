@@ -27,7 +27,7 @@ Data layer 는 로컬 데이터베이스에서 데이터를 쿼리하고 네트�
 
 ### MVI Architecture
 <p align = "center" >
-<img src="https://github.com/user-attachments/assets/59484a94-e767-4ceb-85f4-8280ace6e199" width="40% "height="30%"/>
+<img src="https://github.com/user-attachments/assets/59484a94-e767-4ceb-85f4-8280ace6e199" width="60% "height="50%"/>
 </p>
 
 - View
