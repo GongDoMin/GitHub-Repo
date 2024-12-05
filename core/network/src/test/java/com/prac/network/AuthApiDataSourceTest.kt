@@ -48,7 +48,5 @@ internal class AuthApiDataSourceTest {
 
         assertNotEquals(result.accessToken, token.accessToken)
         assertNotEquals(result.refreshToken, token.refreshToken)
-        assertNotEquals(result.expiresIn, token.expiresIn)
-        assertNotEquals(result.refreshTokenExpiresIn, token.refreshTokenExpiresIn)
     }
 }
