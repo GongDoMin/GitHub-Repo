@@ -7,7 +7,7 @@ import com.prac.feature.main.view.UiState
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import dagger.hilt.android.components.ActivityRetainedComponent
 import javax.inject.Qualifier
 
 @Qualifier
@@ -15,7 +15,7 @@ import javax.inject.Qualifier
 annotation class MainReducerAnnotation
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(ActivityRetainedComponent::class)
 class MainReducerProcessorModule {
     @Provides
     @MainReducerAnnotation

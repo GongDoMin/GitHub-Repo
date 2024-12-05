@@ -4,7 +4,7 @@ import com.prac.core.common.mvi.reducer.Reducer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import dagger.hilt.android.components.ActivityRetainedComponent
 import javax.inject.Qualifier
 
 @Qualifier
@@ -12,7 +12,7 @@ import javax.inject.Qualifier
 annotation class DetailReducerAnnotation
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(ActivityRetainedComponent::class)
 class DetailReducerProcessorModule {
     @Provides
     @DetailReducerAnnotation
