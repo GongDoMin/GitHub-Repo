@@ -20,7 +20,7 @@ import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.core.designsystem.R
 import com.prac.core.designsystem.component.BounceButton
 import com.prac.core.designsystem.component.ContentWithLoadingIndicator
-import com.prac.core.designsystem.component.MessageDialog
+import com.prac.core.common.ui.MessageDialog
 
 @Composable
 fun LoginContent(

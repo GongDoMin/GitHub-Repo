@@ -18,7 +18,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.prac.core.common.constants.INVALID_TOKEN
 import com.prac.core.designsystem.R
-import com.prac.core.designsystem.component.MessageDialog
+import com.prac.core.common.ui.MessageDialog
 import com.prac.data.model.RepoModel
 import kotlinx.coroutines.flow.flowOf
 

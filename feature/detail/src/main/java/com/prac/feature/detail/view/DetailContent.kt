@@ -32,13 +32,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.designsystem.R
-import com.prac.core.designsystem.component.MessageDialog
+import com.prac.core.common.ui.MessageDialog
 import com.prac.core.designsystem.component.ContentWithLoadingIndicator
 import com.prac.core.designsystem.component.UserProfile
 import com.prac.data.model.RepoDetailModel
