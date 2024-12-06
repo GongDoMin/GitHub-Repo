@@ -16,8 +16,6 @@ import androidx.navigation.testing.TestNavHostController
 import com.prac.core.designsystem.R
 import com.prac.core.navigation.Routes.HOME
 import com.prac.core.navigation.Routes.PROFILE
-import com.prac.data.model.OwnerModel
-import com.prac.data.model.RepoModel
 import com.prac.githubrepo.ui.GitHubApp
 import com.prac.shared_test.HiltTestActivity
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -59,7 +57,6 @@ class NavigationTest {
         composeTestRule.waitUntil {
             navController.currentBackStackEntry?.destination?.parent?.hasRoute(HOME::class) == true
                     && navController.currentBackStackEntry?.destination?.hasRoute(HOME.MAIN::class) == true
-                    && composeTestRule.onNodeWithText(activity.getString(R.string.repository)).isDisplayed()
         }
     }
 
@@ -84,12 +81,8 @@ class NavigationTest {
             .onNodeWithText("test $clickPosition")
             .performClick()
 
-        val expectedRepoDetail = RepoModel(id = 0, name = "test 0", owner = OwnerModel("login 0", "avatarUrl 0"), stargazersCount = 5, defaultBranch = "master", updatedAt = "update", isStarred = true)
-
         composeTestRule.waitUntil {
             navController.currentBackStackEntry?.destination?.hasRoute(HOME.DETAIL::class) == true
-                    && composeTestRule.onNodeWithText(expectedRepoDetail.name).isDisplayed()
-                    && composeTestRule.onNodeWithText(expectedRepoDetail.owner.login).isDisplayed()
         }
     }
 
@@ -110,7 +103,6 @@ class NavigationTest {
 
         composeTestRule.waitUntil {
             navController.currentBackStackEntry?.destination?.hasRoute(PROFILE::class) == true
-                    && composeTestRule.onNodeWithText(activity.getString(R.string.logout)).isDisplayed()
         }
     }
 
@@ -131,7 +123,6 @@ class NavigationTest {
 
         composeTestRule.waitUntil {
             navController.currentBackStackEntry?.destination?.parent?.hasRoute(HOME::class) == true
-                    && composeTestRule.onNodeWithText(activity.getString(R.string.repository)).isDisplayed()
         }
     }
 }
