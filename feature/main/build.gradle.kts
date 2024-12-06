@@ -11,11 +11,8 @@ android {
 dependencies {
 
     implementation(project(":core:common"))
-    implementation(project(":core:designsystem"))
-    implementation(project(":core:data"))
     implementation(project(":core:exception"))
     implementation(project(":core:navigation"))
-    implementation(project(":shared-test"))
     testImplementation(project(":shared-test"))
     androidTestImplementation(project(":shared-test"))
 
