@@ -1,4 +1,4 @@
-package com.prac.core.designsystem.component
+package com.prac.core.common.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
