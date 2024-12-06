@@ -23,7 +23,7 @@
 <img src="https://github.com/user-attachments/assets/d6803b1d-810e-46e4-adb0-fb33ec665b89" width="60% "height="50%"/>
 </p>
 
-- **UI layer** : Ui layer 는 사용자와 상호 작용할 수 있는 화면을 구성하는 UI 요소들과 앱 상태를 저장하고 configuration change 의 경우 데이터를 복원하는 ViewModel 로 구성되어 있습니다.
+- **UI layer** : UI layer 는 사용자와 상호 작용할 수 있는 화면을 구성하는 UI 요소들과 앱 상태를 저장하고 configuration change 의 경우 데이터를 복원하는 ViewModel 로 구성되어 있습니다.
 
 - **Data layer** : Data layer 는 로컬 데이터베이스에서 데이터를 쿼리하고 네트워크에서 데이터를 요청하는 등 비즈니스 로직을 포함합니다.
 
