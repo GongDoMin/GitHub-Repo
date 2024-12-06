@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.prac.core.designsystem.R
 import com.prac.core.designsystem.component.BounceButton
 import com.prac.core.common.ui.ConfirmationDialog
-import com.prac.core.designsystem.component.ContentWithLoadingIndicator
+import com.prac.core.common.ui.ContentWithLoadingIndicator
 
 @Composable
 fun ProfileContent(

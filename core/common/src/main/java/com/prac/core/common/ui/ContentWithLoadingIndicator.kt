@@ -1,4 +1,4 @@
-package com.prac.core.designsystem.component
+package com.prac.core.common.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

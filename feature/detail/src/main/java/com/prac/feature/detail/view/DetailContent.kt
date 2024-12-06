@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.sp
 import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.designsystem.R
 import com.prac.core.common.ui.MessageDialog
-import com.prac.core.designsystem.component.ContentWithLoadingIndicator
+import com.prac.core.common.ui.ContentWithLoadingIndicator
 import com.prac.core.common.ui.UserProfile
 import com.prac.data.model.RepoDetailModel
 import dev.jeziellago.compose.markdowntext.MarkdownText
