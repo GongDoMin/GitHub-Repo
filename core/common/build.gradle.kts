@@ -10,7 +10,8 @@ android {
 
 dependencies {
 
-    implementation(project(":core:designsystem"))
+    api(project(":core:designsystem"))
+    api(project(":core:data"))
     implementation(project(":core:exception"))
     testImplementation(project(":shared-test"))
 
