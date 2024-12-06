@@ -10,10 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.prac.core.designsystem.R
-import com.prac.core.designsystem.component.BounceButton
+import com.prac.core.common.ui.BounceButton
 import com.prac.core.common.ui.ConfirmationDialog
 import com.prac.core.common.ui.ContentWithLoadingIndicator
+import com.prac.core.designsystem.R
 
 @Composable
 fun ProfileContent(

@@ -17,10 +17,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.prac.core.common.constants.CONNECTION_FAIL
-import com.prac.core.designsystem.R
-import com.prac.core.designsystem.component.BounceButton
+import com.prac.core.common.ui.BounceButton
 import com.prac.core.common.ui.ContentWithLoadingIndicator
 import com.prac.core.common.ui.MessageDialog
+import com.prac.core.designsystem.R
 
 @Composable
 fun LoginContent(
