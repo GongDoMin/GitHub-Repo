@@ -1,6 +1,6 @@
 package com.prac.core.common
 
-import com.prac.exception.CommonException
+import com.prac.data.exception.CommonException
 import com.prac.shared_test.common.FakeBackOffWorkManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle

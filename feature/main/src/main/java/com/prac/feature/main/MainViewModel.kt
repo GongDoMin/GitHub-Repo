@@ -18,7 +18,7 @@ import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.data.model.RepoModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
-import com.prac.exception.CommonException
+import com.prac.data.exception.CommonException
 import com.prac.exception.RepositoryException
 import com.prac.feature.main.di.MainReducerAnnotation
 import com.prac.feature.main.model.Action

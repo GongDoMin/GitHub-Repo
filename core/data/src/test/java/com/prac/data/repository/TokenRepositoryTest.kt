@@ -1,6 +1,6 @@
 package com.prac.data.repository
 
-import com.prac.exception.CommonException
+import com.prac.data.exception.CommonException
 import com.prac.data.repository.impl.TokenRepositoryImpl
 import com.prac.local.datastore.token.TokenLocalDto
 import com.prac.shared_test.local.source.FakeTokenLocalDataSource

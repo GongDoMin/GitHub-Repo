@@ -1,4 +1,4 @@
-package com.prac.exception
+package com.prac.data.exception
 
 sealed class CommonException : Exception(){
     class NetworkError : CommonException()

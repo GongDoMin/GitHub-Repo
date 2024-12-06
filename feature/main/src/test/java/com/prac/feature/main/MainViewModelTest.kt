@@ -4,11 +4,10 @@ import androidx.paging.PagingData
 import app.cash.turbine.test
 import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.common.constants.UNKNOWN
-import com.prac.data.model.OwnerModel
 import com.prac.data.model.RepoModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
-import com.prac.exception.CommonException
+import com.prac.data.exception.CommonException
 import com.prac.exception.RepositoryException
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event

@@ -9,7 +9,7 @@ import com.prac.core.common.mvi.model.eventModel
 import com.prac.core.common.mvi.model.stateModel
 import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.data.repository.TokenRepository
-import com.prac.exception.CommonException
+import com.prac.data.exception.CommonException
 import com.prac.feature.login.di.LoginReducerAnnotation
 import com.prac.feature.login.model.Action
 import com.prac.feature.login.model.Event

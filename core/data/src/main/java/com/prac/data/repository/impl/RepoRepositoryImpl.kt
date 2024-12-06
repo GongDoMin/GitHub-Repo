@@ -11,7 +11,7 @@ import com.prac.data.model.OwnerModel
 import com.prac.data.model.RepoDetailModel
 import com.prac.data.model.RepoModel
 import com.prac.data.repository.RepoRepository
-import com.prac.exception.CommonException
+import com.prac.data.exception.CommonException
 import com.prac.exception.RepositoryException
 import com.prac.local.RemoteKeyLocalDataSource
 import com.prac.local.RepositoryLocalDataSource

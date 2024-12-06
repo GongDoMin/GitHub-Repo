@@ -1,7 +1,7 @@
 package com.prac.shared_test.common
 
 import com.prac.core.common.backoff.BackOffWorkManager
-import com.prac.exception.CommonException
+import com.prac.data.exception.CommonException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch

@@ -1,6 +1,6 @@
 package com.prac.data.repository.impl
 
-import com.prac.exception.CommonException
+import com.prac.data.exception.CommonException
 import com.prac.data.repository.TokenRepository
 import com.prac.local.TokenLocalDataSource
 import com.prac.local.UserLocalDataSource

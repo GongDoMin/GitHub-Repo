@@ -1,6 +1,6 @@
 package com.prac.core.common.backoff
 
-import com.prac.exception.CommonException
+import com.prac.data.exception.CommonException
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

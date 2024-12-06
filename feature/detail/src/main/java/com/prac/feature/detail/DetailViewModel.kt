@@ -17,7 +17,7 @@ import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.USER_NAME
 import com.prac.data.model.RepoDetailModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
-import com.prac.exception.CommonException
+import com.prac.data.exception.CommonException
 import com.prac.exception.RepositoryException
 import com.prac.feature.detail.di.DetailReducerAnnotation
 import com.prac.feature.detail.model.Action

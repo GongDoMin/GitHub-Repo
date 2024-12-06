@@ -1,7 +1,7 @@
 package com.prac.shared_test.data
 
 import com.prac.data.repository.TokenRepository
-import com.prac.exception.CommonException
+import com.prac.data.exception.CommonException
 
 class FakeTokenRepository(
     private var token: String = ""
