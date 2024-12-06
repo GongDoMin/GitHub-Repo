@@ -37,16 +37,8 @@ dependencies {
     implementation(project(":feature:login"))
     implementation(project(":feature:profile"))
     implementation(project(":feature:home"))
-    implementation(project(":feature:main"))
-    implementation(project(":feature:detail"))
 
     implementation(project(":core:navigation"))
-    implementation(project(":core:common"))
-    implementation(project(":core:designsystem"))
-    implementation(project(":core:data"))
-    implementation(project(":core:exception"))
-    implementation(project(":shared-test"))
-    testImplementation(project(":shared-test"))
     androidTestImplementation(project(":shared-test"))
 
     implementation(libs.androidx.core.ktx)
