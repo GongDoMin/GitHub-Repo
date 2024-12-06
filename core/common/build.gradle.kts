@@ -12,7 +12,6 @@ dependencies {
 
     api(project(":core:designsystem"))
     api(project(":core:data"))
-    implementation(project(":core:exception"))
     testImplementation(project(":shared-test"))
 
     implementation(libs.androidx.core.ktx)
