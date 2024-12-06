@@ -8,7 +8,7 @@ import com.prac.data.model.RepoModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.data.exception.CommonException
-import com.prac.exception.RepositoryException
+import com.prac.data.exception.RepositoryException
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
 import com.prac.shared_test.data.FakeTokenRepository

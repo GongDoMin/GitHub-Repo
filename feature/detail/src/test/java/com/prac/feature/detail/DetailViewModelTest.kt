@@ -13,7 +13,7 @@ import com.prac.data.model.RepoDetailModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.data.exception.CommonException
-import com.prac.exception.RepositoryException
+import com.prac.data.exception.RepositoryException
 import com.prac.feature.detail.model.Action
 import com.prac.shared_test.common.FakeBackOffWorkManager
 import com.prac.shared_test.data.FakeTokenRepository

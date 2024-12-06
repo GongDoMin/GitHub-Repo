@@ -19,7 +19,7 @@ import com.prac.data.model.RepoModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.data.exception.CommonException
-import com.prac.exception.RepositoryException
+import com.prac.data.exception.RepositoryException
 import com.prac.feature.main.di.MainReducerAnnotation
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
