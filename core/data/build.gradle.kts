@@ -32,7 +32,6 @@ android {
 
 dependencies {
 
-    implementation(project(":core:local"))
     implementation(project(":core:network"))
     implementation(project(":core:exception"))
     testImplementation(project(":shared-test"))
