@@ -3,23 +3,27 @@ package com.prac.feature.login.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.prac.core.common.constants.CONNECTION_FAIL
-import com.prac.core.common.ui.BounceButton
 import com.prac.core.common.ui.ContentWithLoadingIndicator
 import com.prac.core.common.ui.MessageDialog
+import com.prac.core.common.ui.bounceClick
 import com.prac.core.designsystem.R
 
 @Composable
@@ -51,11 +55,30 @@ fun LoginContent(
 
             Spacer(modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_normal)))
 
-            BounceButton(
-                text = stringResource(id = R.string.login),
-                onClickButton = onClickLoginButton,
-                modifier = Modifier.fillMaxWidth()
-            )
+            Button(
+                onClick = onClickLoginButton,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .bounceClick(),
+                colors = ButtonColors(
+                    containerColor = Color.Black,
+                    contentColor = Color.White,
+                    disabledContainerColor = Color.Gray,
+                    disabledContentColor = Color.White
+                ),
+                contentPadding = PaddingValues(
+                    dimensionResource(id = R.dimen.padding_normal)
+                )
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(
+                            top = dimensionResource(id = R.dimen.padding_small),
+                            bottom = dimensionResource(id = R.dimen.padding_small)
+                        ),
+                    text = stringResource(id = R.string.login)
+                )
+            }
 
             Spacer(modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_small)))
 
