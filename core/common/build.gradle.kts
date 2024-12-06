@@ -1,5 +1,6 @@
 plugins {
     id("githubrepo.android.library")
+    id("githubrepo.android.library.compose")
 }
 
 
@@ -9,6 +10,7 @@ android {
 
 dependencies {
 
+    implementation(project(":core:designsystem"))
     implementation(project(":core:exception"))
     testImplementation(project(":shared-test"))
 
@@ -20,4 +22,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.androidx.lifecycle.viewmodel)
+
+    implementation(libs.compose.glide)
 }
