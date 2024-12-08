@@ -13,6 +13,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import kotlin.math.log
 
 class LoginViewModelTest {
 
@@ -22,14 +23,16 @@ class LoginViewModelTest {
     private lateinit var loginViewModel: LoginViewModel
 
     private val loginReducerProcessor = LoginReducerProcessor()
+    private lateinit var loginActionProcessor: LoginActionProcessor
     private lateinit var tokenRepository: TokenRepository
 
     @Test
     fun process_actionIsCheckAutoLogin_eventIsSuccessLogin() = runTest {
         tokenRepository = FakeTokenRepository(token = "test")
+        loginActionProcessor = LoginActionProcessor(tokenRepository)
         loginViewModel = LoginViewModel(
-            tokenRepository = tokenRepository,
             loginReducerProcessor = loginReducerProcessor,
+            loginActionProcessor = loginActionProcessor,
             ioDispatcher = standardTestDispatcherRule.testDispatcher
         )
 
@@ -42,9 +45,10 @@ class LoginViewModelTest {
     @Test
     fun process_actionIsCheckAutoLogin_emitNothing() = runTest {
         tokenRepository = FakeTokenRepository()
+        loginActionProcessor = LoginActionProcessor(tokenRepository)
         loginViewModel = LoginViewModel(
-            tokenRepository = tokenRepository,
             loginReducerProcessor = loginReducerProcessor,
+            loginActionProcessor = loginActionProcessor,
             ioDispatcher = standardTestDispatcherRule.testDispatcher
         )
 
@@ -56,9 +60,10 @@ class LoginViewModelTest {
     @Test
     fun process_actionIsOAuthAuthenticated_eventIsLoginSuccess() = runTest {
         tokenRepository = FakeTokenRepository()
+        loginActionProcessor = LoginActionProcessor(tokenRepository)
         loginViewModel = LoginViewModel(
-            tokenRepository = tokenRepository,
             loginReducerProcessor = loginReducerProcessor,
+            loginActionProcessor = loginActionProcessor,
             ioDispatcher = standardTestDispatcherRule.testDispatcher
         )
 
@@ -73,9 +78,10 @@ class LoginViewModelTest {
     @Test
     fun process_actionIsOAuthAuthenticated_uiStateIsError() = runTest {
         tokenRepository = FakeTokenRepository()
+        loginActionProcessor = LoginActionProcessor(tokenRepository)
         loginViewModel = LoginViewModel(
-            tokenRepository = tokenRepository,
             loginReducerProcessor = loginReducerProcessor,
+            loginActionProcessor = loginActionProcessor,
             ioDispatcher = standardTestDispatcherRule.testDispatcher
         )
 
@@ -95,9 +101,10 @@ class LoginViewModelTest {
     @Test
     fun process_actionIsDialogDismiss_emitIdle() = runTest {
         tokenRepository = FakeTokenRepository()
+        loginActionProcessor = LoginActionProcessor(tokenRepository)
         loginViewModel = LoginViewModel(
-            tokenRepository = tokenRepository,
             loginReducerProcessor = loginReducerProcessor,
+            loginActionProcessor = loginActionProcessor,
             ioDispatcher = standardTestDispatcherRule.testDispatcher
         )
 
