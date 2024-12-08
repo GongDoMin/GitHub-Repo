@@ -8,8 +8,7 @@
 
 이 프로젝트는 `MVVM` 와 `MVI`를 기반으로 설계되었습니다.
 
-### MVVM Architecture
-![MVVM](https://github.com/user-attachments/assets/8af47a9f-5ec2-463d-8659-e6d110ea169a)
+![Architecture](https://github.com/user-attachments/assets/8af47a9f-5ec2-463d-8659-e6d110ea169a)
 
 
 - **`UI layer`** : `UI layer` 는 사용자와 상호 작용할 수 있는 화면을 구성하는 UI 요소들과 앱 상태를 저장하고 configuration change 의 경우 데이터를 복원하는 ViewModel 로 구성되어 있습니다.
