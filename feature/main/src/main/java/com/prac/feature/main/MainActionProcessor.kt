@@ -29,14 +29,15 @@ class MainActionProcessor(
     override fun invoke(action: Action): Flow<Pair<Mutation?, Event?>> =
         flow {
             when(action) {
+                is Action.InternalAction.Load -> Unit
                 is Action.InternalAction.FetchStarState -> fetchStarState(action.repoModel)
+                is Action.InternalAction.Logout -> logout()
                 is Action.UserAction.OnClickRepository -> handleClickRepository(action.repoModel)
                 is Action.UserAction.OnClickUnStar -> handleClickUnStar(action.repoModel)
                 is Action.UserAction.OnClickStar -> handleClickStar(action.repoModel)
                 is Action.UserAction.OnClickRetry -> handleClickRetry()
                 is Action.UserAction.DialogDismiss -> handleDialogDismiss()
                 is Action.UserAction.LogoutDialogDismiss -> handleLogoutDialogDismiss()
-                else -> Unit
             }
         }
 

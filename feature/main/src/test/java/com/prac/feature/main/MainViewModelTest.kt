@@ -3,6 +3,7 @@ package com.prac.feature.main
 import androidx.paging.PagingData
 import app.cash.turbine.test
 import com.prac.core.common.constants.INVALID_REPOSITORY
+import com.prac.core.common.constants.INVALID_TOKEN
 import com.prac.core.common.constants.UNKNOWN
 import com.prac.data.model.RepoModel
 import com.prac.data.repository.RepoRepository
@@ -11,6 +12,7 @@ import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
+import com.prac.feature.main.view.UiState
 import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.shared_test.rules.StandardTestDispatcherRule
 import com.prac.shared_test.common.FakeBackOffWorkManager
@@ -42,6 +44,7 @@ class MainViewModelTest {
     @Mock private lateinit var mockRepoRepository: RepoRepository
     private val backOffWork: FakeBackOffWorkManager = FakeBackOffWorkManager()
     private val mainReducerProcessor = MainReducerProcessor()
+    private lateinit var mainActionProcessor: MainActionProcessor
 
     private lateinit var mainViewModel: MainViewModel
 
@@ -51,8 +54,9 @@ class MainViewModelTest {
     fun setUp() = runTest {
         val pagingData = PagingData.from(repositories)
         whenever(mockRepoRepository.getRepositories()).thenReturn(flow { emit(pagingData) } )
+        mainActionProcessor = MainActionProcessor(tokenRepository, mockRepoRepository, backOffWork)
 
-        mainViewModel = MainViewModel(mockRepoRepository, tokenRepository, backOffWork, mainReducerProcessor, standardTestDispatcherRule.testDispatcher)
+        mainViewModel = MainViewModel(mockRepoRepository, mainReducerProcessor, mainActionProcessor, standardTestDispatcherRule.testDispatcher)
     }
 
     @After
@@ -125,11 +129,14 @@ class MainViewModelTest {
         whenever(mockRepoRepository.starRepository(repository.owner.login, repository.name))
             .thenReturn(Result.failure(CommonException.AuthorizationError()))
 
-        mainViewModel.eventFlow.test {
+        mainViewModel.uiStateFlow.test {
+            awaitItem() // initialState
+
             mainViewModel.process(Action.UserAction.OnClickUnStar(repository))
 
             val result = awaitItem()
-            assertTrue(result is Event.Logout)
+            assertTrue(result.isError)
+            assertEquals(result.errorMessage, INVALID_TOKEN)
         }
     }
 
@@ -139,11 +146,14 @@ class MainViewModelTest {
         whenever(mockRepoRepository.unStarRepository(repository.owner.login, repository.name))
             .thenReturn(Result.failure(CommonException.AuthorizationError()))
 
-        mainViewModel.eventFlow.test {
+        mainViewModel.uiStateFlow.test {
+            awaitItem() // initialState
+
             mainViewModel.process(Action.UserAction.OnClickStar(repository))
 
             val result = awaitItem()
-            assertTrue(result is Event.Logout)
+            assertTrue(result.isError)
+            assertEquals(result.errorMessage, INVALID_TOKEN)
         }
     }
 

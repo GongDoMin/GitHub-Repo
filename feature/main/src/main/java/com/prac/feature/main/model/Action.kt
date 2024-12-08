@@ -14,5 +14,6 @@ sealed interface Action {
     data object InternalAction {
         data object Load : Action
         data class FetchStarState(val repoModel: RepoModel) : Action
+        data object Logout : Action
     }
 }

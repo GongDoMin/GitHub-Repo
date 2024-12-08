@@ -49,10 +49,7 @@ fun MainScreen(
                 when (it) {
                     is Event.Retry -> repositories.retry()
                     is Event.OpenRepositoryDetail -> onClickRepository(it.userName, it.repoName)
-                    is Event.Logout -> {
-                        viewModel.logout()
-                        onNavigateToLogin()
-                    }
+                    is Event.Logout -> onNavigateToLogin()
                 }
             }
         }
