@@ -2,24 +2,15 @@
 
 ## Built With
 
-- **`Coroutine & Flow`** 를 통한 비동기 처리
-- **`Jetpack`**
-    - **`Compose`** : 안드로이드 UI 를 선언적으로 작성할 수 있게 도와주는 최신 툴킷
-    - **`ViewModel`** : 화면 회전과 같은 configuration change 에서 데이터가 보존되며 UI 관련 데이터를 관리
-    - **`Room`** : 데이터베이스에 보다 간편하게 접근하고 관리
-    - **`RemoteMediator`** : 네트워크에서 추가 데이터를 로드하고 로컬 데이터베이스에 저장 후 로컬 데이터베이스에서 데이터를 로드하고 표시
-    - **`Hilt`** : for dependency injection
-    - **`ProtoDataStore`** : protocol buffer 를 통해 타입 안전성이 보장된 데이터 저장소
-- **`Retrofit2 & OkHtpp3`** 을 통한 네트워크 통신
-- **`Glide`** : 네트워크로부터 이미지 로드
-- **`Markwon`** :  Markdown을 렌더링
+`Coroutine` `Flow` `Compose` `Room` `Paging3` `Hilt` `ProtoDataStore` `Retrofit2` `OkHttp3` `Glide` `Markwon`
 
 ## Architecture
 
 이 프로젝트는 `MVVM` 와 `MVI`를 기반으로 설계되었습니다.
 
 ### MVVM Architecture
-![MVVM](https://github.com/user-attachments/assets/d6803b1d-810e-46e4-adb0-fb33ec665b89)
+![MVVM](https://github.com/user-attachments/assets/8af47a9f-5ec2-463d-8659-e6d110ea169a)
+
 
 - **`UI layer`** : `UI layer` 는 사용자와 상호 작용할 수 있는 화면을 구성하는 UI 요소들과 앱 상태를 저장하고 configuration change 의 경우 데이터를 복원하는 ViewModel 로 구성되어 있습니다.
 
