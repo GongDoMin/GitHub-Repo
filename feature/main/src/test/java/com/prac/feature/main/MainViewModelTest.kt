@@ -5,23 +5,20 @@ import app.cash.turbine.test
 import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.common.constants.INVALID_TOKEN
 import com.prac.core.common.constants.UNKNOWN
-import com.prac.data.model.RepoModel
-import com.prac.data.repository.RepoRepository
-import com.prac.data.repository.TokenRepository
+import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
+import com.prac.data.model.RepoModel
+import com.prac.data.repository.RepoRepository
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
-import com.prac.feature.main.view.UiState
-import com.prac.shared_test.data.FakeTokenRepository
+import com.prac.feature.main.model.Mutation
 import com.prac.shared_test.rules.StandardTestDispatcherRule
-import com.prac.shared_test.common.FakeBackOffWorkManager
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.prac.shared_test.ui.FakeMainActionProcessor
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -29,110 +26,42 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(MockitoJUnitRunner::class)
 class MainViewModelTest {
 
     @get:Rule
     val standardTestDispatcherRule = StandardTestDispatcherRule()
 
-    private val tokenRepository: TokenRepository = FakeTokenRepository("test")
-    @Mock private lateinit var mockRepoRepository: RepoRepository
-    private val backOffWork: FakeBackOffWorkManager = FakeBackOffWorkManager()
     private val mainReducerProcessor = MainReducerProcessor()
-    private lateinit var mainActionProcessor: MainActionProcessor
 
+    @Mock private lateinit var mockRepoRepository: RepoRepository
+    private lateinit var mainActionProcessor: ActionProcessor<Action, Mutation, Event>
     private lateinit var mainViewModel: MainViewModel
-
-    private val repositories = listOf(RepoModel(stargazersCount = 1))
 
     @Before
     fun setUp() = runTest {
-        val pagingData = PagingData.from(repositories)
+        val pagingData = PagingData.from(listOf(RepoModel(stargazersCount = 1)))
         whenever(mockRepoRepository.getRepositories()).thenReturn(flow { emit(pagingData) } )
-        mainActionProcessor = MainActionProcessor(tokenRepository, mockRepoRepository, backOffWork)
+        mainActionProcessor = FakeMainActionProcessor()
 
-        mainViewModel = MainViewModel(mockRepoRepository, mainReducerProcessor, mainActionProcessor, standardTestDispatcherRule.testDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        backOffWork.clearWork()
-        backOffWork.clearDelayTimes()
-    }
-
-    @Test
-    fun starRepository_starRepositoryIsSuccess_callStarLocalAndRemoteRepository() = runTest {
-        val repository = repositories[0]
-
-        mainViewModel.process(Action.UserAction.OnClickUnStar(repository))
-        advanceUntilIdle()
-
-        verify(mockRepoRepository).starLocalRepository(repository.id, repository.stargazersCount + 1)
-        verify(mockRepoRepository).starRepository(repository.owner.login, repository.name)
+        mainViewModel = MainViewModel(
+            repoRepository = mockRepoRepository,
+            mainReducerProcessor = mainReducerProcessor,
+            mainActionProcessor = mainActionProcessor,
+            ioDispatcher = standardTestDispatcherRule.testDispatcher
+        )
     }
 
     @Test
-    fun unStarRepository_unStarRepositoryIsSuccess_callStarLocalAndRemoteRepository() = runTest {
-        val repository = repositories[0]
-
-        mainViewModel.process(Action.UserAction.OnClickStar(repository))
-        advanceUntilIdle()
-
-        verify(mockRepoRepository).unStarLocalRepository(repository.id, repository.stargazersCount - 1)
-        verify(mockRepoRepository).unStarRepository(repository.owner.login, repository.name)
-    }
-
-    @Test
-    fun starRepository_starRepositoryIsNetworkError_callMultipleTimesRemoteRepository() = runTest {
-        backOffWork.setScope(this)
-        val repository = repositories[0]
-        val uniqueID = "star_${repository.id}"
-        val expectedCallTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
-        val expectedDelayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
-        whenever(mockRepoRepository.starRepository(repository.owner.login, repository.name))
-            .thenReturn(Result.failure(CommonException.NetworkError()))
-
-        mainViewModel.process(Action.UserAction.OnClickUnStar(repository))
-        advanceUntilIdle()
-
-        verify(mockRepoRepository).starLocalRepository(repository.id, repository.stargazersCount + 1)
-        verify(mockRepoRepository, times(expectedCallTimes)).starRepository(repository.owner.login, repository.name)
-        assertEquals(backOffWork.getDelayTimes(uniqueID), expectedDelayTimes)
-    }
-
-    @Test
-    fun unStarRepository_unStarRepositoryIsNetworkError_callMultipleTimesRemoteRepository() = runTest {
-        backOffWork.setScope(this)
-        val repository = repositories[0]
-        val uniqueID = "star_${repository.id}"
-        val expectedCallTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
-        val expectedDelayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
-        whenever(mockRepoRepository.unStarRepository(repository.owner.login, repository.name))
-            .thenReturn(Result.failure(CommonException.NetworkError()))
-
-        mainViewModel.process(Action.UserAction.OnClickStar(repository))
-        advanceUntilIdle()
-
-        verify(mockRepoRepository).unStarLocalRepository(repository.id, repository.stargazersCount - 1)
-        verify(mockRepoRepository, times(expectedCallTimes)).unStarRepository(repository.owner.login, repository.name)
-        assertEquals(backOffWork.getDelayTimes(uniqueID), expectedDelayTimes)
-    }
-
-    @Test
-    fun starRepository_starRepositoryIsAuthorizationError_eventIsLogout() = runTest {
-        val repository = repositories[0]
-        whenever(mockRepoRepository.starRepository(repository.owner.login, repository.name))
-            .thenReturn(Result.failure(CommonException.AuthorizationError()))
+    fun process_actionIsOnClickUnStar_uiStateIsError_whenAuthorizationError() = runTest {
+        mainActionProcessorSetThrowable(CommonException.AuthorizationError())
 
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
-            mainViewModel.process(Action.UserAction.OnClickUnStar(repository))
+            mainViewModel.process(Action.UserAction.OnClickUnStar(RepoModel()))
 
             val result = awaitItem()
             assertTrue(result.isError)
@@ -141,15 +70,13 @@ class MainViewModelTest {
     }
 
     @Test
-    fun unStarRepository_unStarRepositoryIsAuthorizationError_uiStateHasDialogMessage() = runTest {
-        val repository = repositories[0]
-        whenever(mockRepoRepository.unStarRepository(repository.owner.login, repository.name))
-            .thenReturn(Result.failure(CommonException.AuthorizationError()))
+    fun process_actionIsOnClickStar_uiStateIsError_whenAuthorizationError() = runTest {
+        mainActionProcessorSetThrowable(CommonException.AuthorizationError())
 
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
-            mainViewModel.process(Action.UserAction.OnClickStar(repository))
+            mainViewModel.process(Action.UserAction.OnClickStar(RepoModel()))
 
             val result = awaitItem()
             assertTrue(result.isError)
@@ -158,70 +85,122 @@ class MainViewModelTest {
     }
 
     @Test
-    fun starRepository_starRepositoryIsNotFoundRepositoryError_uiStateIsError() = runTest {
-        val repository = repositories[0]
-        whenever(mockRepoRepository.starRepository(repository.owner.login, repository.name))
-            .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
+    fun process_actionIsOnClickUnStar_uiStateIsError_whenNotFoundRepository() = runTest {
+        mainActionProcessorSetThrowable(RepositoryException.NotFoundRepository())
 
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
-            mainViewModel.process(Action.UserAction.OnClickUnStar(repository))
+            mainViewModel.process(Action.UserAction.OnClickUnStar(RepoModel()))
 
             val result = awaitItem()
             assertEquals(result.errorMessage, INVALID_REPOSITORY)
-            verify(mockRepoRepository).unStarLocalRepository(repository.id, repository.stargazersCount)
         }
     }
 
     @Test
-    fun unStarRepository_unStarRepositoryIsNotFoundRepositoryError_uiStateIsError() = runTest {
-        val repository = repositories[0]
-        whenever(mockRepoRepository.unStarRepository(repository.owner.login, repository.name))
-            .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
+    fun process_actionIsOnClickStar_uiStateIsError_whenNotFoundRepository() = runTest {
+        mainActionProcessorSetThrowable(RepositoryException.NotFoundRepository())
 
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
-            mainViewModel.process(Action.UserAction.OnClickStar(repository))
+            mainViewModel.process(Action.UserAction.OnClickStar(RepoModel()))
 
             val result = awaitItem()
             assertEquals(result.errorMessage, INVALID_REPOSITORY)
-            verify(mockRepoRepository).starLocalRepository(repository.id, repository.stargazersCount)
         }
     }
 
     @Test
-    fun starRepository_starRepositoryIsUnKnownError_uiStateIsError() = runTest {
-        val repository = repositories[0]
-        whenever(mockRepoRepository.starRepository(repository.owner.login, repository.name))
-            .thenReturn(Result.failure(CommonException.UnKnownError()))
+    fun process_actionIsOnClickUnStar_uiStateIsError_whenUnKnownError() = runTest {
+        mainActionProcessorSetThrowable(CommonException.UnKnownError())
 
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
-            mainViewModel.process(Action.UserAction.OnClickUnStar(repository))
+            mainViewModel.process(Action.UserAction.OnClickUnStar(RepoModel()))
 
             val result = awaitItem()
             assertEquals(result.errorMessage, UNKNOWN)
-            verify(mockRepoRepository).unStarLocalRepository(repository.id, repository.stargazersCount)
         }
     }
 
     @Test
-    fun unStarRepository_unStarRepositoryIsUnKnownError_uiStateIsError() = runTest {
-        val repository = repositories[0]
-        whenever(mockRepoRepository.unStarRepository(repository.owner.login, repository.name))
-            .thenReturn(Result.failure(CommonException.UnKnownError()))
+    fun process_actionIsOnClickStar_uiStateIsError_whenUnKnownError() = runTest {
+        mainActionProcessorSetThrowable(CommonException.UnKnownError())
 
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
-            mainViewModel.process(Action.UserAction.OnClickStar(repository))
+            mainViewModel.process(Action.UserAction.OnClickStar(RepoModel()))
 
             val result = awaitItem()
             assertEquals(result.errorMessage, UNKNOWN)
-            verify(mockRepoRepository).starLocalRepository(repository.id, repository.stargazersCount)
         }
+    }
+
+    @Test
+    fun process_actionIsLogout_uiStateIsError() = runTest {
+        mainViewModel.uiStateFlow.test {
+            awaitItem() // initialState
+            mainViewModel.process(Action.InternalAction.Logout)
+
+            val result = awaitItem()
+            assertTrue(result.isError)
+            assertEquals(result.errorMessage, INVALID_TOKEN)
+        }
+    }
+
+    @Test
+    fun process_actionIsDialogDismiss_uiStateIsIdle() = runTest {
+        mainActionProcessorSetThrowable(CommonException.UnKnownError())
+
+        mainViewModel.uiStateFlow.test {
+            awaitItem() // initialState
+
+            mainViewModel.process(Action.UserAction.OnClickStar(RepoModel()))
+            awaitItem() // showError
+
+            mainViewModel.process(Action.UserAction.DialogDismiss)
+
+            val result = awaitItem()
+            assertFalse(result.isError)
+            assertTrue(result.errorMessage.isEmpty())
+        }
+    }
+
+    @Test
+    fun process_actionIsLogoutDialogDismiss_eventIsLogout() = runTest {
+        mainViewModel.eventFlow.test {
+            mainViewModel.process(Action.UserAction.LogoutDialogDismiss)
+
+            val result = awaitItem()
+            assertTrue(result is Event.Logout)
+        }
+    }
+
+    @Test
+    fun process_actionIsOnClickRepository_eventIsOpenRepository() = runTest {
+        mainViewModel.eventFlow.test {
+            mainViewModel.process(Action.UserAction.OnClickRepository(RepoModel()))
+
+            val result = awaitItem()
+            assertTrue(result is Event.OpenRepositoryDetail)
+        }
+    }
+
+    @Test
+    fun process_actionIsOnClickRetry_eventIsRetry() = runTest {
+        mainViewModel.eventFlow.test {
+            mainViewModel.process(Action.UserAction.OnClickRetry)
+
+            val result = awaitItem()
+            assertTrue(result is Event.Retry)
+        }
+    }
+
+    private fun mainActionProcessorSetThrowable(throwable: Throwable) {
+        (mainActionProcessor as FakeMainActionProcessor).setThrowable(throwable)
     }
 }
