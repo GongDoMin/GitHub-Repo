@@ -1,27 +1,21 @@
 package com.prac.feature.profile
 
 import app.cash.turbine.test
-import com.prac.core.common.backoff.BackOffWorkManager
 import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.core.common.mvi.reducer.Reducer
-import com.prac.data.repository.RepoRepository
-import com.prac.data.repository.TokenRepository
 import com.prac.feature.profile.model.Action
 import com.prac.feature.profile.model.Event
 import com.prac.feature.profile.model.Mutation
 import com.prac.feature.profile.view.UiState
-import com.prac.shared_test.common.FakeBackOffWorkManager
-import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.shared_test.rules.StandardTestDispatcherRule
+import com.prac.shared_test.ui.FakeProfileActionProcessor
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
@@ -30,18 +24,14 @@ class ProfileViewModelTest {
     @get:Rule
     val standardTestDispatcherRule = StandardTestDispatcherRule()
 
-    private val tokenRepository: TokenRepository = FakeTokenRepository("test")
-    @Mock private lateinit var mockRepoRepository: RepoRepository
     private val profileReducerProcessor: Reducer<Mutation, UiState> = ProfileReducerProcessor()
-    private lateinit var profileActionProcessor: ActionProcessor<Action, Mutation, Event>
-    private val backOffWorkManager: BackOffWorkManager = FakeBackOffWorkManager()
+    private val profileActionProcessor: ActionProcessor<Action, Mutation, Event> = FakeProfileActionProcessor()
 
-    private lateinit var profileViewModel: ProfileViewModel
-
-    @Before
-    fun setup() {
-        initViewModel()
-    }
+    private val profileViewModel: ProfileViewModel = ProfileViewModel(
+        profileReducerProcessor = profileReducerProcessor,
+        profileActionProcessor = profileActionProcessor,
+        ioDispatcher = standardTestDispatcherRule.testDispatcher,
+    )
 
     @Test
     fun process_actionIsOnClickLogoutButton_uiStateIsDialog() = runTest {
@@ -61,7 +51,7 @@ class ProfileViewModelTest {
             awaitItem() // initialState
 
             profileViewModel.process(Action.UserAction.OnClickLogoutButton)
-            awaitItem() // isDialog = true
+            awaitItem() // isDialog
 
             profileViewModel.process(Action.UserAction.DialogDismiss)
 
@@ -72,26 +62,28 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun process_actionIsOnClickCheckButton_EventIsLogout() = runTest {
+    fun process_actionIsOnClickNegativeButton_uiStateIsIdle() = runTest {
+        profileViewModel.uiStateFlow.test {
+            awaitItem() // initialState
+
+            profileViewModel.process(Action.UserAction.OnClickLogoutButton)
+            awaitItem() // isDialog
+
+            profileViewModel.process(Action.UserAction.OnClickNegativeButton)
+
+            val result = awaitItem()
+            assertFalse(result.isLoading)
+            assertFalse(result.isDialog)
+        }
+    }
+
+    @Test
+    fun process_actionIsOnClickPositiveButton_EventIsLogout() = runTest {
         profileViewModel.eventFlow.test {
             profileViewModel.process(Action.UserAction.OnClickPositiveButton)
 
             val result = awaitItem()
             assertEquals(result, Event.Logout)
         }
-    }
-
-    private fun initViewModel() {
-        profileActionProcessor = ProfileActionProcessor(
-            tokenRepository = tokenRepository,
-            repoRepository = mockRepoRepository,
-            backOffWorkManager = backOffWorkManager
-        )
-
-        profileViewModel = ProfileViewModel(
-            profileReducerProcessor = profileReducerProcessor,
-            profileActionProcessor = profileActionProcessor,
-            ioDispatcher = standardTestDispatcherRule.testDispatcher,
-        )
     }
 }
