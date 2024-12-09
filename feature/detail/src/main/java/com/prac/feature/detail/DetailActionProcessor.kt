@@ -105,7 +105,6 @@ class DetailActionProcessor(
             }
             is CommonException.AuthorizationError -> {
                 logout()
-                emit(Mutation.ShowError(INVALID_TOKEN) to null)
             }
             is RepositoryException.NotFoundRepository -> {
                 emit(Mutation.ShowError(INVALID_REPOSITORY) to null)
@@ -126,7 +125,6 @@ class DetailActionProcessor(
             }
             is CommonException.AuthorizationError -> {
                 logout()
-                emit(Mutation.ShowError(INVALID_TOKEN) to null)
             }
             is RepositoryException.NotFoundRepository -> {
                 repoRepository.unStarLocalRepository(repoDetailModel.id, repoDetailModel.stargazersCount)
@@ -151,7 +149,6 @@ class DetailActionProcessor(
             }
             is CommonException.AuthorizationError -> {
                 logout()
-                emit(Mutation.ShowError(INVALID_TOKEN) to null)
             }
             is RepositoryException.NotFoundRepository -> {
                 repoRepository.starLocalRepository(repoDetailModel.id, repoDetailModel.stargazersCount)
@@ -166,8 +163,11 @@ class DetailActionProcessor(
         }
     }
 
-    private suspend fun logout() {
+    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.logout() {
         tokenRepository.clearToken()
+        repoRepository.clearRepositories()
         backOffWorkManager.clearWork()
+
+        emit(Mutation.ShowError(INVALID_TOKEN) to null)
     }
 }
