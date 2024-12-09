@@ -20,6 +20,8 @@ dependencies {
     implementation(project(":core:local"))
     implementation(project(":core:network"))
 
+    implementation(project(":feature:main"))
+
     implementation(libs.androidx.runner)
     debugImplementation(libs.androidx.ui.test.manifest)
 
