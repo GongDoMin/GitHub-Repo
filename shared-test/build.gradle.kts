@@ -20,6 +20,7 @@ dependencies {
     implementation(project(":core:local"))
     implementation(project(":core:network"))
 
+    implementation(project(":feature:login"))
     implementation(project(":feature:main"))
 
     implementation(libs.androidx.runner)
