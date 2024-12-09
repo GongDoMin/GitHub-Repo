@@ -1,6 +1,5 @@
 package com.prac.feature.main
 
-import android.util.SparseArray
 import com.prac.core.common.backoff.BackOffWorkManager
 import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.common.constants.INVALID_TOKEN
@@ -24,7 +23,7 @@ class MainActionProcessor(
     private val backOffWorkManager: BackOffWorkManager
 ) : ActionProcessor<Action, Mutation, Event> {
 
-    private val _starRequestJobManager: SparseArray<Unit> = SparseArray()
+    private val _starRequestJobManager: HashMap<Int, Unit> = HashMap()
 
     override fun invoke(action: Action): Flow<Pair<Mutation?, Event?>> =
         flow {
@@ -43,7 +42,7 @@ class MainActionProcessor(
 
     private suspend fun fetchStarState(repoModel: RepoModel) {
         if (_starRequestJobManager[repoModel.id] == null) {
-            _starRequestJobManager.put(repoModel.id, Unit)
+            _starRequestJobManager[repoModel.id] = Unit
 
             repoRepository.isStarred(repoModel.id, repoModel.name)
         }
@@ -133,6 +132,7 @@ class MainActionProcessor(
 
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.logout() {
         tokenRepository.clearToken()
+        repoRepository.clearRepositories()
         backOffWorkManager.clearWork()
 
         emit(Mutation.ShowError(INVALID_TOKEN) to null)
