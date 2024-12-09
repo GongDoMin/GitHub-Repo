@@ -71,11 +71,6 @@ fun LoginContent(
                 )
             ) {
                 Text(
-                    modifier = Modifier
-                        .padding(
-                            top = dimensionResource(id = R.dimen.padding_small),
-                            bottom = dimensionResource(id = R.dimen.padding_small)
-                        ),
                     text = stringResource(id = R.string.login)
                 )
             }
