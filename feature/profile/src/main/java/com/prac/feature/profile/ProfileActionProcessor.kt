@@ -22,9 +22,10 @@ class ProfileActionProcessor(
                 is Action.UserAction.OnClickLogoutButton -> handleClickLogoutButton()
                 is Action.UserAction.DialogDismiss -> handleDialogDismiss()
                 is Action.UserAction.OnClickNegativeButton -> handleClickNegativeButton()
-                is Action.UserAction.OnClickPositiveButton -> handleClickCheckButton()
+                is Action.UserAction.OnClickPositiveButton -> handleClickPositiveButton()
             }
         }
+
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleClickLogoutButton() {
         emit(Mutation.ShowDialog to null)
     }
@@ -37,7 +38,7 @@ class ProfileActionProcessor(
         emit(Mutation.ShowIdle to null)
     }
 
-    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleClickCheckButton() {
+    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleClickPositiveButton() {
         emit(Mutation.ShowLoading to null)
 
         tokenRepository.clearToken()
