@@ -2,39 +2,33 @@ package com.prac.feature.login
 
 import app.cash.turbine.test
 import com.prac.core.common.constants.CONNECTION_FAIL
-import com.prac.data.repository.TokenRepository
+import com.prac.core.common.mvi.action.ActionProcessor
+import com.prac.data.exception.CommonException
 import com.prac.feature.login.model.Action
 import com.prac.feature.login.model.Event
-import com.prac.shared_test.data.FakeTokenRepository
+import com.prac.feature.login.model.Mutation
 import com.prac.shared_test.rules.StandardTestDispatcherRule
+import com.prac.shared_test.ui.FakeLoginActionProcessor
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
-import kotlin.math.log
 
 class LoginViewModelTest {
 
     @get:Rule
     val standardTestDispatcherRule = StandardTestDispatcherRule()
 
-    private lateinit var loginViewModel: LoginViewModel
-
     private val loginReducerProcessor = LoginReducerProcessor()
-    private lateinit var loginActionProcessor: LoginActionProcessor
-    private lateinit var tokenRepository: TokenRepository
+
+    private lateinit var loginActionProcessor: ActionProcessor<Action, Mutation, Event>
+    private lateinit var loginViewModel: LoginViewModel
 
     @Test
     fun process_actionIsCheckAutoLogin_eventIsSuccessLogin() = runTest {
-        tokenRepository = FakeTokenRepository(token = "test")
-        loginActionProcessor = LoginActionProcessor(tokenRepository)
-        loginViewModel = LoginViewModel(
-            loginReducerProcessor = loginReducerProcessor,
-            loginActionProcessor = loginActionProcessor,
-            ioDispatcher = standardTestDispatcherRule.testDispatcher
-        )
+        initViewModel(isLoggedIn = true)
 
         loginViewModel.eventFlow.test {
             val result = awaitItem()
@@ -44,13 +38,7 @@ class LoginViewModelTest {
 
     @Test
     fun process_actionIsCheckAutoLogin_emitNothing() = runTest {
-        tokenRepository = FakeTokenRepository()
-        loginActionProcessor = LoginActionProcessor(tokenRepository)
-        loginViewModel = LoginViewModel(
-            loginReducerProcessor = loginReducerProcessor,
-            loginActionProcessor = loginActionProcessor,
-            ioDispatcher = standardTestDispatcherRule.testDispatcher
-        )
+        initViewModel()
 
         loginViewModel.eventFlow.test {
             expectNoEvents()
@@ -59,16 +47,10 @@ class LoginViewModelTest {
 
     @Test
     fun process_actionIsOAuthAuthenticated_eventIsLoginSuccess() = runTest {
-        tokenRepository = FakeTokenRepository()
-        loginActionProcessor = LoginActionProcessor(tokenRepository)
-        loginViewModel = LoginViewModel(
-            loginReducerProcessor = loginReducerProcessor,
-            loginActionProcessor = loginActionProcessor,
-            ioDispatcher = standardTestDispatcherRule.testDispatcher
-        )
+        initViewModel()
 
         loginViewModel.eventFlow.test {
-            loginViewModel.process(Action.InternalAction.AuthenticateOAuth("success"))
+            loginViewModel.process(Action.InternalAction.AuthenticateOAuth(""))
 
             val result = awaitItem()
             assertTrue(result is Event.SuccessLogin)
@@ -77,18 +59,13 @@ class LoginViewModelTest {
 
     @Test
     fun process_actionIsOAuthAuthenticated_uiStateIsError() = runTest {
-        tokenRepository = FakeTokenRepository()
-        loginActionProcessor = LoginActionProcessor(tokenRepository)
-        loginViewModel = LoginViewModel(
-            loginReducerProcessor = loginReducerProcessor,
-            loginActionProcessor = loginActionProcessor,
-            ioDispatcher = standardTestDispatcherRule.testDispatcher
-        )
+        initViewModel()
+        setLoginActionProcessorThrowable(CommonException.NetworkError())
 
         loginViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
-            loginViewModel.process(Action.InternalAction.AuthenticateOAuth("ioException"))
+            loginViewModel.process(Action.InternalAction.AuthenticateOAuth(""))
 
             awaitItem() // loadingState
 
@@ -100,13 +77,8 @@ class LoginViewModelTest {
 
     @Test
     fun process_actionIsDialogDismiss_emitIdle() = runTest {
-        tokenRepository = FakeTokenRepository()
-        loginActionProcessor = LoginActionProcessor(tokenRepository)
-        loginViewModel = LoginViewModel(
-            loginReducerProcessor = loginReducerProcessor,
-            loginActionProcessor = loginActionProcessor,
-            ioDispatcher = standardTestDispatcherRule.testDispatcher
-        )
+        initViewModel()
+        setLoginActionProcessorThrowable(CommonException.NetworkError())
 
         loginViewModel.uiStateFlow.test {
             awaitItem() // initialState
@@ -122,5 +94,18 @@ class LoginViewModelTest {
             assertFalse(result.isError)
             assertTrue(result.errorMessage.isEmpty())
         }
+    }
+
+    private fun initViewModel(isLoggedIn: Boolean = false) {
+        loginActionProcessor = FakeLoginActionProcessor(isLoggedIn)
+        loginViewModel = LoginViewModel(
+            loginReducerProcessor = loginReducerProcessor,
+            loginActionProcessor = loginActionProcessor,
+            ioDispatcher = standardTestDispatcherRule.testDispatcher
+        )
+    }
+
+    private fun setLoginActionProcessorThrowable(throwable: Throwable) {
+        (loginActionProcessor as FakeLoginActionProcessor).setThrowable(throwable)
     }
 }
