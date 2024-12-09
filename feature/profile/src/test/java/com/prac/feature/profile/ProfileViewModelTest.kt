@@ -2,6 +2,7 @@ package com.prac.feature.profile
 
 import app.cash.turbine.test
 import com.prac.core.common.backoff.BackOffWorkManager
+import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
@@ -9,9 +10,9 @@ import com.prac.feature.profile.model.Action
 import com.prac.feature.profile.model.Event
 import com.prac.feature.profile.model.Mutation
 import com.prac.feature.profile.view.UiState
+import com.prac.shared_test.common.FakeBackOffWorkManager
 import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.shared_test.rules.StandardTestDispatcherRule
-import com.prac.shared_test.common.FakeBackOffWorkManager
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -32,6 +33,7 @@ class ProfileViewModelTest {
     private val tokenRepository: TokenRepository = FakeTokenRepository("test")
     @Mock private lateinit var mockRepoRepository: RepoRepository
     private val profileReducerProcessor: Reducer<Mutation, UiState> = ProfileReducerProcessor()
+    private lateinit var profileActionProcessor: ActionProcessor<Action, Mutation, Event>
     private val backOffWorkManager: BackOffWorkManager = FakeBackOffWorkManager()
 
     private lateinit var profileViewModel: ProfileViewModel
@@ -80,12 +82,16 @@ class ProfileViewModelTest {
     }
 
     private fun initViewModel() {
+        profileActionProcessor = ProfileActionProcessor(
+            tokenRepository = tokenRepository,
+            repoRepository = mockRepoRepository,
+            backOffWorkManager = backOffWorkManager
+        )
+
         profileViewModel = ProfileViewModel(
-            tokenRepository,
-            mockRepoRepository,
-            profileReducerProcessor,
-            standardTestDispatcherRule.testDispatcher,
-            backOffWorkManager
+            profileReducerProcessor = profileReducerProcessor,
+            profileActionProcessor = profileActionProcessor,
+            ioDispatcher = standardTestDispatcherRule.testDispatcher,
         )
     }
 }
