@@ -22,6 +22,7 @@ dependencies {
 
     implementation(project(":feature:login"))
     implementation(project(":feature:main"))
+    implementation(project(":feature:detail"))
     implementation(project(":feature:profile"))
 
     implementation(libs.androidx.runner)
