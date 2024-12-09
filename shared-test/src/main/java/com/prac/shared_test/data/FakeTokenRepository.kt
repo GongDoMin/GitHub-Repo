@@ -4,17 +4,16 @@ import com.prac.data.repository.TokenRepository
 import com.prac.data.exception.CommonException
 
 class FakeTokenRepository(
-    private var token: String = ""
+    var token: String = ""
 ): TokenRepository {
 
     /**
      * @param code 요청 코드.
      *
-     * | 값 | 설명 |
-     * |---|---|
-     * | `success` | 성공 |
+     * |       값       | 설명 |
+     * |   `success`   | 성공 |
      * | `ioException` | IOException 발생 |
-     * | `else` | 기타 오류 |
+     * |    `else`    | 기타 오류 |
      */
 
     override suspend fun authorizeOAuth(code: String): Result<Unit> {
