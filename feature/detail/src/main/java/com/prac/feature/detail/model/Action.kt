@@ -10,6 +10,6 @@ sealed interface Action {
         data object LogoutDialogDismiss : Action
     }
     data object InternalAction {
-        data object GetRepository : Action
+        data class GetRepository(val userName: String?, val repoName: String?) : Action
     }
 }

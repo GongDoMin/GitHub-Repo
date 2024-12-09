@@ -215,6 +215,11 @@ class DetailViewModel @Inject constructor(
     }
 
     init {
-        process(Action.InternalAction.GetRepository)
+        process(
+            Action.InternalAction.GetRepository(
+                userName = savedStateHandle.get<String>(USER_NAME),
+                repoName = savedStateHandle.get<String>(REPO_NAME)
+            )
+        )
     }
 }
