@@ -39,7 +39,7 @@ fun DetailScreen(
                 Action.UserAction.DialogDismiss)
             else viewModel.process(Action.UserAction.LogoutDialogDismiss)
         },
-        modifier = Modifier
+        modifier = modifier
             .padding(dimensionResource(id = R.dimen.padding_normal))
     )
 
