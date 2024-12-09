@@ -7,19 +7,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class FakeBackOffWorkManager : BackOffWorkManager {
-    private val _workMap = mutableMapOf<String, Job>()
-    private val _delayTimesMap = mutableMapOf<String, Long>()
+    private val _workMap = hashMapOf<String, Job>()
+    private val _delayTimesMap = hashMapOf<String, Long>()
 
     private lateinit var scope: CoroutineScope
 
-    override fun addWork(
-        uniqueID: String,
-        times: Int,
-        initialDelay: Long,
-        maxDelay: Long,
-        factor: Double,
-        work: suspend () -> Result<*>
-    ) {
+    override fun addWork(uniqueID: String, times: Int, initialDelay: Long, maxDelay: Long, factor: Double, work: suspend () -> Result<*>) {
         if (!::scope.isInitialized) {
             throw Exception("scope not initialized")
         }
@@ -56,19 +49,34 @@ class FakeBackOffWorkManager : BackOffWorkManager {
         _workMap.clear()
     }
 
-    fun setScope(scope: CoroutineScope) {
-        this.scope = scope
-    }
-
-    fun clearDelayTimes() {
-        _delayTimesMap.clear()
-    }
-
-    fun getDelayTimes(uniqueID: String) : Long =
-        _delayTimesMap[uniqueID] ?: 0L
-
     private fun removeWork(uniqueID: String) {
         _workMap[uniqueID]?.cancel()
         _workMap.remove(uniqueID)
     }
+
+    /*
+    * this method is only for test
+    */
+    fun setScope(scope: CoroutineScope) {
+        this.scope = scope
+    }
+
+    /*
+    * this method is only for test
+    */
+    fun clearDelayTimes() {
+        _delayTimesMap.clear()
+    }
+
+    /*
+    * this method is only for test
+    */
+    fun getDelayTimes(uniqueID: String) : Long =
+        _delayTimesMap[uniqueID] ?: 0L
+
+    /*
+    * this method is only for test
+    */
+    fun getWorkSize() =
+        _workMap.size
 }
