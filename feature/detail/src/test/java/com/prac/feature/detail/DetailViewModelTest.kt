@@ -8,12 +8,12 @@ import com.prac.core.common.constants.INVALID_TOKEN
 import com.prac.core.common.constants.UNKNOWN
 import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.REPO_NAME
 import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.USER_NAME
+import com.prac.data.exception.CommonException
+import com.prac.data.exception.RepositoryException
 import com.prac.data.model.OwnerModel
 import com.prac.data.model.RepoDetailModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
-import com.prac.data.exception.CommonException
-import com.prac.data.exception.RepositoryException
 import com.prac.feature.detail.model.Action
 import com.prac.shared_test.common.FakeBackOffWorkManager
 import com.prac.shared_test.data.FakeTokenRepository
@@ -44,6 +44,7 @@ class DetailViewModelTest {
     private val tokenRepository: TokenRepository = FakeTokenRepository("test")
     @Mock private lateinit var mockRepoRepository: RepoRepository
     private val detailReducerProcessor = DetailReducerProcessor()
+    private lateinit var detailActionProcessor: DetailActionProcessor
     private val backOffWork: FakeBackOffWorkManager = FakeBackOffWorkManager()
 
     private lateinit var detailViewModel: DetailViewModel
@@ -75,6 +76,7 @@ class DetailViewModelTest {
         initViewModel(userName, repoName)
 
         detailViewModel.uiStateFlow.test {
+            awaitItem() // initialState
             awaitItem() // loadingState
 
             val expectedValue = repoDetailEntity.updateStarStateAndCount(starStateAndCount.first, starStateAndCount.second)
@@ -88,6 +90,9 @@ class DetailViewModelTest {
         initViewModel(null, null)
 
         detailViewModel.uiStateFlow.test {
+            awaitItem() // initialState
+            awaitItem() // loadingState
+
             val result = awaitItem()
             assertTrue(result.isError)
             assertTrue(result.errorMessage.isNotEmpty())
@@ -101,6 +106,7 @@ class DetailViewModelTest {
         initViewModel(userName, repoName)
 
         detailViewModel.uiStateFlow.test {
+            awaitItem() // initialState
             awaitItem() // loadingState
 
             val result = awaitItem()
@@ -116,6 +122,7 @@ class DetailViewModelTest {
         initViewModel(userName, repoName)
 
         detailViewModel.uiStateFlow.test {
+            awaitItem() // initialState
             awaitItem() // loadingState
 
             val result = awaitItem()
@@ -200,6 +207,7 @@ class DetailViewModelTest {
         detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
 
         detailViewModel.uiStateFlow.test {
+            awaitItem() // initialState
             awaitItem() // loadingState
             awaitItem() // showRepository
 
@@ -223,6 +231,7 @@ class DetailViewModelTest {
         detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
 
         detailViewModel.uiStateFlow.test {
+            awaitItem() // initialState
             awaitItem() // loadingState
             awaitItem() // showRepository
 
@@ -246,6 +255,7 @@ class DetailViewModelTest {
         detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
 
         detailViewModel.uiStateFlow.test {
+            awaitItem() // initialState
             awaitItem() // loadingState
             awaitItem() // showRepository
 
@@ -269,6 +279,7 @@ class DetailViewModelTest {
         detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
 
         detailViewModel.uiStateFlow.test {
+            awaitItem() // initialState
             awaitItem() // loadingState
             awaitItem() // showRepository
 
@@ -292,6 +303,7 @@ class DetailViewModelTest {
         detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
 
         detailViewModel.uiStateFlow.test {
+            awaitItem() // initialState
             awaitItem() // loadingState
             awaitItem() // showRepository
 
@@ -315,6 +327,7 @@ class DetailViewModelTest {
         detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
 
         detailViewModel.uiStateFlow.test {
+            awaitItem() // initialState
             awaitItem() // loadingState
             awaitItem() // showRepository
 
@@ -325,11 +338,14 @@ class DetailViewModelTest {
     }
 
     private fun initViewModel(userName: String?, repoName: String?) {
+        detailActionProcessor = DetailActionProcessor(
+            repoRepository = mockRepoRepository,
+            tokenRepository = tokenRepository,
+            backOffWorkManager = backOffWork
+        )
         detailViewModel = DetailViewModel(
-            mockRepoRepository,
-            tokenRepository,
-            backOffWork,
             detailReducerProcessor,
+            detailActionProcessor,
             standardTestDispatcherRule.testDispatcher,
             SavedStateHandle().apply {
                 set(USER_NAME, userName)

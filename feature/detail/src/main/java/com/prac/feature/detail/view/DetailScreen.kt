@@ -48,10 +48,7 @@ fun DetailScreen(
             viewModel.eventFlow.collect {
                 when (it) {
                     is Event.Error -> onNavigateToBackStack()
-                    is Event.Logout -> {
-                        viewModel.logout()
-                        onNavigateToLogin()
-                    }
+                    is Event.Logout -> onNavigateToLogin()
                 }
             }
         }

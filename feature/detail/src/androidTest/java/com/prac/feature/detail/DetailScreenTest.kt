@@ -39,15 +39,22 @@ class DetailScreenTest {
     private lateinit var viewModel: DetailViewModel
 
     private val detailReducerProcessor = DetailReducerProcessor()
+    private lateinit var detailActionProcessor: DetailActionProcessor
 
     private var isMainScreen = false
 
     @Inject lateinit var repoRepository: RepoRepository
     @Inject lateinit var tokenRepository: TokenRepository
+    @Inject lateinit var backOffWorkManager: BackOffWorkManager
 
     @Before
     fun setup() {
         hiltRule.inject()
+        detailActionProcessor = DetailActionProcessor(
+            repoRepository = repoRepository,
+            tokenRepository = tokenRepository,
+            backOffWorkManager = backOffWorkManager
+        )
     }
 
     @Test
@@ -121,10 +128,8 @@ class DetailScreenTest {
 
     private fun initViewModel(userName: String, repoName: String) {
         viewModel = DetailViewModel(
-            repoRepository = repoRepository,
-            tokenRepository = tokenRepository,
-            backOffWorkManager = FakeBackOffWorkManager(),
             detailReducerProcessor = detailReducerProcessor,
+            detailActionProcessor = detailActionProcessor,
             ioDispatcher = Dispatchers.IO,
             savedStateHandle = SavedStateHandle().apply {
                 set(USER_NAME, userName)
