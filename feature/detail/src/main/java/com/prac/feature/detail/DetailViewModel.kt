@@ -4,9 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.prac.core.common.dispatcher.IODispatcher
 import com.prac.core.common.mvi.action.ActionProcessor
-import com.prac.core.common.mvi.model.eventModel
 import com.prac.core.common.mvi.model.model
-import com.prac.core.common.mvi.model.stateModel
 import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.REPO_NAME
 import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.USER_NAME
