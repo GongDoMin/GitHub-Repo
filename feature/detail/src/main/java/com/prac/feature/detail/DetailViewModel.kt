@@ -34,8 +34,8 @@ class DetailViewModel @Inject constructor(
         dispatcher = ioDispatcher
     )
 
-    internal val uiStateFlow: StateFlow<UiState> = model.uiState
-    internal val eventFlow: SharedFlow<Event> = model.event
+    val uiStateFlow = model.uiState
+    val eventFlow = model.event
 
     fun process(action: Action) = model.process(action)
 

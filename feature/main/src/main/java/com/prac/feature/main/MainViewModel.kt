@@ -43,8 +43,8 @@ class MainViewModel @Inject constructor(
         dispatcher = ioDispatcher
     )
 
-    val uiStateFlow: StateFlow<UiState> = model.uiState
-    val eventFlow: SharedFlow<Event> = model.event
+    val uiStateFlow = model.uiState
+    val eventFlow = model.event
 
     private val _repositories = MutableStateFlow<PagingData<RepoModel>>(PagingData.empty())
     val repositories = _repositories.asStateFlow()

@@ -30,8 +30,8 @@ class LoginViewModel @Inject constructor(
         dispatcher = ioDispatcher
     )
 
-    val uiStateFlow: StateFlow<UiState> get() = model.uiState
-    val eventFlow: SharedFlow<Event> get() = model.event
+    val uiStateFlow = model.uiState
+    val eventFlow = model.event
 
     fun process(action: Action) = model.process(action)
 

@@ -7,24 +7,18 @@ import com.prac.core.common.mvi.reducer.Reducer
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.RENDEZVOUS
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-data class SharedFlowValues(
-    val replay: Int = 0,
-    val extraBufferCapacity: Int = 0,
-    val onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND
-)
 
 fun <Action, UiState, Mutation, Event> ViewModel.model(
     reducerProcessor: Reducer<Mutation, UiState>,
     actionProcessor: ActionProcessor<Action, Mutation, Event>,
     initialState: UiState,
-    sharedFlowValues: SharedFlowValues = SharedFlowValues(),
     dispatcher: CoroutineDispatcher
 ) =
     Model(
@@ -32,8 +26,7 @@ fun <Action, UiState, Mutation, Event> ViewModel.model(
         actionProcessor = actionProcessor,
         coroutineScope = this.viewModelScope,
         dispatcher = dispatcher,
-        initialState = initialState,
-        sharedFlowValues = sharedFlowValues
+        initialState = initialState
     )
 
 class Model<Action, UiState, Mutation, Event> internal constructor(
@@ -41,24 +34,22 @@ class Model<Action, UiState, Mutation, Event> internal constructor(
     private val actionProcessor: ActionProcessor<Action, Mutation, Event>,
     private val coroutineScope: CoroutineScope,
     private val dispatcher: CoroutineDispatcher,
-    private val initialState: UiState,
-    private val sharedFlowValues: SharedFlowValues
+    initialState: UiState,
 ) {
     private val _uiState = MutableStateFlow(initialState)
     val uiState = _uiState.asStateFlow()
 
-    private val _event = MutableSharedFlow<Event>(
-        replay = sharedFlowValues.replay,
-        extraBufferCapacity = sharedFlowValues.extraBufferCapacity,
-        onBufferOverflow = sharedFlowValues.onBufferOverflow
+    private val _event = Channel<Event>(
+        capacity = RENDEZVOUS,
+        onBufferOverflow = BufferOverflow.SUSPEND
     )
-    val event = _event.asSharedFlow()
+    val event = _event.receiveAsFlow()
 
     fun process(action: Action) {
         coroutineScope.launch(dispatcher) {
             actionProcessor(action).collect { (mutation, event) ->
                 mutation?.let { handleMutation(it) }
-                event?.let { _event.emit(it) }
+                event?.let { _event.send(it) }
             }
         }
     }
