@@ -17,9 +17,11 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.prac.core.common.constants.INVALID_TOKEN
-import com.prac.core.designsystem.R
 import com.prac.core.common.ui.MessageDialog
+import com.prac.core.designsystem.R
 import com.prac.data.model.RepoModel
+import com.prac.feature.main.refresh.PullToRefreshLayout
+import com.prac.feature.main.refresh.RefreshState
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
@@ -34,6 +36,8 @@ fun MainContent(
     isError: Boolean,
     errorMessage: String,
     onDismissRequest: (String) -> Unit,
+    refreshState: RefreshState,
+    onUpdateRefreshState: (RefreshState) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -48,19 +52,25 @@ fun MainContent(
 
         HorizontalDivider()
 
-        RepositoryList(
-            repositories = repositories,
-            handleLoadState = handleLoadState,
-            onClickRetry = onClickRetry,
-            starStateRequest = starStateRequest,
-            onClickStar = onClickStar,
-            onClickUnStar = onClickUnStar,
-            onClickRepository = onClickRepository,
-            contentPadding = PaddingValues(
-                vertical = dimensionResource(id = R.dimen.padding_small),
-                horizontal = dimensionResource(id = R.dimen.padding_normal)
+        PullToRefreshLayout(
+            refreshState = refreshState,
+            onUpdateRefreshState = onUpdateRefreshState,
+            onRefresh = repositories::refresh
+        ) {
+            RepositoryList(
+                repositories = repositories,
+                handleLoadState = handleLoadState,
+                onClickRetry = onClickRetry,
+                starStateRequest = starStateRequest,
+                onClickStar = onClickStar,
+                onClickUnStar = onClickUnStar,
+                onClickRepository = onClickRepository,
+                contentPadding = PaddingValues(
+                    vertical = dimensionResource(id = R.dimen.padding_small),
+                    horizontal = dimensionResource(id = R.dimen.padding_normal)
+                )
             )
-        )
+        }
     }
 
     if (isError) {
@@ -94,6 +104,8 @@ fun MainContentPreview() {
         onClickRepository = {},
         isError = false,
         errorMessage = "",
+        refreshState = RefreshState.Default,
+        onUpdateRefreshState = {},
         onDismissRequest = {}
     )
 }
@@ -120,6 +132,8 @@ fun MainContentErrorPreview() {
         onClickRepository = {},
         isError = true,
         errorMessage = INVALID_TOKEN,
+        refreshState = RefreshState.Default,
+        onUpdateRefreshState = {},
         onDismissRequest = {}
     )
 }
@@ -139,6 +153,29 @@ fun MainContentLoadStatePreview() {
         onClickRepository = {},
         isError = false,
         errorMessage = "",
+        refreshState = RefreshState.Default,
+        onUpdateRefreshState = {},
+        onDismissRequest = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MainContentRefreshStatePreview() {
+    val repositories = flowOf<PagingData<RepoModel>>(PagingData.empty()).collectAsLazyPagingItems()
+
+    MainContent(
+        repositories = repositories,
+        handleLoadState = { LoadState.Loading },
+        onClickRetry = {},
+        starStateRequest = {},
+        onClickStar = {},
+        onClickUnStar = {},
+        onClickRepository = {},
+        isError = false,
+        errorMessage = "",
+        refreshState = RefreshState.Refreshing,
+        onUpdateRefreshState = {},
         onDismissRequest = {}
     )
 }

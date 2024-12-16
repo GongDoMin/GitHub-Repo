@@ -9,11 +9,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.prac.core.common.constants.INVALID_TOKEN
 import com.prac.feature.main.MainViewModel
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
+import com.prac.feature.main.refresh.RefreshState
 
 @Composable
 fun MainScreen(
@@ -40,8 +42,16 @@ fun MainScreen(
             if (dialogMessage == INVALID_TOKEN) viewModel.process(Action.UserAction.LogoutDialogDismiss)
             else viewModel.process(Action.UserAction.DialogDismiss)
         },
+        refreshState = uiState.value.refreshState,
+        onUpdateRefreshState = { viewModel.process(Action.InternalAction.UpdateRefreshState(it))},
         modifier = modifier
     )
+
+    LaunchedEffect(repositories.loadState) {
+        if (viewModel.handleLoadStates(repositories.loadState) == LoadState.Loading) {
+            if (uiState.value.refreshState == RefreshState.Refreshing) viewModel.process(Action.InternalAction.UpdateRefreshState(RefreshState.CompleteRefreshing))
+        }
+    }
 
     LaunchedEffect(lifecycleOwner) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
