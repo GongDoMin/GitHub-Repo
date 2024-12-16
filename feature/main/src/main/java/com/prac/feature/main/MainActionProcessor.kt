@@ -85,6 +85,8 @@ class MainActionProcessor(
     }
 
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleUpdateRefreshState(refreshState: RefreshState) {
+        if (refreshState == RefreshState.Refreshing) _starRequestJobManager.clear()
+
         emit(Mutation.UpdateRefreshState(refreshState) to null)
     }
 
