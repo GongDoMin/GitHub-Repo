@@ -10,6 +10,7 @@ import com.prac.data.model.RepoModel
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
 import com.prac.feature.main.model.Mutation
+import com.prac.feature.main.refresh.RefreshState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
@@ -23,6 +24,7 @@ class FakeMainActionProcessor : ActionProcessor<Action, Mutation, Event> {
                 is Action.InternalAction.Load -> Unit
                 is Action.InternalAction.FetchStarState -> Unit
                 is Action.InternalAction.Logout -> logout()
+                is Action.InternalAction.UpdateRefreshState -> handleUpdateRefreshState(action.refreshState)
                 is Action.UserAction.DialogDismiss -> handleDialogDismiss()
                 is Action.UserAction.LogoutDialogDismiss -> handleLogoutDialogDismiss()
                 is Action.UserAction.OnClickRepository -> handleClickRepository(action.repoModel)
@@ -62,6 +64,11 @@ class FakeMainActionProcessor : ActionProcessor<Action, Mutation, Event> {
 
         handleUnStarRepositoryFailure(throwable)
     }
+
+    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleUpdateRefreshState(refreshState: RefreshState) {
+        emit(Mutation.UpdateRefreshState(refreshState) to null)
+    }
+
 
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleStarRepositoryFailure(t: Throwable) {
         when (t) {

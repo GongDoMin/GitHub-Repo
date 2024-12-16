@@ -13,6 +13,7 @@ import com.prac.data.repository.TokenRepository
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
 import com.prac.feature.main.model.Mutation
+import com.prac.feature.main.refresh.RefreshState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
@@ -31,6 +32,7 @@ class MainActionProcessor(
                 is Action.InternalAction.Load -> Unit
                 is Action.InternalAction.FetchStarState -> fetchStarState(action.repoModel)
                 is Action.InternalAction.Logout -> logout()
+                is Action.InternalAction.UpdateRefreshState -> handleUpdateRefreshState(action.refreshState)
                 is Action.UserAction.OnClickRepository -> handleClickRepository(action.repoModel)
                 is Action.UserAction.OnClickUnStar -> handleClickUnStar(action.repoModel)
                 is Action.UserAction.OnClickStar -> handleClickStar(action.repoModel)
@@ -80,6 +82,10 @@ class MainActionProcessor(
 
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleLogoutDialogDismiss() {
         emit(null to Event.Logout)
+    }
+
+    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleUpdateRefreshState(refreshState: RefreshState) {
+        emit(Mutation.UpdateRefreshState(refreshState) to null)
     }
 
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleStarRepositoryFailure(t: Throwable, repoModel: RepoModel) {

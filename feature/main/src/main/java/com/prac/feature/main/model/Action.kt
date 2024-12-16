@@ -1,6 +1,7 @@
 package com.prac.feature.main.model
 
 import com.prac.data.model.RepoModel
+import com.prac.feature.main.refresh.RefreshState
 
 sealed interface Action {
     data object UserAction {
@@ -15,5 +16,6 @@ sealed interface Action {
         data object Load : Action
         data class FetchStarState(val repoModel: RepoModel) : Action
         data object Logout : Action
+        data class UpdateRefreshState(val refreshState: RefreshState) : Action
     }
 }
