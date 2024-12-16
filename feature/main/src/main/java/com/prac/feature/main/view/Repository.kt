@@ -142,27 +142,52 @@ fun RepositoryStarState(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            modifier = Modifier
-                .size(dimensionResource(R.dimen.star))
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = {
-                        if (repo.isStarred == true) onClickStar(repo)
-                        else onClickUnStar(repo)
-                    }
-                ),
-            painter = painterResource(id = if (repo.isStarred == true) R.drawable.img_star else R.drawable.img_unstar),
-            contentDescription =
-                if (repo.isStarred == true) stringResource(id = R.string.star_image_description)
-                else stringResource(id = R.string.unstar_image_description)
-        )
+        if (repo.isStarred == true) {
+            StarImage(
+                repo = repo,
+                onClickStar = onClickStar,
+                modifier = Modifier.size(dimensionResource(id = R.dimen.star))
+            )
+        } else {
+            UnStarImage(
+                repo = repo,
+                onClickUnStar = onClickUnStar,
+                modifier = Modifier.size(dimensionResource(id = R.dimen.star))
+            )
+        }
 
         Spacer(modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_small)))
 
         Text(text = repo.stargazersCount.toString())
     }
+}
+
+@Composable
+fun StarImage(
+    repo: RepoModel,
+    onClickStar: (RepoModel) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier
+            .clickable { onClickStar(repo) },
+        painter = painterResource(id = R.drawable.img_star),
+        contentDescription = stringResource(id = R.string.star_image_description)
+    )
+}
+
+@Composable
+fun UnStarImage(
+    repo: RepoModel,
+    onClickUnStar: (RepoModel) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Image(
+        modifier = modifier
+            .clickable { onClickUnStar(repo) },
+        painter = painterResource(id = R.drawable.img_unstar),
+        contentDescription = stringResource(id = R.string.unstar_image_description)
+    )
 }
 
 @Composable
