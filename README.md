@@ -1,4 +1,6 @@
-이 프로젝트는 GitHub API 를 사용하여 레파지토리 목록을 불러와 화면에서 표시하고, 각 레포지토리의 세부 정보를 확인할 수 있도록 구현된 프로젝트입니다. 간결한 UI 를 목표로 설계했으며, API 통신, Room 을 통한 Star State 동기화, Exponential Backoff, Compose Migration을 통해 Android 개발의 다양한 기술을 적용한 예시 프로젝트입니다.
+## Summary
+
+이 프로젝트는 GitHub API 를 사용하여 레파지토리 목록을 불러와 화면에서 표시하고, 각 레포지토리의 세부 정보를 확인할 수 있도록 구현된 프로젝트입니다. 간결한 UI 를 목표로 설계했으며, API 통신, Room 을 통한 Star State 동기화, Exponential Backoff, Compose 를 통해 Android 개발의 다양한 기술을 적용한 예시 프로젝트입니다.
 
 ## Built With
 
@@ -45,7 +47,6 @@
 - **`app`** : `app 모듈`은 앱 구조를 구성하고 동작을 제어하는 코드를 포함합니다. 예를 들어, GithubApp 과 같이 앱의 진입점이 되거나, 내비게이션 설정 및 바텀 네비게이션을 처리하는 scaffold 그리고 MainActivity 가 이에 해당합니다. 
 - **`feature`** : `feature 모듈`은 특정 기능을 처리하도록 설계된 모듈입니다. 네비게이션이나 특정 상황에서 feature 모듈 간 연결이 필요한 경우 의존성을 허용하고 있습니다. 현재 feature:home 은 feature:main, feature:detail 에 대해 참조하고 있습니다.
 - **`core`** : `core 모듈`은 앱 전반에서 공유되어야 할 코드를 포함하고 있는 모듈입니다. core 모듈은 feature 모듈과 app 모듈과 같은 상위 모듈에서 필요한 기반을 제공합니다.
-
 
 ## ScreenShots
 
