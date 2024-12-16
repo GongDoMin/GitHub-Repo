@@ -42,7 +42,8 @@
     - 상태 변경 로직은 Reducer에 집중되어 있습니다.
 
 ## Modularization
-![Modularization](https://github.com/user-attachments/assets/19d78532-7b72-4cf5-8684-28912e70f11a)
+![Modularization](https://github.com/user-attachments/assets/f8b1720f-fbeb-44e2-97b7-e567f07e5a01)
+
 
 - **`app`** : `app 모듈`은 앱 구조를 구성하고 동작을 제어하는 코드를 포함합니다. 예를 들어, GithubApp 과 같이 앱의 진입점이 되거나, 내비게이션 설정 및 바텀 네비게이션을 처리하는 scaffold 그리고 MainActivity 가 이에 해당합니다. 
 - **`feature`** : `feature 모듈`은 특정 기능을 처리하도록 설계된 모듈입니다. 네비게이션이나 특정 상황에서 feature 모듈 간 연결이 필요한 경우 의존성을 허용하고 있습니다. 현재 feature:home 은 feature:main, feature:detail 에 대해 참조하고 있습니다.
