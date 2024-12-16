@@ -6,7 +6,7 @@
 
 ## Architecture
 
-이 프로젝트는 `MVVM` 와 `MVI`를 기반으로 설계되었습니다.
+이 프로젝트는 `MVI`를 기반으로 설계되었습니다.
 
 ![Architecture](https://github.com/user-attachments/assets/8af47a9f-5ec2-463d-8659-e6d110ea169a)
 
@@ -16,7 +16,7 @@
 - **`Data layer`** : `Data layer` 는 로컬 데이터베이스에서 데이터를 쿼리하고 네트워크에서 데이터를 요청하는 등 비즈니스 로직을 포함합니다.
 
 ### MVI Architecture
-![MVI](https://github.com/user-attachments/assets/59484a94-e767-4ceb-85f4-8280ace6e199)
+![MVI](https://github.com/user-attachments/assets/45832345-b661-4f91-819c-8ad0e333a549)
 
 - **`View`**
     - 사용자와 상호작용하며 Action을 발행합니다.
