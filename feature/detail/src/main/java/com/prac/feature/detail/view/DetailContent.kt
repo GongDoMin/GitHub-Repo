@@ -1,7 +1,9 @@
 package com.prac.feature.detail.view
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -18,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.common.ui.ContentWithLoadingIndicator
+import com.prac.core.common.ui.DrawableImage
 import com.prac.core.common.ui.MessageDialog
 import com.prac.core.common.ui.UserProfile
 import com.prac.core.designsystem.R
@@ -181,18 +185,35 @@ fun RepositoryStarStateAndFork(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (repoDetail.isStarred == true) {
-            StarImage(
-                repoDetail = repoDetail,
-                onClickStar = onClickStar,
-                modifier = Modifier.size(dimensionResource(id = R.dimen.star))
-            )
-        } else {
-            UnStarImage(
-                repoDetail = repoDetail,
-                onClickUnStar = onClickUnStar,
-                modifier = Modifier.size(dimensionResource(id = R.dimen.star))
-            )
+        Crossfade(
+            targetState = repoDetail.isStarred,
+            modifier = Modifier
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = {
+                        if (repoDetail.isStarred == true) onClickStar(repoDetail)
+                        else onClickUnStar(repoDetail)
+                    }
+                ),
+            label = "star image crossfade"
+        ) { targetState ->
+            when (targetState) {
+                true -> {
+                    DrawableImage(
+                        res = R.drawable.img_star,
+                        contentDescription = stringResource(id = R.string.star_image_description),
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.star))
+                    )
+                }
+                else -> {
+                    DrawableImage(
+                        res = R.drawable.img_unstar,
+                        contentDescription = stringResource(id = R.string.unstar_image_description),
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.star))
+                    )
+                }
+            }
         }
 
         Spacer(modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_small)))
@@ -240,34 +261,6 @@ fun RepositoryStarStateAndFork(
             text = stringResource(id = R.string.fork_count, repoDetail.forksCount)
         )
     }
-}
-
-@Composable
-fun StarImage(
-    repoDetail: RepoDetailModel,
-    onClickStar: (RepoDetailModel) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Image(
-        modifier = modifier
-            .clickable { onClickStar(repoDetail) },
-        painter = painterResource(id = R.drawable.img_star),
-        contentDescription = stringResource(id = R.string.star_image_description)
-    )
-}
-
-@Composable
-fun UnStarImage(
-    repoDetail: RepoDetailModel,
-    onClickUnStar: (RepoDetailModel) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Image(
-        modifier = modifier
-            .clickable { onClickUnStar(repoDetail) },
-        painter = painterResource(id = R.drawable.img_unstar),
-        contentDescription = stringResource(id = R.string.unstar_image_description)
-    )
 }
 
 @Composable
