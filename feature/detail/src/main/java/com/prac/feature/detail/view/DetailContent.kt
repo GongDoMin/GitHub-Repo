@@ -236,11 +236,10 @@ fun RepositoryStarStateAndFork(
 
         Spacer(modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_small)))
 
-        Image(
-            modifier = Modifier
-                .size(20.dp),
-            painter = painterResource(id = R.drawable.img_fork),
-            contentDescription = stringResource(id = R.string.fork_image_description)
+        DrawableImage(
+            res = R.drawable.img_fork,
+            contentDescription = stringResource(id = R.string.fork_image_description),
+            modifier = Modifier.size(20.dp)
         )
 
         Spacer(modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_small)))
