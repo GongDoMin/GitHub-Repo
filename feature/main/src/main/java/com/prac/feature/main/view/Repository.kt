@@ -1,6 +1,6 @@
 package com.prac.feature.main.view
 
-import androidx.compose.foundation.Image
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -20,12 +20,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
-import com.prac.core.designsystem.R
+import com.prac.core.common.ui.DrawableImage
 import com.prac.core.common.ui.UserProfile
+import com.prac.core.designsystem.R
 import com.prac.data.model.OwnerModel
 import com.prac.data.model.RepoModel
 
@@ -142,52 +142,41 @@ fun RepositoryStarState(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (repo.isStarred == true) {
-            StarImage(
-                repo = repo,
-                onClickStar = onClickStar,
-                modifier = Modifier.size(dimensionResource(id = R.dimen.star))
-            )
-        } else {
-            UnStarImage(
-                repo = repo,
-                onClickUnStar = onClickUnStar,
-                modifier = Modifier.size(dimensionResource(id = R.dimen.star))
-            )
+        Crossfade(
+            targetState = repo.isStarred,
+            modifier = Modifier
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = {
+                        if (repo.isStarred == true) onClickStar(repo)
+                        else onClickUnStar(repo)
+                    }
+                ),
+            label = "star image crossfade"
+        ) { targetState ->
+            when (targetState) {
+                true -> {
+                    DrawableImage(
+                        res = R.drawable.img_star,
+                        contentDescription = stringResource(id = R.string.star_image_description),
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.star))
+                    )
+                }
+                else -> {
+                    DrawableImage(
+                        res = R.drawable.img_unstar,
+                        contentDescription = stringResource(id = R.string.unstar_image_description),
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.star))
+                    )
+                }
+            }
         }
 
         Spacer(modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_small)))
 
         Text(text = repo.stargazersCount.toString())
     }
-}
-
-@Composable
-fun StarImage(
-    repo: RepoModel,
-    onClickStar: (RepoModel) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Image(
-        modifier = modifier
-            .clickable { onClickStar(repo) },
-        painter = painterResource(id = R.drawable.img_star),
-        contentDescription = stringResource(id = R.string.star_image_description)
-    )
-}
-
-@Composable
-fun UnStarImage(
-    repo: RepoModel,
-    onClickUnStar: (RepoModel) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Image(
-        modifier = modifier
-            .clickable { onClickUnStar(repo) },
-        painter = painterResource(id = R.drawable.img_unstar),
-        contentDescription = stringResource(id = R.string.unstar_image_description)
-    )
 }
 
 @Composable
