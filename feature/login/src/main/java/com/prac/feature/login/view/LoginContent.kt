@@ -1,6 +1,5 @@
 package com.prac.feature.login.view
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,11 +16,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.core.common.ui.ContentWithLoadingIndicator
+import com.prac.core.common.ui.DrawableImage
 import com.prac.core.common.ui.MessageDialog
 import com.prac.core.common.ui.bounceClick
 import com.prac.core.designsystem.R
@@ -46,11 +45,11 @@ fun LoginContent(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
+            DrawableImage(
+                res = R.drawable.img_github_icon,
+                contentDescription = "",
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.login_icon)),
-                painter = painterResource(id = R.drawable.img_github_icon),
-                contentDescription = null
             )
 
             Spacer(modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.padding_normal)))
