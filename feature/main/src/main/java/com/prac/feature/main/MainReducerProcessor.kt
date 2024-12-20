@@ -9,7 +9,7 @@ class MainReducerProcessor : Reducer<Mutation, UiState> {
     override fun invoke(mutation: Mutation, currentState: UiState): UiState =
         when (mutation) {
             is Mutation.ShowError -> currentState.showError(mutation.errorMessage)
-            is Mutation.ShowRepositories -> currentState.showRepositories()
+            is Mutation.ShowContent -> currentState.showRepositories()
             is Mutation.UpdateRefreshState -> currentState.updateRefreshState(mutation.refreshState)
         }
 

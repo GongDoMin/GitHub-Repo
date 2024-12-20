@@ -13,7 +13,7 @@ class MainReducerProcessorTest {
 
     @Test
     fun invoke_mutationIsShowRepositories_uiStateIsShowRepositories() {
-        val result = mainReducerProcessorTest.invoke(Mutation.ShowRepositories, UiState())
+        val result = mainReducerProcessorTest.invoke(Mutation.ShowContent, UiState())
 
         assertFalse(result.isError)
         assertTrue(result.errorMessage.isEmpty())

@@ -254,7 +254,7 @@ class MainActionProcessorTest {
         mainActionProcessor(Action.UserAction.DialogDismiss).test {
             val (mutation, event) = awaitItem()
             awaitComplete()
-            assertTrue(mutation is Mutation.ShowRepositories)
+            assertTrue(mutation is Mutation.ShowContent)
             assertTrue(event == null)
         }
     }

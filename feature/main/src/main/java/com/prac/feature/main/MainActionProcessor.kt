@@ -77,7 +77,7 @@ class MainActionProcessor(
     }
 
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleDialogDismiss() {
-        emit(Mutation.ShowRepositories to null)
+        emit(Mutation.ShowContent to null)
     }
 
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleLogoutDialogDismiss() {
