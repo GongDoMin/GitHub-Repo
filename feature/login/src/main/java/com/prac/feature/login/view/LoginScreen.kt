@@ -11,12 +11,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.core.util.Consumer
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import com.prac.core.common.ui.LoadingIndicator
+import com.prac.core.common.ui.MessageDialog
 import com.prac.core.designsystem.R
 import com.prac.feature.login.BuildConfig
 import com.prac.feature.login.LoginViewModel
@@ -25,22 +28,34 @@ import com.prac.feature.login.model.Event
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel = hiltViewModel(),
-    onNavigateToMain: () -> Unit
+    onNavigateToMain: () -> Unit,
+    modifier: Modifier = Modifier,
+    loginModifier: Modifier = Modifier,
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiStateFlow.collectAsStateWithLifecycle()
     val activity = LocalContext.current as ComponentActivity
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    LoginContent(
-        isLoading = uiState is UiState.Loading,
-        isError = uiState is UiState.Error,
-        errorMessage = (uiState as? UiState.Error)?.message ?: "",
-        onClickLoginButton = { viewModel.process(Action.UserAction.OnClickLoginButton) },
-        onDismissRequest = { viewModel.process(Action.UserAction.DialogDismiss) },
-        modifier = Modifier
-            .padding(dimensionResource(id = R.dimen.padding_normal))
-    )
+    when (uiState) {
+        is UiState.Idle -> {
+            LoginContent(
+                onClickLoginButton = { viewModel.process(Action.UserAction.OnClickLoginButton) },
+                modifier = modifier
+                    .padding(dimensionResource(id = R.dimen.padding_normal))
+            )
+        }
+        is UiState.Loading -> {
+            LoadingIndicator(modifier = loginModifier)
+        }
+        is UiState.Error -> {
+            MessageDialog(
+                onDismissRequest = { viewModel.process(Action.UserAction.DialogDismiss) },
+                message = (uiState as UiState.Error).message,
+                confirmButtonText = stringResource(id = R.string.check)
+            )
+        }
+    }
 
     LaunchedEffect(lifecycleOwner) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
