@@ -33,9 +33,6 @@ fun MainContent(
     onClickStar: (RepoModel) -> Unit,
     onClickUnStar: (RepoModel) -> Unit,
     onClickRepository: (RepoModel) -> Unit,
-    isError: Boolean,
-    errorMessage: String,
-    onDismissRequest: (String) -> Unit,
     refreshState: RefreshState,
     onUpdateRefreshState: (RefreshState) -> Unit,
     modifier: Modifier = Modifier
@@ -72,14 +69,6 @@ fun MainContent(
             )
         }
     }
-
-    if (isError) {
-        MessageDialog(
-            onDismissRequest = onDismissRequest,
-            message = errorMessage,
-            confirmButtonText = stringResource(id = R.string.check)
-        )
-    }
 }
 
 @Preview(showBackground = true)
@@ -102,11 +91,8 @@ fun MainContentPreview() {
         onClickStar = {},
         onClickUnStar = {},
         onClickRepository = {},
-        isError = false,
-        errorMessage = "",
         refreshState = RefreshState.Default,
-        onUpdateRefreshState = {},
-        onDismissRequest = {}
+        onUpdateRefreshState = {}
     )
 }
 
@@ -130,11 +116,8 @@ fun MainContentErrorPreview() {
         onClickStar = {},
         onClickUnStar = {},
         onClickRepository = {},
-        isError = true,
-        errorMessage = INVALID_TOKEN,
         refreshState = RefreshState.Default,
-        onUpdateRefreshState = {},
-        onDismissRequest = {}
+        onUpdateRefreshState = {}
     )
 }
 
@@ -151,11 +134,8 @@ fun MainContentLoadStatePreview() {
         onClickStar = {},
         onClickUnStar = {},
         onClickRepository = {},
-        isError = false,
-        errorMessage = "",
         refreshState = RefreshState.Default,
-        onUpdateRefreshState = {},
-        onDismissRequest = {}
+        onUpdateRefreshState = {}
     )
 }
 
@@ -172,10 +152,7 @@ fun MainContentRefreshStatePreview() {
         onClickStar = {},
         onClickUnStar = {},
         onClickRepository = {},
-        isError = false,
-        errorMessage = "",
         refreshState = RefreshState.Refreshing,
-        onUpdateRefreshState = {},
-        onDismissRequest = {}
+        onUpdateRefreshState = {}
     )
 }
