@@ -13,6 +13,7 @@ import com.prac.data.repository.RepoRepository
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
 import com.prac.feature.main.model.Mutation
+import com.prac.feature.main.view.UiState
 import com.prac.shared_test.rules.StandardTestDispatcherRule
 import com.prac.shared_test.ui.FakeMainActionProcessor
 import kotlinx.coroutines.flow.flow
@@ -64,8 +65,8 @@ class MainViewModelTest {
             mainViewModel.process(Action.UserAction.OnClickUnStar(RepoModel()))
 
             val result = awaitItem()
-            assertTrue(result.isError)
-            assertEquals(result.errorMessage, INVALID_TOKEN)
+            assertTrue(result is UiState.Error)
+            assertEquals((result as UiState.Error).message, INVALID_TOKEN)
         }
     }
 
@@ -79,8 +80,8 @@ class MainViewModelTest {
             mainViewModel.process(Action.UserAction.OnClickStar(RepoModel()))
 
             val result = awaitItem()
-            assertTrue(result.isError)
-            assertEquals(result.errorMessage, INVALID_TOKEN)
+            assertTrue(result is UiState.Error)
+            assertEquals((result as UiState.Error).message, INVALID_TOKEN)
         }
     }
 
@@ -94,7 +95,8 @@ class MainViewModelTest {
             mainViewModel.process(Action.UserAction.OnClickUnStar(RepoModel()))
 
             val result = awaitItem()
-            assertEquals(result.errorMessage, INVALID_REPOSITORY)
+            assertTrue(result is UiState.Error)
+            assertEquals((result as UiState.Error).message, INVALID_REPOSITORY)
         }
     }
 
@@ -108,7 +110,8 @@ class MainViewModelTest {
             mainViewModel.process(Action.UserAction.OnClickStar(RepoModel()))
 
             val result = awaitItem()
-            assertEquals(result.errorMessage, INVALID_REPOSITORY)
+            assertTrue(result is UiState.Error)
+            assertEquals((result as UiState.Error).message, INVALID_REPOSITORY)
         }
     }
 
@@ -122,7 +125,8 @@ class MainViewModelTest {
             mainViewModel.process(Action.UserAction.OnClickUnStar(RepoModel()))
 
             val result = awaitItem()
-            assertEquals(result.errorMessage, UNKNOWN)
+            assertTrue(result is UiState.Error)
+            assertEquals((result as UiState.Error).message, UNKNOWN)
         }
     }
 
@@ -136,7 +140,8 @@ class MainViewModelTest {
             mainViewModel.process(Action.UserAction.OnClickStar(RepoModel()))
 
             val result = awaitItem()
-            assertEquals(result.errorMessage, UNKNOWN)
+            assertTrue(result is UiState.Error)
+            assertEquals((result as UiState.Error).message, UNKNOWN)
         }
     }
 
@@ -147,8 +152,8 @@ class MainViewModelTest {
             mainViewModel.process(Action.InternalAction.Logout)
 
             val result = awaitItem()
-            assertTrue(result.isError)
-            assertEquals(result.errorMessage, INVALID_TOKEN)
+            assertTrue(result is UiState.Error)
+            assertEquals((result as UiState.Error).message, INVALID_TOKEN)
         }
     }
 
@@ -165,8 +170,7 @@ class MainViewModelTest {
             mainViewModel.process(Action.UserAction.DialogDismiss)
 
             val result = awaitItem()
-            assertFalse(result.isError)
-            assertTrue(result.errorMessage.isEmpty())
+            assertFalse(result is UiState.Error)
         }
     }
 

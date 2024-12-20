@@ -8,25 +8,17 @@ import com.prac.feature.main.view.UiState
 class MainReducerProcessor : Reducer<Mutation, UiState> {
     override fun invoke(mutation: Mutation, currentState: UiState): UiState =
         when (mutation) {
-            is Mutation.ShowError -> currentState.showError(mutation.errorMessage)
-            is Mutation.ShowContent -> currentState.showRepositories()
-            is Mutation.UpdateRefreshState -> currentState.updateRefreshState(mutation.refreshState)
+            is Mutation.ShowContent -> showContent()
+            is Mutation.ShowError -> showError(mutation.errorMessage)
+            is Mutation.UpdateRefreshState -> updateRefreshState(mutation.refreshState)
         }
 
-    private fun UiState.showError(errorMessage: String) =
-        copy(
-            isError = true,
-            errorMessage = errorMessage
-        )
+    private fun showError(errorMessage: String) =
+        UiState.Error(errorMessage)
 
-    private fun UiState.showRepositories() =
-        copy(
-            isError = false,
-            errorMessage = ""
-        )
+    private fun showContent() =
+        UiState.Content()
 
-    private fun UiState.updateRefreshState(refreshState: RefreshState) =
-        copy(
-            refreshState = refreshState
-        )
+    private fun updateRefreshState(refreshState: RefreshState) =
+        UiState.Content(refreshState)
 }

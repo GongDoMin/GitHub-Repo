@@ -39,7 +39,7 @@ class MainViewModel @Inject constructor(
     private val model = model(
         reducerProcessor = mainReducerProcessor,
         actionProcessor = mainActionProcessor,
-        initialState = UiState(),
+        initialState = UiState.Content(),
         dispatcher = ioDispatcher
     )
 

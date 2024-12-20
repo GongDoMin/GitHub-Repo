@@ -36,20 +36,23 @@ fun MainScreen(
         onClickStar = { viewModel.process(Action.UserAction.OnClickStar(it)) },
         onClickUnStar = { viewModel.process(Action.UserAction.OnClickUnStar(it)) },
         onClickRepository = { onClickRepository(it.owner.login, it.name) },
-        isError = uiState.value.isError,
-        errorMessage = uiState.value.errorMessage,
+        isError = uiState.value is UiState.Error,
+        errorMessage = (uiState.value as? UiState.Error)?.message ?: "",
         onDismissRequest = { dialogMessage ->
             if (dialogMessage == INVALID_TOKEN) viewModel.process(Action.UserAction.LogoutDialogDismiss)
             else viewModel.process(Action.UserAction.DialogDismiss)
         },
-        refreshState = uiState.value.refreshState,
+        refreshState = (uiState.value as? UiState.Content)?.refreshState ?: RefreshState.Default,
         onUpdateRefreshState = { viewModel.process(Action.InternalAction.UpdateRefreshState(it))},
         modifier = modifier
     )
 
     LaunchedEffect(repositories.loadState) {
         if (viewModel.handleLoadStates(repositories.loadState) == LoadState.Loading) {
-            if (uiState.value.refreshState == RefreshState.Refreshing) viewModel.process(Action.InternalAction.UpdateRefreshState(RefreshState.CompleteRefreshing))
+            if (uiState.value is UiState.Content) {
+                if ((uiState.value as UiState.Content).refreshState == RefreshState.Refreshing)
+                    viewModel.process(Action.InternalAction.UpdateRefreshState(RefreshState.CompleteRefreshing))
+            }
         }
     }
 
