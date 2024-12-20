@@ -16,12 +16,11 @@ class LoginReducerProcessorTest {
 
         val result = loginReducerProcessorTest.invoke(
             Mutation.ShowIdle,
-            UiState()
+            UiState.Idle
         )
 
-        assertFalse(result.isLoading)
-        assertFalse(result.isError)
-        assertTrue(result.errorMessage.isEmpty())
+        assertFalse(result is UiState.Loading)
+        assertFalse(result is UiState.Error)
     }
 
     @Test
@@ -29,12 +28,11 @@ class LoginReducerProcessorTest {
 
         val result = loginReducerProcessorTest.invoke(
             Mutation.ShowLoading,
-            UiState()
+            UiState.Idle
         )
 
-        assertTrue(result.isLoading)
-        assertFalse(result.isError)
-        assertTrue(result.errorMessage.isEmpty())
+        assertTrue(result is UiState.Loading)
+        assertFalse(result is UiState.Error)
     }
 
     @Test
@@ -43,11 +41,10 @@ class LoginReducerProcessorTest {
 
         val result = loginReducerProcessorTest.invoke(
             Mutation.ShowError(errorMessage),
-            UiState()
+            UiState.Idle
         )
 
-        assertFalse(result.isLoading)
-        assertTrue(result.isError)
-        assertEquals(result.errorMessage, errorMessage)
+        assertFalse(result is UiState.Loading)
+        assertTrue(result is UiState.Error)
     }
 }

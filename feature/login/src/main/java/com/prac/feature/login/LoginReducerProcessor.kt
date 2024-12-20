@@ -7,27 +7,17 @@ import com.prac.feature.login.view.UiState
 class LoginReducerProcessor : Reducer<Mutation, UiState> {
     override fun invoke(mutation: Mutation, currentState: UiState): UiState =
         when (mutation) {
-            is Mutation.ShowIdle -> currentState.showIdle()
-            is Mutation.ShowLoading -> currentState.showLoading()
-            is Mutation.ShowError -> currentState.showError(mutation.errorMessage)
+            is Mutation.ShowIdle -> showIdle()
+            is Mutation.ShowLoading -> showLoading()
+            is Mutation.ShowError -> showError(mutation.errorMessage)
         }
 
-    private fun UiState.showIdle() =
-        copy(
-            isLoading = false,
-            isError = false,
-            errorMessage = ""
-        )
+    private fun showIdle() =
+        UiState.Idle
 
-    private fun UiState.showLoading() =
-        copy(
-            isLoading = true
-        )
+    private fun showLoading() =
+        UiState.Loading
 
-    private fun UiState.showError(errorMessage: String) =
-        copy(
-            isLoading = false,
-            isError = true,
-            errorMessage = errorMessage
-        )
+    private fun showError(errorMessage: String) =
+        UiState.Error(errorMessage)
 }

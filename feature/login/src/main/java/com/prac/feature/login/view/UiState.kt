@@ -1,7 +1,7 @@
 package com.prac.feature.login.view
 
-data class UiState(
-    val isLoading: Boolean = false,
-    val isError: Boolean = false,
-    val errorMessage: String = ""
-)
+sealed interface UiState {
+    data object Idle: UiState
+    data object Loading: UiState
+    data class Error(val message: String = ""): UiState
+}

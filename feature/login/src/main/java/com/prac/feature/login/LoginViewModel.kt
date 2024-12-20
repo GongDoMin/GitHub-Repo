@@ -26,7 +26,7 @@ class LoginViewModel @Inject constructor(
     private val model = model(
         reducerProcessor = loginReducerProcessor,
         actionProcessor = loginActionProcessor,
-        initialState = UiState(),
+        initialState = UiState.Idle,
         dispatcher = ioDispatcher
     )
 

@@ -7,6 +7,7 @@ import com.prac.data.exception.CommonException
 import com.prac.feature.login.model.Action
 import com.prac.feature.login.model.Event
 import com.prac.feature.login.model.Mutation
+import com.prac.feature.login.view.UiState
 import com.prac.shared_test.rules.StandardTestDispatcherRule
 import com.prac.shared_test.ui.FakeLoginActionProcessor
 import kotlinx.coroutines.test.runTest
@@ -70,8 +71,8 @@ class LoginViewModelTest {
             awaitItem() // loadingState
 
             val result = awaitItem()
-            assertTrue(result.isError)
-            assertEquals(result.errorMessage, CONNECTION_FAIL)
+            assertTrue(result is UiState.Error)
+            assertEquals((result as UiState.Error).message, CONNECTION_FAIL)
         }
     }
 
@@ -90,9 +91,8 @@ class LoginViewModelTest {
             loginViewModel.process(Action.UserAction.DialogDismiss)
 
             val result = awaitItem()
-            assertFalse(result.isLoading)
-            assertFalse(result.isError)
-            assertTrue(result.errorMessage.isEmpty())
+            assertFalse(result is UiState.Loading)
+            assertFalse(result is UiState.Error)
         }
     }
 

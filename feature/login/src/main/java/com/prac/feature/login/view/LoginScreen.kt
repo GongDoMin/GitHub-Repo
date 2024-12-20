@@ -33,9 +33,9 @@ fun LoginScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     LoginContent(
-        isLoading = uiState.isLoading,
-        isError = uiState.isError,
-        errorMessage = uiState.errorMessage,
+        isLoading = uiState is UiState.Loading,
+        isError = uiState is UiState.Error,
+        errorMessage = (uiState as? UiState.Error)?.message ?: "",
         onClickLoginButton = { viewModel.process(Action.UserAction.OnClickLoginButton) },
         onDismissRequest = { viewModel.process(Action.UserAction.DialogDismiss) },
         modifier = Modifier
