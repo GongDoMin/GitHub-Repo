@@ -30,7 +30,7 @@ fun MainScreen(
 
     MainContent(
         repositories = repositories,
-        handleLoadState = { viewModel.handleLoadStates(it) },
+        loadState = viewModel.handleLoadStates(repositories.loadState),
         onClickRetry = { viewModel.process(Action.UserAction.OnClickRetry) },
         starStateRequest = { viewModel.process(Action.InternalAction.FetchStarState(it)) },
         onClickStar = { viewModel.process(Action.UserAction.OnClickStar(it)) },

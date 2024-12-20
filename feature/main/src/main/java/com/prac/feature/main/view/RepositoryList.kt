@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.flowOf
 @Composable
 fun RepositoryList(
     repositories: LazyPagingItems<RepoModel>,
-    handleLoadState: (CombinedLoadStates) -> LoadState,
+    loadState: LoadState,
     onClickRetry: () -> Unit,
     starStateRequest: (RepoModel) -> Unit,
     onClickStar: (RepoModel) -> Unit,
@@ -70,7 +70,7 @@ fun RepositoryList(
 
         item {
             LoadStateFooter(
-                loadState = handleLoadState(repositories.loadState),
+                loadState = loadState,
                 onRetryClick = onClickRetry,
                 modifier = Modifier
                     .padding(dimensionResource(R.dimen.padding_small))
@@ -93,7 +93,7 @@ fun RepositoryListPreview() {
 
     RepositoryList(
         repositories = repositories,
-        handleLoadState = { LoadState.NotLoading(true) },
+        loadState = LoadState.NotLoading(true),
         onClickRetry = {},
         starStateRequest = {},
         onClickStar = {},
@@ -117,7 +117,7 @@ fun RepositoryListLoadStatePreview() {
 
     RepositoryList(
         repositories = repositories,
-        handleLoadState = { LoadState.NotLoading(true) },
+        loadState = LoadState.NotLoading(true),
         onClickRetry = {},
         starStateRequest = {},
         onClickStar = {},
