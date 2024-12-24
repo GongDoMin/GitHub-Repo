@@ -7,7 +7,7 @@ import com.prac.local.room.entity.Repository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class RepositoryLocalDataSourceImpl @Inject constructor(
+internal class RepositoryLocalDataSourceImpl @Inject constructor(
     private val repositoryDao: RepositoryDao
 ) : RepositoryLocalDataSource {
     override fun getRepositories(): PagingSource<Int, Repository> =

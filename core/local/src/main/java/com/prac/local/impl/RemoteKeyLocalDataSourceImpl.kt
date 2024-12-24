@@ -5,7 +5,7 @@ import com.prac.local.room.dao.RemoteKeyDao
 import com.prac.local.room.entity.RemoteKey
 import javax.inject.Inject
 
-class RemoteKeyLocalDataSourceImpl @Inject constructor(
+internal class RemoteKeyLocalDataSourceImpl @Inject constructor(
     private val remoteKeyDao: RemoteKeyDao
 ) : RemoteKeyLocalDataSource {
     override suspend fun remoteKey(repoId: Int): RemoteKey? =
