@@ -8,7 +8,7 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
-import com.prac.data.repository.impl.RepoRepositoryImpl
+import com.prac.data.impl.RepoRepositoryImpl
 import com.prac.local.RemoteKeyLocalDataSource
 import com.prac.local.RepositoryLocalDataSource
 import com.prac.local.UserLocalDataSource

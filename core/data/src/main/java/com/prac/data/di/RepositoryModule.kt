@@ -2,8 +2,8 @@ package com.prac.data.di
 
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
-import com.prac.data.repository.impl.RepoRepositoryImpl
-import com.prac.data.repository.impl.TokenRepositoryImpl
+import com.prac.data.impl.RepoRepositoryImpl
+import com.prac.data.impl.TokenRepositoryImpl
 import com.prac.local.RemoteKeyLocalDataSource
 import com.prac.local.RepositoryLocalDataSource
 import com.prac.local.TokenLocalDataSource

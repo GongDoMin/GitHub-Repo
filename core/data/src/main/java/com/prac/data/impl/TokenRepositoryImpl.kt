@@ -1,4 +1,4 @@
-package com.prac.data.repository.impl
+package com.prac.data.impl
 
 import com.prac.data.exception.CommonException
 import com.prac.data.repository.TokenRepository
