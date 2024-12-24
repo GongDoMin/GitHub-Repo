@@ -47,92 +47,74 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
 fun DetailContent(
-    isLoading: Boolean,
-    isError: Boolean,
-    errorMessage: String,
     repoDetail: RepoDetailModel,
     onClickStar: (RepoDetailModel) -> Unit,
     onClickUnStar: (RepoDetailModel) -> Unit,
-    onDismissRequest: (String) -> Unit,
     modifier: Modifier = Modifier,
-    loadingModifier: Modifier = Modifier
 ) {
-    ContentWithLoadingIndicator(
-        isLoading = isLoading,
-        modifier = loadingModifier
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-        ) {
-            val spacerModifier = Modifier
-                .padding(top = dimensionResource(id = R.dimen.padding_normal))
+        val spacerModifier = Modifier
+            .padding(top = dimensionResource(id = R.dimen.padding_normal))
 
-            UserProfile(
-                uri = repoDetail.owner.avatarUrl,
-                userName = repoDetail.owner.login
+        UserProfile(
+            uri = repoDetail.owner.avatarUrl,
+            userName = repoDetail.owner.login
+        )
+
+        Spacer(modifier = spacerModifier)
+
+        RepositoryName(
+            repoName = repoDetail.name
+        )
+
+        Spacer(modifier = spacerModifier)
+
+        RepositoryStarStateAndFork(
+            repoDetail = repoDetail,
+            onClickStar = onClickStar,
+            onClickUnStar = onClickUnStar
+        )
+
+        RepositoryInformation(
+            imageVector = ImageVector.vectorResource(id = R.drawable.issue_24),
+            title = stringResource(id = R.string.issue),
+            value = repoDetail.issueCount,
+            contentPadding = PaddingValues(vertical = dimensionResource(id = R.dimen.padding_normal))
+        )
+
+        RepositoryInformation(
+            imageVector = ImageVector.vectorResource(id = R.drawable.pull_request_24),
+            title = stringResource(id = R.string.pull_request),
+            value = repoDetail.pullCount,
+            contentPadding = PaddingValues(vertical = dimensionResource(id = R.dimen.padding_normal))
+        )
+
+        RepositoryInformation(
+            imageVector = ImageVector.vectorResource(id = R.drawable.subscribe_24),
+            title = stringResource(id = R.string.subscribe),
+            value = repoDetail.subscribeCount,
+            contentPadding = PaddingValues(vertical = dimensionResource(id = R.dimen.padding_normal))
+        )
+
+        if (repoDetail.readme.isNotEmpty()) {
+            Spacer(modifier = spacerModifier)
+
+            Text(
+                text = stringResource(id = R.string.readme)
             )
 
             Spacer(modifier = spacerModifier)
 
-            RepositoryName(
-                repoName = repoDetail.name
-            )
+            HorizontalDivider()
 
             Spacer(modifier = spacerModifier)
 
-            RepositoryStarStateAndFork(
-                repoDetail = repoDetail,
-                onClickStar = onClickStar,
-                onClickUnStar = onClickUnStar
-            )
-
-            RepositoryInformation(
-                imageVector = ImageVector.vectorResource(id = R.drawable.issue_24),
-                title = stringResource(id = R.string.issue),
-                value = repoDetail.issueCount,
-                contentPadding = PaddingValues(vertical = dimensionResource(id = R.dimen.padding_normal))
-            )
-
-            RepositoryInformation(
-                imageVector = ImageVector.vectorResource(id = R.drawable.pull_request_24),
-                title = stringResource(id = R.string.pull_request),
-                value = repoDetail.pullCount,
-                contentPadding = PaddingValues(vertical = dimensionResource(id = R.dimen.padding_normal))
-            )
-
-            RepositoryInformation(
-                imageVector = ImageVector.vectorResource(id = R.drawable.subscribe_24),
-                title = stringResource(id = R.string.subscribe),
-                value = repoDetail.subscribeCount,
-                contentPadding = PaddingValues(vertical = dimensionResource(id = R.dimen.padding_normal))
-            )
-
-            if (repoDetail.readme.isNotEmpty()) {
-                Spacer(modifier = spacerModifier)
-
-                Text(
-                    text = stringResource(id = R.string.readme)
-                )
-
-                Spacer(modifier = spacerModifier)
-
-                HorizontalDivider()
-
-                Spacer(modifier = spacerModifier)
-
-                MarkdownText(
-                    markdown = repoDetail.readme
-                )
-            }
-        }
-
-        if (isError) {
-            MessageDialog(
-                onDismissRequest = onDismissRequest,
-                message = errorMessage,
-                confirmButtonText = stringResource(id = R.string.check)
+            MarkdownText(
+                markdown = repoDetail.readme
             )
         }
     }
@@ -304,52 +286,4 @@ fun RepositoryInformation(
                     start = contentPadding.calculateStartPadding(LayoutDirection.Ltr),
                     end = contentPadding.calculateEndPadding(LayoutDirection.Ltr)))
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DetailContentPreview() {
-    DetailContent(
-        isLoading = false,
-        isError = false,
-        errorMessage = "",
-        repoDetail = RepoDetailModel(readme = "hi!!"),
-        onClickStar = {},
-        onClickUnStar = {},
-        onDismissRequest = {},
-        modifier = Modifier
-            .padding(16.dp)
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DetailContentLoadingPreview() {
-    DetailContent(
-        isLoading = true,
-        isError = false,
-        errorMessage = "",
-        repoDetail = RepoDetailModel(),
-        onClickStar = {},
-        onClickUnStar = {},
-        onDismissRequest = {},
-        modifier = Modifier
-            .padding(16.dp)
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DetailContentErrorPreview() {
-    DetailContent(
-        isLoading = false,
-        isError = true,
-        errorMessage = INVALID_REPOSITORY,
-        repoDetail = RepoDetailModel(readme = "hi!!"),
-        onClickStar = {},
-        onClickUnStar = {},
-        onDismissRequest = {},
-        modifier = Modifier
-            .padding(16.dp)
-    )
 }
