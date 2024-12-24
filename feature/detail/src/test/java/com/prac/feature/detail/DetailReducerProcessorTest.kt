@@ -15,54 +15,27 @@ class DetailReducerProcessorTest {
     @Test
     fun invoke_mutationIsShowLoading_uiStateIsLoading() {
 
-        val result = detailReducerProcessorTest.invoke(
-            Mutation.ShowLoading,
-            UiState()
-        )
+        val result = detailReducerProcessorTest.invoke(Mutation.ShowLoading, UiState.Loading)
 
-        assertTrue(result.isLoading)
+        assertTrue(result is UiState.Loading)
     }
 
     @Test
     fun invoke_mutationIsShowError_uiStateIsError() {
         val errorMessage = "test"
 
-        val result = detailReducerProcessorTest.invoke(
-            Mutation.ShowError(errorMessage),
-            UiState()
-        )
+        val result = detailReducerProcessorTest.invoke(Mutation.ShowError(errorMessage), UiState.Loading)
 
-        assertTrue(result.isError)
-        assertEquals(result.errorMessage, errorMessage)
+        assertTrue(result is UiState.Error)
+        assertEquals((result as UiState.Error).message, errorMessage)
     }
 
     @Test
     fun invoke_mutationIsShowRepository_uiStateIsShowRepository() {
         val repository = RepoDetailModel()
 
-        val result = detailReducerProcessorTest.invoke(
-            Mutation.ShowRepository(repository),
-            UiState()
-        )
+        val result = detailReducerProcessorTest.invoke(Mutation.ShowRepository(repository), UiState.Loading)
 
-        assertEquals(result.repository, repository)
-        assertFalse(result.isLoading)
-        assertFalse(result.isError)
-        assertTrue(result.errorMessage.isEmpty())
-    }
-
-    @Test
-    fun invoke_mutationIsDialogDismiss_uiStateIsShowRepository() {
-        val repository = RepoDetailModel()
-
-        val result = detailReducerProcessorTest.invoke(
-            Mutation.DismissError,
-            UiState(repository = repository)
-        )
-
-        assertEquals(result.repository, repository)
-        assertFalse(result.isLoading)
-        assertFalse(result.isError)
-        assertTrue(result.errorMessage.isEmpty())
+        assertEquals((result as UiState.Content), repository)
     }
 }

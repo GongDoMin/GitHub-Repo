@@ -8,35 +8,18 @@ import com.prac.feature.detail.view.UiState
 class DetailReducerProcessor : Reducer<Mutation, UiState> {
     override fun invoke(mutation: Mutation, currentState: UiState): UiState =
         when (mutation) {
-            is Mutation.ShowRepository -> currentState.showRepository(mutation.repository)
-            is Mutation.ShowLoading -> currentState.showLoading()
-            is Mutation.ShowError -> currentState.showError(mutation.errorMessage)
-            is Mutation.DismissError -> currentState.dismissError()
+            is Mutation.ShowRepository -> showRepository(mutation.repository)
+            is Mutation.ShowLoading -> showLoading()
+            is Mutation.ShowError -> showError(mutation.errorMessage)
+            is Mutation.DismissError -> UiState.Loading
         }
 
-    private fun UiState.showRepository(repository: RepoDetailModel) =
-        copy(
-            repository = repository,
-            isLoading = false,
-            isError = false,
-            errorMessage = ""
-        )
+    private fun showRepository(repository: RepoDetailModel) =
+        UiState.Content(repository)
 
-    private fun UiState.showLoading() =
-        copy(
-            isLoading = true
-        )
+    private fun showLoading() =
+        UiState.Loading
 
-    private fun UiState.showError(errorMessage: String) =
-        copy(
-            isLoading = false,
-            isError = true,
-            errorMessage = errorMessage
-        )
-
-    private fun UiState.dismissError() =
-        copy(
-            isError = false,
-            errorMessage = ""
-        )
+    private fun showError(errorMessage: String) =
+        UiState.Error(errorMessage)
 }

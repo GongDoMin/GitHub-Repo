@@ -30,7 +30,7 @@ class DetailViewModel @Inject constructor(
     private val model = model(
         reducerProcessor = detailReducerProcessor,
         actionProcessor = detailActionProcessor,
-        initialState = UiState(),
+        initialState = UiState.Loading,
         dispatcher = ioDispatcher
     )
 

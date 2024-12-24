@@ -2,9 +2,8 @@ package com.prac.feature.detail.view
 
 import com.prac.data.model.RepoDetailModel
 
-data class UiState(
-    val repository: RepoDetailModel = RepoDetailModel(),
-    val isLoading: Boolean = false,
-    val isError: Boolean = false,
-    val errorMessage: String = ""
-)
+sealed interface UiState {
+    data object Loading : UiState
+    data class Content(val repository: RepoDetailModel = RepoDetailModel()) : UiState
+    data class Error(val message: String = "") : UiState
+}

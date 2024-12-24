@@ -16,6 +16,7 @@ import com.prac.data.model.RepoDetailModel
 import com.prac.feature.detail.model.Action
 import com.prac.feature.detail.model.Event
 import com.prac.feature.detail.model.Mutation
+import com.prac.feature.detail.view.UiState
 import com.prac.shared_test.rules.StandardTestDispatcherRule
 import com.prac.shared_test.ui.FakeDetailActionProcessor
 import kotlinx.coroutines.test.runTest
@@ -58,7 +59,7 @@ class DetailViewModelTest {
             awaitItem() // loadingState
 
             val result = awaitItem()
-            assertEquals(result.repository.owner.login, userName)
+            assertEquals((result as UiState.Content).repository.owner.login, userName)
             assertEquals(result.repository.name, repoName)
         }
     }
@@ -72,8 +73,8 @@ class DetailViewModelTest {
             awaitItem() // loadingState
 
             val result = awaitItem()
-            assertTrue(result.isError)
-            assertTrue(result.errorMessage.isNotEmpty())
+            assertTrue(result is UiState.Error)
+            assertTrue((result as UiState.Error).message.isNotEmpty())
         }
     }
 
@@ -97,8 +98,8 @@ class DetailViewModelTest {
             awaitItem() // loadingState
 
             val result = awaitItem()
-            assertTrue(result.isError)
-            assertEquals(result.errorMessage, CONNECTION_FAIL)
+            assertTrue(result is UiState.Error)
+            assertEquals((result as UiState.Error).message, CONNECTION_FAIL)
         }
     }
 
@@ -122,8 +123,8 @@ class DetailViewModelTest {
             awaitItem() // loadingState
 
             val result = awaitItem()
-            assertTrue(result.isError)
-            assertEquals(result.errorMessage, INVALID_TOKEN)
+            assertTrue(result is UiState.Error)
+            assertEquals((result as UiState.Error).message, INVALID_TOKEN)
         }
     }
 
@@ -140,8 +141,8 @@ class DetailViewModelTest {
             detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
 
             val result = awaitItem()
-            assertTrue(result.isError)
-            assertEquals(result.errorMessage, INVALID_TOKEN)
+            assertTrue(result is UiState.Error)
+            assertEquals((result as UiState.Error).message, INVALID_TOKEN)
         }
     }
 
@@ -158,8 +159,8 @@ class DetailViewModelTest {
             detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
 
             val result = awaitItem()
-            assertTrue(result.isError)
-            assertEquals(result.errorMessage, INVALID_TOKEN)
+            assertTrue(result is UiState.Error)
+            assertEquals((result as UiState.Error).message, INVALID_TOKEN)
         }
     }
 
@@ -176,8 +177,8 @@ class DetailViewModelTest {
             detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
 
             val result = awaitItem()
-            assertTrue(result.isError)
-            assertEquals(result.errorMessage, INVALID_REPOSITORY)
+            assertTrue(result is UiState.Error)
+            assertEquals((result as UiState.Error).message, INVALID_REPOSITORY)
         }
     }
 
@@ -194,8 +195,8 @@ class DetailViewModelTest {
             detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
 
             val result = awaitItem()
-            assertTrue(result.isError)
-            assertEquals(result.errorMessage, INVALID_REPOSITORY)
+            assertTrue(result is UiState.Error)
+            assertEquals((result as UiState.Error).message, INVALID_REPOSITORY)
         }
     }
 
@@ -212,8 +213,8 @@ class DetailViewModelTest {
             detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
 
             val result = awaitItem()
-            assertTrue(result.isError)
-            assertEquals(result.errorMessage, UNKNOWN)
+            assertTrue(result is UiState.Error)
+            assertEquals((result as UiState.Error).message, UNKNOWN)
         }
     }
 
@@ -230,8 +231,8 @@ class DetailViewModelTest {
             detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
 
             val result = awaitItem()
-            assertTrue(result.isError)
-            assertEquals(result.errorMessage, UNKNOWN)
+            assertTrue(result is UiState.Error)
+            assertEquals((result as UiState.Error).message, UNKNOWN)
         }
     }
 

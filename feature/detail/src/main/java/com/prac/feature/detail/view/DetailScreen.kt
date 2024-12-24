@@ -9,10 +9,12 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.designsystem.R
+import com.prac.data.model.RepoDetailModel
 import com.prac.feature.detail.DetailViewModel
 import com.prac.feature.detail.model.Action
 import com.prac.feature.detail.model.Event
@@ -24,14 +26,14 @@ fun DetailScreen(
     modifier: Modifier = Modifier,
     viewModel: DetailViewModel = hiltViewModel()
 ) {
-    val uiState = viewModel.uiStateFlow.collectAsState()
+    val uiState = viewModel.uiStateFlow.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
 
     DetailContent(
-        isLoading = uiState.value.isLoading,
-        isError = uiState.value.isError,
-        errorMessage = uiState.value.errorMessage,
-        repoDetail = uiState.value.repository,
+        isLoading = uiState.value is UiState.Loading,
+        isError = uiState.value is UiState.Error,
+        errorMessage = (uiState.value as? UiState.Error)?.message ?: "",
+        repoDetail = (uiState.value as? UiState.Content)?.repository ?: RepoDetailModel(),
         onClickStar = { viewModel.process(Action.UserAction.OnClickStar(it)) },
         onClickUnStar = { viewModel.process(Action.UserAction.OnClickUnStar(it)) },
         onDismissRequest = { dialogMessage ->
