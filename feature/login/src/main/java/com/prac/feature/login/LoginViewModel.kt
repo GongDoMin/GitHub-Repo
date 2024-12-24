@@ -23,7 +23,7 @@ class LoginViewModel @Inject constructor(
     @LoginActionAnnotation private val loginActionProcessor: ActionProcessor<Action, Mutation, Event>,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val model = model(
+    private val model by model(
         reducerProcessor = loginReducerProcessor,
         actionProcessor = loginActionProcessor,
         initialState = UiState.Idle,

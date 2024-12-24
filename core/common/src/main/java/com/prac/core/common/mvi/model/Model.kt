@@ -14,20 +14,42 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
-fun <Action, UiState, Mutation, Event> ViewModel.model(
+inline fun <reified Action, reified UiState, reified Mutation, reified Event> ViewModel.model(
     reducerProcessor: Reducer<Mutation, UiState>,
     actionProcessor: ActionProcessor<Action, Mutation, Event>,
     initialState: UiState,
     dispatcher: CoroutineDispatcher
 ) =
-    Model(
+    ModelProperty(
+        viewModel = this,
         reducerProcessor = reducerProcessor,
         actionProcessor = actionProcessor,
-        coroutineScope = this.viewModelScope,
         dispatcher = dispatcher,
         initialState = initialState
     )
+
+class ModelProperty<Action, UiState, Mutation, Event>(
+    private val viewModel: ViewModel,
+    private val reducerProcessor: Reducer<Mutation, UiState>,
+    private val actionProcessor: ActionProcessor<Action, Mutation, Event>,
+    private val dispatcher: CoroutineDispatcher,
+    private val initialState: UiState
+) : ReadOnlyProperty<Any, Model<Action, UiState, Mutation, Event>> {
+    override fun getValue(
+        thisRef: Any,
+        property: KProperty<*>,
+    ): Model<Action, UiState, Mutation, Event> =
+        Model(
+            reducerProcessor = reducerProcessor,
+            actionProcessor = actionProcessor,
+            coroutineScope = viewModel.viewModelScope,
+            dispatcher = dispatcher,
+            initialState = initialState
+        )
+}
 
 class Model<Action, UiState, Mutation, Event> internal constructor(
     private val reducerProcessor: Reducer<Mutation, UiState>,

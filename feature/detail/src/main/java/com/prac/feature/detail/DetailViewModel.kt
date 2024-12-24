@@ -27,7 +27,7 @@ class DetailViewModel @Inject constructor(
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val model = model(
+    private val model by model(
         reducerProcessor = detailReducerProcessor,
         actionProcessor = detailActionProcessor,
         initialState = UiState.Loading,

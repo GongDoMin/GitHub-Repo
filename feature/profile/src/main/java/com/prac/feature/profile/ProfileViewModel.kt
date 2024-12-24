@@ -23,7 +23,7 @@ class ProfileViewModel @Inject constructor(
     @ProfileActionAnnotation private val profileActionProcessor: ActionProcessor<Action, Mutation, Event>,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
-    private val model = model(
+    private val model by model(
         reducerProcessor = profileReducerProcessor,
         actionProcessor = profileActionProcessor,
         initialState = UiState.Idle,

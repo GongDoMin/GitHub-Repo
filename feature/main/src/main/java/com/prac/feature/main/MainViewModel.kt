@@ -36,7 +36,7 @@ class MainViewModel @Inject constructor(
     @MainActionAnnotation private val mainActionProcessor: ActionProcessor<Action, Mutation, Event>,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val model = model(
+    private val model by model(
         reducerProcessor = mainReducerProcessor,
         actionProcessor = mainActionProcessor,
         initialState = UiState.Content(),
