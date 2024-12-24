@@ -21,7 +21,7 @@ import com.prac.feature.detail.model.Action
 import com.prac.feature.detail.model.Event
 
 @Composable
-fun DetailScreen(
+internal fun DetailScreen(
     onNavigateToLogin: () -> Unit,
     onNavigateToBackStack: () -> Unit,
     modifier: Modifier = Modifier,

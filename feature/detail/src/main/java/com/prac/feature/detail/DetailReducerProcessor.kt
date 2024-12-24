@@ -5,7 +5,7 @@ import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.feature.detail.model.Mutation
 import com.prac.feature.detail.view.UiState
 
-class DetailReducerProcessor : Reducer<Mutation, UiState> {
+internal class DetailReducerProcessor : Reducer<Mutation, UiState> {
     override fun invoke(mutation: Mutation, currentState: UiState): UiState =
         when (mutation) {
             is Mutation.ShowRepository -> showRepository(mutation.repository)

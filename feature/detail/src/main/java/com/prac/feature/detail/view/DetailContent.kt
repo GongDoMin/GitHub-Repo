@@ -29,24 +29,19 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.prac.core.common.constants.INVALID_REPOSITORY
-import com.prac.core.common.ui.ContentWithLoadingIndicator
 import com.prac.core.common.ui.DrawableImage
-import com.prac.core.common.ui.MessageDialog
 import com.prac.core.common.ui.UserProfile
 import com.prac.core.designsystem.R
 import com.prac.data.model.RepoDetailModel
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
-fun DetailContent(
+internal fun DetailContent(
     repoDetail: RepoDetailModel,
     onClickStar: (RepoDetailModel) -> Unit,
     onClickUnStar: (RepoDetailModel) -> Unit,
@@ -121,7 +116,7 @@ fun DetailContent(
 }
 
 @Composable
-fun UserProfile(
+internal fun UserProfile(
     uri: String,
     userName: String,
     modifier: Modifier = Modifier
@@ -145,7 +140,7 @@ fun UserProfile(
 }
 
 @Composable
-fun RepositoryName(
+internal fun RepositoryName(
     repoName: String,
     modifier: Modifier = Modifier
 ) {
@@ -157,7 +152,7 @@ fun RepositoryName(
 }
 
 @Composable
-fun RepositoryStarStateAndFork(
+internal fun RepositoryStarStateAndFork(
     repoDetail: RepoDetailModel,
     onClickStar: (RepoDetailModel) -> Unit,
     onClickUnStar: (RepoDetailModel) -> Unit,
@@ -245,7 +240,7 @@ fun RepositoryStarStateAndFork(
 }
 
 @Composable
-fun RepositoryInformation(
+internal fun RepositoryInformation(
     imageVector: ImageVector,
     title: String,
     value: Int,

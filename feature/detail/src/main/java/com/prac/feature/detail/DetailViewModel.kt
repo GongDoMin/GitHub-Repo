@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class DetailViewModel @Inject constructor(
+internal class DetailViewModel @Inject constructor(
     @DetailReducerAnnotation private val detailReducerProcessor: Reducer<Mutation, UiState>,
     @DetailActionAnnotation private val detailActionProcessor: ActionProcessor<Action, Mutation, Event>,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,

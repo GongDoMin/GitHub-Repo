@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 
-class DetailActionProcessor(
+internal class DetailActionProcessor(
     private val repoRepository: RepoRepository,
     private val tokenRepository: TokenRepository,
     private val backOffWorkManager: BackOffWorkManager,
