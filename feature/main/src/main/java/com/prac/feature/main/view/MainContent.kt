@@ -25,7 +25,7 @@ import com.prac.feature.main.refresh.RefreshState
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
-fun MainContent(
+internal fun MainContent(
     repositories: LazyPagingItems<RepoModel>,
     loadState: LoadState,
     onClickRetry: () -> Unit,
@@ -73,7 +73,7 @@ fun MainContent(
 
 @Preview(showBackground = true)
 @Composable
-fun MainContentPreview() {
+internal fun MainContentPreview() {
     val repositories = flowOf(
         PagingData.from(
             listOf(
@@ -98,7 +98,7 @@ fun MainContentPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun MainContentErrorPreview() {
+internal fun MainContentErrorPreview() {
     val repositories = flowOf(
         PagingData.from(
             listOf(
@@ -123,7 +123,7 @@ fun MainContentErrorPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun MainContentLoadStatePreview() {
+internal fun MainContentLoadStatePreview() {
     val repositories = flowOf<PagingData<RepoModel>>(PagingData.empty()).collectAsLazyPagingItems()
 
     MainContent(
@@ -141,7 +141,7 @@ fun MainContentLoadStatePreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun MainContentRefreshStatePreview() {
+internal fun MainContentRefreshStatePreview() {
     val repositories = flowOf<PagingData<RepoModel>>(PagingData.empty()).collectAsLazyPagingItems()
 
     MainContent(

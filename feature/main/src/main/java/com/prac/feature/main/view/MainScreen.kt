@@ -22,7 +22,7 @@ import com.prac.feature.main.model.Event
 import com.prac.feature.main.refresh.RefreshState
 
 @Composable
-fun MainScreen(
+internal fun MainScreen(
     onNavigateToLogin: () -> Unit,
     onClickRepository: (String, String) -> Unit,
     modifier: Modifier = Modifier,

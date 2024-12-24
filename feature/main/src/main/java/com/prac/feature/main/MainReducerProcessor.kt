@@ -5,7 +5,7 @@ import com.prac.feature.main.model.Mutation
 import com.prac.feature.main.refresh.RefreshState
 import com.prac.feature.main.view.UiState
 
-class MainReducerProcessor : Reducer<Mutation, UiState> {
+internal class MainReducerProcessor : Reducer<Mutation, UiState> {
     override fun invoke(mutation: Mutation, currentState: UiState): UiState =
         when (mutation) {
             is Mutation.ShowContent -> showContent()

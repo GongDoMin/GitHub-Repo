@@ -19,15 +19,15 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
-annotation class MainReducerAnnotation
+internal annotation class MainReducerAnnotation
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
-annotation class MainActionAnnotation
+internal annotation class MainActionAnnotation
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
-class MainModule {
+internal class MainModule {
     @Provides
     @MainReducerAnnotation
     fun providesMainReducerProcessor(): Reducer<Mutation, UiState> {

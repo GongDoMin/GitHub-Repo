@@ -30,7 +30,7 @@ import com.prac.data.model.OwnerModel
 import com.prac.data.model.RepoModel
 
 @Composable
-fun Repository(
+internal fun Repository(
     repository: RepoModel,
     onClickStar: (RepoModel) -> Unit,
     onClickUnStar: (RepoModel) -> Unit,
@@ -98,7 +98,7 @@ fun Repository(
 }
 
 @Composable
-fun UserProfile(
+internal fun UserProfile(
     uri: String,
     userName: String,
     modifier: Modifier = Modifier
@@ -121,7 +121,7 @@ fun UserProfile(
 }
 
 @Composable
-fun RepositoryName(
+internal fun RepositoryName(
     repoName: String,
     modifier: Modifier = Modifier
 ) {
@@ -132,7 +132,7 @@ fun RepositoryName(
 }
 
 @Composable
-fun RepositoryStarState(
+internal fun RepositoryStarState(
     repo: RepoModel,
     onClickStar: (RepoModel) -> Unit,
     onClickUnStar: (RepoModel) -> Unit,
@@ -180,7 +180,7 @@ fun RepositoryStarState(
 }
 
 @Composable
-fun RepositoryBranch(
+internal fun RepositoryBranch(
     defaultBranch: String,
     modifier: Modifier = Modifier
 ) {
@@ -191,7 +191,7 @@ fun RepositoryBranch(
 }
 
 @Composable
-fun RepositoryUpdatedAt(
+internal fun RepositoryUpdatedAt(
     updatedAt: String,
     modifier: Modifier = Modifier
 ) {
@@ -203,7 +203,7 @@ fun RepositoryUpdatedAt(
 
 @Preview(showBackground = true)
 @Composable
-fun MainItemPreview() {
+internal fun MainItemPreview() {
     val repository =
         RepoModel(
             id = 0,

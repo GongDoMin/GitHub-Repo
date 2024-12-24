@@ -25,7 +25,7 @@ import com.prac.data.model.RepoModel
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
-fun RepositoryList(
+internal fun RepositoryList(
     repositories: LazyPagingItems<RepoModel>,
     loadState: LoadState,
     onClickRetry: () -> Unit,
@@ -81,7 +81,7 @@ fun RepositoryList(
 
 @Preview(showBackground = true)
 @Composable
-fun RepositoryListPreview() {
+internal fun RepositoryListPreview() {
     val repositories = flowOf(
         PagingData.from(
             listOf(
@@ -105,7 +105,7 @@ fun RepositoryListPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun RepositoryListLoadStatePreview() {
+internal fun RepositoryListLoadStatePreview() {
     val repositories = flowOf(
         PagingData.from(
             listOf(

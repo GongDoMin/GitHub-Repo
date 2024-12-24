@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.prac.core.designsystem.R
 
 @Composable
-fun MainTitle(
+internal fun MainTitle(
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -25,6 +25,6 @@ fun MainTitle(
 
 @Preview(showBackground = true)
 @Composable
-fun MainTitlePreview() {
+internal fun MainTitlePreview() {
     MainTitle()
 }

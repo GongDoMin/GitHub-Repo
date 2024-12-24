@@ -20,7 +20,7 @@ import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.core.designsystem.R
 
 @Composable
-fun LoadStateFooter(
+internal fun LoadStateFooter(
     loadState: LoadState?,
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -38,7 +38,7 @@ fun LoadStateFooter(
 }
 
 @Composable
-fun LoadingFooter(
+internal fun LoadingFooter(
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -56,7 +56,7 @@ fun LoadingFooter(
 }
 
 @Composable
-fun ErrorFooter(
+internal fun ErrorFooter(
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -90,7 +90,7 @@ fun ErrorFooter(
 
 @Preview(showBackground = true)
 @Composable
-fun LoadingFooterPreview() {
+internal fun LoadingFooterPreview() {
     LoadingFooter(
         modifier = Modifier
             .padding(dimensionResource(R.dimen.padding_small))
@@ -99,7 +99,7 @@ fun LoadingFooterPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun ErrorFooterPreview() {
+internal fun ErrorFooterPreview() {
     ErrorFooter(
         onRetryClick = {},
         modifier = Modifier

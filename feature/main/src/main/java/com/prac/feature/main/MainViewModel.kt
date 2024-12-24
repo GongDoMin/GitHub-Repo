@@ -30,7 +30,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+internal class MainViewModel @Inject constructor(
     private val repoRepository: RepoRepository,
     @MainReducerAnnotation private val mainReducerProcessor: Reducer<Mutation, UiState>,
     @MainActionAnnotation private val mainActionProcessor: ActionProcessor<Action, Mutation, Event>,
