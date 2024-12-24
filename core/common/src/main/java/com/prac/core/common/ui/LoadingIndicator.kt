@@ -12,16 +12,6 @@ import androidx.compose.ui.res.dimensionResource
 import com.prac.core.designsystem.R
 
 @Composable
-inline fun ContentWithLoadingIndicator(
-    isLoading: Boolean,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
-    if (isLoading) LoadingIndicator(modifier = modifier)
-    else content()
-}
-
-@Composable
 fun LoadingIndicator(
     modifier: Modifier = Modifier
 ) {
