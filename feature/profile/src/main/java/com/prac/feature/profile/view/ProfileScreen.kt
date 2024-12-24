@@ -26,8 +26,8 @@ fun ProfileScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     ProfileContent(
-        isLoading = uiState.isLoading,
-        isDialog = uiState.isDialog,
+        isLoading = uiState is UiState.Loading,
+        isDialog = uiState is UiState.Dialog,
         onClickLogoutButton = { viewModel.process(Action.UserAction.OnClickLogoutButton) },
         onClickNegativeButton = { viewModel.process(Action.UserAction.OnClickNegativeButton) },
         onClickPositiveButton = { viewModel.process(Action.UserAction.OnClickPositiveButton) },

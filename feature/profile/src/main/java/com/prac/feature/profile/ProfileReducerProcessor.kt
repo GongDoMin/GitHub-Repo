@@ -7,26 +7,17 @@ import com.prac.feature.profile.view.UiState
 class ProfileReducerProcessor : Reducer<Mutation, UiState> {
     override fun invoke(mutation: Mutation, currentState: UiState): UiState =
         when (mutation) {
-            is Mutation.ShowIdle -> currentState.showIdle()
-            is Mutation.ShowLoading -> currentState.showLoading()
-            is Mutation.ShowDialog -> currentState.showDialog()
+            is Mutation.ShowIdle -> showIdle()
+            is Mutation.ShowLoading -> showLoading()
+            is Mutation.ShowDialog -> showDialog()
         }
 
-    private fun UiState.showIdle() =
-        copy(
-            isLoading = false,
-            isDialog = false
-        )
+    private fun showIdle() =
+        UiState.Idle
 
-    private fun UiState.showLoading() =
-        copy(
-            isLoading = true,
-            isDialog = false
-        )
+    private fun showLoading() =
+        UiState.Loading
 
-    private fun UiState.showDialog() =
-        copy(
-            isLoading = false,
-            isDialog = true
-        )
+    private fun showDialog() =
+        UiState.Dialog
 }

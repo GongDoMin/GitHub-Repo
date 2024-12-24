@@ -15,33 +15,24 @@ class ProfileReducerProcessorTest {
     @Test
     fun invoke_mutationIsShowIdle_uiStateIsIdle() {
 
-        val result = profileReducerProcessorTest.invoke(ShowIdle,
-            UiState()
-        )
+        val result = profileReducerProcessorTest.invoke(ShowIdle, UiState.Idle)
 
-        assertFalse(result.isLoading)
-        assertFalse(result.isDialog)
+        assertTrue(result is UiState.Idle)
     }
 
     @Test
     fun invoke_mutationIsShowLoading_uiStateIsLoading() {
 
-        val result = profileReducerProcessorTest.invoke(ShowLoading,
-            UiState()
-        )
+        val result = profileReducerProcessorTest.invoke(ShowLoading, UiState.Idle)
 
-        assertTrue(result.isLoading)
-        assertFalse(result.isDialog)
+        assertTrue(result is UiState.Loading)
     }
 
     @Test
     fun invoke_mutationIsShowError_uiStateIsError() {
 
-        val result = profileReducerProcessorTest.invoke(ShowDialog,
-            UiState()
-        )
+        val result = profileReducerProcessorTest.invoke(ShowDialog, UiState.Loading)
 
-        assertFalse(result.isLoading)
-        assertTrue(result.isDialog)
+        assertTrue(result is UiState.Dialog)
     }
 }

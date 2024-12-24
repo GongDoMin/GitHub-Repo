@@ -41,7 +41,7 @@ class ProfileViewModelTest {
             profileViewModel.process(Action.UserAction.OnClickLogoutButton)
 
             val result = awaitItem()
-            assertTrue(result.isDialog)
+            assertTrue(result is UiState.Dialog)
         }
     }
 
@@ -56,8 +56,7 @@ class ProfileViewModelTest {
             profileViewModel.process(Action.UserAction.DialogDismiss)
 
             val result = awaitItem()
-            assertFalse(result.isLoading)
-            assertFalse(result.isDialog)
+            assertTrue(result is UiState.Idle)
         }
     }
 
@@ -72,8 +71,7 @@ class ProfileViewModelTest {
             profileViewModel.process(Action.UserAction.OnClickNegativeButton)
 
             val result = awaitItem()
-            assertFalse(result.isLoading)
-            assertFalse(result.isDialog)
+            assertTrue(result is UiState.Idle)
         }
     }
 

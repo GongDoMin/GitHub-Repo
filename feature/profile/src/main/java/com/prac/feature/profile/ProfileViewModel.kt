@@ -26,7 +26,7 @@ class ProfileViewModel @Inject constructor(
     private val model = model(
         reducerProcessor = profileReducerProcessor,
         actionProcessor = profileActionProcessor,
-        initialState = UiState(),
+        initialState = UiState.Idle,
         dispatcher = ioDispatcher
     )
 
