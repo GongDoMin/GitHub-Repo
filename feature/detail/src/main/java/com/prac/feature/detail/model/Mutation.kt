@@ -6,5 +6,4 @@ sealed interface Mutation {
     data class ShowRepository(val repository: RepoDetailModel) : Mutation
     data object ShowLoading : Mutation
     data class ShowError(val errorMessage: String) : Mutation
-    data object DismissError : Mutation
 }

@@ -11,7 +11,6 @@ class DetailReducerProcessor : Reducer<Mutation, UiState> {
             is Mutation.ShowRepository -> showRepository(mutation.repository)
             is Mutation.ShowLoading -> showLoading()
             is Mutation.ShowError -> showError(mutation.errorMessage)
-            is Mutation.DismissError -> UiState.Loading
         }
 
     private fun showRepository(repository: RepoDetailModel) =
