@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 
-class LoginActionProcessor(
+internal class LoginActionProcessor(
     private val tokenRepository: TokenRepository
 ) : ActionProcessor<Action, Mutation, Event> {
     override fun invoke(action: Action): Flow<Pair<Mutation?, Event?>> =

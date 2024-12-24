@@ -17,15 +17,15 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
-annotation class LoginReducerAnnotation
+internal annotation class LoginReducerAnnotation
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
-annotation class LoginActionAnnotation
+internal annotation class LoginActionAnnotation
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
-class LoginModule {
+internal class LoginModule {
     @Provides
     @LoginReducerAnnotation
     fun providesLoginReducerProcessor(): Reducer<Mutation, UiState> {

@@ -27,7 +27,7 @@ import com.prac.feature.login.model.Action
 import com.prac.feature.login.model.Event
 
 @Composable
-fun LoginScreen(
+internal fun LoginScreen(
     onNavigateToMain: () -> Unit,
     modifier: Modifier = Modifier,
     loginModifier: Modifier = Modifier,

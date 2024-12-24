@@ -23,7 +23,7 @@ import com.prac.core.common.ui.bounceClick
 import com.prac.core.designsystem.R
 
 @Composable
-fun LoginContent(
+internal fun LoginContent(
     onClickLoginButton: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -70,7 +70,7 @@ fun LoginContent(
 
 @Preview(showBackground = true)
 @Composable
-fun LoginContentPreview() {
+internal fun LoginContentPreview() {
     LoginContent(
         onClickLoginButton = {},
         modifier = Modifier

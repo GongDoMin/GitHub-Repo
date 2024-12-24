@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+internal class LoginViewModel @Inject constructor(
     @LoginReducerAnnotation private val loginReducerProcessor: Reducer<Mutation, UiState>,
     @LoginActionAnnotation private val loginActionProcessor: ActionProcessor<Action, Mutation, Event>,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
