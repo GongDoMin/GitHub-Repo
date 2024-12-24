@@ -23,53 +23,31 @@ import com.prac.core.designsystem.R
 
 @Composable
 fun ProfileContent(
-    isLoading: Boolean,
-    isDialog: Boolean,
     onClickLogoutButton: () -> Unit,
-    onClickNegativeButton: () -> Unit,
-    onClickPositiveButton: () -> Unit,
-    onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    loadingModifier: Modifier = Modifier
 ) {
-    ContentWithLoadingIndicator(
-        isLoading = isLoading,
-        modifier = loadingModifier
+    Column(
+        modifier = modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center
     ) {
-        Column(
-            modifier = modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Center
+        Button(
+            onClick = onClickLogoutButton,
+            modifier = Modifier
+                .fillMaxWidth()
+                .bounceClick(),
+            colors = ButtonColors(
+                containerColor = Color.Black,
+                contentColor = Color.White,
+                disabledContainerColor = Color.Gray,
+                disabledContentColor = Color.White
+            ),
+            contentPadding = PaddingValues(
+                dimensionResource(id = R.dimen.padding_normal)
+            )
         ) {
-            Button(
-                onClick = onClickLogoutButton,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .bounceClick(),
-                colors = ButtonColors(
-                    containerColor = Color.Black,
-                    contentColor = Color.White,
-                    disabledContainerColor = Color.Gray,
-                    disabledContentColor = Color.White
-                ),
-                contentPadding = PaddingValues(
-                    dimensionResource(id = R.dimen.padding_normal)
-                )
-            ) {
-                Text(
-                    text = stringResource(id = R.string.logout)
-                )
-            }
-        }
-
-        if (isDialog) {
-            ConfirmationDialog(
-                onDismissRequest = onDismissRequest,
-                message = stringResource(id = R.string.logout_confirm),
-                negativeButtonText = stringResource(id = R.string.cancel),
-                onClickNegativeButton = onClickNegativeButton,
-                positiveButtonText = stringResource(id = R.string.check),
-                onClickPositiveButton = onClickPositiveButton
+            Text(
+                text = stringResource(id = R.string.logout)
             )
         }
     }
@@ -79,40 +57,7 @@ fun ProfileContent(
 @Composable
 fun ProfileContentPreview() {
     ProfileContent(
-        isLoading = false,
-        isDialog = false,
         onClickLogoutButton = {},
-        onClickNegativeButton = {},
-        onClickPositiveButton = {},
-        onDismissRequest = {},
-        modifier = Modifier.padding(horizontal = 16.dp)
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ProfileContentLoadingPreview() {
-    ProfileContent(
-        isLoading = true,
-        isDialog = false,
-        onClickLogoutButton = {},
-        onClickNegativeButton = {},
-        onClickPositiveButton = {},
-        onDismissRequest = {},
-        modifier = Modifier.padding(horizontal = 16.dp)
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ProfileContentDialogPreview() {
-    ProfileContent(
-        isLoading = true,
-        isDialog = true,
-        onClickLogoutButton = {},
-        onClickNegativeButton = {},
-        onClickPositiveButton = {},
-        onDismissRequest = {},
         modifier = Modifier.padding(horizontal = 16.dp)
     )
 }
