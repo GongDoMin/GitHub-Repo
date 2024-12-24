@@ -20,7 +20,7 @@ import com.prac.feature.profile.model.Action
 import com.prac.feature.profile.model.Event
 
 @Composable
-fun ProfileScreen(
+internal fun ProfileScreen(
     onNavigateToLogin: () -> Unit,
     modifier: Modifier = Modifier,
     loadingModifier: Modifier = Modifier,

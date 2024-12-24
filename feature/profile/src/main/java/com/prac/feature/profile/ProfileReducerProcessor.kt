@@ -4,7 +4,7 @@ import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.feature.profile.model.Mutation
 import com.prac.feature.profile.view.UiState
 
-class ProfileReducerProcessor : Reducer<Mutation, UiState> {
+internal class ProfileReducerProcessor : Reducer<Mutation, UiState> {
     override fun invoke(mutation: Mutation, currentState: UiState): UiState =
         when (mutation) {
             is Mutation.ShowIdle -> showIdle()

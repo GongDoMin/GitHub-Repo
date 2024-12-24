@@ -19,15 +19,15 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
-annotation class ProfileReducerAnnotation
+internal annotation class ProfileReducerAnnotation
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
-annotation class ProfileActionAnnotation
+internal annotation class ProfileActionAnnotation
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
-class ProfileModule {
+internal class ProfileModule {
     @Provides
     @ProfileReducerAnnotation
     fun providesProfileReducerProcessor() : Reducer<Mutation, UiState> {

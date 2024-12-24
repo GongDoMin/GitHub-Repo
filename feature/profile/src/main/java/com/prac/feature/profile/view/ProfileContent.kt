@@ -16,13 +16,11 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.prac.core.common.ui.ConfirmationDialog
-import com.prac.core.common.ui.ContentWithLoadingIndicator
 import com.prac.core.common.ui.bounceClick
 import com.prac.core.designsystem.R
 
 @Composable
-fun ProfileContent(
+internal fun ProfileContent(
     onClickLogoutButton: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 
-class ProfileActionProcessor(
+internal class ProfileActionProcessor(
     private val tokenRepository: TokenRepository,
     private val repoRepository: RepoRepository,
     private val backOffWorkManager: BackOffWorkManager

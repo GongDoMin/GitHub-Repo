@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(
+internal class ProfileViewModel @Inject constructor(
     @ProfileReducerAnnotation private val profileReducerProcessor: Reducer<Mutation, UiState>,
     @ProfileActionAnnotation private val profileActionProcessor: ActionProcessor<Action, Mutation, Event>,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
