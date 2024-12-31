@@ -28,7 +28,11 @@ inline fun <reified Action, reified UiState, reified Mutation, reified Event> Vi
         reducerProcessor = reducerProcessor,
         actionProcessor = actionProcessor,
         dispatcher = dispatcher,
-        initialState = initialState
+        uiState = MutableStateFlow(initialState),
+        event = Channel(
+            capacity = RENDEZVOUS,
+            onBufferOverflow = BufferOverflow.SUSPEND
+        )
     )
 
 class ModelProperty<Action, UiState, Mutation, Event>(
@@ -36,7 +40,8 @@ class ModelProperty<Action, UiState, Mutation, Event>(
     private val reducerProcessor: Reducer<Mutation, UiState>,
     private val actionProcessor: ActionProcessor<Action, Mutation, Event>,
     private val dispatcher: CoroutineDispatcher,
-    private val initialState: UiState
+    private val uiState: MutableStateFlow<UiState>,
+    private val event: Channel<Event>
 ) : ReadOnlyProperty<Any, Model<Action, UiState, Mutation, Event>> {
     override fun getValue(
         thisRef: Any,
@@ -47,7 +52,8 @@ class ModelProperty<Action, UiState, Mutation, Event>(
             actionProcessor = actionProcessor,
             coroutineScope = viewModel.viewModelScope,
             dispatcher = dispatcher,
-            initialState = initialState
+            _uiState = uiState,
+            _event = event
         )
 }
 
@@ -56,15 +62,11 @@ class Model<Action, UiState, Mutation, Event> internal constructor(
     private val actionProcessor: ActionProcessor<Action, Mutation, Event>,
     private val coroutineScope: CoroutineScope,
     private val dispatcher: CoroutineDispatcher,
-    initialState: UiState,
+    private val _uiState: MutableStateFlow<UiState>,
+    private val _event: Channel<Event>
 ) {
-    private val _uiState = MutableStateFlow(initialState)
     val uiState = _uiState.asStateFlow()
 
-    private val _event = Channel<Event>(
-        capacity = RENDEZVOUS,
-        onBufferOverflow = BufferOverflow.SUSPEND
-    )
     val event = _event.receiveAsFlow()
 
     fun process(action: Action) {
