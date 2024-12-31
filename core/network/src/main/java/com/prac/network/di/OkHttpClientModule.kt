@@ -6,6 +6,8 @@ import com.prac.network.BuildConfig
 import com.prac.network.di.annotation.AuthOkHttpClient
 import com.prac.network.di.annotation.BasicOkHttpClient
 import com.prac.network.service.AuthorizationInterceptor
+import com.prac.network.service.authManager.AuthManager
+import com.prac.network.service.authManager.AuthManagerImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,11 +22,17 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 internal class OkHttpClientModule {
     @Provides
-    fun provideAuthorizationInterceptor(
+    fun provideAuthManager(
         authApiDataSource: AuthApiDataSource,
         tokenLocalDataSource: TokenLocalDataSource
+    ) : AuthManager =
+        AuthManagerImpl(authApiDataSource, tokenLocalDataSource)
+
+    @Provides
+    fun provideAuthorizationInterceptor(
+        authManager: AuthManager
     ) : Interceptor =
-        AuthorizationInterceptor(authApiDataSource, tokenLocalDataSource)
+        AuthorizationInterceptor(authManager)
 
     @Provides
     @Singleton
