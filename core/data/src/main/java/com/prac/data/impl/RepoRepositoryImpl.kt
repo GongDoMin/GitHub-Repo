@@ -57,7 +57,7 @@ internal class RepoRepositoryImpl @Inject constructor(
         ).flow
             .map { pagingData ->
                 pagingData.map { repository ->
-                    RepoModel(repository.id, repository.name, OwnerModel(repository.owner.login, repository.owner.avatarUrl), repository.stargazersCount, repository.defaultBranch, repository.updatedAt, repository.isStarred)
+                    repository.toRepoModel()
                 }
             }
     }
