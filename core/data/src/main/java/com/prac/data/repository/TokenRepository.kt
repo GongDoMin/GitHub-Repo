@@ -1,6 +1,8 @@
 package com.prac.data.repository
 
 interface TokenRepository {
+    suspend fun authorizeOAuthV2(code: String): String
+
     suspend fun authorizeOAuth(code: String) : Result<Unit>
 
     suspend fun isLoggedIn() : Boolean

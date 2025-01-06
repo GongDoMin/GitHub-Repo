@@ -9,7 +9,7 @@ class AuthorizeOAuthUseCaseImpl @Inject constructor(
     private val tokenRepository: TokenRepository,
     private val userRepository: UserRepository
 ) : AuthorizeOAuthUseCase {
-    override suspend fun invoke(code: String) {
+    override suspend fun invoke(code: String) : Result<Unit> {
         TODO("Not yet implemented")
     }
 }

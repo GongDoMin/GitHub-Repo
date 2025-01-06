@@ -18,6 +18,14 @@ internal class TokenRepositoryImpl @Inject constructor(
     private val userApiDataSource: UserApiDataSource,
     private val userLocalDataSource: UserLocalDataSource
 ) : TokenRepository {
+    override suspend fun authorizeOAuthV2(code: String): String {
+        val dto = authApiDataSource.authorizeOAuth(code)
+
+        setToken(dto)
+
+        return dto.accessToken
+    }
+
     override suspend fun authorizeOAuth(code: String): Result<Unit> {
         return try {
             val dto = authApiDataSource.authorizeOAuth(code)

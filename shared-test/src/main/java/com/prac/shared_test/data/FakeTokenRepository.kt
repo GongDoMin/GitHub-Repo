@@ -6,6 +6,9 @@ import com.prac.data.exception.CommonException
 class FakeTokenRepository(
     var token: String = ""
 ): TokenRepository {
+    override suspend fun authorizeOAuthV2(code: String): String {
+        TODO("Not yet implemented")
+    }
 
     /**
      * @param code 요청 코드.
