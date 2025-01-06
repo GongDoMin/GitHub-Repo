@@ -26,15 +26,15 @@ import androidx.compose.ui.unit.LayoutDirection
 import com.prac.core.common.ui.DrawableImage
 import com.prac.core.common.ui.UserProfile
 import com.prac.core.designsystem.R
-import com.prac.data.model.OwnerModel
-import com.prac.data.model.RepoModel
+import com.prac.feature.main.model.Owner
+import com.prac.feature.main.model.Repository
 
 @Composable
-internal fun Repository(
-    repository: RepoModel,
-    onClickStar: (RepoModel) -> Unit,
-    onClickUnStar: (RepoModel) -> Unit,
-    onClickRepository: (RepoModel) -> Unit,
+internal fun RepositoryItem(
+    repository: Repository,
+    onClickStar: (Repository) -> Unit,
+    onClickUnStar: (Repository) -> Unit,
+    onClickRepository: (Repository) -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
@@ -133,9 +133,9 @@ internal fun RepositoryName(
 
 @Composable
 internal fun RepositoryStarState(
-    repo: RepoModel,
-    onClickStar: (RepoModel) -> Unit,
-    onClickUnStar: (RepoModel) -> Unit,
+    repo: Repository,
+    onClickStar: (Repository) -> Unit,
+    onClickUnStar: (Repository) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -205,10 +205,10 @@ internal fun RepositoryUpdatedAt(
 @Composable
 internal fun MainItemPreview() {
     val repository =
-        RepoModel(
+        Repository(
             id = 0,
             name = "test",
-            owner = OwnerModel(
+            owner = Owner(
                 login = "test",
                 avatarUrl = ""
             ),
@@ -218,7 +218,7 @@ internal fun MainItemPreview() {
             isStarred = false,
         )
 
-    Repository(
+    RepositoryItem(
         repository = repository,
         onClickStar = {},
         onClickUnStar = {},

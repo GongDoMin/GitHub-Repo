@@ -8,11 +8,12 @@ import com.prac.core.common.constants.UNKNOWN
 import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
-import com.prac.data.model.RepoModel
 import com.prac.domain.GetRepositoriesUseCase
+import com.prac.domain.entity.RepoEntity
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
 import com.prac.feature.main.model.Mutation
+import com.prac.feature.main.model.Repository
 import com.prac.feature.main.view.UiState
 import com.prac.shared_test.rules.StandardTestDispatcherRule
 import com.prac.shared_test.ui.FakeMainActionProcessor
@@ -43,7 +44,7 @@ class MainViewModelTest {
 
     @Before
     fun setUp() = runTest {
-        val pagingData = PagingData.from(listOf(RepoModel(stargazersCount = 1)))
+        val pagingData = PagingData.from(listOf(RepoEntity(stargazersCount = 1)))
         whenever(mockGetRepositoriesUseCase.invoke()).thenReturn(flow { emit(pagingData) } )
         mainActionProcessor = FakeMainActionProcessor()
 
@@ -62,7 +63,7 @@ class MainViewModelTest {
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
-            mainViewModel.process(Action.UserAction.OnClickUnStar(RepoModel()))
+            mainViewModel.process(Action.UserAction.OnClickUnStar(Repository()))
 
             val result = awaitItem()
             assertTrue(result is UiState.Error)
@@ -77,7 +78,7 @@ class MainViewModelTest {
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
-            mainViewModel.process(Action.UserAction.OnClickStar(RepoModel()))
+            mainViewModel.process(Action.UserAction.OnClickStar(Repository()))
 
             val result = awaitItem()
             assertTrue(result is UiState.Error)
@@ -92,7 +93,7 @@ class MainViewModelTest {
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
-            mainViewModel.process(Action.UserAction.OnClickUnStar(RepoModel()))
+            mainViewModel.process(Action.UserAction.OnClickUnStar(Repository()))
 
             val result = awaitItem()
             assertTrue(result is UiState.Error)
@@ -107,7 +108,7 @@ class MainViewModelTest {
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
-            mainViewModel.process(Action.UserAction.OnClickStar(RepoModel()))
+            mainViewModel.process(Action.UserAction.OnClickStar(Repository()))
 
             val result = awaitItem()
             assertTrue(result is UiState.Error)
@@ -122,7 +123,7 @@ class MainViewModelTest {
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
-            mainViewModel.process(Action.UserAction.OnClickUnStar(RepoModel()))
+            mainViewModel.process(Action.UserAction.OnClickUnStar(Repository()))
 
             val result = awaitItem()
             assertTrue(result is UiState.Error)
@@ -137,7 +138,7 @@ class MainViewModelTest {
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
-            mainViewModel.process(Action.UserAction.OnClickStar(RepoModel()))
+            mainViewModel.process(Action.UserAction.OnClickStar(Repository()))
 
             val result = awaitItem()
             assertTrue(result is UiState.Error)
@@ -164,7 +165,7 @@ class MainViewModelTest {
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
-            mainViewModel.process(Action.UserAction.OnClickStar(RepoModel()))
+            mainViewModel.process(Action.UserAction.OnClickStar(Repository()))
             awaitItem() // showError
 
             mainViewModel.process(Action.UserAction.DialogDismiss)
@@ -187,7 +188,7 @@ class MainViewModelTest {
     @Test
     fun process_actionIsOnClickRepository_eventIsOpenRepository() = runTest {
         mainViewModel.eventFlow.test {
-            mainViewModel.process(Action.UserAction.OnClickRepository(RepoModel()))
+            mainViewModel.process(Action.UserAction.OnClickRepository(Repository()))
 
             val result = awaitItem()
             assertTrue(result is Event.OpenRepositoryDetail)

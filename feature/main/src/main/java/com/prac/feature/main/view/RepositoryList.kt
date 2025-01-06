@@ -14,25 +14,24 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.prac.core.designsystem.R
-import com.prac.data.model.RepoModel
+import com.prac.feature.main.model.Repository
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
 internal fun RepositoryList(
-    repositories: LazyPagingItems<RepoModel>,
+    repositories: LazyPagingItems<Repository>,
     loadState: LoadState,
     onClickRetry: () -> Unit,
-    starStateRequest: (RepoModel) -> Unit,
-    onClickStar: (RepoModel) -> Unit,
-    onClickUnStar: (RepoModel) -> Unit,
-    onClickRepository: (RepoModel) -> Unit,
+    starStateRequest: (Repository) -> Unit,
+    onClickStar: (Repository) -> Unit,
+    onClickUnStar: (Repository) -> Unit,
+    onClickRepository: (Repository) -> Unit,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
@@ -48,7 +47,7 @@ internal fun RepositoryList(
         ) { index ->
             repositories[index].let { repository ->
                 repository?.let {
-                    Repository(
+                    RepositoryItem(
                         repository = repository,
                         onClickStar = onClickStar,
                         onClickUnStar = onClickUnStar,
@@ -85,8 +84,8 @@ internal fun RepositoryListPreview() {
     val repositories = flowOf(
         PagingData.from(
             listOf(
-                RepoModel(stargazersCount = 5),
-                RepoModel(stargazersCount = 6)
+                Repository(stargazersCount = 5),
+                Repository(stargazersCount = 6)
             )
         )
     ).collectAsLazyPagingItems()
@@ -109,8 +108,8 @@ internal fun RepositoryListLoadStatePreview() {
     val repositories = flowOf(
         PagingData.from(
             listOf(
-                RepoModel(stargazersCount = 5),
-                RepoModel(stargazersCount = 6)
+                Repository(stargazersCount = 5),
+                Repository(stargazersCount = 6)
             )
         )
     ).collectAsLazyPagingItems()

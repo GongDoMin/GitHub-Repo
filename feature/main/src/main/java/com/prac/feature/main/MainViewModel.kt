@@ -6,17 +6,19 @@ import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.prac.core.common.dispatcher.IODispatcher
 import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.core.common.mvi.model.model
 import com.prac.core.common.mvi.reducer.Reducer
-import com.prac.data.model.RepoModel
 import com.prac.domain.GetRepositoriesUseCase
 import com.prac.feature.main.di.MainActionAnnotation
 import com.prac.feature.main.di.MainReducerAnnotation
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
 import com.prac.feature.main.model.Mutation
+import com.prac.feature.main.model.Repository
+import com.prac.feature.main.model.toRepository
 import com.prac.feature.main.view.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -44,7 +46,7 @@ internal class MainViewModel @Inject constructor(
     val uiStateFlow = model.uiState
     val eventFlow = model.event
 
-    private val _repositories = MutableStateFlow<PagingData<RepoModel>>(PagingData.empty())
+    private val _repositories = MutableStateFlow<PagingData<Repository>>(PagingData.empty())
     val repositories = _repositories.asStateFlow()
 
     fun process(action: Action) {
@@ -57,7 +59,7 @@ internal class MainViewModel @Inject constructor(
     private fun load() {
         viewModelScope.launch {
             getRepositoriesUseCase.invoke().cachedIn(viewModelScope).collect { pagingData ->
-                _repositories.update { pagingData }
+                _repositories.update { pagingData.map { it.toRepository() } }
             }
         }
     }

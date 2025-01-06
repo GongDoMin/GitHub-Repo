@@ -6,10 +6,10 @@ import com.prac.core.common.constants.UNKNOWN
 import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
-import com.prac.data.model.RepoModel
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
 import com.prac.feature.main.model.Mutation
+import com.prac.feature.main.model.Repository
 import com.prac.feature.main.refresh.RefreshState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -27,15 +27,15 @@ class FakeMainActionProcessor : ActionProcessor<Action, Mutation, Event> {
                 is Action.InternalAction.UpdateRefreshState -> handleUpdateRefreshState(action.refreshState)
                 is Action.UserAction.DialogDismiss -> handleDialogDismiss()
                 is Action.UserAction.LogoutDialogDismiss -> handleLogoutDialogDismiss()
-                is Action.UserAction.OnClickRepository -> handleClickRepository(action.repoModel)
+                is Action.UserAction.OnClickRepository -> handleClickRepository(action.repository)
                 is Action.UserAction.OnClickRetry -> handleClickRetry()
                 is Action.UserAction.OnClickStar -> handleClickStar()
                 is Action.UserAction.OnClickUnStar -> handleClickUnStar()
             }
         }
 
-    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleClickRepository(repoModel: RepoModel) {
-        emit(null to Event.OpenRepositoryDetail(repoModel.owner.login, repoModel.name))
+    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleClickRepository(repository: Repository) {
+        emit(null to Event.OpenRepositoryDetail(repository.owner.login, repository.name))
     }
 
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleClickRetry() {

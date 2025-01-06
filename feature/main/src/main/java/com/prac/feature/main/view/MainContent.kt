@@ -9,30 +9,26 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.prac.core.common.constants.INVALID_TOKEN
-import com.prac.core.common.ui.MessageDialog
 import com.prac.core.designsystem.R
-import com.prac.data.model.RepoModel
+import com.prac.feature.main.model.Repository
 import com.prac.feature.main.refresh.PullToRefreshLayout
 import com.prac.feature.main.refresh.RefreshState
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
 internal fun MainContent(
-    repositories: LazyPagingItems<RepoModel>,
+    repositories: LazyPagingItems<Repository>,
     loadState: LoadState,
     onClickRetry: () -> Unit,
-    starStateRequest: (RepoModel) -> Unit,
-    onClickStar: (RepoModel) -> Unit,
-    onClickUnStar: (RepoModel) -> Unit,
-    onClickRepository: (RepoModel) -> Unit,
+    starStateRequest: (Repository) -> Unit,
+    onClickStar: (Repository) -> Unit,
+    onClickUnStar: (Repository) -> Unit,
+    onClickRepository: (Repository) -> Unit,
     refreshState: RefreshState,
     onUpdateRefreshState: (RefreshState) -> Unit,
     modifier: Modifier = Modifier
@@ -77,8 +73,8 @@ internal fun MainContentPreview() {
     val repositories = flowOf(
         PagingData.from(
             listOf(
-                RepoModel(stargazersCount = 5),
-                RepoModel(stargazersCount = 6)
+                Repository(stargazersCount = 5),
+                Repository(stargazersCount = 6)
             )
         )
     ).collectAsLazyPagingItems()
@@ -102,8 +98,8 @@ internal fun MainContentErrorPreview() {
     val repositories = flowOf(
         PagingData.from(
             listOf(
-                RepoModel(stargazersCount = 5),
-                RepoModel(stargazersCount = 6)
+                Repository(stargazersCount = 5),
+                Repository(stargazersCount = 6)
             )
         )
     ).collectAsLazyPagingItems()
@@ -124,7 +120,7 @@ internal fun MainContentErrorPreview() {
 @Preview(showBackground = true)
 @Composable
 internal fun MainContentLoadStatePreview() {
-    val repositories = flowOf<PagingData<RepoModel>>(PagingData.empty()).collectAsLazyPagingItems()
+    val repositories = flowOf<PagingData<Repository>>(PagingData.empty()).collectAsLazyPagingItems()
 
     MainContent(
         repositories = repositories,
@@ -142,7 +138,7 @@ internal fun MainContentLoadStatePreview() {
 @Preview(showBackground = true)
 @Composable
 internal fun MainContentRefreshStatePreview() {
-    val repositories = flowOf<PagingData<RepoModel>>(PagingData.empty()).collectAsLazyPagingItems()
+    val repositories = flowOf<PagingData<Repository>>(PagingData.empty()).collectAsLazyPagingItems()
 
     MainContent(
         repositories = repositories,
