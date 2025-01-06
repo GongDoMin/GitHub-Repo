@@ -1,7 +1,9 @@
 package com.prac.network.dto
 
+import com.prac.auth.model.TokenModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.time.ZonedDateTime
 
 @Serializable
 data class TokenDto(
@@ -12,3 +14,12 @@ data class TokenDto(
     @SerialName("scope") val scope: String = "",
     @SerialName("token_type") val tokenType: String = ""
 )
+
+fun TokenDto.toTokenModel() =
+    TokenModel(
+        accessToken = accessToken,
+        refreshToken = refreshToken,
+        expiredIn = expiresIn,
+        refreshExpiredIn = refreshTokenExpiresIn,
+        updatedAt = ZonedDateTime.now()
+    )

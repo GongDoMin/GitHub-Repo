@@ -1,7 +1,7 @@
 package com.prac.network.service
 
 import com.prac.auth.AuthManager
-import com.prac.auth.model.TokenModel
+import com.prac.network.dto.toTokenModel
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject
@@ -15,13 +15,7 @@ internal class AuthorizationInterceptor @Inject constructor(
 
         val accessToken = authManager.getAccessToken(
             refreshAccessToken = {
-                val response = gitHubAuthService.refreshAccessToken(refreshToken = it)
-                TokenModel(
-                    accessToken = response.accessToken,
-                    refreshToken = response.refreshToken,
-                    expiredIn = response.expiresIn,
-                    refreshExpiredIn = response.refreshTokenExpiresIn
-                )
+                gitHubAuthService.refreshAccessToken(refreshToken = it).toTokenModel()
             }
         )
 
