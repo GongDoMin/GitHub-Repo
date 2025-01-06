@@ -13,8 +13,6 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 
 internal class ProfileActionProcessor(
-    private val tokenRepository: TokenRepository,
-    private val repoRepository: RepoRepository,
     private val clearLocalDataUseCase: ClearLocalDataUseCase,
     private val backOffWorkManager: BackOffWorkManager
 ) : ActionProcessor<Action, Mutation, Event> {

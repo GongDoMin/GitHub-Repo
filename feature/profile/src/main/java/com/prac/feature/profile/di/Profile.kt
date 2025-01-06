@@ -38,14 +38,10 @@ internal class ProfileModule {
     @Provides
     @ProfileActionAnnotation
     fun providesProfileActionProcessor(
-        tokenRepository: TokenRepository,
-        repoRepository: RepoRepository,
         clearLocalDataUseCase: ClearLocalDataUseCase,
         backOffWorkManager: BackOffWorkManager
     ) : ActionProcessor<Action, Mutation, Event> {
         return ProfileActionProcessor(
-            tokenRepository = tokenRepository,
-            repoRepository = repoRepository,
             clearLocalDataUseCase =clearLocalDataUseCase,
             backOffWorkManager = backOffWorkManager
         )
