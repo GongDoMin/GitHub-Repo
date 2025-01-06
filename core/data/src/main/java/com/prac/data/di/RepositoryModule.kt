@@ -4,6 +4,8 @@ import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.data.impl.RepoRepositoryImpl
 import com.prac.data.impl.TokenRepositoryImpl
+import com.prac.data.impl.UserRepositoryImpl
+import com.prac.data.repository.UserRepository
 import com.prac.local.RemoteKeyLocalDataSource
 import com.prac.local.RepositoryLocalDataSource
 import com.prac.local.TokenLocalDataSource
@@ -42,4 +44,12 @@ class RepositoryModule {
         userLocalDataSource: UserLocalDataSource
     ): RepoRepository =
         RepoRepositoryImpl(repoApiDataSource, repoStarApiDataSource, repositoryLocalDataSource, remoteKeyLocalDataSource, userLocalDataSource)
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(
+        userApiDataSource: UserApiDataSource,
+        userLocalDataSource: UserLocalDataSource
+    ): UserRepository =
+        UserRepositoryImpl(userApiDataSource, userLocalDataSource)
 }
