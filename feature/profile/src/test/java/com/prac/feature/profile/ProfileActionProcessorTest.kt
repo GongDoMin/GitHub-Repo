@@ -1,31 +1,30 @@
 package com.prac.feature.profile
 
 import app.cash.turbine.test
-import com.prac.domain.ClearLocalDataUseCase
 import com.prac.feature.profile.model.Action
 import com.prac.feature.profile.model.Event
 import com.prac.feature.profile.model.Mutation
 import com.prac.shared_test.common.FakeBackOffWorkManager
+import com.prac.shared_test.domain.FakeClearLocalDataUseCase
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.verify
 
 @RunWith(MockitoJUnitRunner::class)
 class ProfileActionProcessorTest {
 
-    @Mock private lateinit var mockClearLocalDataUseCase: ClearLocalDataUseCase
+    private lateinit var clearLocalDataUseCase: FakeClearLocalDataUseCase
     private val backOffWork: FakeBackOffWorkManager = FakeBackOffWorkManager()
     private lateinit var profileActionProcessor: ProfileActionProcessor
 
     @Before
     fun setUp() {
+        clearLocalDataUseCase = FakeClearLocalDataUseCase()
         profileActionProcessor = ProfileActionProcessor(
-            clearLocalDataUseCase = mockClearLocalDataUseCase,
+            clearLocalDataUseCase = clearLocalDataUseCase,
             backOffWorkManager = backOffWork
         )
     }
@@ -72,6 +71,6 @@ class ProfileActionProcessorTest {
         }
 
         assertTrue(backOffWork.getWorkSize() == 0)
-        verify(mockClearLocalDataUseCase).invoke()
+        assertTrue(clearLocalDataUseCase.isCleared())
     }
 }
