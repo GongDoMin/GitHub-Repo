@@ -10,6 +10,7 @@ import com.prac.data.exception.RepositoryException
 import com.prac.data.model.RepoModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
+import com.prac.domain.ClearTokenUseCase
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
 import com.prac.feature.main.model.Mutation
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.flow
 internal class MainActionProcessor(
     private val tokenRepository: TokenRepository,
     private val repoRepository: RepoRepository,
+    private val clearTokenUseCase: ClearTokenUseCase,
     private val backOffWorkManager: BackOffWorkManager
 ) : ActionProcessor<Action, Mutation, Event> {
 
@@ -139,7 +141,7 @@ internal class MainActionProcessor(
     }
 
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.logout() {
-        tokenRepository.clearToken()
+        clearTokenUseCase.invoke()
         repoRepository.clearRepositories()
         backOffWorkManager.clearWork()
 

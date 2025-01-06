@@ -5,6 +5,7 @@ import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
+import com.prac.domain.ClearTokenUseCase
 import com.prac.feature.detail.DetailActionProcessor
 import com.prac.feature.detail.DetailReducerProcessor
 import com.prac.feature.detail.model.Action
@@ -39,11 +40,13 @@ internal class DetailModule {
     fun providesDetailActionProcessor(
         tokenRepository: TokenRepository,
         repoRepository: RepoRepository,
+        clearTokenUseCase: ClearTokenUseCase,
         backOffWorkManager: BackOffWorkManager
     ): ActionProcessor<Action, Mutation, Event> {
         return DetailActionProcessor(
             repoRepository = repoRepository,
             tokenRepository = tokenRepository,
+            clearTokenUseCase = clearTokenUseCase,
             backOffWorkManager = backOffWorkManager
         )
     }
