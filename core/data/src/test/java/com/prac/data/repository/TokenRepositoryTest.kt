@@ -72,6 +72,7 @@ class TokenRepositoryTest {
 
     @Test
     fun clearToken_clearTokenAndUserName_tokenAndUserNameIsEmpty() = runTest {
+        makeTokenRepositoryWithInitialToken()
 
         tokenRepository.clearToken()
 
