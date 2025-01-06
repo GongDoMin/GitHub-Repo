@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-    api(project(":core:local"))
+    implementation(project(":core:auth"))
     testImplementation(project(":shared-test"))
 
     implementation(libs.okhttp)
