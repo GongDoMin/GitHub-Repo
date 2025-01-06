@@ -5,12 +5,12 @@ import com.prac.data.exception.CommonException
 import com.prac.data.model.OwnerModel
 import com.prac.data.model.RepoDetailModel
 import com.prac.data.repository.RepoRepository
-import com.prac.domain.ClearLocalDataUseCase
 import com.prac.feature.detail.model.Action
 import com.prac.feature.detail.model.Event
 import com.prac.feature.detail.model.Mutation
 import com.prac.feature.detail.model.toRepositoryDetail
 import com.prac.shared_test.common.FakeBackOffWorkManager
+import com.prac.shared_test.domain.FakeClearLocalDataUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -31,7 +31,7 @@ import org.mockito.kotlin.whenever
 class DetailActionProcessorTest {
 
     @Mock private lateinit var mockRepoRepository: RepoRepository
-    @Mock private lateinit var mockClearLocalDataUseCase: ClearLocalDataUseCase
+    private lateinit var clearLocalDataUseCase: FakeClearLocalDataUseCase
     private val backOffWork: FakeBackOffWorkManager = FakeBackOffWorkManager()
     private lateinit var detailActionProcessor: DetailActionProcessor
 
@@ -48,9 +48,10 @@ class DetailActionProcessorTest {
 
     @Before
     fun setUp() {
+        clearLocalDataUseCase = FakeClearLocalDataUseCase()
         detailActionProcessor = DetailActionProcessor(
             repoRepository = mockRepoRepository,
-            clearLocalDataUseCase = mockClearLocalDataUseCase,
+            clearLocalDataUseCase = clearLocalDataUseCase,
             backOffWorkManager = backOffWork
         )
     }
@@ -198,8 +199,7 @@ class DetailActionProcessorTest {
         }
 
         assertTrue(backOffWork.getWorkSize() == 0)
-        verify(mockRepoRepository).clearRepositories()
-        verify(mockClearLocalDataUseCase).invoke()
+        assertTrue(clearLocalDataUseCase.isCleared())
     }
 
     @Test
@@ -215,8 +215,7 @@ class DetailActionProcessorTest {
         }
 
         assertTrue(backOffWork.getWorkSize() == 0)
-        verify(mockRepoRepository).clearRepositories()
-        verify(mockClearLocalDataUseCase).invoke()
+        assertTrue(clearLocalDataUseCase.isCleared())
     }
 
     @Test
