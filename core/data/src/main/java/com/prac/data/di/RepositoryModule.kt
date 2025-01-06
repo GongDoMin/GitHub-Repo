@@ -28,11 +28,9 @@ class RepositoryModule {
     @Singleton
     fun provideTokenRepository(
         tokenLocalDataSource: TokenLocalDataSource,
-        authApiDataSource: AuthApiDataSource,
-        userApiDataSource: UserApiDataSource,
-        userLocalDataSource: UserLocalDataSource
+        authApiDataSource: AuthApiDataSource
     ): TokenRepository =
-        TokenRepositoryImpl(tokenLocalDataSource, authApiDataSource, userApiDataSource, userLocalDataSource)
+        TokenRepositoryImpl(tokenLocalDataSource, authApiDataSource)
 
     @Provides
     @Singleton
