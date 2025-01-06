@@ -9,7 +9,7 @@ android {
 
 dependencies {
 
-    implementation(project(":core:data"))
+    api(project(":core:data"))
     testImplementation(project(":shared-test"))
     androidTestImplementation(project(":shared-test"))
 
