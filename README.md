@@ -1,22 +1,36 @@
-## Summary
+# Github App
 
-이 프로젝트는 GitHub API 를 사용하여 레파지토리 목록을 불러와 화면에서 표시하고, 각 레포지토리의 세부 정보를 확인할 수 있도록 구현된 프로젝트입니다. 간결한 UI 를 목표로 설계했으며, API 통신, Room 을 통한 Star State 동기화, Exponential Backoff, Compose 를 통해 Android 개발의 다양한 기술을 적용한 예시 프로젝트입니다.
+- **Summary**
+    
+    이 프로젝트는 GitHub API 를 사용하여 레파지토리 목록을 불러와 화면에서 표시하고, 각 레포지토리의 세부 정보를 확인할 수 있도록 구현된 프로젝트입니다. 간결한 UI 를 목표로 설계했으며, API 통신, Room 을 통한 Star State 동기화, Exponential Backoff, Compose 등 Android 개발의 다양한 기술을 적용한 프로젝트입니다.
+    
+- **Built With**
 
-## Built With
+    `Coroutine`  `Flow`  `Compose`  `Room`   `Paging3`  `Hilt`  `ProtoDataStore`  `Retrofit2` `OkHttp3`  `Glide`  `Markwon`
+    
+- **Architecture**
 
-`Coroutine` `Flow` `Compose` `Room` `Paging3` `Hilt` `ProtoDataStore` `Retrofit2` `OkHttp3` `Glide` `Markwon`
+    android app architecture ( UI layer -> Domain layer (optional) -> Data layer ) 를 참고하여 설계했으며, MVI (Model - View - Intnet ) 패턴을 적용하여 상태(state) 를 관리합니다.
 
 ## Architecture
 
-이 프로젝트는 `MVI`를 기반으로 설계되었습니다.
+이 프로젝트는 android app architecture 를 기반으로 참고하여 설계했습니다.
 
-![Architecture](https://github.com/user-attachments/assets/125ffc92-6f01-4785-99a9-82d655b27772)
+![Architecture](https://github.com/user-attachments/assets/cc382dc2-f5ea-4505-b141-d5118503de53)
 
-- **`UI layer`** : `UI layer` 는 사용자와 상호 작용할 수 있는 화면을 구성하는 UI 요소들과 앱 상태를 저장하고 configuration change 의 경우 데이터를 복원하는 ViewModel 로 구성되어 있습니다.
+- **`UI layer` ( user interface, presentation )** : `UI layer` 는 사용자와 상호 작용할 수 있는 화면을 구성하는 UI 요소들과 앱 상태를 저장하고 configuration change 의 경우 데이터를 복원하는 ViewModel 로 구성되어 있습니다.
 
-- **`Data layer`** : `Data layer` 는 로컬 데이터베이스에서 데이터를 쿼리하고 네트워크에서 데이터를 요청하는 등 비즈니스 로직을 포함합니다.
+- **`Domain layer`** : `Domain layer` 는 여러 `Repository` 를 활용해야 하는 경우, ViewModel 의 재사용성을 높이기 위해 고려된 layer 이다. 필수적인 경우에만 필요한 `Usecase` 만 구현하여 선택적으로 사용합니다.
 
-### MVI Architecture
+- **`Data layer`** : `Data layer` 는 데이터를 원격 API 또는 로컬 데이터베이스와 상호작용하며, 비즈니스 로직을 포함해 데이터를 가공하거나 제공하는 역할을 합니다.
+
+- **`Network layer`** : `Network layer` 는 네트워크 통신과 관련된 작업을 처리하는 layer 입니다.
+
+- **`Auth layer`** : `Auth layer` 는 네트워크 통신 중 인증 정보를 관리하며, API 요청 시 토큰을 포함하거나 갱신하는 등의 역할을 담당합니다.
+  
+- **`Local layer`** : `Local layer` 는 로컬 데이터베이스 또는 파일 시스템에 데이터를 저장하고 읽어오는 작업을 처리합니다.
+
+### MVI
 ![MVI](https://github.com/user-attachments/assets/45832345-b661-4f91-819c-8ad0e333a549)
 
 - **`View`**
@@ -41,12 +55,11 @@
     - 상태 변경 로직은 Reducer에 집중되어 있습니다.
 
 ## Modularization
-![Modularization](https://github.com/user-attachments/assets/f8b1720f-fbeb-44e2-97b7-e567f07e5a01)
+![Modularization](https://github.com/user-attachments/assets/c31a2abd-4dbe-44ea-a594-c27614b6e4a4)
 
-
-- **`app`** : `app 모듈`은 앱 구조를 구성하고 동작을 제어하는 코드를 포함합니다. 예를 들어, GithubApp 과 같이 앱의 진입점이 되거나, 내비게이션 설정 및 바텀 네비게이션을 처리하는 scaffold 그리고 MainActivity 가 이에 해당합니다. 
-- **`feature`** : `feature 모듈`은 특정 기능을 처리하도록 설계된 모듈입니다. 네비게이션이나 특정 상황에서 feature 모듈 간 연결이 필요한 경우 의존성을 허용하고 있습니다. 현재 feature:home 은 feature:main, feature:detail 에 대해 참조하고 있습니다.
-- **`core`** : `core 모듈`은 앱 전반에서 공유되어야 할 코드를 포함하고 있는 모듈입니다. core 모듈은 feature 모듈과 app 모듈과 같은 상위 모듈에서 필요한 기반을 제공합니다.
+- **`app`** : `app 모듈`은 앱의 구조를 정의하고 동작을 제어하는 코드를 포함합니다. 예를 들어, 앱의 진입점 역할을 하는 GithubApp, 내비게이션 설정 및 바텀 네비게이션을 처리하는 Scaffold, 그리고 MainActivity가 이에 해당합니다.
+- **`feature`** : `feature 모듈`은 특정 화면이나 기능을 독립적으로 처리하도록 설계된 모듈입니다.
+- **`core`** : `core 모듈`은 앱 전반에서 공유되는 코드와 공통 기능을 포함하는 모듈입니다. core 모듈은 feature 모듈과 app 모듈 등에서 필요한 기반을 제공합니다.
 
 ## ScreenShots
 
