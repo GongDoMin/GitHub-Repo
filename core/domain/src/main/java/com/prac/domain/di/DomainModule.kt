@@ -1,0 +1,23 @@
+package com.prac.domain.di
+
+import com.prac.data.repository.TokenRepository
+import com.prac.data.repository.UserRepository
+import com.prac.domain.AuthorizeOAuthUseCase
+import com.prac.domain.impl.AuthorizeOAuthUseCaseImpl
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+class DomainModule {
+    @Provides
+    @Singleton
+    fun provideAuthorizeOAuthUseCase(
+        tokenRepository: TokenRepository,
+        userRepository: UserRepository
+    ) : AuthorizeOAuthUseCase =
+        AuthorizeOAuthUseCaseImpl(tokenRepository, userRepository)
+}
