@@ -10,6 +10,7 @@ class ClearTokenUseCaseImpl @Inject constructor(
     private val userRepository: UserRepository
 ) : ClearTokenUseCase {
     override suspend fun invoke() {
-        TODO("Not yet implemented")
+        tokenRepository.clearToken()
+        userRepository.clearUserName()
     }
 }
