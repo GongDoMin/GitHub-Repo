@@ -118,8 +118,6 @@ internal class RepoRepositoryImpl @Inject constructor(
 
     override suspend fun isStarred(id: Int, repoName: String) {
         try {
-            val userName = userLocalDataSource.getUserName()
-
             repoStarApiDataSource.isStarred(userName, repoName)
 
             repositoryLocalDataSource.updateStarState(id, true)
