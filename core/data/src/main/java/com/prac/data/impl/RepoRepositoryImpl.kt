@@ -175,7 +175,6 @@ internal class RepoRepositoryImpl @Inject constructor(
         }
 
         try {
-            val userName = userLocalDataSource.getUserName()
             val response = repoApiDataSource.getRepositories(userName, PAGE_SIZE, page)
 
             if (loadType == LoadType.REFRESH) {
