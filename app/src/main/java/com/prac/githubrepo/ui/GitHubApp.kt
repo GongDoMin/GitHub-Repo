@@ -57,7 +57,7 @@ fun GitHubApp(
             startDestination = startDestination,
         ) {
             loginScreen(
-                onNavigateToMain = { navigationActions.navigateToBottom(Routes.HOME) ㄴㅅ},
+                onNavigateToMain = { navigationActions.navigateToBottom(Routes.HOME) },
             )
 
             navigation<Routes.HOME>(startDestination = Routes.HOME.MAIN) {
