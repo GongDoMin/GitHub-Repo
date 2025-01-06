@@ -43,12 +43,6 @@ class NavigationActions(private val navController: NavController) {
         }
     }
 
-    fun navigateToMain() {
-        navController.navigate(HOME.MAIN) {
-            popBackStack()
-        }
-    }
-
     fun navigateToDetail(userName: String, repoName: String) {
         navController.navigate(HOME.DETAIL(userName, repoName))
     }
