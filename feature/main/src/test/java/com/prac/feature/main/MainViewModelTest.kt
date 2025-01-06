@@ -1,6 +1,5 @@
 package com.prac.feature.main
 
-import androidx.paging.PagingData
 import app.cash.turbine.test
 import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.common.constants.INVALID_TOKEN
@@ -15,9 +14,9 @@ import com.prac.feature.main.model.Event
 import com.prac.feature.main.model.Mutation
 import com.prac.feature.main.model.Repository
 import com.prac.feature.main.view.UiState
+import com.prac.shared_test.domain.FakeGetRepositoriesUseCase
 import com.prac.shared_test.rules.StandardTestDispatcherRule
 import com.prac.shared_test.ui.FakeMainActionProcessor
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -25,12 +24,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.whenever
 
-@RunWith(MockitoJUnitRunner::class)
 class MainViewModelTest {
 
     @get:Rule
@@ -38,18 +32,16 @@ class MainViewModelTest {
 
     private val mainReducerProcessor = MainReducerProcessor()
 
-    @Mock private lateinit var mockGetRepositoriesUseCase: GetRepositoriesUseCase
+    private val getRepositoriesUseCase: GetRepositoriesUseCase = FakeGetRepositoriesUseCase(listOf(RepoEntity(stargazersCount = 1)))
     private lateinit var mainActionProcessor: ActionProcessor<Action, Mutation, Event>
     private lateinit var mainViewModel: MainViewModel
 
     @Before
     fun setUp() = runTest {
-        val pagingData = PagingData.from(listOf(RepoEntity(stargazersCount = 1)))
-        whenever(mockGetRepositoriesUseCase.invoke()).thenReturn(flow { emit(pagingData) } )
         mainActionProcessor = FakeMainActionProcessor()
 
         mainViewModel = MainViewModel(
-            getRepositoriesUseCase = mockGetRepositoriesUseCase,
+            getRepositoriesUseCase = getRepositoriesUseCase,
             mainReducerProcessor = mainReducerProcessor,
             mainActionProcessor = mainActionProcessor,
             ioDispatcher = standardTestDispatcherRule.testDispatcher
