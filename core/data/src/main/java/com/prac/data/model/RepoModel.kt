@@ -10,7 +10,7 @@ data class RepoModel(
     val stargazersCount: Int = 0,
     val defaultBranch: String = "",
     val updatedAt: String = "",
-    var isStarred: Boolean? = null
+    val isStarred: Boolean? = null
 )
 
 fun RepoDto.toRepoModel() =
