@@ -8,7 +8,10 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
+@OptIn(ExperimentalEncodingApi::class)
 class RepoApiDataSourceTest {
 
     private lateinit var gitHubService: FakeGitHubService
@@ -20,10 +23,12 @@ class RepoApiDataSourceTest {
         RepoDto(2, "test3", OwnerDto("test3", "test3"), 0, "master", "test1"),
         RepoDto(3, "test4", OwnerDto("test4", "test4"), 0, "master", "test1"),
     )
+    private val content = "hi!!"
+    private val encoded = Base64.encode(content.toByteArray())
 
     @Before
     fun setUp() {
-        gitHubService = FakeGitHubService(repoList)
+        gitHubService = FakeGitHubService(repoList, encoded)
         repoApiDatasource = RepoApiDataSourceImpl(gitHubService)
     }
 
@@ -77,6 +82,6 @@ class RepoApiDataSourceTest {
     fun getRepoReadme_whenCalled_returnInt() = runTest {
         val result = repoApiDatasource.getRepoReadme("", "")
 
-        assertEquals(result, "hi!")
+        assertEquals(result, content)
     }
 }

@@ -9,7 +9,8 @@ import com.prac.network.service.GitHubService
 import kotlin.math.sign
 
 class FakeGitHubService(
-    private val repoList: List<RepoDto>
+    private val repoList: List<RepoDto> = emptyList(),
+    private val readMe: String = ""
 ): GitHubService {
 
     override suspend fun getRepos(userName: String, perPage: Int, page: Int): List<RepoDto> {
@@ -52,6 +53,6 @@ class FakeGitHubService(
     }
 
     override suspend fun getRepoReadme(userName: String, repoName: String): ReadmeDto {
-        return ReadmeDto(content = "hi!")
+        return ReadmeDto(content = readMe)
     }
 }
