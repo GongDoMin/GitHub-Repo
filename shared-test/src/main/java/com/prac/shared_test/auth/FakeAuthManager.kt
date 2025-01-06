@@ -1,6 +1,7 @@
-package com.prac.shared_test.network.service
+package com.prac.shared_test.auth
 
-import com.prac.network.service.authManager.AuthManager
+import com.prac.auth.AuthManager
+import com.prac.auth.model.TokenModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.atomic.AtomicInteger
@@ -16,22 +17,37 @@ class FakeAuthManager(
     var refreshCallTimes = 0
         private set
 
-    override fun checkTokenIsExpired() {
+    override fun getAccessToken(refreshAccessToken: suspend (refreshToken: String) -> TokenModel): String {
         if (isAccessTokenIsExpired()) {
             synchronized(this) {
                 if (!accessTokenIsRefreshed) {
                     if (isRefreshTokenIsExpired()) {
-                        clearToken()
+                        runBlocking {
+                            clearToken()
+                        }
                         return@synchronized
                     }
 
-                    refreshAccessToken()
+                    runBlocking {
+                        val response = refreshAccessToken("")
+
+                        accessTokenIsRefreshed = true
+                        refreshCallTimes++
+
+                        refreshError?.let {
+                            clearToken()
+                            return@runBlocking
+                        }
+
+                        simulateNetworkDelay()
+                        accessToken = response.accessToken
+                    }
                 }
             }
         }
-    }
 
-    override fun getAccessToken(): String = accessToken
+        return accessToken
+    }
 
     private fun isAccessTokenIsExpired() : Boolean {
         val currentCallCount = callTimes.incrementAndGet()
@@ -39,21 +55,6 @@ class FakeAuthManager(
     }
 
     private fun isRefreshTokenIsExpired() : Boolean = isRefreshTokenExpired
-
-    private fun refreshAccessToken() {
-        runBlocking {
-            accessTokenIsRefreshed = true
-            refreshCallTimes++
-
-            refreshError?.let {
-                clearToken()
-                return@runBlocking
-            }
-
-            simulateNetworkDelay()
-            accessToken = "refresh$accessToken"
-        }
-    }
 
     private fun clearToken() {
         runBlocking {

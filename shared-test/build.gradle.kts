@@ -18,6 +18,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:local"))
+    implementation(project(":core:auth"))
     implementation(project(":core:network"))
 
     implementation(project(":feature:login"))
