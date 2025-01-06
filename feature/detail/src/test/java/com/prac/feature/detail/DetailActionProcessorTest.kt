@@ -5,13 +5,12 @@ import com.prac.data.exception.CommonException
 import com.prac.data.model.OwnerModel
 import com.prac.data.model.RepoDetailModel
 import com.prac.data.repository.RepoRepository
-import com.prac.domain.ClearTokenUseCase
+import com.prac.domain.ClearLocalDataUseCase
 import com.prac.feature.detail.model.Action
 import com.prac.feature.detail.model.Event
 import com.prac.feature.detail.model.Mutation
 import com.prac.feature.detail.model.toRepositoryDetail
 import com.prac.shared_test.common.FakeBackOffWorkManager
-import com.prac.shared_test.data.FakeTokenRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -32,7 +31,7 @@ import org.mockito.kotlin.whenever
 class DetailActionProcessorTest {
 
     @Mock private lateinit var mockRepoRepository: RepoRepository
-    @Mock private lateinit var mockClearTokenUseCase: ClearTokenUseCase
+    @Mock private lateinit var mockClearLocalDataUseCase: ClearLocalDataUseCase
     private val backOffWork: FakeBackOffWorkManager = FakeBackOffWorkManager()
     private lateinit var detailActionProcessor: DetailActionProcessor
 
@@ -51,7 +50,7 @@ class DetailActionProcessorTest {
     fun setUp() {
         detailActionProcessor = DetailActionProcessor(
             repoRepository = mockRepoRepository,
-            clearTokenUseCase = mockClearTokenUseCase,
+            clearLocalDataUseCase = mockClearLocalDataUseCase,
             backOffWorkManager = backOffWork
         )
     }
@@ -200,7 +199,7 @@ class DetailActionProcessorTest {
 
         assertTrue(backOffWork.getWorkSize() == 0)
         verify(mockRepoRepository).clearRepositories()
-        verify(mockClearTokenUseCase).invoke()
+        verify(mockClearLocalDataUseCase).invoke()
     }
 
     @Test
@@ -217,7 +216,7 @@ class DetailActionProcessorTest {
 
         assertTrue(backOffWork.getWorkSize() == 0)
         verify(mockRepoRepository).clearRepositories()
-        verify(mockClearTokenUseCase).invoke()
+        verify(mockClearLocalDataUseCase).invoke()
     }
 
     @Test

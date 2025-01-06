@@ -1,5 +1,5 @@
 package com.prac.domain
 
-interface ClearTokenUseCase {
+interface ClearLocalDataUseCase {
     suspend operator fun invoke()
 }

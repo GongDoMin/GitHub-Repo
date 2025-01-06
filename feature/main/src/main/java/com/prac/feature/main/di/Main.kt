@@ -5,7 +5,7 @@ import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
-import com.prac.domain.ClearTokenUseCase
+import com.prac.domain.ClearLocalDataUseCase
 import com.prac.feature.main.MainActionProcessor
 import com.prac.feature.main.MainReducerProcessor
 import com.prac.feature.main.model.Action
@@ -40,13 +40,13 @@ internal class MainModule {
     fun providesMainActionProcessor(
         tokenRepository: TokenRepository,
         repoRepository: RepoRepository,
-        clearTokenUseCase: ClearTokenUseCase,
+        clearLocalDataUseCase: ClearLocalDataUseCase,
         backOffWorkManager: BackOffWorkManager
     ): ActionProcessor<Action, Mutation, Event> {
         return MainActionProcessor(
             tokenRepository = tokenRepository,
             repoRepository = repoRepository,
-            clearTokenUseCase = clearTokenUseCase,
+            clearLocalDataUseCase = clearLocalDataUseCase,
             backOffWorkManager = backOffWorkManager
         )
     }

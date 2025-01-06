@@ -4,7 +4,7 @@ import com.prac.core.common.backoff.BackOffWorkManager
 import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
-import com.prac.domain.ClearTokenUseCase
+import com.prac.domain.ClearLocalDataUseCase
 import com.prac.feature.profile.model.Action
 import com.prac.feature.profile.model.Event
 import com.prac.feature.profile.model.Mutation
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.flow
 internal class ProfileActionProcessor(
     private val tokenRepository: TokenRepository,
     private val repoRepository: RepoRepository,
-    private val clearTokenUseCase: ClearTokenUseCase,
+    private val clearLocalDataUseCase: ClearLocalDataUseCase,
     private val backOffWorkManager: BackOffWorkManager
 ) : ActionProcessor<Action, Mutation, Event> {
     override fun invoke(action: Action): Flow<Pair<Mutation?, Event?>> =
@@ -43,9 +43,8 @@ internal class ProfileActionProcessor(
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleClickPositiveButton() {
         emit(Mutation.ShowLoading to null)
 
-        clearTokenUseCase.invoke()
+        clearLocalDataUseCase.invoke()
         backOffWorkManager.clearWork()
-        repoRepository.clearRepositories()
 
         emit(null to Event.Logout)
     }

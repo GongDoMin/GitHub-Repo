@@ -5,7 +5,7 @@ import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
-import com.prac.domain.ClearTokenUseCase
+import com.prac.domain.ClearLocalDataUseCase
 import com.prac.feature.profile.ProfileActionProcessor
 import com.prac.feature.profile.ProfileReducerProcessor
 import com.prac.feature.profile.model.Action
@@ -40,13 +40,13 @@ internal class ProfileModule {
     fun providesProfileActionProcessor(
         tokenRepository: TokenRepository,
         repoRepository: RepoRepository,
-        clearTokenUseCase: ClearTokenUseCase,
+        clearLocalDataUseCase: ClearLocalDataUseCase,
         backOffWorkManager: BackOffWorkManager
     ) : ActionProcessor<Action, Mutation, Event> {
         return ProfileActionProcessor(
             tokenRepository = tokenRepository,
             repoRepository = repoRepository,
-            clearTokenUseCase =clearTokenUseCase,
+            clearLocalDataUseCase =clearLocalDataUseCase,
             backOffWorkManager = backOffWorkManager
         )
     }

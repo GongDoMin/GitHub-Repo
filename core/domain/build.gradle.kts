@@ -1,6 +1,7 @@
 plugins {
     id("githubrepo.android.library")
     id("githubrepo.android.room")
+    id("githubrepo.android.mockito")
 }
 
 android {

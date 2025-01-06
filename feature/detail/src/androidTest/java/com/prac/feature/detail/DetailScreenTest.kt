@@ -13,8 +13,7 @@ import com.prac.core.designsystem.R
 import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.REPO_NAME
 import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.USER_NAME
 import com.prac.data.repository.RepoRepository
-import com.prac.data.repository.TokenRepository
-import com.prac.domain.ClearTokenUseCase
+import com.prac.domain.ClearLocalDataUseCase
 import com.prac.feature.detail.view.DetailScreen
 import com.prac.shared_test.HiltTestActivity
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -44,7 +43,7 @@ class DetailScreenTest {
     private var isMainScreen = false
 
     @Inject lateinit var repoRepository: RepoRepository
-    @Inject lateinit var clearTokenUseCase: ClearTokenUseCase
+    @Inject lateinit var clearLocalDataUseCase: ClearLocalDataUseCase
     @Inject lateinit var backOffWorkManager: BackOffWorkManager
 
     @Before
@@ -52,7 +51,7 @@ class DetailScreenTest {
         hiltRule.inject()
         detailActionProcessor = DetailActionProcessor(
             repoRepository = repoRepository,
-            clearTokenUseCase = clearTokenUseCase,
+            clearLocalDataUseCase = clearLocalDataUseCase,
             backOffWorkManager = backOffWorkManager
         )
     }

@@ -4,10 +4,10 @@ import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.data.repository.UserRepository
 import com.prac.domain.AuthorizeOAuthUseCase
-import com.prac.domain.ClearTokenUseCase
+import com.prac.domain.ClearLocalDataUseCase
 import com.prac.domain.GetRepositoriesUseCase
 import com.prac.domain.impl.AuthorizeOAuthUseCaseImpl
-import com.prac.domain.impl.ClearTokenUseCaseImpl
+import com.prac.domain.impl.ClearLocalDataUseCaseImpl
 import com.prac.domain.impl.GetRepositoriesUseCaseImpl
 import dagger.Module
 import dagger.Provides
@@ -28,11 +28,12 @@ class DomainModule {
 
     @Provides
     @Singleton
-    fun provideClearTokenUseCase(
+    fun provideClearLocalDataUseCase(
         tokenRepository: TokenRepository,
-        userRepository: UserRepository
-    ) : ClearTokenUseCase =
-        ClearTokenUseCaseImpl(tokenRepository, userRepository)
+        userRepository: UserRepository,
+        repoRepository: RepoRepository
+    ) : ClearLocalDataUseCase =
+        ClearLocalDataUseCaseImpl(tokenRepository, userRepository, repoRepository)
 
     @Provides
     @Singleton

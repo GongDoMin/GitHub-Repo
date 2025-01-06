@@ -5,7 +5,7 @@ import com.prac.core.common.constants.INVALID_TOKEN
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
-import com.prac.domain.ClearTokenUseCase
+import com.prac.domain.ClearLocalDataUseCase
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
 import com.prac.feature.main.model.Mutation
@@ -32,7 +32,7 @@ class MainActionProcessorTest {
 
     private val tokenRepository: FakeTokenRepository = FakeTokenRepository("test")
     @Mock private lateinit var mockRepoRepository: RepoRepository
-    @Mock private lateinit var mockClearTokenUseCase: ClearTokenUseCase
+    @Mock private lateinit var mockClearLocalDataUseCase: ClearLocalDataUseCase
     private val backOffWork: FakeBackOffWorkManager = FakeBackOffWorkManager()
     private lateinit var mainActionProcessor: MainActionProcessor
 
@@ -41,7 +41,7 @@ class MainActionProcessorTest {
         mainActionProcessor = MainActionProcessor(
             tokenRepository = tokenRepository,
             repoRepository = mockRepoRepository,
-            clearTokenUseCase = mockClearTokenUseCase,
+            clearLocalDataUseCase = mockClearLocalDataUseCase,
             backOffWorkManager = backOffWork
         )
     }
@@ -78,7 +78,7 @@ class MainActionProcessorTest {
         }
 
         verify(mockRepoRepository).clearRepositories()
-        verify(mockClearTokenUseCase).invoke()
+        verify(mockClearLocalDataUseCase).invoke()
         assertTrue(backOffWork.getWorkSize() == 0)
     }
 
