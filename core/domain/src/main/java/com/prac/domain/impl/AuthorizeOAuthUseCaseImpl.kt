@@ -13,7 +13,7 @@ class AuthorizeOAuthUseCaseImpl @Inject constructor(
 ) : AuthorizeOAuthUseCase {
     override suspend fun invoke(code: String) : Result<Unit> {
         return try {
-            val accessToken = tokenRepository.authorizeOAuthV2(code)
+            val accessToken = tokenRepository.authorizeOAuth(code)
 
             val userName = userRepository.getUserName(accessToken)
             userRepository.setUserName(userName)

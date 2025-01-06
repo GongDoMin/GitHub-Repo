@@ -4,12 +4,8 @@ import com.prac.data.repository.TokenRepository
 import com.prac.data.exception.CommonException
 
 class FakeTokenRepository(
-    var token: String = ""
+    private var token: String = ""
 ): TokenRepository {
-    override suspend fun authorizeOAuthV2(code: String): String {
-        TODO("Not yet implemented")
-    }
-
     /**
      * @param code 요청 코드.
      *
@@ -18,15 +14,14 @@ class FakeTokenRepository(
      * | `ioException` | IOException 발생 |
      * |    `else`    | 기타 오류 |
      */
-
-    override suspend fun authorizeOAuth(code: String): Result<Unit> {
+    override suspend fun authorizeOAuth(code: String): String {
         if (code == "success") {
-            return Result.success(Unit)
+            return token
         }
 
-        return when (code) {
-            "ioException" -> Result.failure(CommonException.NetworkError())
-            else -> Result.failure(CommonException.AuthorizationError())
+        when (code) {
+            "ioException" -> throw CommonException.NetworkError()
+            else -> throw CommonException.AuthorizationError()
         }
     }
 
@@ -36,9 +31,5 @@ class FakeTokenRepository(
 
     override suspend fun clearToken() {
         token = ""
-    }
-
-    override suspend fun refreshToken(refreshToken: String): Result<Unit> {
-        throw NotImplementedError("this method is not supported in fake repository")
     }
 }
