@@ -21,7 +21,7 @@ class AuthorizeOAuthUseCaseImpl @Inject constructor(
             Result.success(Unit)
         } catch (e: Exception) {
             when (e) {
-                is IOException -> {
+                is CommonException.NetworkError -> {
                     Result.failure(CommonException.NetworkError())
                 }
                 else -> {
