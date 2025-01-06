@@ -1,13 +1,11 @@
 package com.prac.network.di
 
-import com.prac.local.TokenLocalDataSource
-import com.prac.network.AuthApiDataSource
+import com.prac.auth.AuthManager
 import com.prac.network.BuildConfig
 import com.prac.network.di.annotation.AuthOkHttpClient
 import com.prac.network.di.annotation.BasicOkHttpClient
 import com.prac.network.service.AuthorizationInterceptor
-import com.prac.network.service.authManager.AuthManager
-import com.prac.network.service.authManager.AuthManagerImpl
+import com.prac.network.service.GitHubAuthService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,17 +20,11 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 internal class OkHttpClientModule {
     @Provides
-    fun provideAuthManager(
-        authApiDataSource: AuthApiDataSource,
-        tokenLocalDataSource: TokenLocalDataSource
-    ) : AuthManager =
-        AuthManagerImpl(authApiDataSource, tokenLocalDataSource)
-
-    @Provides
     fun provideAuthorizationInterceptor(
+        gitHubAuthService: GitHubAuthService,
         authManager: AuthManager
     ) : Interceptor =
-        AuthorizationInterceptor(authManager)
+        AuthorizationInterceptor(gitHubAuthService, authManager)
 
     @Provides
     @Singleton
