@@ -12,6 +12,7 @@ import com.prac.feature.main.model.Mutation
 import com.prac.feature.main.model.Repository
 import com.prac.shared_test.common.FakeBackOffWorkManager
 import com.prac.shared_test.data.FakeTokenRepository
+import com.prac.shared_test.domain.FakeClearLocalDataUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -31,15 +32,16 @@ import org.mockito.kotlin.whenever
 class MainActionProcessorTest {
 
     @Mock private lateinit var mockRepoRepository: RepoRepository
-    @Mock private lateinit var mockClearLocalDataUseCase: ClearLocalDataUseCase
+    private lateinit var clearLocalDataUseCase: FakeClearLocalDataUseCase
     private val backOffWork: FakeBackOffWorkManager = FakeBackOffWorkManager()
     private lateinit var mainActionProcessor: MainActionProcessor
 
     @Before
     fun setUp() {
+        clearLocalDataUseCase = FakeClearLocalDataUseCase()
         mainActionProcessor = MainActionProcessor(
             repoRepository = mockRepoRepository,
-            clearLocalDataUseCase = mockClearLocalDataUseCase,
+            clearLocalDataUseCase = clearLocalDataUseCase,
             backOffWorkManager = backOffWork
         )
     }
@@ -65,8 +67,6 @@ class MainActionProcessorTest {
 
     @Test
     fun invoke_actionIsLogout_mutationIsError() = runTest {
-        whenever(mockRepoRepository.clearRepositories()).thenReturn(Unit)
-
         mainActionProcessor(Action.InternalAction.Logout).test {
             val (mutation, event) = awaitItem()
             awaitComplete()
@@ -75,8 +75,7 @@ class MainActionProcessorTest {
             assertTrue(event == null)
         }
 
-        verify(mockRepoRepository).clearRepositories()
-        verify(mockClearLocalDataUseCase).invoke()
+        clearLocalDataUseCase.isCleared()
         assertTrue(backOffWork.getWorkSize() == 0)
     }
 
