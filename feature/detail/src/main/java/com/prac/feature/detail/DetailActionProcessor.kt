@@ -8,13 +8,14 @@ import com.prac.core.common.constants.UNKNOWN
 import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
-import com.prac.data.model.RepoDetailModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
 import com.prac.domain.ClearTokenUseCase
 import com.prac.feature.detail.model.Action
 import com.prac.feature.detail.model.Event
 import com.prac.feature.detail.model.Mutation
+import com.prac.feature.detail.model.RepositoryDetail
+import com.prac.feature.detail.model.toRepositoryDetail
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
@@ -29,8 +30,8 @@ internal class DetailActionProcessor(
         flow {
             when (action) {
                 is Action.InternalAction.GetRepository -> getRepository(action.userName, action.repoName)
-                is Action.UserAction.OnClickUnStar -> handleClickUnStar(action.repoDetailModel)
-                is Action.UserAction.OnClickStar -> handleClickStar(action.repoDetailModel)
+                is Action.UserAction.OnClickUnStar -> handleClickUnStar(action.repository)
+                is Action.UserAction.OnClickStar -> handleClickStar(action.repository)
                 is Action.UserAction.DialogDismiss -> handleDialogDismiss()
                 is Action.UserAction.LogoutDialogDismiss -> handleLogoutDialogDismiss()
             }
@@ -47,28 +48,28 @@ internal class DetailActionProcessor(
 
         repoRepository.getRepository(userName, repoName)
             .onSuccess {
-                handleGetRepositorySuccess(it)
+                handleGetRepositorySuccess(it.toRepositoryDetail())
             }
             .onFailure {
                 handleGetRepositoryFailure(it)
             }
     }
 
-    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleClickUnStar(repoDetailModel: RepoDetailModel) {
-        repoRepository.starLocalRepository(repoDetailModel.id, repoDetailModel.stargazersCount + 1)
+    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleClickUnStar(repository: RepositoryDetail) {
+        repoRepository.starLocalRepository(repository.id, repository.stargazersCount + 1)
 
-        repoRepository.starRepository(repoDetailModel.owner.login, repoDetailModel.name)
+        repoRepository.starRepository(repository.owner.login, repository.name)
             .onFailure {
-                handleStarRepositoryFailure(it, repoDetailModel)
+                handleStarRepositoryFailure(it, repository)
             }
     }
 
-    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleClickStar(repoDetailModel: RepoDetailModel) {
-        repoRepository.unStarLocalRepository(repoDetailModel.id, repoDetailModel.stargazersCount - 1)
+    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleClickStar(repository: RepositoryDetail) {
+        repoRepository.unStarLocalRepository(repository.id, repository.stargazersCount - 1)
 
-        repoRepository.unStarRepository(repoDetailModel.owner.login, repoDetailModel.name)
+        repoRepository.unStarRepository(repository.owner.login, repository.name)
             .onFailure {
-                handleUnStarRepositoryFailure(it, repoDetailModel)
+                handleUnStarRepositoryFailure(it, repository)
             }
     }
 
@@ -80,8 +81,8 @@ internal class DetailActionProcessor(
         emit(null to Event.Logout)
     }
 
-    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleGetRepositorySuccess(repoDetailModel: RepoDetailModel) {
-        repoRepository.getStarStateAndStarCount(repoDetailModel.id).collect { pair ->
+    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleGetRepositorySuccess(repository: RepositoryDetail) {
+        repoRepository.getStarStateAndStarCount(repository.id).collect { pair ->
             val isStarred = pair.first
             val stargazersCount = pair.second
 
@@ -93,10 +94,10 @@ internal class DetailActionProcessor(
 
             // List 화면에서 Star Check 가 완료되기 전에 사용자가 Detail 화면으로 넘어온 경우 null 을 반환한다.
             if (isStarred == null) {
-                repoRepository.isStarred(repoDetailModel.id, repoDetailModel.name)
+                repoRepository.isStarred(repository.id, repository.name)
             }
 
-            emit(Mutation.ShowRepository(repository = repoDetailModel.copy(isStarred = isStarred,stargazersCount = stargazersCount)) to null)
+            emit(Mutation.ShowRepository(repository = repository.copy(isStarred = isStarred,stargazersCount = stargazersCount)) to null)
         }
     }
 
@@ -117,48 +118,48 @@ internal class DetailActionProcessor(
         }
     }
 
-    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleStarRepositoryFailure(t: Throwable, repoDetailModel: RepoDetailModel) {
+    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleStarRepositoryFailure(t: Throwable, repository: RepositoryDetail) {
         when (t) {
             is CommonException.NetworkError -> {
                 backOffWorkManager.addWork(
-                    uniqueID = "star_${repoDetailModel.id}",
-                    work = { repoRepository.starRepository(repoDetailModel.owner.login, repoDetailModel.name) }
+                    uniqueID = "star_${repository.id}",
+                    work = { repoRepository.starRepository(repository.owner.login, repository.name) }
                 )
             }
             is CommonException.AuthorizationError -> {
                 logout()
             }
             is RepositoryException.NotFoundRepository -> {
-                repoRepository.unStarLocalRepository(repoDetailModel.id, repoDetailModel.stargazersCount)
+                repoRepository.unStarLocalRepository(repository.id, repository.stargazersCount)
 
                 emit(Mutation.ShowError(INVALID_REPOSITORY) to null)
             }
             else -> {
-                repoRepository.unStarLocalRepository(repoDetailModel.id, repoDetailModel.stargazersCount)
+                repoRepository.unStarLocalRepository(repository.id, repository.stargazersCount)
 
                 emit(Mutation.ShowError(UNKNOWN) to null)
             }
         }
     }
 
-    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleUnStarRepositoryFailure(t: Throwable, repoDetailModel: RepoDetailModel) {
+    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleUnStarRepositoryFailure(t: Throwable, repository: RepositoryDetail) {
         when (t) {
             is CommonException.NetworkError -> {
                 backOffWorkManager.addWork(
-                    uniqueID = "star_${repoDetailModel.id}",
-                    work = { repoRepository.unStarRepository(repoDetailModel.owner.login, repoDetailModel.name) }
+                    uniqueID = "star_${repository.id}",
+                    work = { repoRepository.unStarRepository(repository.owner.login, repository.name) }
                 )
             }
             is CommonException.AuthorizationError -> {
                 logout()
             }
             is RepositoryException.NotFoundRepository -> {
-                repoRepository.starLocalRepository(repoDetailModel.id, repoDetailModel.stargazersCount)
+                repoRepository.starLocalRepository(repository.id, repository.stargazersCount)
 
                 emit(Mutation.ShowError(INVALID_REPOSITORY) to null)
             }
             else -> {
-                repoRepository.starLocalRepository(repoDetailModel.id, repoDetailModel.stargazersCount)
+                repoRepository.starLocalRepository(repository.id, repository.stargazersCount)
 
                 emit(Mutation.ShowError(UNKNOWN) to null)
             }

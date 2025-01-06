@@ -37,14 +37,14 @@ import androidx.compose.ui.unit.sp
 import com.prac.core.common.ui.DrawableImage
 import com.prac.core.common.ui.UserProfile
 import com.prac.core.designsystem.R
-import com.prac.data.model.RepoDetailModel
+import com.prac.feature.detail.model.RepositoryDetail
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
 internal fun DetailContent(
-    repoDetail: RepoDetailModel,
-    onClickStar: (RepoDetailModel) -> Unit,
-    onClickUnStar: (RepoDetailModel) -> Unit,
+    repoDetail: RepositoryDetail,
+    onClickStar: (RepositoryDetail) -> Unit,
+    onClickUnStar: (RepositoryDetail) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -153,9 +153,9 @@ internal fun RepositoryName(
 
 @Composable
 internal fun RepositoryStarStateAndFork(
-    repoDetail: RepoDetailModel,
-    onClickStar: (RepoDetailModel) -> Unit,
-    onClickUnStar: (RepoDetailModel) -> Unit,
+    repoDetail: RepositoryDetail,
+    onClickStar: (RepositoryDetail) -> Unit,
+    onClickUnStar: (RepositoryDetail) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(

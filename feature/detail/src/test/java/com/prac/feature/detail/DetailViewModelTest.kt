@@ -16,12 +16,12 @@ import com.prac.data.model.RepoDetailModel
 import com.prac.feature.detail.model.Action
 import com.prac.feature.detail.model.Event
 import com.prac.feature.detail.model.Mutation
+import com.prac.feature.detail.model.toRepositoryDetail
 import com.prac.feature.detail.view.UiState
 import com.prac.shared_test.rules.StandardTestDispatcherRule
 import com.prac.shared_test.ui.FakeDetailActionProcessor
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -39,16 +39,16 @@ class DetailViewModelTest {
 
     private lateinit var detailViewModel: DetailViewModel
 
-    private val repoDetailEntity =
+    private val repository =
         RepoDetailModel(
             id = 1,
             name = "test",
             owner = OwnerModel(login = "test"),
             stargazersCount = 10,
             isStarred = true,
-        )
-    private val userName = repoDetailEntity.owner.login
-    private val repoName = repoDetailEntity.name
+        ).toRepositoryDetail()
+    private val userName = repository.owner.login
+    private val repoName = repository.name
 
     @Test
     fun process_actionIsGetRepository_uiStateHasRepository_whenValidInput() = runTest {
@@ -138,7 +138,7 @@ class DetailViewModelTest {
             awaitItem() // showRepository
 
             detailActionProcessorSetThrowable(CommonException.AuthorizationError())
-            detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
+            detailViewModel.process(Action.UserAction.OnClickUnStar(repository))
 
             val result = awaitItem()
             assertTrue(result is UiState.Error)
@@ -156,7 +156,7 @@ class DetailViewModelTest {
             awaitItem() // showRepository
 
             detailActionProcessorSetThrowable(CommonException.AuthorizationError())
-            detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
+            detailViewModel.process(Action.UserAction.OnClickStar(repository))
 
             val result = awaitItem()
             assertTrue(result is UiState.Error)
@@ -174,7 +174,7 @@ class DetailViewModelTest {
             awaitItem() // showRepository
 
             detailActionProcessorSetThrowable(RepositoryException.NotFoundRepository())
-            detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
+            detailViewModel.process(Action.UserAction.OnClickUnStar(repository))
 
             val result = awaitItem()
             assertTrue(result is UiState.Error)
@@ -192,7 +192,7 @@ class DetailViewModelTest {
             awaitItem() // showRepository
 
             detailActionProcessorSetThrowable(RepositoryException.NotFoundRepository())
-            detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
+            detailViewModel.process(Action.UserAction.OnClickStar(repository))
 
             val result = awaitItem()
             assertTrue(result is UiState.Error)
@@ -210,7 +210,7 @@ class DetailViewModelTest {
             awaitItem() // showRepository
 
             detailActionProcessorSetThrowable(CommonException.UnKnownError())
-            detailViewModel.process(Action.UserAction.OnClickUnStar(repoDetailEntity))
+            detailViewModel.process(Action.UserAction.OnClickUnStar(repository))
 
             val result = awaitItem()
             assertTrue(result is UiState.Error)
@@ -228,7 +228,7 @@ class DetailViewModelTest {
             awaitItem() // showRepository
 
             detailActionProcessorSetThrowable(CommonException.UnKnownError())
-            detailViewModel.process(Action.UserAction.OnClickStar(repoDetailEntity))
+            detailViewModel.process(Action.UserAction.OnClickStar(repository))
 
             val result = awaitItem()
             assertTrue(result is UiState.Error)

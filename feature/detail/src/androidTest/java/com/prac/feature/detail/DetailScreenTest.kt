@@ -14,9 +14,9 @@ import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.REPO_NAME
 import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.USER_NAME
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.TokenRepository
+import com.prac.domain.ClearTokenUseCase
 import com.prac.feature.detail.view.DetailScreen
 import com.prac.shared_test.HiltTestActivity
-import com.prac.shared_test.common.FakeBackOffWorkManager
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.Dispatchers
@@ -45,6 +45,7 @@ class DetailScreenTest {
 
     @Inject lateinit var repoRepository: RepoRepository
     @Inject lateinit var tokenRepository: TokenRepository
+    @Inject lateinit var clearTokenUseCase: ClearTokenUseCase
     @Inject lateinit var backOffWorkManager: BackOffWorkManager
 
     @Before
@@ -53,6 +54,7 @@ class DetailScreenTest {
         detailActionProcessor = DetailActionProcessor(
             repoRepository = repoRepository,
             tokenRepository = tokenRepository,
+            clearTokenUseCase = clearTokenUseCase,
             backOffWorkManager = backOffWorkManager
         )
     }

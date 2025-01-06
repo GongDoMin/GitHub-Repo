@@ -7,11 +7,11 @@ import com.prac.core.common.constants.UNKNOWN
 import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
-import com.prac.data.model.OwnerModel
-import com.prac.data.model.RepoDetailModel
 import com.prac.feature.detail.model.Action
 import com.prac.feature.detail.model.Event
 import com.prac.feature.detail.model.Mutation
+import com.prac.feature.detail.model.Owner
+import com.prac.feature.detail.model.RepositoryDetail
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
@@ -23,8 +23,8 @@ class FakeDetailActionProcessor : ActionProcessor<Action, Mutation, Event> {
         flow {
             when (action) {
                 is Action.InternalAction.GetRepository -> getRepository(action.userName, action.repoName)
-                is Action.UserAction.OnClickUnStar -> handleClickUnStar(action.repoDetailModel)
-                is Action.UserAction.OnClickStar -> handleClickStar(action.repoDetailModel)
+                is Action.UserAction.OnClickUnStar -> handleClickUnStar()
+                is Action.UserAction.OnClickStar -> handleClickStar()
                 is Action.UserAction.DialogDismiss -> handleDialogDismiss()
                 is Action.UserAction.LogoutDialogDismiss -> handleLogoutDialogDismiss()
             }
@@ -39,19 +39,19 @@ class FakeDetailActionProcessor : ActionProcessor<Action, Mutation, Event> {
         }
 
         if (!::throwable.isInitialized) {
-            emit(Mutation.ShowRepository(repository = RepoDetailModel(name = repoName, owner = OwnerModel(login = userName))) to null)
+            emit(Mutation.ShowRepository(repository = RepositoryDetail(name = repoName, owner = Owner(login = userName))) to null)
         } else {
             handleGetRepositoryFailure(throwable)
         }
     }
 
-    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleClickUnStar(repoDetailModel: RepoDetailModel) {
+    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleClickUnStar() {
         if (::throwable.isInitialized) {
             handleStarRepositoryFailure(throwable)
         }
     }
 
-    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleClickStar(repoDetailModel: RepoDetailModel) {
+    private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleClickStar() {
         if (::throwable.isInitialized) {
             handleUnStarRepositoryFailure(throwable)
         }

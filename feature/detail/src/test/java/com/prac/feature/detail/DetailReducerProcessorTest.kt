@@ -2,6 +2,8 @@ package com.prac.feature.detail
 
 import com.prac.data.model.RepoDetailModel
 import com.prac.feature.detail.model.Mutation
+import com.prac.feature.detail.model.RepositoryDetail
+import com.prac.feature.detail.model.toRepositoryDetail
 import com.prac.feature.detail.view.UiState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -32,10 +34,10 @@ class DetailReducerProcessorTest {
 
     @Test
     fun invoke_mutationIsShowRepository_uiStateIsShowRepository() {
-        val repository = RepoDetailModel()
+        val repository = RepositoryDetail()
 
         val result = detailReducerProcessorTest.invoke(Mutation.ShowRepository(repository), UiState.Loading)
 
-        assertEquals((result as UiState.Content), repository)
+        assertEquals((result as UiState.Content).repository, repository)
     }
 }

@@ -1,8 +1,8 @@
 package com.prac.feature.detail
 
-import com.prac.data.model.RepoDetailModel
 import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.feature.detail.model.Mutation
+import com.prac.feature.detail.model.RepositoryDetail
 import com.prac.feature.detail.view.UiState
 
 internal class DetailReducerProcessor : Reducer<Mutation, UiState> {
@@ -13,7 +13,7 @@ internal class DetailReducerProcessor : Reducer<Mutation, UiState> {
             is Mutation.ShowError -> showError(mutation.errorMessage)
         }
 
-    private fun showRepository(repository: RepoDetailModel) =
+    private fun showRepository(repository: RepositoryDetail) =
         UiState.Content(repository)
 
     private fun showLoading() =
