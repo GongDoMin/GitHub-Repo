@@ -9,7 +9,7 @@ import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
 import com.prac.data.model.RepoModel
-import com.prac.data.repository.RepoRepository
+import com.prac.domain.GetRepositoriesUseCase
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
 import com.prac.feature.main.model.Mutation
@@ -37,18 +37,18 @@ class MainViewModelTest {
 
     private val mainReducerProcessor = MainReducerProcessor()
 
-    @Mock private lateinit var mockRepoRepository: RepoRepository
+    @Mock private lateinit var mockGetRepositoriesUseCase: GetRepositoriesUseCase
     private lateinit var mainActionProcessor: ActionProcessor<Action, Mutation, Event>
     private lateinit var mainViewModel: MainViewModel
 
     @Before
     fun setUp() = runTest {
         val pagingData = PagingData.from(listOf(RepoModel(stargazersCount = 1)))
-        whenever(mockRepoRepository.getRepositories()).thenReturn(flow { emit(pagingData) } )
+        whenever(mockGetRepositoriesUseCase.invoke()).thenReturn(flow { emit(pagingData) } )
         mainActionProcessor = FakeMainActionProcessor()
 
         mainViewModel = MainViewModel(
-            repoRepository = mockRepoRepository,
+            getRepositoriesUseCase = mockGetRepositoriesUseCase,
             mainReducerProcessor = mainReducerProcessor,
             mainActionProcessor = mainActionProcessor,
             ioDispatcher = standardTestDispatcherRule.testDispatcher

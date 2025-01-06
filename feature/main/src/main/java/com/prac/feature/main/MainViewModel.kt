@@ -11,7 +11,7 @@ import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.core.common.mvi.model.model
 import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.data.model.RepoModel
-import com.prac.data.repository.RepoRepository
+import com.prac.domain.GetRepositoriesUseCase
 import com.prac.feature.main.di.MainActionAnnotation
 import com.prac.feature.main.di.MainReducerAnnotation
 import com.prac.feature.main.model.Action
@@ -21,8 +21,6 @@ import com.prac.feature.main.view.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -31,7 +29,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class MainViewModel @Inject constructor(
-    private val repoRepository: RepoRepository,
+    private val getRepositoriesUseCase: GetRepositoriesUseCase,
     @MainReducerAnnotation private val mainReducerProcessor: Reducer<Mutation, UiState>,
     @MainActionAnnotation private val mainActionProcessor: ActionProcessor<Action, Mutation, Event>,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
@@ -58,7 +56,7 @@ internal class MainViewModel @Inject constructor(
 
     private fun load() {
         viewModelScope.launch {
-            repoRepository.getRepositories().cachedIn(viewModelScope).collect { pagingData ->
+            getRepositoriesUseCase.invoke().cachedIn(viewModelScope).collect { pagingData ->
                 _repositories.update { pagingData }
             }
         }
