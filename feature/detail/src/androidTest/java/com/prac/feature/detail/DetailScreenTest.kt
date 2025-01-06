@@ -44,7 +44,6 @@ class DetailScreenTest {
     private var isMainScreen = false
 
     @Inject lateinit var repoRepository: RepoRepository
-    @Inject lateinit var tokenRepository: TokenRepository
     @Inject lateinit var clearTokenUseCase: ClearTokenUseCase
     @Inject lateinit var backOffWorkManager: BackOffWorkManager
 
@@ -53,7 +52,6 @@ class DetailScreenTest {
         hiltRule.inject()
         detailActionProcessor = DetailActionProcessor(
             repoRepository = repoRepository,
-            tokenRepository = tokenRepository,
             clearTokenUseCase = clearTokenUseCase,
             backOffWorkManager = backOffWorkManager
         )

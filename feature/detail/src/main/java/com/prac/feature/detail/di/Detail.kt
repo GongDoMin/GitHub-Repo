@@ -38,14 +38,12 @@ internal class DetailModule {
     @Provides
     @DetailActionAnnotation
     fun providesDetailActionProcessor(
-        tokenRepository: TokenRepository,
         repoRepository: RepoRepository,
         clearTokenUseCase: ClearTokenUseCase,
         backOffWorkManager: BackOffWorkManager
     ): ActionProcessor<Action, Mutation, Event> {
         return DetailActionProcessor(
             repoRepository = repoRepository,
-            tokenRepository = tokenRepository,
             clearTokenUseCase = clearTokenUseCase,
             backOffWorkManager = backOffWorkManager
         )

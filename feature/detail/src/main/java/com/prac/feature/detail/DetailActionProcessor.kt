@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.flow
 
 internal class DetailActionProcessor(
     private val repoRepository: RepoRepository,
-    private val tokenRepository: TokenRepository,
     private val clearTokenUseCase: ClearTokenUseCase,
     private val backOffWorkManager: BackOffWorkManager,
 ) : ActionProcessor<Action, Mutation, Event> {
