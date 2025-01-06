@@ -6,11 +6,9 @@ import com.prac.data.repository.UserRepository
 import com.prac.domain.AuthorizeOAuthUseCase
 import com.prac.domain.ClearTokenUseCase
 import com.prac.domain.GetRepositoriesUseCase
-import com.prac.domain.IsStarredUseCase
 import com.prac.domain.impl.AuthorizeOAuthUseCaseImpl
 import com.prac.domain.impl.ClearTokenUseCaseImpl
 import com.prac.domain.impl.GetRepositoriesUseCaseImpl
-import com.prac.domain.impl.IsStarredUseCaseImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,14 +33,6 @@ class DomainModule {
         userRepository: UserRepository
     ) : ClearTokenUseCase =
         ClearTokenUseCaseImpl(tokenRepository, userRepository)
-
-    @Provides
-    @Singleton
-    fun provideIsStarredUseCase(
-        repoRepository: RepoRepository,
-        userRepository: UserRepository
-    ) : IsStarredUseCase =
-        IsStarredUseCaseImpl(repoRepository, userRepository)
 
     @Provides
     @Singleton
