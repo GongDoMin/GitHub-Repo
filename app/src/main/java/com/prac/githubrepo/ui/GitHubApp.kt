@@ -15,13 +15,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import com.prac.core.navigation.NavigationActions
 import com.prac.core.navigation.Routes
 import com.prac.core.navigation.Routes.LOGIN
 import com.prac.feature.bottom.BottomNavItem
 import com.prac.feature.bottom.GitHubBottomNavigation
-import com.prac.feature.home.navigation.homeNavigation
+import com.prac.feature.detail.navigation.detailScreen
 import com.prac.feature.login.navigation.loginScreen
+import com.prac.feature.main.navigation.mainScreen
 import com.prac.feature.profile.navigation.profileScreen
 
 @Composable
@@ -58,11 +60,17 @@ fun GitHubApp(
                 onNavigateToMain = navigationActions::navigateToMain,
             )
 
-            homeNavigation(
-                onNavigateToLogin = navigationActions::navigateToLogin,
-                onNavigateToDetail = navigationActions::navigateToDetail,
-                onNavigateToBackStack = navigationActions::popBackStack
-            )
+            navigation<Routes.HOME>(startDestination = Routes.HOME.MAIN) {
+                mainScreen(
+                    onNavigateToLogin = navigationActions::navigateToLogin,
+                    onNavigateToDetail = navigationActions::navigateToDetail
+                )
+
+                detailScreen(
+                    onNavigateToLogin = navigationActions::navigateToLogin,
+                    onNavigateToBackStack = navigationActions::popBackStack
+                )
+            }
 
             profileScreen(
                 onNavigateToLogin = navigationActions::navigateToLogin
