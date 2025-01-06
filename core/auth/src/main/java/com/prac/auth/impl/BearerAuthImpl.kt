@@ -2,6 +2,7 @@ package com.prac.auth.impl
 
 import com.prac.auth.AuthManager
 import com.prac.auth.model.TokenModel
+import com.prac.auth.model.toTokenLocalDto
 import com.prac.local.TokenLocalDataSource
 import com.prac.local.datastore.token.TokenLocalDto
 import kotlinx.coroutines.runBlocking
@@ -22,15 +23,8 @@ internal class BearerAuthImpl @Inject constructor(
 
                 runBlocking {
                     try {
-                        val response = refreshAccessToken(tokenLocalDataSource.getToken().refreshToken)
                         tokenLocalDataSource.setToken(
-                            TokenLocalDto(
-                                accessToken = response.accessToken,
-                                refreshToken = response.refreshToken,
-                                expiresInSeconds = response.expiredIn,
-                                refreshTokenExpiresInSeconds = response.refreshExpiredIn,
-                                updatedAt = response.updatedAt
-                            )
+                            refreshAccessToken(tokenLocalDataSource.getToken().refreshToken).toTokenLocalDto()
                         )
                     } catch (e: Exception) {
                         tokenLocalDataSource.clearToken()
