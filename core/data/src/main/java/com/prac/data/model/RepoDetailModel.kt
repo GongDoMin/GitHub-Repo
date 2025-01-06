@@ -1,5 +1,7 @@
 package com.prac.data.model
 
+import com.prac.network.dto.RepoDetailDto
+
 data class RepoDetailModel(
     val id: Int = 0,
     val name: String = "",
@@ -12,3 +14,21 @@ data class RepoDetailModel(
     val subscribeCount: Int = 0,
     val readme: String = ""
 )
+
+fun RepoDetailDto.toRepoDetailModel(
+    issueCount: Int,
+    pullCount: Int,
+    readme: String
+) =
+    RepoDetailModel(
+        id = id,
+        name = name,
+        owner = owner.toOwnerModel(),
+        stargazersCount = stargazersCount,
+        forksCount = forksCount,
+        isStarred = null,
+        issueCount = issueCount,
+        pullCount = pullCount,
+        subscribeCount = subscribersCount,
+        readme = readme
+    )
