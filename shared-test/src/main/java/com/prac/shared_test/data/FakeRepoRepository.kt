@@ -48,7 +48,7 @@ class FakeRepoRepository @Inject constructor(
     override suspend fun getRepository(userName: String, repoName: String): Result<RepoDetailModel> {
         // DetailScreen 테스트를 위한 임시 데이터
         val repositories = makeRepoEntityList(1).map {
-            Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.defaultBranch, it.updatedAt, null)
+            it.toRepoModel().toRepository()
         }
         repositoryDatabase.repositoryDao().insertRepositories(repositories)
 

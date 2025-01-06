@@ -13,6 +13,7 @@ import com.prac.data.model.RepoModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
+import com.prac.data.model.toRepoDetailModel
 import com.prac.data.model.toRepoModel
 import com.prac.data.model.toRepository
 import com.prac.local.RemoteKeyLocalDataSource
@@ -82,8 +83,10 @@ internal class RepoRepositoryImpl @Inject constructor(
                 repositoryLocalDataSource.updateStarCount(repoDetailDto.id, repoDetailDto.stargazersCount)
 
                 Result.success(
-                    RepoDetailModel(
-                        repoDetailDto.id, repoDetailDto.name, OwnerModel(repoDetailDto.owner.login, repoDetailDto.owner.avatarUrl), repoDetailDto.stargazersCount, repoDetailDto.forksCount, null, issueCount, pullCount, repoDetailDto.subscribersCount, readme
+                    repoDetailDto.toRepoDetailModel(
+                        issueCount = issueCount,
+                        pullCount = pullCount,
+                        readme = readme
                     )
                 )
             }
