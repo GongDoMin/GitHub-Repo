@@ -20,4 +20,12 @@ class DomainModule {
         userRepository: UserRepository
     ) : AuthorizeOAuthUseCase =
         AuthorizeOAuthUseCaseImpl(tokenRepository, userRepository)
+
+    @Provides
+    @Singleton
+    fun provideClearTokenUseCase(
+        tokenRepository: TokenRepository,
+        userRepository: UserRepository
+    ) : AuthorizeOAuthUseCase =
+        AuthorizeOAuthUseCaseImpl(tokenRepository, userRepository)
 }
