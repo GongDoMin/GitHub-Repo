@@ -22,15 +22,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+@OptIn(ExperimentalPagingApi::class)
 class FakeRepoRepository @Inject constructor(
     private val repositoryDatabase: RepositoryDatabase
 ): RepoRepository() {
-    override suspend fun getRepositoriesV2(userName: String): Flow<PagingData<RepoModel>> {
-        TODO("Not yet implemented")
-    }
-
-    @OptIn(ExperimentalPagingApi::class)
-    override suspend fun getRepositories(): Flow<PagingData<RepoModel>> {
+    override suspend fun getRepositories(userName: String): Flow<PagingData<RepoModel>> {
         return Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
@@ -90,7 +86,6 @@ class FakeRepoRepository @Inject constructor(
         repositoryDatabase.repositoryDao().updateStarStateAndStarCount(id, false, updatedStarCount)
     }
 
-    @ExperimentalPagingApi
     override suspend fun load(loadType: LoadType, state: PagingState<Int, Repository>): MediatorResult {
         val page: Int = when (loadType) {
             LoadType.REFRESH -> {

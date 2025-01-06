@@ -13,5 +13,5 @@ class GetRepositoriesUseCaseImpl @Inject constructor(
     private val userRepository: UserRepository
 ): GetRepositoriesUseCase {
     override suspend fun invoke() : Flow<PagingData<RepoModel>> =
-        repoRepository.getRepositoriesV2(userRepository.getLocalUserName())
+        repoRepository.getRepositories(userRepository.getLocalUserName())
 }

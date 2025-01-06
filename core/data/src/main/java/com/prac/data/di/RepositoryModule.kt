@@ -38,10 +38,9 @@ class RepositoryModule {
         repoApiDataSource: RepoApiDataSource,
         repoStarApiDataSource: RepoStarApiDataSource,
         repositoryLocalDataSource: RepositoryLocalDataSource,
-        remoteKeyLocalDataSource: RemoteKeyLocalDataSource,
-        userLocalDataSource: UserLocalDataSource
+        remoteKeyLocalDataSource: RemoteKeyLocalDataSource
     ): RepoRepository =
-        RepoRepositoryImpl(repoApiDataSource, repoStarApiDataSource, repositoryLocalDataSource, remoteKeyLocalDataSource, userLocalDataSource)
+        RepoRepositoryImpl(repoApiDataSource, repoStarApiDataSource, repositoryLocalDataSource, remoteKeyLocalDataSource)
 
     @Provides
     @Singleton

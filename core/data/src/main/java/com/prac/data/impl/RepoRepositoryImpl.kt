@@ -37,30 +37,13 @@ internal class RepoRepositoryImpl @Inject constructor(
     private val repoStarApiDataSource: RepoStarApiDataSource,
     private val repositoryLocalDataSource: RepositoryLocalDataSource,
     private val remoteKeyLocalDataSource: RemoteKeyLocalDataSource,
-    private val userLocalDataSource: UserLocalDataSource
 ) : RepoRepository() {
 
     private var userName: String = ""
 
-    override suspend fun getRepositoriesV2(userName: String): Flow<PagingData<RepoModel>> {
+    override suspend fun getRepositories(userName: String): Flow<PagingData<RepoModel>> {
         this.userName = userName
 
-        return Pager(
-            config = PagingConfig(
-                pageSize = PAGE_SIZE,
-                enablePlaceholders = true
-            ),
-            remoteMediator = this,
-            pagingSourceFactory = { repositoryLocalDataSource.getRepositories() }
-        ).flow
-            .map { pagingData ->
-                pagingData.map { repository ->
-                    RepoModel(repository.id, repository.name, OwnerModel(repository.owner.login, repository.owner.avatarUrl), repository.stargazersCount, repository.defaultBranch, repository.updatedAt, repository.isStarred)
-                }
-            }
-    }
-
-    override suspend fun getRepositories(): Flow<PagingData<RepoModel>> {
         return Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
