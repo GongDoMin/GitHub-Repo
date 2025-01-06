@@ -2,6 +2,7 @@ package com.prac.feature.profile
 
 import app.cash.turbine.test
 import com.prac.data.repository.RepoRepository
+import com.prac.domain.ClearTokenUseCase
 import com.prac.feature.profile.model.Action
 import com.prac.feature.profile.model.Event
 import com.prac.feature.profile.model.Mutation
@@ -21,6 +22,7 @@ class ProfileActionProcessorTest {
 
     private val tokenRepository: FakeTokenRepository = FakeTokenRepository("test")
     @Mock private lateinit var mockRepoRepository: RepoRepository
+    @Mock private lateinit var mockClearTokenUseCase: ClearTokenUseCase
     private val backOffWork: FakeBackOffWorkManager = FakeBackOffWorkManager()
     private lateinit var profileActionProcessor: ProfileActionProcessor
 
@@ -29,6 +31,7 @@ class ProfileActionProcessorTest {
         profileActionProcessor = ProfileActionProcessor(
             tokenRepository = tokenRepository,
             repoRepository = mockRepoRepository,
+            clearTokenUseCase = mockClearTokenUseCase,
             backOffWorkManager = backOffWork
         )
     }
@@ -76,6 +79,6 @@ class ProfileActionProcessorTest {
 
         assertTrue(backOffWork.getWorkSize() == 0)
         verify(mockRepoRepository).clearRepositories()
-        assertTrue(tokenRepository.token.isEmpty())
+        verify(mockClearTokenUseCase).invoke()
     }
 }
