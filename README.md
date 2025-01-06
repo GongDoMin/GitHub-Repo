@@ -10,7 +10,7 @@
     
 - **Architecture**
 
-    android app architecture ( UI layer -> Domain layer (optional) -> Data layer ) 를 참고하여 설계했으며, MVI (Model - View - Intnet ) 패턴을 적용하여 상태(state) 를 관리합니다.
+    android app architecture ( UI layer -> Domain layer (optional) -> Data layer ) 를 참고하여 설계했으며, MVI (Model - View - Intent ) 패턴을 적용하여 상태(state) 를 관리합니다.
 
 ## Architecture
 
