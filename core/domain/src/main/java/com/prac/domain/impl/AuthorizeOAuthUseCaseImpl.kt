@@ -15,7 +15,7 @@ class AuthorizeOAuthUseCaseImpl @Inject constructor(
         return try {
             val accessToken = tokenRepository.authorizeOAuth(code)
 
-            val userName = userRepository.getUserName(accessToken)
+            val userName = userRepository.getApiUserName(accessToken)
             userRepository.setUserName(userName)
 
             Result.success(Unit)
