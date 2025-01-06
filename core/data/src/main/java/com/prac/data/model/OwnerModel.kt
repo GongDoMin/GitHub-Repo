@@ -14,6 +14,12 @@ fun OwnerDto.toOwnerModel() =
         avatarUrl = avatarUrl
     )
 
+fun Owner.toOwnerModel() =
+    OwnerModel(
+        login = login,
+        avatarUrl = avatarUrl
+    )
+
 fun OwnerModel.toOwner() =
     Owner(
         login = login,

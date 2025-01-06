@@ -24,6 +24,17 @@ fun RepoDto.toRepoModel() =
         isStarred = null
     )
 
+fun Repository.toRepoModel() =
+    RepoModel(
+        id = id,
+        name = name,
+        owner = owner.toOwnerModel(),
+        stargazersCount = stargazersCount,
+        defaultBranch = defaultBranch,
+        updatedAt = updatedAt,
+        isStarred = isStarred
+    )
+
 fun RepoModel.toRepository() =
     Repository(
         id = id,
