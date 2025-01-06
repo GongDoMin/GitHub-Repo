@@ -25,6 +25,10 @@ import javax.inject.Inject
 class FakeRepoRepository @Inject constructor(
     private val repositoryDatabase: RepositoryDatabase
 ): RepoRepository() {
+    override suspend fun getRepositoriesV2(userName: String): Flow<PagingData<RepoModel>> {
+        TODO("Not yet implemented")
+    }
+
     @OptIn(ExperimentalPagingApi::class)
     override suspend fun getRepositories(): Flow<PagingData<RepoModel>> {
         return Pager(

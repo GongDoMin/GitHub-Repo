@@ -31,6 +31,7 @@ import java.io.IOException
 import javax.inject.Inject
 import kotlin.coroutines.EmptyCoroutineContext
 
+@OptIn(ExperimentalPagingApi::class)
 internal class RepoRepositoryImpl @Inject constructor(
     private val repoApiDataSource: RepoApiDataSource,
     private val repoStarApiDataSource: RepoStarApiDataSource,
@@ -39,7 +40,26 @@ internal class RepoRepositoryImpl @Inject constructor(
     private val userLocalDataSource: UserLocalDataSource
 ) : RepoRepository() {
 
-    @OptIn(ExperimentalPagingApi::class)
+    private var userName: String = ""
+
+    override suspend fun getRepositoriesV2(userName: String): Flow<PagingData<RepoModel>> {
+        this.userName = userName
+
+        return Pager(
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                enablePlaceholders = true
+            ),
+            remoteMediator = this,
+            pagingSourceFactory = { repositoryLocalDataSource.getRepositories() }
+        ).flow
+            .map { pagingData ->
+                pagingData.map { repository ->
+                    RepoModel(repository.id, repository.name, OwnerModel(repository.owner.login, repository.owner.avatarUrl), repository.stargazersCount, repository.defaultBranch, repository.updatedAt, repository.isStarred)
+                }
+            }
+    }
+
     override suspend fun getRepositories(): Flow<PagingData<RepoModel>> {
         return Pager(
             config = PagingConfig(
@@ -136,7 +156,6 @@ internal class RepoRepositoryImpl @Inject constructor(
         repositoryLocalDataSource.updateStarStateAndStarCount(id, false, updatedStarCount)
     }
 
-    @OptIn(ExperimentalPagingApi::class)
     override suspend fun load(loadType: LoadType, state: PagingState<Int, Repository>): MediatorResult {
         val page: Int = when (loadType) {
             LoadType.REFRESH -> {

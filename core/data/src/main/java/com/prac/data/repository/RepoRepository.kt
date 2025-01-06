@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalPagingApi::class)
 abstract class RepoRepository : RemoteMediator<Int, Repository>() {
+    abstract suspend fun getRepositoriesV2(userName: String) : Flow<PagingData<RepoModel>>
+
     abstract suspend fun getRepositories() : Flow<PagingData<RepoModel>>
 
     abstract suspend fun getRepository(userName: String, repoName: String) : Result<RepoDetailModel>
