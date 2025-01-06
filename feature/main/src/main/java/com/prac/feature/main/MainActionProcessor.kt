@@ -8,7 +8,6 @@ import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
 import com.prac.data.repository.RepoRepository
-import com.prac.data.repository.TokenRepository
 import com.prac.domain.ClearLocalDataUseCase
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
@@ -20,7 +19,6 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 
 internal class MainActionProcessor(
-    private val tokenRepository: TokenRepository,
     private val repoRepository: RepoRepository,
     private val clearLocalDataUseCase: ClearLocalDataUseCase,
     private val backOffWorkManager: BackOffWorkManager

@@ -30,7 +30,6 @@ import org.mockito.kotlin.whenever
 @RunWith(MockitoJUnitRunner::class)
 class MainActionProcessorTest {
 
-    private val tokenRepository: FakeTokenRepository = FakeTokenRepository("test")
     @Mock private lateinit var mockRepoRepository: RepoRepository
     @Mock private lateinit var mockClearLocalDataUseCase: ClearLocalDataUseCase
     private val backOffWork: FakeBackOffWorkManager = FakeBackOffWorkManager()
@@ -39,7 +38,6 @@ class MainActionProcessorTest {
     @Before
     fun setUp() {
         mainActionProcessor = MainActionProcessor(
-            tokenRepository = tokenRepository,
             repoRepository = mockRepoRepository,
             clearLocalDataUseCase = mockClearLocalDataUseCase,
             backOffWorkManager = backOffWork

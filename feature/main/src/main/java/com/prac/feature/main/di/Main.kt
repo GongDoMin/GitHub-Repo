@@ -38,13 +38,11 @@ internal class MainModule {
     @Provides
     @MainActionAnnotation
     fun providesMainActionProcessor(
-        tokenRepository: TokenRepository,
         repoRepository: RepoRepository,
         clearLocalDataUseCase: ClearLocalDataUseCase,
         backOffWorkManager: BackOffWorkManager
     ): ActionProcessor<Action, Mutation, Event> {
         return MainActionProcessor(
-            tokenRepository = tokenRepository,
             repoRepository = repoRepository,
             clearLocalDataUseCase = clearLocalDataUseCase,
             backOffWorkManager = backOffWorkManager
