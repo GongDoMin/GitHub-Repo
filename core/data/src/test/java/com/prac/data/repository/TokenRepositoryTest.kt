@@ -19,8 +19,6 @@ class TokenRepositoryTest {
 
     private lateinit var tokenLocalDataSource: FakeTokenLocalDataSource
     private lateinit var authApiDataSource: FakeAuthApiDataSource
-    private lateinit var userApiDataSource: FakeUserApiDataSource
-    private lateinit var userLocalDataSource: FakeUserLocalDataSource
 
     private lateinit var tokenRepository: TokenRepository
 
@@ -74,41 +72,29 @@ class TokenRepositoryTest {
 
     @Test
     fun clearToken_clearTokenAndUserName_tokenAndUserNameIsEmpty() = runTest {
-        makeTokenRepositoryWithInitialToken()
-        userLocalDataSource.setUserName("test")
 
         tokenRepository.clearToken()
 
         val token = tokenLocalDataSource.getToken()
-        val userName = userLocalDataSource.getUserName()
         assertTrue(token.accessToken.isEmpty())
         assertTrue(token.refreshToken.isEmpty())
-        assertTrue(userName.isEmpty())
     }
 
     private fun makeTokenRepository() {
         tokenLocalDataSource = FakeTokenLocalDataSource()
         authApiDataSource = FakeAuthApiDataSource()
-        userApiDataSource = FakeUserApiDataSource()
-        userLocalDataSource = FakeUserLocalDataSource()
         tokenRepository = TokenRepositoryImpl(
             tokenLocalDataSource = tokenLocalDataSource,
-            authApiDataSource = authApiDataSource,
-            userApiDataSource = userApiDataSource,
-            userLocalDataSource = userLocalDataSource
+            authApiDataSource = authApiDataSource
         )
     }
 
     private fun makeTokenRepositoryWithInitialToken() {
         tokenLocalDataSource = FakeTokenLocalDataSource(token)
         authApiDataSource = FakeAuthApiDataSource()
-        userApiDataSource = FakeUserApiDataSource()
-        userLocalDataSource = FakeUserLocalDataSource()
         tokenRepository = TokenRepositoryImpl(
             tokenLocalDataSource = tokenLocalDataSource,
-            authApiDataSource = authApiDataSource,
-            userApiDataSource = userApiDataSource,
-            userLocalDataSource = userLocalDataSource
+            authApiDataSource = authApiDataSource
         )
     }
 }

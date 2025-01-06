@@ -38,7 +38,6 @@ internal class RepoRepositoryTest {
 
     private lateinit var repoApiDataSource: FakeRepoApiDataSource
     private lateinit var repoStarApiDataSource: FakeRepoStarApiDataSource
-    private lateinit var userLocalDataSource: UserLocalDataSource
     private lateinit var repositoryLocalDataSource: RepositoryLocalDataSource
     private lateinit var remoteKeyLocalDataSource: RemoteKeyLocalDataSource
 
@@ -489,11 +488,10 @@ internal class RepoRepositoryTest {
     private fun initRepoRepository() {
         repoApiDataSource = FakeRepoApiDataSource()
         repoStarApiDataSource = FakeRepoStarApiDataSource()
-        userLocalDataSource = FakeUserLocalDataSource()
         repositoryLocalDataSource = FakeRepositoryLocalDataSource()
         remoteKeyLocalDataSource = FakeRemoteKeyLocalDataSource()
 
-        repoRepository = RepoRepositoryImpl(repoApiDataSource, repoStarApiDataSource, repositoryLocalDataSource, remoteKeyLocalDataSource, userLocalDataSource)
+        repoRepository = RepoRepositoryImpl(repoApiDataSource, repoStarApiDataSource, repositoryLocalDataSource, remoteKeyLocalDataSource)
     }
 
     private fun getRepoDtoListForPage(page : Int, loadSize: Int) : List<RepoDto> =
