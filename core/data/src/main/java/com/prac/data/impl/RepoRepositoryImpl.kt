@@ -13,6 +13,8 @@ import com.prac.data.model.RepoModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
+import com.prac.data.model.toRepoModel
+import com.prac.data.model.toRepository
 import com.prac.local.RemoteKeyLocalDataSource
 import com.prac.local.RepositoryLocalDataSource
 import com.prac.local.UserLocalDataSource
@@ -170,7 +172,7 @@ internal class RepoRepositoryImpl @Inject constructor(
                 RemoteKey(it.id, prevKey, nextKey)
             }
             val repositories = response.map {
-                Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, it.defaultBranch, null)
+                it.toRepoModel().toRepository()
             }
             remoteKeyLocalDataSource.insertRemoteKeys(keys)
             repositoryLocalDataSource.insertRepositories(repositories)

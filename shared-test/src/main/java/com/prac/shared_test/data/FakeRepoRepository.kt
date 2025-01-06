@@ -11,6 +11,8 @@ import androidx.room.withTransaction
 import com.prac.data.model.OwnerModel
 import com.prac.data.model.RepoDetailModel
 import com.prac.data.model.RepoModel
+import com.prac.data.model.toRepoModel
+import com.prac.data.model.toRepository
 import com.prac.data.repository.RepoRepository
 import com.prac.local.room.database.RepositoryDatabase
 import com.prac.local.room.entity.Owner
@@ -120,7 +122,7 @@ class FakeRepoRepository @Inject constructor(
                     RemoteKey(it.id, prevKey, nextKey)
                 }
                 val repositories = response.map {
-                    Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.defaultBranch, it.updatedAt, null)
+                    it.toRepoModel().toRepository()
                 }
                 repositoryDatabase.remoteKeyDao().insertRemoteKeys(keys)
                 repositoryDatabase.repositoryDao().insertRepositories(repositories)
