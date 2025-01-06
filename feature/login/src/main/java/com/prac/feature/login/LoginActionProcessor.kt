@@ -5,6 +5,7 @@ import com.prac.core.common.constants.LOGIN_FAIL
 import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.data.exception.CommonException
 import com.prac.data.repository.TokenRepository
+import com.prac.domain.AuthorizeOAuthUseCase
 import com.prac.feature.login.model.Action
 import com.prac.feature.login.model.Event
 import com.prac.feature.login.model.Mutation
@@ -13,7 +14,8 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 
 internal class LoginActionProcessor(
-    private val tokenRepository: TokenRepository
+    private val tokenRepository: TokenRepository,
+    private val authorizeOAuthUseCase: AuthorizeOAuthUseCase
 ) : ActionProcessor<Action, Mutation, Event> {
     override fun invoke(action: Action): Flow<Pair<Mutation?, Event?>> =
         flow {
@@ -36,7 +38,7 @@ internal class LoginActionProcessor(
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.authenticateOAuth(code: String) {
         emit(Mutation.ShowLoading to null)
 
-        tokenRepository.authorizeOAuth(code = code)
+        authorizeOAuthUseCase.invoke(code)
             .onSuccess {
                 emit(null to Event.SuccessLogin)
             }.onFailure {

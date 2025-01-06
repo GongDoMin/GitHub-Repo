@@ -3,6 +3,7 @@ package com.prac.feature.login.di
 import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.core.common.mvi.reducer.Reducer
 import com.prac.data.repository.TokenRepository
+import com.prac.domain.AuthorizeOAuthUseCase
 import com.prac.feature.login.LoginActionProcessor
 import com.prac.feature.login.LoginReducerProcessor
 import com.prac.feature.login.model.Action
@@ -34,7 +35,10 @@ internal class LoginModule {
 
     @Provides
     @LoginActionAnnotation
-    fun providesLoginActionProcessor(tokenRepository: TokenRepository): ActionProcessor<Action, Mutation, Event> {
-        return LoginActionProcessor(tokenRepository)
+    fun providesLoginActionProcessor(
+        tokenRepository: TokenRepository,
+        authorizeOAuthUseCase: AuthorizeOAuthUseCase
+    ): ActionProcessor<Action, Mutation, Event> {
+        return LoginActionProcessor(tokenRepository, authorizeOAuthUseCase)
     }
 }
