@@ -8,13 +8,12 @@ import com.prac.core.common.constants.UNKNOWN
 import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
+import com.prac.data.model.RepositoryDetail
 import com.prac.data.repository.RepoRepository
 import com.prac.domain.ClearLocalDataUseCase
 import com.prac.feature.detail.model.Action
 import com.prac.feature.detail.model.Event
 import com.prac.feature.detail.model.Mutation
-import com.prac.data.model.RepositoryDetail
-import com.prac.feature.detail.model.toRepositoryDetail
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
@@ -46,7 +45,7 @@ internal class DetailActionProcessor(
 
         repoRepository.getRepository(userName, repoName)
             .onSuccess {
-                handleGetRepositorySuccess(it.toRepositoryDetail())
+                handleGetRepositorySuccess(it)
             }
             .onFailure {
                 handleGetRepositoryFailure(it)

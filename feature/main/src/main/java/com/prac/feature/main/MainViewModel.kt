@@ -18,7 +18,6 @@ import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
 import com.prac.feature.main.model.Mutation
 import com.prac.data.model.Repository
-import com.prac.feature.main.model.toRepository
 import com.prac.feature.main.view.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -59,7 +58,7 @@ internal class MainViewModel @Inject constructor(
     private fun load() {
         viewModelScope.launch {
             getRepositoriesUseCase.invoke().cachedIn(viewModelScope).collect { pagingData ->
-                _repositories.update { pagingData.map { it.toRepository() } }
+                _repositories.update { pagingData }
             }
         }
     }
