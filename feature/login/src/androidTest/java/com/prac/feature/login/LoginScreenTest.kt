@@ -1,18 +1,20 @@
 package com.prac.feature.login
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.isDisplayed
-import androidx.compose.ui.test.isNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
+import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
 import com.prac.core.common.constants.CONNECTION_FAIL
 import com.prac.core.common.constants.LOGIN_FAIL
 import com.prac.core.designsystem.R
@@ -21,6 +23,8 @@ import com.prac.shared_test.HiltTestActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
+import org.hamcrest.Matchers.not
+import org.hamcrest.core.AllOf.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -52,10 +56,17 @@ class LoginScreenTest {
 
     @Test
     fun loginButtonClick_openBrowser() = runTest {
+        intending(not(isInternal()))
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
         composeTestRule.onNodeWithText(activity.getString(R.string.login)).performClick()
 
-        intended(hasAction(Intent.ACTION_VIEW))
-        intended(hasData(Uri.parse(BuildConfig.GITHUB_OAUTH_URI)))
+        intended(
+            allOf(
+                hasAction(Intent.ACTION_VIEW),
+                hasData(Uri.parse(BuildConfig.GITHUB_OAUTH_URI))
+            )
+        )
     }
 
     @Test
