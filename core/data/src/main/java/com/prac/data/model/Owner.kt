@@ -3,24 +3,24 @@ package com.prac.data.model
 import com.prac.local.model.OwnerEntity
 import com.prac.network.model.response.OwnerResponse
 
-data class OwnerModel(
+data class Owner(
     val login: String = "",
     val avatarUrl: String = ""
 )
 
 fun OwnerResponse.toOwnerModel() =
-    OwnerModel(
+    Owner(
         login = login,
         avatarUrl = avatarUrl
     )
 
 fun OwnerEntity.toOwnerModel() =
-    OwnerModel(
+    Owner(
         login = login,
         avatarUrl = avatarUrl
     )
 
-fun OwnerModel.toOwner() =
+fun Owner.toOwner() =
     OwnerEntity(
         login = login,
         avatarUrl = avatarUrl

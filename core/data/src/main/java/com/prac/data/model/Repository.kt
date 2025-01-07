@@ -3,10 +3,10 @@ package com.prac.data.model
 import com.prac.local.model.RepositoryEntity
 import com.prac.network.model.response.RepositoryResponse
 
-data class RepoModel(
+data class Repository(
     val id: Int = 0,
     val name: String = "",
-    val owner: OwnerModel = OwnerModel(),
+    val owner: Owner = Owner(),
     val stargazersCount: Int = 0,
     val defaultBranch: String = "",
     val updatedAt: String = "",
@@ -14,7 +14,7 @@ data class RepoModel(
 )
 
 fun RepositoryResponse.toRepoModel() =
-    RepoModel(
+    Repository(
         id = id,
         name = name,
         owner = owner.toOwnerModel(),
@@ -25,7 +25,7 @@ fun RepositoryResponse.toRepoModel() =
     )
 
 fun RepositoryEntity.toRepoModel() =
-    RepoModel(
+    Repository(
         id = id,
         name = name,
         owner = owner.toOwnerModel(),
@@ -35,7 +35,7 @@ fun RepositoryEntity.toRepoModel() =
         isStarred = isStarred
     )
 
-fun RepoModel.toRepository() =
+fun Repository.toRepository() =
     RepositoryEntity(
         id = id,
         name = name,

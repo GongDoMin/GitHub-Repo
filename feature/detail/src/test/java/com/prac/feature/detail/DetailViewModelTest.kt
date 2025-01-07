@@ -11,8 +11,8 @@ import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.REPO_NAME
 import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.USER_NAME
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
-import com.prac.data.model.OwnerModel
-import com.prac.data.model.RepoDetailModel
+import com.prac.data.model.Owner
+import com.prac.data.model.RepositoryDetail
 import com.prac.feature.detail.model.Action
 import com.prac.feature.detail.model.Event
 import com.prac.feature.detail.model.Mutation
@@ -40,10 +40,10 @@ class DetailViewModelTest {
     private lateinit var detailViewModel: DetailViewModel
 
     private val repository =
-        RepoDetailModel(
+        RepositoryDetail(
             id = 1,
             name = "test",
-            owner = OwnerModel(login = "test"),
+            owner = Owner(login = "test"),
             stargazersCount = 10,
             isStarred = true,
         ).toRepositoryDetail()

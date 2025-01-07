@@ -2,7 +2,6 @@ package com.prac.domain.impl
 
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.prac.data.model.RepoModel
 import com.prac.data.repository.RepoRepository
 import com.prac.data.repository.UserRepository
 import com.prac.domain.GetRepositoriesUseCase

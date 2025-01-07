@@ -2,10 +2,10 @@ package com.prac.data.model
 
 import com.prac.network.model.response.RepositoryDetailResponse
 
-data class RepoDetailModel(
+data class RepositoryDetail(
     val id: Int = 0,
     val name: String = "",
-    val owner: OwnerModel = OwnerModel(),
+    val owner: Owner = Owner(),
     val stargazersCount: Int = 0,
     val forksCount: Int = 0,
     val isStarred: Boolean? = null,
@@ -20,7 +20,7 @@ fun RepositoryDetailResponse.toRepoDetailModel(
     pullCount: Int,
     readme: String
 ) =
-    RepoDetailModel(
+    RepositoryDetail(
         id = id,
         name = name,
         owner = owner.toOwnerModel(),

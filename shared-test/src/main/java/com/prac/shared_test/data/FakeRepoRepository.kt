@@ -8,9 +8,9 @@ import androidx.paging.PagingData
 import androidx.paging.PagingState
 import androidx.paging.map
 import androidx.room.withTransaction
-import com.prac.data.model.OwnerModel
-import com.prac.data.model.RepoDetailModel
-import com.prac.data.model.RepoModel
+import com.prac.data.model.Owner
+import com.prac.data.model.RepositoryDetail
+import com.prac.data.model.Repository
 import com.prac.data.model.toRepoModel
 import com.prac.data.model.toRepository
 import com.prac.data.repository.RepoRepository
@@ -27,7 +27,7 @@ import javax.inject.Inject
 class FakeRepoRepository @Inject constructor(
     private val repositoryDatabase: RepositoryDatabase
 ): RepoRepository() {
-    override suspend fun getRepositories(userName: String): Flow<PagingData<RepoModel>> {
+    override suspend fun getRepositories(userName: String): Flow<PagingData<Repository>> {
         return Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
@@ -44,7 +44,7 @@ class FakeRepoRepository @Inject constructor(
             }
     }
 
-    override suspend fun getRepository(userName: String, repoName: String): Result<RepoDetailModel> {
+    override suspend fun getRepository(userName: String, repoName: String): Result<RepositoryDetail> {
         // DetailScreen 테스트를 위한 임시 데이터
         val repositories = makeRepoEntityList(1).map {
             it.toRepoModel().toRepository()
@@ -52,7 +52,7 @@ class FakeRepoRepository @Inject constructor(
         repositoryDatabase.repositoryDao().insertRepositories(repositories)
 
         val id = userName.split(" ")[1]
-        val entity = RepoDetailModel(id.toInt(), "test $id", OwnerModel("login $id", "avatarUrl $id"), 5, 5, null)
+        val entity = RepositoryDetail(id.toInt(), "test $id", Owner("login $id", "avatarUrl $id"), 5, 5, null)
 
         return Result.success(entity)
     }

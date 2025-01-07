@@ -1,7 +1,6 @@
 package com.prac.feature.detail.model
 
-import com.prac.data.model.OwnerModel
-import com.prac.data.model.RepoDetailModel
+import com.prac.data.model.RepositoryDetail
 
 data class RepositoryDetail(
     val id: Int = 0,
@@ -16,7 +15,7 @@ data class RepositoryDetail(
     val readme: String = ""
 )
 
-fun RepoDetailModel.toRepositoryDetail() =
+fun RepositoryDetail.toRepositoryDetail() =
     RepositoryDetail(
         id = id,
         name = name,

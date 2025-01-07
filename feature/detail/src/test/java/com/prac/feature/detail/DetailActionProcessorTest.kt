@@ -2,8 +2,8 @@ package com.prac.feature.detail
 
 import app.cash.turbine.test
 import com.prac.data.exception.CommonException
-import com.prac.data.model.OwnerModel
-import com.prac.data.model.RepoDetailModel
+import com.prac.data.model.Owner
+import com.prac.data.model.RepositoryDetail
 import com.prac.data.repository.RepoRepository
 import com.prac.feature.detail.model.Action
 import com.prac.feature.detail.model.Event
@@ -36,10 +36,10 @@ class DetailActionProcessorTest {
     private lateinit var detailActionProcessor: DetailActionProcessor
 
     private val repoDetailEntity =
-        RepoDetailModel(
+        RepositoryDetail(
             id = 1,
             name = "test",
-            owner = OwnerModel(login = "test"),
+            owner = Owner(login = "test"),
             stargazersCount = 10,
             isStarred = true,
         )
@@ -149,7 +149,7 @@ class DetailActionProcessorTest {
     @Test
     fun invoke_actionIsOnClickUnStar_emitNothing_whenNetworkError() = runTest {
         backOffWork.setScope(this)
-        val repoModel = RepoDetailModel()
+        val repoModel = RepositoryDetail()
         val uniqueID = "star_${repoModel.id}"
         val expectedCallTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
         val expectedDelayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
@@ -169,7 +169,7 @@ class DetailActionProcessorTest {
     @Test
     fun invoke_actionIsOnClickStar_emitNothing_whenNetworkError() = runTest {
         backOffWork.setScope(this)
-        val repoModel = RepoDetailModel()
+        val repoModel = RepositoryDetail()
         val uniqueID = "star_${repoModel.id}"
         val expectedCallTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
         val expectedDelayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초

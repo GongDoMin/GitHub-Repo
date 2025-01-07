@@ -7,8 +7,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingState
 import androidx.paging.map
-import com.prac.data.model.RepoDetailModel
-import com.prac.data.model.RepoModel
+import com.prac.data.model.RepositoryDetail
+import com.prac.data.model.Repository
 import com.prac.data.repository.RepoRepository
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
@@ -40,7 +40,7 @@ internal class RepoRepositoryImpl @Inject constructor(
 
     private var userName: String = ""
 
-    override suspend fun getRepositories(userName: String): Flow<PagingData<RepoModel>> {
+    override suspend fun getRepositories(userName: String): Flow<PagingData<Repository>> {
         this.userName = userName
 
         return Pager(
@@ -58,7 +58,7 @@ internal class RepoRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun getRepository(userName: String, repoName: String): Result<RepoDetailModel> = coroutineScope {
+    override suspend fun getRepository(userName: String, repoName: String): Result<RepositoryDetail> = coroutineScope {
         try {
             val issueCount: Int
             val pullCount: Int

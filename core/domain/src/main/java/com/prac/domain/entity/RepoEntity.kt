@@ -1,6 +1,6 @@
 package com.prac.domain.entity
 
-import com.prac.data.model.RepoModel
+import com.prac.data.model.Repository
 
 data class RepoEntity(
     val id: Int = 0,
@@ -12,7 +12,7 @@ data class RepoEntity(
     val isStarred: Boolean? = null
 )
 
-fun RepoModel.toRepoEntity() =
+fun Repository.toRepoEntity() =
     RepoEntity(
         id = id,
         name = name,
