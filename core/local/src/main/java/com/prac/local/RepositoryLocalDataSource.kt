@@ -1,15 +1,15 @@
 package com.prac.local
 
 import androidx.paging.PagingSource
-import com.prac.local.room.entity.Repository
+import com.prac.local.model.RepositoryEntity
 import kotlinx.coroutines.flow.Flow
 
 interface RepositoryLocalDataSource {
-    fun getRepositories(): PagingSource<Int, Repository>
+    fun getRepositories(): PagingSource<Int, RepositoryEntity>
 
-    fun getRepository(id: Int): Flow<Repository?>
+    fun getRepository(id: Int): Flow<RepositoryEntity?>
 
-    suspend fun insertRepositories(repos: List<Repository>)
+    suspend fun insertRepositories(repos: List<RepositoryEntity>)
 
     suspend fun updateStarStateAndStarCount(id: Int, isStarred: Boolean, updatedCount: Int)
 

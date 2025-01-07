@@ -3,7 +3,7 @@ package com.prac.local.local
 import com.prac.local.RemoteKeyLocalDataSource
 import com.prac.local.impl.RemoteKeyLocalDataSourceImpl
 import com.prac.local.room.dao.RemoteKeyDao
-import com.prac.local.room.entity.RemoteKey
+import com.prac.local.model.RemoteKeyEntity
 import com.prac.shared_test.local.room.FakeRemoteKeyDao
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.random.Random
 
-class RemoteKeyLocalDataSourceTest {
+class RemoteKeyEntityLocalDataSourceTest {
 
     private lateinit var remoteKeyDao: RemoteKeyDao
     private lateinit var remoteKeyLocalDataSource: RemoteKeyLocalDataSource
@@ -74,7 +74,7 @@ class RemoteKeyLocalDataSourceTest {
 
     private fun makeRemoteKeys() =
         listOf(
-            RemoteKey(repoId = 0, prevKey = null, nextKey = 2),
-            RemoteKey(repoId = 1, prevKey = null, nextKey = 2),
+            RemoteKeyEntity(repoId = 0, prevKey = null, nextKey = 2),
+            RemoteKeyEntity(repoId = 1, prevKey = null, nextKey = 2),
         )
 }

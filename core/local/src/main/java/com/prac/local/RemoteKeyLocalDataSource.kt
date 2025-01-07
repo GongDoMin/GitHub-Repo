@@ -1,11 +1,11 @@
 package com.prac.local
 
-import com.prac.local.room.entity.RemoteKey
+import com.prac.local.model.RemoteKeyEntity
 
 interface RemoteKeyLocalDataSource {
-    suspend fun remoteKey(repoId: Int): RemoteKey?
+    suspend fun remoteKey(repoId: Int): RemoteKeyEntity?
 
-    suspend fun insertRemoteKeys(remoteKeys: List<RemoteKey>)
+    suspend fun insertRemoteKeys(remoteKeys: List<RemoteKeyEntity>)
 
     suspend fun clearRemoteKeys()
 }

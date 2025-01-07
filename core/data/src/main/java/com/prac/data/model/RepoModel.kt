@@ -1,6 +1,6 @@
 package com.prac.data.model
 
-import com.prac.local.room.entity.Repository
+import com.prac.local.model.RepositoryEntity
 import com.prac.network.model.response.RepositoryResponse
 
 data class RepoModel(
@@ -24,7 +24,7 @@ fun RepositoryResponse.toRepoModel() =
         isStarred = null
     )
 
-fun Repository.toRepoModel() =
+fun RepositoryEntity.toRepoModel() =
     RepoModel(
         id = id,
         name = name,
@@ -36,7 +36,7 @@ fun Repository.toRepoModel() =
     )
 
 fun RepoModel.toRepository() =
-    Repository(
+    RepositoryEntity(
         id = id,
         name = name,
         owner = owner.toOwner(),

@@ -15,8 +15,8 @@ import com.prac.data.model.toRepoModel
 import com.prac.data.model.toRepository
 import com.prac.data.repository.RepoRepository
 import com.prac.local.room.database.RepositoryDatabase
-import com.prac.local.room.entity.RemoteKey
-import com.prac.local.room.entity.Repository
+import com.prac.local.model.RemoteKeyEntity
+import com.prac.local.model.RepositoryEntity
 import com.prac.network.model.response.OwnerResponse
 import com.prac.network.model.response.RepositoryResponse
 import kotlinx.coroutines.flow.Flow
@@ -87,7 +87,7 @@ class FakeRepoRepository @Inject constructor(
         repositoryDatabase.repositoryDao().updateStarStateAndStarCount(id, false, updatedStarCount)
     }
 
-    override suspend fun load(loadType: LoadType, state: PagingState<Int, Repository>): MediatorResult {
+    override suspend fun load(loadType: LoadType, state: PagingState<Int, RepositoryEntity>): MediatorResult {
         val page: Int = when (loadType) {
             LoadType.REFRESH -> {
                 val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
@@ -118,7 +118,7 @@ class FakeRepoRepository @Inject constructor(
                 val prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1
                 val nextKey = if (response.size < PAGE_SIZE) null else page + 1
                 val keys = response.map {
-                    RemoteKey(it.id, prevKey, nextKey)
+                    RemoteKeyEntity(it.id, prevKey, nextKey)
                 }
                 val repositories = response.map {
                     it.toRepoModel().toRepository()
@@ -132,7 +132,7 @@ class FakeRepoRepository @Inject constructor(
         }
     }
 
-    private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, Repository>): RemoteKey? {
+    private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, RepositoryEntity>): RemoteKeyEntity? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.id?.let { repoId ->
                 repositoryDatabase.remoteKeyDao().remoteKey(repoId)
@@ -140,14 +140,14 @@ class FakeRepoRepository @Inject constructor(
         }
     }
 
-    private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, Repository>): RemoteKey? {
+    private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, RepositoryEntity>): RemoteKeyEntity? {
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
             ?.let { repo ->
                 repositoryDatabase.remoteKeyDao().remoteKey(repo.id)
             }
     }
 
-    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, Repository>): RemoteKey? {
+    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, RepositoryEntity>): RemoteKeyEntity? {
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { repo ->
                 repositoryDatabase.remoteKeyDao().remoteKey(repo.id)

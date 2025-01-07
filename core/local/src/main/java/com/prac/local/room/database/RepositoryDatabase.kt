@@ -4,12 +4,12 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.prac.local.room.dao.RemoteKeyDao
 import com.prac.local.room.dao.RepositoryDao
-import com.prac.local.room.entity.RemoteKey
-import com.prac.local.room.entity.Repository
+import com.prac.local.model.RemoteKeyEntity
+import com.prac.local.model.RepositoryEntity
 
 @Database(
     version = 2,
-    entities = [Repository::class, RemoteKey::class]
+    entities = [RepositoryEntity::class, RemoteKeyEntity::class]
 )
 abstract class RepositoryDatabase : RoomDatabase() {
 

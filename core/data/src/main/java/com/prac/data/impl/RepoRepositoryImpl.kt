@@ -17,8 +17,8 @@ import com.prac.data.model.toRepoModel
 import com.prac.data.model.toRepository
 import com.prac.local.RemoteKeyLocalDataSource
 import com.prac.local.RepositoryLocalDataSource
-import com.prac.local.room.entity.RemoteKey
-import com.prac.local.room.entity.Repository
+import com.prac.local.model.RemoteKeyEntity
+import com.prac.local.model.RepositoryEntity
 import com.prac.network.RepoApiDataSource
 import com.prac.network.RepoStarApiDataSource
 import com.prac.network.model.response.RepositoryDetailResponse
@@ -136,7 +136,7 @@ internal class RepoRepositoryImpl @Inject constructor(
         repositoryLocalDataSource.updateStarStateAndStarCount(id, false, updatedStarCount)
     }
 
-    override suspend fun load(loadType: LoadType, state: PagingState<Int, Repository>): MediatorResult {
+    override suspend fun load(loadType: LoadType, state: PagingState<Int, RepositoryEntity>): MediatorResult {
         val page: Int = when (loadType) {
             LoadType.REFRESH -> {
                 val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
@@ -166,7 +166,7 @@ internal class RepoRepositoryImpl @Inject constructor(
             val prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1
             val nextKey = if (response.size < 10) null else page + 1
             val keys = response.map {
-                RemoteKey(it.id, prevKey, nextKey)
+                RemoteKeyEntity(it.id, prevKey, nextKey)
             }
             val repositories = response.map {
                 it.toRepoModel().toRepository()
@@ -180,7 +180,7 @@ internal class RepoRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, Repository>): RemoteKey? {
+    private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, RepositoryEntity>): RemoteKeyEntity? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.id?.let { repoId ->
                 remoteKeyLocalDataSource.remoteKey(repoId)
@@ -188,14 +188,14 @@ internal class RepoRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, Repository>): RemoteKey? {
+    private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, RepositoryEntity>): RemoteKeyEntity? {
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
             ?.let { repo ->
                 remoteKeyLocalDataSource.remoteKey(repo.id)
             }
     }
 
-    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, Repository>): RemoteKey? {
+    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, RepositoryEntity>): RemoteKeyEntity? {
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { repo ->
                 remoteKeyLocalDataSource.remoteKey(repo.id)

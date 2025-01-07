@@ -5,19 +5,19 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.prac.local.room.entity.Repository
+import com.prac.local.model.RepositoryEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RepositoryDao {
     @Query("SELECT * FROM repository")
-    fun getRepositories(): PagingSource<Int, Repository>
+    fun getRepositories(): PagingSource<Int, RepositoryEntity>
 
     @Query("SELECT * FROM repository WHERE id = :id")
-    fun getRepository(id: Int): Flow<Repository?>
+    fun getRepository(id: Int): Flow<RepositoryEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRepositories(repos: List<Repository>)
+    suspend fun insertRepositories(repos: List<RepositoryEntity>)
 
     @Query("UPDATE repository SET isStarred = :isStarred, stargazersCount = :updatedCount WHERE id = :id")
     suspend fun updateStarStateAndStarCount(id: Int, isStarred: Boolean, updatedCount: Int)

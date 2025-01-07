@@ -1,34 +1,46 @@
 package com.prac.local.local
 
 import androidx.paging.PagingSource
-import com.prac.local.RepositoryLocalDataSource
-import com.prac.local.impl.RepositoryLocalDataSourceImpl
-import com.prac.local.room.entity.Owner
-import com.prac.local.room.entity.Repository
-import com.prac.shared_test.local.room.FakeRepositoryDao
+import androidx.room.Room
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import com.prac.local.room.dao.RepositoryDao
+import com.prac.local.room.database.RepositoryDatabase
+import com.prac.local.model.OwnerEntity
+import com.prac.local.model.RepositoryEntity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 
-class RepositoryLocalDataSourceTest {
+@RunWith(AndroidJUnit4::class)
+class RepositoryEntityDaoTest {
 
-    private lateinit var repositoryDao: FakeRepositoryDao
-    private lateinit var repositoryLocalDataSource: RepositoryLocalDataSource
+    private lateinit var repositoryDatabase: RepositoryDatabase
+    private lateinit var repositoryDao: RepositoryDao
 
     @Before
     fun setUp() {
-        repositoryDao = FakeRepositoryDao()
-        repositoryLocalDataSource = RepositoryLocalDataSourceImpl(repositoryDao)
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        repositoryDatabase = Room.inMemoryDatabaseBuilder(context, RepositoryDatabase::class.java)
+            .build()
+        repositoryDao = repositoryDatabase.repositoryDao()
+    }
+
+    @After
+    fun tearDown() {
+        repositoryDatabase.close()
     }
 
     @Test
     fun getRepositories_roomIsEmpty_emptyList() = runTest {
 
-        val result = (repositoryLocalDataSource.getRepositories().load(
+        val result = (repositoryDao.getRepositories().load(
             PagingSource.LoadParams.Refresh(
                 key = null,
                 loadSize = 10,
@@ -44,9 +56,9 @@ class RepositoryLocalDataSourceTest {
         val repositories = makeRepositories()
         val expectedSize = 2
 
-        repositoryLocalDataSource.insertRepositories(repositories)
+        repositoryDao.insertRepositories(repositories)
 
-        val result = (repositoryLocalDataSource.getRepositories().load(
+        val result = (repositoryDao.getRepositories().load(
             PagingSource.LoadParams.Refresh(
                 key = null,
                 loadSize = 10,
@@ -60,11 +72,11 @@ class RepositoryLocalDataSourceTest {
     @Test
     fun getRepository_existingID_repository() = runTest {
         val repositories = makeRepositories()
-        repositoryLocalDataSource.insertRepositories(repositories)
+        repositoryDao.insertRepositories(repositories)
         val index = 0
         val id = repositories[index].id
 
-        val result = repositoryLocalDataSource.getRepository(id).first()
+        val result = repositoryDao.getRepository(id).first()
 
         assertEquals(repositories[index], result)
     }
@@ -72,10 +84,10 @@ class RepositoryLocalDataSourceTest {
     @Test
     fun getRepository_notExistingID_null() = runTest {
         val repositories = makeRepositories()
-        repositoryLocalDataSource.insertRepositories(repositories)
+        repositoryDao.insertRepositories(repositories)
         val id = repositories.maxOf { it.id } + 1 // 존재하지 않는 아이디
 
-        val result = repositoryLocalDataSource.getRepository(id).first()
+        val result = repositoryDao.getRepository(id).first()
 
         assertNull(result)
     }
@@ -83,15 +95,15 @@ class RepositoryLocalDataSourceTest {
     @Test
     fun updateStarStateAndStarCount_existingID_updateStarStateAndStateCountCorrectly() = runTest {
         val repositories = makeRepositories()
-        repositoryLocalDataSource.insertRepositories(repositories)
+        repositoryDao.insertRepositories(repositories)
         val index = 0
         val id = repositories[index].id
         val isStarred = true
         val updatedCount = 1
 
-        repositoryLocalDataSource.updateStarStateAndStarCount(id, isStarred, updatedCount)
+        repositoryDao.updateStarStateAndStarCount(id, isStarred, updatedCount)
 
-        val result = repositoryLocalDataSource.getRepository(id).first()
+        val result = repositoryDao.getRepository(id).first()
         assertEquals(result?.isStarred, isStarred)
         assertEquals(result?.stargazersCount, updatedCount)
     }
@@ -99,39 +111,39 @@ class RepositoryLocalDataSourceTest {
     @Test
     fun updateStarState_existingID_updateStarStateCorrectly() = runTest {
         val repositories = makeRepositories()
-        repositoryLocalDataSource.insertRepositories(repositories)
+        repositoryDao.insertRepositories(repositories)
         val index = 0
         val id = repositories[index].id
         val isStarred = true
 
-        repositoryLocalDataSource.updateStarState(id, isStarred)
+        repositoryDao.updateStarState(id, isStarred)
 
-        val result = repositoryLocalDataSource.getRepository(id).first()
+        val result = repositoryDao.getRepository(id).first()
         assertEquals(result?.isStarred, isStarred)
     }
 
     @Test
     fun updateStarCount_existingID_updateStarCountCorrectly() = runTest {
         val repositories = makeRepositories()
-        repositoryLocalDataSource.insertRepositories(repositories)
+        repositoryDao.insertRepositories(repositories)
         val index = 0
         val id = repositories[index].id
         val updatedCount = 1
 
-        repositoryLocalDataSource.updateStarCount(id, updatedCount)
+        repositoryDao.updateStarCount(id, updatedCount)
 
-        val updatedRepository = repositoryLocalDataSource.getRepository(id).first()
+        val updatedRepository = repositoryDao.getRepository(id).first()
         assertEquals(updatedRepository?.stargazersCount, updatedCount)
     }
 
     @Test
     fun clearRepositories_clearRoom_emptyList() = runTest {
         val repositories = makeRepositories()
-        repositoryLocalDataSource.insertRepositories(repositories)
+        repositoryDao.insertRepositories(repositories)
 
-        repositoryLocalDataSource.clearRepositories()
+        repositoryDao.clearRepositories()
 
-        val result = (repositoryLocalDataSource.getRepositories().load(
+        val result = (repositoryDao.getRepositories().load(
             PagingSource.LoadParams.Refresh(key = null, loadSize = 10, placeholdersEnabled = false)
         ) as? PagingSource.LoadResult.Page)?.data
         assertEquals(result?.size, 0)
@@ -139,7 +151,7 @@ class RepositoryLocalDataSourceTest {
 
     private fun makeRepositories() =
         listOf(
-            Repository(1, "repo1", Owner("test1", "test1"), 0, "test1", "master", false),
-            Repository(2, "repo2", Owner("test2", "test2"), 0, "test2", "master", false)
+            RepositoryEntity(1, "repo1", OwnerEntity("test1", "test1"), 0, "test1", "master", false),
+            RepositoryEntity(2, "repo2", OwnerEntity("test2", "test2"), 0, "test2", "master", false)
         )
 }

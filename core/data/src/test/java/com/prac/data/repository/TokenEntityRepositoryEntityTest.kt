@@ -13,7 +13,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-class TokenEntityRepositoryTest {
+class TokenEntityRepositoryEntityTest {
 
     private lateinit var tokenLocalDataSource: FakeTokenLocalDataSource
     private lateinit var authApiDataSource: FakeAuthApiDataSource

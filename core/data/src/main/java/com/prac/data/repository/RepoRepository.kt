@@ -5,11 +5,11 @@ import androidx.paging.PagingData
 import androidx.paging.RemoteMediator
 import com.prac.data.model.RepoDetailModel
 import com.prac.data.model.RepoModel
-import com.prac.local.room.entity.Repository
+import com.prac.local.model.RepositoryEntity
 import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalPagingApi::class)
-abstract class RepoRepository : RemoteMediator<Int, Repository>() {
+abstract class RepoRepository : RemoteMediator<Int, RepositoryEntity>() {
     abstract suspend fun getRepositories(userName: String) : Flow<PagingData<RepoModel>>
 
     abstract suspend fun getRepository(userName: String, repoName: String) : Result<RepoDetailModel>

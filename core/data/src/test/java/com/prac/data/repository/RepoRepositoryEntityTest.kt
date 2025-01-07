@@ -13,8 +13,8 @@ import com.prac.data.model.toRepoModel
 import com.prac.data.model.toRepository
 import com.prac.local.RemoteKeyLocalDataSource
 import com.prac.local.RepositoryLocalDataSource
-import com.prac.local.room.entity.Owner
-import com.prac.local.room.entity.Repository
+import com.prac.local.model.OwnerEntity
+import com.prac.local.model.RepositoryEntity
 import com.prac.network.model.response.OwnerResponse
 import com.prac.network.model.response.RepositoryResponse
 import com.prac.shared_test.local.source.FakeRemoteKeyLocalDataSource
@@ -34,7 +34,7 @@ import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
 
-internal class RepoRepositoryTest {
+internal class RepoRepositoryEntityTest {
 
     private lateinit var repoApiDataSource: FakeRepoApiDataSource
     private lateinit var repoStarApiDataSource: FakeRepoStarApiDataSource
@@ -55,7 +55,7 @@ internal class RepoRepositoryTest {
     fun load_loadTypeIsRefresh_successAndEndOfPaginationReachedIsFalse() = runTest {
         val loadSize = 10
         val page = 1
-        val pagingState = PagingState<Int, Repository>(
+        val pagingState = PagingState<Int, RepositoryEntity>(
             pages = listOf(),
             anchorPosition = null,
             config = PagingConfig(pageSize = pageLoadSize, enablePlaceholders = false),
@@ -92,7 +92,7 @@ internal class RepoRepositoryTest {
     fun load_loadTypeIsRefresh_successAndEndOfPaginationReachedIsTrue() = runTest {
         val loadSize = 5
         val page = 1
-        val pagingState = PagingState<Int, Repository>(
+        val pagingState = PagingState<Int, RepositoryEntity>(
             pages = listOf(),
             anchorPosition = null,
             config = PagingConfig(pageSize = pageLoadSize, enablePlaceholders = false),
@@ -134,7 +134,7 @@ internal class RepoRepositoryTest {
             val loadSize = 10
             val pagingState = PagingState(
                 pages = listOf(PagingSource.LoadResult.Page(
-                    data = totalRepositoryResponseList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, it.defaultBranch, null) },
+                    data = totalRepositoryResponseList.map { RepositoryEntity(it.id, it.name, OwnerEntity(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, it.defaultBranch, null) },
                     prevKey = 0, // data 의 id 를 통해 remoteKey 를 가져오기 때문에 0 으로 구현
                     nextKey = 0 // data 의 id 를 통해 remoteKey 를 가져오기 때문에 0 으로 구현
                 )
@@ -184,7 +184,7 @@ internal class RepoRepositoryTest {
     @OptIn(ExperimentalPagingApi::class)
     @Test
     fun load_loadIsFailure_errorResult() = runTest {
-        val pagingState = PagingState<Int, Repository>(
+        val pagingState = PagingState<Int, RepositoryEntity>(
             pages = listOf(),
             anchorPosition = null,
             config = PagingConfig(pageSize = pageLoadSize, enablePlaceholders = false),

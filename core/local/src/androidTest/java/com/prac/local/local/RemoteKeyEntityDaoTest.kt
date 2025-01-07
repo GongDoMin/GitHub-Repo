@@ -5,7 +5,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.prac.local.room.dao.RemoteKeyDao
 import com.prac.local.room.database.RepositoryDatabase
-import com.prac.local.room.entity.RemoteKey
+import com.prac.local.model.RemoteKeyEntity
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -16,7 +16,7 @@ import org.junit.runner.RunWith
 import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
-class RemoteKeyDaoTest {
+class RemoteKeyEntityDaoTest {
 
     private lateinit var repositoryDatabase: RepositoryDatabase
     private lateinit var remoteKeyDao: RemoteKeyDao
@@ -84,7 +84,7 @@ class RemoteKeyDaoTest {
 
     private fun makeRemoteKeys() =
         listOf(
-            RemoteKey(repoId = 0, prevKey = null, nextKey = 2),
-            RemoteKey(repoId = 1, prevKey = null, nextKey = 2),
+            RemoteKeyEntity(repoId = 0, prevKey = null, nextKey = 2),
+            RemoteKeyEntity(repoId = 1, prevKey = null, nextKey = 2),
         )
 }

@@ -1,6 +1,6 @@
 package com.prac.data.model
 
-import com.prac.local.room.entity.Owner
+import com.prac.local.model.OwnerEntity
 import com.prac.network.model.response.OwnerResponse
 
 data class OwnerModel(
@@ -14,14 +14,14 @@ fun OwnerResponse.toOwnerModel() =
         avatarUrl = avatarUrl
     )
 
-fun Owner.toOwnerModel() =
+fun OwnerEntity.toOwnerModel() =
     OwnerModel(
         login = login,
         avatarUrl = avatarUrl
     )
 
 fun OwnerModel.toOwner() =
-    Owner(
+    OwnerEntity(
         login = login,
         avatarUrl = avatarUrl
     )
