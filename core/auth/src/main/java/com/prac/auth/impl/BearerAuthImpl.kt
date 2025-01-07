@@ -14,20 +14,22 @@ internal class BearerAuthImpl @Inject constructor(
     override fun getAccessToken(refreshAccessToken: suspend (refreshToken: String) -> TokenModel): String {
         if (tokenLocalDataSource.getToken().isExpired) {
             synchronized(this) {
-                if (tokenLocalDataSource.getToken().isRefreshTokenExpired) {
-                    runBlocking {
-                        tokenLocalDataSource.clearToken()
+                if (tokenLocalDataSource.getToken().isExpired) {
+                    if (tokenLocalDataSource.getToken().isRefreshTokenExpired) {
+                        runBlocking {
+                            tokenLocalDataSource.clearToken()
+                        }
+                        return@synchronized
                     }
-                    return@synchronized
-                }
 
-                runBlocking {
-                    try {
-                        tokenLocalDataSource.setToken(
-                            refreshAccessToken(tokenLocalDataSource.getToken().refreshToken).toTokenLocalDto()
-                        )
-                    } catch (e: Exception) {
-                        tokenLocalDataSource.clearToken()
+                    runBlocking {
+                        try {
+                            tokenLocalDataSource.setToken(
+                                refreshAccessToken(tokenLocalDataSource.getToken().refreshToken).toTokenLocalDto()
+                            )
+                        } catch (e: Exception) {
+                            tokenLocalDataSource.clearToken()
+                        }
                     }
                 }
             }
