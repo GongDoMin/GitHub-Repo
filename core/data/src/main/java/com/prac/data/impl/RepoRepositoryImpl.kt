@@ -26,6 +26,7 @@ import com.prac.network.RepoApiDataSource
 import com.prac.network.RepoStarApiDataSource
 import com.prac.network.dto.RepoDetailDto
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -62,34 +63,32 @@ internal class RepoRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun getRepository(userName: String, repoName: String): Result<RepoDetailModel> {
-        return try {
-            withContext(EmptyCoroutineContext) {
-                val issueCount: Int
-                val pullCount: Int
-                val repoDetailDto: RepoDetailDto
-                val readme: String
+    override suspend fun getRepository(userName: String, repoName: String): Result<RepoDetailModel> = coroutineScope {
+        try {
+            val issueCount: Int
+            val pullCount: Int
+            val repoDetailDto: RepoDetailDto
+            val readme: String
 
-                val deferredIssueCount = async { repoApiDataSource.getRepoIssueCount(userName, repoName) }
-                val deferredPullCount = async { repoApiDataSource.getRepoPullCount(userName, repoName) }
-                val deferredRepoDetailDto = async { repoApiDataSource.getRepository(userName, repoName) }
-                val deferredReadme = async { repoApiDataSource.getRepoReadme(userName, repoName) }
+            val deferredIssueCount = async { repoApiDataSource.getRepoIssueCount(userName, repoName) }
+            val deferredPullCount = async { repoApiDataSource.getRepoPullCount(userName, repoName) }
+            val deferredRepoDetailDto = async { repoApiDataSource.getRepository(userName, repoName) }
+            val deferredReadme = async { repoApiDataSource.getRepoReadme(userName, repoName) }
 
-                issueCount = deferredIssueCount.await()
-                pullCount = deferredPullCount.await()
-                repoDetailDto = deferredRepoDetailDto.await()
-                readme = deferredReadme.await()
+            issueCount = deferredIssueCount.await()
+            pullCount = deferredPullCount.await()
+            repoDetailDto = deferredRepoDetailDto.await()
+            readme = deferredReadme.await()
 
-                repositoryLocalDataSource.updateStarCount(repoDetailDto.id, repoDetailDto.stargazersCount)
+            repositoryLocalDataSource.updateStarCount(repoDetailDto.id, repoDetailDto.stargazersCount)
 
-                Result.success(
-                    repoDetailDto.toRepoDetailModel(
-                        issueCount = issueCount,
-                        pullCount = pullCount,
-                        readme = readme
-                    )
+            Result.success(
+                repoDetailDto.toRepoDetailModel(
+                    issueCount = issueCount,
+                    pullCount = pullCount,
+                    readme = readme
                 )
-            }
+            )
         } catch (e: Exception) {
             handleRepositoryError(e)
         }
