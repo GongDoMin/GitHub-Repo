@@ -1,7 +1,7 @@
 package com.prac.network.service
 
 import com.prac.auth.AuthManager
-import com.prac.network.dto.toTokenModel
+import com.prac.network.model.toTokenModel
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject

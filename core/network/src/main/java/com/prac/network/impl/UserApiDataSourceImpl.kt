@@ -1,7 +1,7 @@
 package com.prac.network.impl
 
 import com.prac.network.UserApiDataSource
-import com.prac.network.dto.AccessTokenRequest
+import com.prac.network.model.AccessTokenRequest
 import com.prac.network.service.GitHubUserService
 import javax.inject.Inject
 

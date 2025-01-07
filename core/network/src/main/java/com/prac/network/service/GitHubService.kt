@@ -1,10 +1,10 @@
 package com.prac.network.service
 
-import com.prac.network.dto.IssueDto
-import com.prac.network.dto.PullDto
-import com.prac.network.dto.ReadmeDto
-import com.prac.network.dto.RepoDetailDto
-import com.prac.network.dto.RepoDto
+import com.prac.network.model.IssueDto
+import com.prac.network.model.PullDto
+import com.prac.network.model.ReadmeDto
+import com.prac.network.model.RepoDetailDto
+import com.prac.network.model.RepoDto
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PUT

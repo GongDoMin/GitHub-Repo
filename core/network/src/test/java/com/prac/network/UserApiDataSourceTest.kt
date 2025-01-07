@@ -1,7 +1,7 @@
 package com.prac.network
 
-import com.prac.network.dto.OwnerDto
-import com.prac.network.dto.UserDto
+import com.prac.network.model.OwnerDto
+import com.prac.network.model.UserDto
 import com.prac.shared_test.network.service.FakeGitHubUserService
 import com.prac.network.impl.UserApiDataSourceImpl
 import kotlinx.coroutines.test.runTest

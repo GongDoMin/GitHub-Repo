@@ -13,14 +13,12 @@ import com.prac.data.model.toRepoModel
 import com.prac.data.model.toRepository
 import com.prac.local.RemoteKeyLocalDataSource
 import com.prac.local.RepositoryLocalDataSource
-import com.prac.local.UserLocalDataSource
 import com.prac.local.room.entity.Owner
 import com.prac.local.room.entity.Repository
-import com.prac.network.dto.OwnerDto
-import com.prac.network.dto.RepoDto
+import com.prac.network.model.OwnerDto
+import com.prac.network.model.RepoDto
 import com.prac.shared_test.local.source.FakeRemoteKeyLocalDataSource
 import com.prac.shared_test.local.source.FakeRepositoryLocalDataSource
-import com.prac.shared_test.local.source.FakeUserLocalDataSource
 import com.prac.shared_test.network.FakeRepoApiDataSource
 import com.prac.shared_test.network.FakeRepoStarApiDataSource
 import kotlinx.coroutines.flow.first

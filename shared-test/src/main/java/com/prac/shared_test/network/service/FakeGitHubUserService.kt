@@ -1,8 +1,7 @@
 package com.prac.shared_test.network.service
 
-import com.prac.network.dto.AccessTokenRequest
-import com.prac.network.dto.OwnerDto
-import com.prac.network.dto.UserDto
+import com.prac.network.model.AccessTokenRequest
+import com.prac.network.model.UserDto
 import com.prac.network.service.GitHubUserService
 
 class FakeGitHubUserService(

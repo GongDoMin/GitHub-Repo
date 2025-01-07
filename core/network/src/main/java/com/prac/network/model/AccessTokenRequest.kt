@@ -1,4 +1,4 @@
-package com.prac.network.dto
+package com.prac.network.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

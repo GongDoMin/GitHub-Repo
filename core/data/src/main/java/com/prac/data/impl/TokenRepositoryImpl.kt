@@ -4,7 +4,7 @@ import com.prac.data.repository.TokenRepository
 import com.prac.local.TokenLocalDataSource
 import com.prac.local.datastore.token.TokenLocalDto
 import com.prac.network.AuthApiDataSource
-import com.prac.network.dto.TokenDto
+import com.prac.network.model.TokenDto
 import java.time.ZonedDateTime
 import javax.inject.Inject
 

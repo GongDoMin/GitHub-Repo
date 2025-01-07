@@ -1,7 +1,7 @@
 package com.prac.data.model
 
 import com.prac.local.room.entity.Repository
-import com.prac.network.dto.RepoDto
+import com.prac.network.model.RepoDto
 
 data class RepoModel(
     val id: Int = 0,

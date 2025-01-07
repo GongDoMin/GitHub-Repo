@@ -1,14 +1,14 @@
-package com.prac.network.dto
+package com.prac.network.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RepoDto(
+data class RepoDetailDto(
     @SerialName("id") val id: Int = 0,
     @SerialName("name") val name: String = "",
     @SerialName("owner") val owner: OwnerDto = OwnerDto(),
     @SerialName("stargazers_count") val stargazersCount: Int = 0,
-    @SerialName("default_branch") val defaultBranch: String = "",
-    @SerialName("updated_at") val updatedAt: String = ""
+    @SerialName("forks_count") val forksCount: Int = 0,
+    @SerialName("subscribers_count") val subscribersCount: Int = 0
 )

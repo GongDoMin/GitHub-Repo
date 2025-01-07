@@ -1,6 +1,6 @@
 package com.prac.data.model
 
-import com.prac.network.dto.RepoDetailDto
+import com.prac.network.model.RepoDetailDto
 
 data class RepoDetailModel(
     val id: Int = 0,

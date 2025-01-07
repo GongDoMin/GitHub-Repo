@@ -1,9 +1,9 @@
 package com.prac.shared_test.network
 
 import com.prac.network.RepoApiDataSource
-import com.prac.network.dto.OwnerDto
-import com.prac.network.dto.RepoDetailDto
-import com.prac.network.dto.RepoDto
+import com.prac.network.model.OwnerDto
+import com.prac.network.model.RepoDetailDto
+import com.prac.network.model.RepoDto
 
 class FakeRepoApiDataSource : RepoApiDataSource {
 

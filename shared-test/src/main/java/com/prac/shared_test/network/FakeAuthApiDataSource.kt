@@ -1,7 +1,7 @@
 package com.prac.shared_test.network
 
 import com.prac.network.AuthApiDataSource
-import com.prac.network.dto.TokenDto
+import com.prac.network.model.TokenDto
 
 class FakeAuthApiDataSource: AuthApiDataSource {
 

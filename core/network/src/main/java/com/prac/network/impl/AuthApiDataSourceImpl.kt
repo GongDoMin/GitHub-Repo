@@ -1,7 +1,7 @@
 package com.prac.network.impl
 
 import com.prac.network.AuthApiDataSource
-import com.prac.network.dto.TokenDto
+import com.prac.network.model.TokenDto
 import com.prac.network.service.GitHubAuthService
 import javax.inject.Inject
 

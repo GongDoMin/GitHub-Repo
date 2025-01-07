@@ -1,7 +1,7 @@
 package com.prac.network
 
-import com.prac.network.dto.RepoDetailDto
-import com.prac.network.dto.RepoDto
+import com.prac.network.model.RepoDetailDto
+import com.prac.network.model.RepoDto
 
 interface RepoApiDataSource {
     suspend fun getRepositories(userName: String, perPage:Int, page: Int) : List<RepoDto>

@@ -1,8 +1,8 @@
 package com.prac.network.service
 
 import com.prac.network.BuildConfig
-import com.prac.network.dto.AccessTokenRequest
-import com.prac.network.dto.UserDto
+import com.prac.network.model.AccessTokenRequest
+import com.prac.network.model.UserDto
 import okhttp3.Credentials
 import retrofit2.http.Body
 import retrofit2.http.Header

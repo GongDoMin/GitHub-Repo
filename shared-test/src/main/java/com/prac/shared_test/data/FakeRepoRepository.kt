@@ -15,11 +15,10 @@ import com.prac.data.model.toRepoModel
 import com.prac.data.model.toRepository
 import com.prac.data.repository.RepoRepository
 import com.prac.local.room.database.RepositoryDatabase
-import com.prac.local.room.entity.Owner
 import com.prac.local.room.entity.RemoteKey
 import com.prac.local.room.entity.Repository
-import com.prac.network.dto.OwnerDto
-import com.prac.network.dto.RepoDto
+import com.prac.network.model.OwnerDto
+import com.prac.network.model.RepoDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

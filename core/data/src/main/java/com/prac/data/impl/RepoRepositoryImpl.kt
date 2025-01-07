@@ -7,7 +7,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingState
 import androidx.paging.map
-import com.prac.data.model.OwnerModel
 import com.prac.data.model.RepoDetailModel
 import com.prac.data.model.RepoModel
 import com.prac.data.repository.RepoRepository
@@ -18,22 +17,18 @@ import com.prac.data.model.toRepoModel
 import com.prac.data.model.toRepository
 import com.prac.local.RemoteKeyLocalDataSource
 import com.prac.local.RepositoryLocalDataSource
-import com.prac.local.UserLocalDataSource
-import com.prac.local.room.entity.Owner
 import com.prac.local.room.entity.RemoteKey
 import com.prac.local.room.entity.Repository
 import com.prac.network.RepoApiDataSource
 import com.prac.network.RepoStarApiDataSource
-import com.prac.network.dto.RepoDetailDto
+import com.prac.network.model.RepoDetailDto
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
-import kotlin.coroutines.EmptyCoroutineContext
 
 @OptIn(ExperimentalPagingApi::class)
 internal class RepoRepositoryImpl @Inject constructor(

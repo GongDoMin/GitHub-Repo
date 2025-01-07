@@ -1,6 +1,6 @@
 package com.prac.network
 
-import com.prac.network.dto.TokenDto
+import com.prac.network.model.TokenDto
 
 interface AuthApiDataSource {
     suspend fun authorizeOAuth(code: String) : TokenDto

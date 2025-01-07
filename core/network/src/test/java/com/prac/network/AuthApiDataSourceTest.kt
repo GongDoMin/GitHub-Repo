@@ -1,6 +1,6 @@
 package com.prac.network
 
-import com.prac.network.dto.TokenDto
+import com.prac.network.model.TokenDto
 import com.prac.network.impl.AuthApiDataSourceImpl
 import com.prac.shared_test.network.service.FakeGitHubAuthService
 import kotlinx.coroutines.test.runTest

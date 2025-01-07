@@ -1,7 +1,7 @@
 package com.prac.data.model
 
 import com.prac.local.room.entity.Owner
-import com.prac.network.dto.OwnerDto
+import com.prac.network.model.OwnerDto
 
 data class OwnerModel(
     val login: String = "",

@@ -1,6 +1,6 @@
 package com.prac.shared_test.network.service
 
-import com.prac.network.dto.TokenDto
+import com.prac.network.model.TokenDto
 import com.prac.network.service.GitHubAuthService
 
 class FakeGitHubAuthService(

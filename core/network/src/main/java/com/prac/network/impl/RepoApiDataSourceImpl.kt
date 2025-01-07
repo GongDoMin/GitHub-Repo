@@ -1,10 +1,9 @@
 package com.prac.network.impl
 
 import com.prac.network.RepoApiDataSource
-import com.prac.network.dto.RepoDetailDto
-import com.prac.network.dto.RepoDto
+import com.prac.network.model.RepoDetailDto
+import com.prac.network.model.RepoDto
 import com.prac.network.service.GitHubService
-import okio.IOException
 import retrofit2.HttpException
 import java.util.Base64
 import javax.inject.Inject

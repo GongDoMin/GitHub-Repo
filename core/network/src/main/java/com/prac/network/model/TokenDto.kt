@@ -1,4 +1,4 @@
-package com.prac.network.dto
+package com.prac.network.model
 
 import com.prac.auth.model.TokenModel
 import kotlinx.serialization.SerialName

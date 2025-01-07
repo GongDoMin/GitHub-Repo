@@ -1,7 +1,7 @@
 package com.prac.network.service
 
 import com.prac.network.BuildConfig
-import com.prac.network.dto.TokenDto
+import com.prac.network.model.TokenDto
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Query
