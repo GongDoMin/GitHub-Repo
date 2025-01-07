@@ -15,7 +15,7 @@ data class RepositoryDetail(
     val readme: String = ""
 )
 
-fun RepositoryDetailResponse.toRepoDetailModel(
+fun RepositoryDetailResponse.toModel(
     issueCount: Int,
     pullCount: Int,
     readme: String
@@ -23,7 +23,7 @@ fun RepositoryDetailResponse.toRepoDetailModel(
     RepositoryDetail(
         id = id,
         name = name,
-        owner = owner.toOwnerModel(),
+        owner = owner.toModel(),
         stargazersCount = stargazersCount,
         forksCount = forksCount,
         isStarred = null,

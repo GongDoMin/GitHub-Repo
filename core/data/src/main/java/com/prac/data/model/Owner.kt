@@ -8,19 +8,19 @@ data class Owner(
     val avatarUrl: String = ""
 )
 
-fun OwnerResponse.toOwnerModel() =
+fun OwnerResponse.toModel() =
     Owner(
         login = login,
         avatarUrl = avatarUrl
     )
 
-fun OwnerEntity.toOwnerModel() =
+fun OwnerEntity.toModel() =
     Owner(
         login = login,
         avatarUrl = avatarUrl
     )
 
-fun Owner.toOwner() =
+fun Owner.toLocalModel() =
     OwnerEntity(
         login = login,
         avatarUrl = avatarUrl

@@ -11,8 +11,8 @@ import androidx.room.withTransaction
 import com.prac.data.model.Owner
 import com.prac.data.model.RepositoryDetail
 import com.prac.data.model.Repository
-import com.prac.data.model.toRepoModel
-import com.prac.data.model.toRepository
+import com.prac.data.model.toModel
+import com.prac.data.model.toLocalModel
 import com.prac.data.repository.RepoRepository
 import com.prac.local.room.database.RepositoryDatabase
 import com.prac.local.model.RemoteKeyEntity
@@ -39,7 +39,7 @@ class FakeRepoRepository @Inject constructor(
         ).flow
             .map { pagingData ->
                 pagingData.map { repository ->
-                    repository.toRepoModel()
+                    repository.toModel()
                 }
             }
     }
@@ -47,7 +47,7 @@ class FakeRepoRepository @Inject constructor(
     override suspend fun getRepository(userName: String, repoName: String): Result<RepositoryDetail> {
         // DetailScreen 테스트를 위한 임시 데이터
         val repositories = makeRepoEntityList(1).map {
-            it.toRepoModel().toRepository()
+            it.toModel().toLocalModel()
         }
         repositoryDatabase.repositoryDao().insertRepositories(repositories)
 
@@ -121,7 +121,7 @@ class FakeRepoRepository @Inject constructor(
                     RemoteKeyEntity(it.id, prevKey, nextKey)
                 }
                 val repositories = response.map {
-                    it.toRepoModel().toRepository()
+                    it.toModel().toLocalModel()
                 }
                 repositoryDatabase.remoteKeyDao().insertRemoteKeys(keys)
                 repositoryDatabase.repositoryDao().insertRepositories(repositories)

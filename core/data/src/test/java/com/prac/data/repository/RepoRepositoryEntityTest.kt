@@ -9,8 +9,8 @@ import androidx.paging.RemoteMediator
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
 import com.prac.data.impl.RepoRepositoryImpl
-import com.prac.data.model.toRepoModel
-import com.prac.data.model.toRepository
+import com.prac.data.model.toModel
+import com.prac.data.model.toLocalModel
 import com.prac.local.RemoteKeyLocalDataSource
 import com.prac.local.RepositoryLocalDataSource
 import com.prac.local.model.OwnerEntity
@@ -212,7 +212,7 @@ internal class RepoRepositoryEntityTest {
         val index = 0
         val repoDtoList = getRepoDtoListForPage(page, loadSize)
         val repoDto = repoDtoList[index]
-        repositoryLocalDataSource.insertRepositories(repoDtoList.map { it.toRepoModel().toRepository() })
+        repositoryLocalDataSource.insertRepositories(repoDtoList.map { it.toModel().toLocalModel() })
 
         repoRepository.isStarred(repoDto.id, repoDto.name)
 
@@ -227,7 +227,7 @@ internal class RepoRepositoryEntityTest {
         val index = 0
         val repoDtoList = getRepoDtoListForPage(page, loadSize)
         val repoDto = repoDtoList[index]
-        repositoryLocalDataSource.insertRepositories(repoDtoList.map { it.toRepoModel().toRepository() })
+        repositoryLocalDataSource.insertRepositories(repoDtoList.map { it.toModel().toLocalModel() })
         repoStarApiDataSource.setThrowable(Exception()) // 사용자가 repository 를 star 하고 있지 않을 경우 응답이 304 이기 때문에 예외를 발생시켜서 테스트 진행
 
         repoRepository.isStarred(repoDto.id, repoDto.name)
@@ -359,7 +359,7 @@ internal class RepoRepositoryEntityTest {
         val index = 0
         val repoDtoList = getRepoDtoListForPage(page, loadSize)
         val repoDto = repoDtoList[index]
-        repositoryLocalDataSource.insertRepositories(repoDtoList.map { it.toRepoModel().toRepository() })
+        repositoryLocalDataSource.insertRepositories(repoDtoList.map { it.toModel().toLocalModel() })
 
         repoRepository.starLocalRepository(repoDto.id, repoDto.stargazersCount + 1)
 
@@ -375,7 +375,7 @@ internal class RepoRepositoryEntityTest {
         val index = 0
         val repoDtoList = getRepoDtoListForPage(page, loadSize)
         val repoDto = repoDtoList[index]
-        repositoryLocalDataSource.insertRepositories(repoDtoList.map { it.toRepoModel().toRepository() })
+        repositoryLocalDataSource.insertRepositories(repoDtoList.map { it.toModel().toLocalModel() })
 
         repoRepository.unStarLocalRepository(repoDto.id, repoDto.stargazersCount)
 
@@ -390,7 +390,7 @@ internal class RepoRepositoryEntityTest {
         val index = 0
         val repoDto = repoDtoList[index]
         repoApiDataSource.setRepoDtoList(repoDtoList)
-        repositoryLocalDataSource.insertRepositories(repoDtoList.map { it.toRepoModel().toRepository() })
+        repositoryLocalDataSource.insertRepositories(repoDtoList.map { it.toModel().toLocalModel() })
 
         val result = repoRepository.getRepository(repoDto.owner.login, repoDto.name)
 
@@ -408,7 +408,7 @@ internal class RepoRepositoryEntityTest {
         val index = 0
         val repoDto = repoDtoList[index]
         val starCount = 10
-        repositoryLocalDataSource.insertRepositories(repoDtoList.map { it.toRepoModel().toRepository() })
+        repositoryLocalDataSource.insertRepositories(repoDtoList.map { it.toModel().toLocalModel() })
         repoApiDataSource.setRepoDtoList(repoDtoList)
         repoApiDataSource.setStarCount(starCount)
 
@@ -473,7 +473,7 @@ internal class RepoRepositoryEntityTest {
     @Test
     fun clearRepositories_clearRepositoriesAndRemoteKeys_roomIsEmpty() = runTest {
         val repoDtoList = getRepoDtoListForPage(1, 10)
-        repositoryLocalDataSource.insertRepositories(repoDtoList.map { it.toRepoModel().toRepository() })
+        repositoryLocalDataSource.insertRepositories(repoDtoList.map { it.toModel().toLocalModel() })
 
         repoRepository.clearRepositories()
 

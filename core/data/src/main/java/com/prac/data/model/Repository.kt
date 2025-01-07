@@ -13,33 +13,33 @@ data class Repository(
     val isStarred: Boolean? = null
 )
 
-fun RepositoryResponse.toRepoModel() =
+fun RepositoryResponse.toModel() =
     Repository(
         id = id,
         name = name,
-        owner = owner.toOwnerModel(),
+        owner = owner.toModel(),
         stargazersCount = stargazersCount,
         defaultBranch = defaultBranch,
         updatedAt = updatedAt,
         isStarred = null
     )
 
-fun RepositoryEntity.toRepoModel() =
+fun RepositoryEntity.toModel() =
     Repository(
         id = id,
         name = name,
-        owner = owner.toOwnerModel(),
+        owner = owner.toModel(),
         stargazersCount = stargazersCount,
         defaultBranch = defaultBranch,
         updatedAt = updatedAt,
         isStarred = isStarred
     )
 
-fun Repository.toRepository() =
+fun Repository.toLocalModel() =
     RepositoryEntity(
         id = id,
         name = name,
-        owner = owner.toOwner(),
+        owner = owner.toLocalModel(),
         stargazersCount = stargazersCount,
         defaultBranch = defaultBranch,
         updatedAt = updatedAt,

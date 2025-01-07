@@ -12,9 +12,8 @@ import com.prac.data.model.Repository
 import com.prac.data.repository.RepoRepository
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
-import com.prac.data.model.toRepoDetailModel
-import com.prac.data.model.toRepoModel
-import com.prac.data.model.toRepository
+import com.prac.data.model.toModel
+import com.prac.data.model.toLocalModel
 import com.prac.local.RemoteKeyLocalDataSource
 import com.prac.local.RepositoryLocalDataSource
 import com.prac.local.model.RemoteKeyEntity
@@ -53,7 +52,7 @@ internal class RepoRepositoryImpl @Inject constructor(
         ).flow
             .map { pagingData ->
                 pagingData.map { repository ->
-                    repository.toRepoModel()
+                    repository.toModel()
                 }
             }
     }
@@ -78,7 +77,7 @@ internal class RepoRepositoryImpl @Inject constructor(
             repositoryLocalDataSource.updateStarCount(repositoryDetailResponse.id, repositoryDetailResponse.stargazersCount)
 
             Result.success(
-                repositoryDetailResponse.toRepoDetailModel(
+                repositoryDetailResponse.toModel(
                     issueCount = issueCount,
                     pullCount = pullCount,
                     readme = readme
@@ -169,7 +168,7 @@ internal class RepoRepositoryImpl @Inject constructor(
                 RemoteKeyEntity(it.id, prevKey, nextKey)
             }
             val repositories = response.map {
-                it.toRepoModel().toRepository()
+                it.toModel().toLocalModel()
             }
             remoteKeyLocalDataSource.insertRemoteKeys(keys)
             repositoryLocalDataSource.insertRepositories(repositories)
