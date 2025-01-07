@@ -1,4 +1,4 @@
-package com.prac.network.model
+package com.prac.network.model.response
 
 import com.prac.auth.model.TokenModel
 import kotlinx.serialization.SerialName
@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 import java.time.ZonedDateTime
 
 @Serializable
-data class TokenDto(
+data class TokenResponse(
     @SerialName("access_token") val accessToken: String = "",
     @SerialName("expires_in") val expiresIn: Int = 0,
     @SerialName("refresh_token") val refreshToken: String = "",
@@ -15,7 +15,7 @@ data class TokenDto(
     @SerialName("token_type") val tokenType: String = ""
 )
 
-fun TokenDto.toTokenModel() =
+fun TokenResponse.toTokenModel() =
     TokenModel(
         accessToken = accessToken,
         refreshToken = refreshToken,

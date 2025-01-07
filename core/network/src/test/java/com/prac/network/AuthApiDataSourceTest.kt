@@ -1,6 +1,6 @@
 package com.prac.network
 
-import com.prac.network.model.TokenDto
+import com.prac.network.model.response.TokenResponse
 import com.prac.network.impl.AuthApiDataSourceImpl
 import com.prac.shared_test.network.service.FakeGitHubAuthService
 import kotlinx.coroutines.test.runTest
@@ -14,7 +14,7 @@ internal class AuthApiDataSourceTest {
     private lateinit var gitHubAuthService: FakeGitHubAuthService
     private lateinit var authApiDataSource: AuthApiDataSource
 
-    private val token = TokenDto(
+    private val token = TokenResponse(
         accessToken = "accessToken",
         expiresIn = 3600,
         refreshToken= "refreshToken",

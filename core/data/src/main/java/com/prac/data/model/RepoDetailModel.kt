@@ -1,6 +1,6 @@
 package com.prac.data.model
 
-import com.prac.network.model.RepoDetailDto
+import com.prac.network.model.response.RepoDetailResponse
 
 data class RepoDetailModel(
     val id: Int = 0,
@@ -15,7 +15,7 @@ data class RepoDetailModel(
     val readme: String = ""
 )
 
-fun RepoDetailDto.toRepoDetailModel(
+fun RepoDetailResponse.toRepoDetailModel(
     issueCount: Int,
     pullCount: Int,
     readme: String

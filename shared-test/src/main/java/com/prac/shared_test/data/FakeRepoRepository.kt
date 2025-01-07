@@ -17,8 +17,8 @@ import com.prac.data.repository.RepoRepository
 import com.prac.local.room.database.RepositoryDatabase
 import com.prac.local.room.entity.RemoteKey
 import com.prac.local.room.entity.Repository
-import com.prac.network.model.OwnerDto
-import com.prac.network.model.RepoDto
+import com.prac.network.model.response.OwnerResponse
+import com.prac.network.model.response.RepoResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -154,15 +154,15 @@ class FakeRepoRepository @Inject constructor(
             }
     }
 
-    private fun makeRepoEntityList(page: Int) : List<RepoDto> {
-        val pagingData: MutableList<RepoDto> = mutableListOf()
+    private fun makeRepoEntityList(page: Int) : List<RepoResponse> {
+        val pagingData: MutableList<RepoResponse> = mutableListOf()
 
         repeat(10) {
             pagingData.add(
-                RepoDto(
+                RepoResponse(
                     id = it + (10 * (page - 1)),
                     name = "test ${it + (10 * (page - 1))}",
-                    owner = OwnerDto("login ${it + (10 * (page - 1))}", "avatarUrl ${it + (10 * (page - 1))}"),
+                    owner = OwnerResponse("login ${it + (10 * (page - 1))}", "avatarUrl ${it + (10 * (page - 1))}"),
                     stargazersCount = 5,
                     defaultBranch = "master",
                     updatedAt = "update",

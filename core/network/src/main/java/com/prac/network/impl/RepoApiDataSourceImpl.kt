@@ -1,8 +1,8 @@
 package com.prac.network.impl
 
 import com.prac.network.RepoApiDataSource
-import com.prac.network.model.RepoDetailDto
-import com.prac.network.model.RepoDto
+import com.prac.network.model.response.RepoDetailResponse
+import com.prac.network.model.response.RepoResponse
 import com.prac.network.service.GitHubService
 import retrofit2.HttpException
 import java.util.Base64
@@ -11,13 +11,13 @@ import javax.inject.Inject
 internal class RepoApiDataSourceImpl @Inject constructor(
     private val gitHubService: GitHubService
 ) : RepoApiDataSource {
-    override suspend fun getRepositories(userName: String, perPage: Int, page: Int): List<RepoDto> {
+    override suspend fun getRepositories(userName: String, perPage: Int, page: Int): List<RepoResponse> {
         val response = gitHubService.getRepos(userName, perPage, page)
 
         return response
     }
 
-    override suspend fun getRepository(userName: String, repoName: String): RepoDetailDto {
+    override suspend fun getRepository(userName: String, repoName: String): RepoDetailResponse {
         val response = gitHubService.getRepo(userName, repoName)
 
         return response

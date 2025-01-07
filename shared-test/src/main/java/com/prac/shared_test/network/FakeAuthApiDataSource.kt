@@ -1,7 +1,7 @@
 package com.prac.shared_test.network
 
 import com.prac.network.AuthApiDataSource
-import com.prac.network.model.TokenDto
+import com.prac.network.model.response.TokenResponse
 
 class FakeAuthApiDataSource: AuthApiDataSource {
 
@@ -11,10 +11,10 @@ class FakeAuthApiDataSource: AuthApiDataSource {
         this.throwable = throwable
     }
 
-    override suspend fun authorizeOAuth(code: String): TokenDto {
+    override suspend fun authorizeOAuth(code: String): TokenResponse {
         if (::throwable.isInitialized) throw throwable
 
-        return TokenDto(
+        return TokenResponse(
             accessToken = "accessToken",
             refreshToken = "refreshToken",
             expiresIn = 3600,
@@ -24,10 +24,10 @@ class FakeAuthApiDataSource: AuthApiDataSource {
         )
     }
 
-    override suspend fun refreshAccessToken(refreshToken: String): TokenDto {
+    override suspend fun refreshAccessToken(refreshToken: String): TokenResponse {
         if (::throwable.isInitialized) throw throwable
 
-        return TokenDto(
+        return TokenResponse(
             accessToken = "refreshAccessToken",
             refreshToken = "refreshRefreshToken",
             expiresIn = 3600,

@@ -1,7 +1,7 @@
 package com.prac.network
 
-import com.prac.network.model.OwnerDto
-import com.prac.network.model.RepoDto
+import com.prac.network.model.response.OwnerResponse
+import com.prac.network.model.response.RepoResponse
 import com.prac.network.impl.RepoApiDataSourceImpl
 import com.prac.shared_test.network.service.FakeGitHubService
 import kotlinx.coroutines.test.runTest
@@ -18,10 +18,10 @@ class RepoApiDataSourceTest {
     private lateinit var repoApiDatasource: RepoApiDataSource
 
     private val repoList = listOf(
-        RepoDto(0, "test1", OwnerDto("test1", "test1"), 0, "master", "test1"),
-        RepoDto(1, "test2", OwnerDto("test2", "test2"), 0, "master", "test1"),
-        RepoDto(2, "test3", OwnerDto("test3", "test3"), 0, "master", "test1"),
-        RepoDto(3, "test4", OwnerDto("test4", "test4"), 0, "master", "test1"),
+        RepoResponse(0, "test1", OwnerResponse("test1", "test1"), 0, "master", "test1"),
+        RepoResponse(1, "test2", OwnerResponse("test2", "test2"), 0, "master", "test1"),
+        RepoResponse(2, "test3", OwnerResponse("test3", "test3"), 0, "master", "test1"),
+        RepoResponse(3, "test4", OwnerResponse("test4", "test4"), 0, "master", "test1"),
     )
     private val content = "hi!!"
     private val encoded = Base64.encode(content.toByteArray())

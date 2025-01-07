@@ -1,10 +1,10 @@
 package com.prac.network.service
 
-import com.prac.network.model.IssueDto
-import com.prac.network.model.PullDto
-import com.prac.network.model.ReadmeDto
-import com.prac.network.model.RepoDetailDto
-import com.prac.network.model.RepoDto
+import com.prac.network.model.response.IssueResponse
+import com.prac.network.model.response.PullResponse
+import com.prac.network.model.response.ReadmeResponse
+import com.prac.network.model.response.RepoDetailResponse
+import com.prac.network.model.response.RepoResponse
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PUT
@@ -17,13 +17,13 @@ interface GitHubService {
         @Path("userName") userName: String,
         @Query("per_page") perPage: Int,
         @Query("page") page: Int
-    ): List<RepoDto>
+    ): List<RepoResponse>
 
     @GET("repos/{userName}/{repoName}")
     suspend fun getRepo(
         @Path("userName") userName: String,
         @Path("repoName") repoName: String
-    ): RepoDetailDto
+    ): RepoDetailResponse
 
     @GET("user/starred/{userName}/{repoName}")
     suspend fun isStarred(
@@ -47,17 +47,17 @@ interface GitHubService {
     suspend fun getRepoIssues(
         @Path("userName") userName: String,
         @Path("repoName") repoName: String
-    ): List<IssueDto>
+    ): List<IssueResponse>
 
     @GET("repos/{userName}/{repoName}/pulls")
     suspend fun getRepoPulls(
         @Path("userName") userName: String,
         @Path("repoName") repoName: String
-    ): List<PullDto>
+    ): List<PullResponse>
 
     @GET("repos/{userName}/{repoName}/readme")
     suspend fun getRepoReadme(
         @Path("userName") userName: String,
         @Path("repoName") repoName: String
-    ): ReadmeDto
+    ): ReadmeResponse
 }

@@ -15,8 +15,8 @@ import com.prac.local.RemoteKeyLocalDataSource
 import com.prac.local.RepositoryLocalDataSource
 import com.prac.local.room.entity.Owner
 import com.prac.local.room.entity.Repository
-import com.prac.network.model.OwnerDto
-import com.prac.network.model.RepoDto
+import com.prac.network.model.response.OwnerResponse
+import com.prac.network.model.response.RepoResponse
 import com.prac.shared_test.local.source.FakeRemoteKeyLocalDataSource
 import com.prac.shared_test.local.source.FakeRepositoryLocalDataSource
 import com.prac.shared_test.network.FakeRepoApiDataSource
@@ -127,14 +127,14 @@ internal class RepoRepositoryTest {
     @OptIn(ExperimentalPagingApi::class)
     @Test
     fun load_loadThreeTimes_successResult() = runTest {
-        val totalRepoDtoList: MutableList<RepoDto> = mutableListOf()
+        val totalRepoResponseList: MutableList<RepoResponse> = mutableListOf()
         val totalPage = 3
 
         repeat(totalPage) { page ->
             val loadSize = 10
             val pagingState = PagingState(
                 pages = listOf(PagingSource.LoadResult.Page(
-                    data = totalRepoDtoList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, it.defaultBranch, null) },
+                    data = totalRepoResponseList.map { Repository(it.id, it.name, Owner(it.owner.login, it.owner.avatarUrl), it.stargazersCount, it.updatedAt, it.defaultBranch, null) },
                     prevKey = 0, // data 의 id 를 통해 remoteKey 를 가져오기 때문에 0 으로 구현
                     nextKey = 0 // data 의 id 를 통해 remoteKey 를 가져오기 때문에 0 으로 구현
                 )
@@ -147,7 +147,7 @@ internal class RepoRepositoryTest {
             val prevKey = if (page == 0) null else page
             val nextKey = page + 2
             val repoDtoList = getRepoDtoListForPage(page, loadSize)
-            totalRepoDtoList.addAll(repoDtoList)
+            totalRepoResponseList.addAll(repoDtoList)
             repoApiDataSource.setRepoDtoList(repoDtoList)
             val loadParams =
                 if (page == 0)
@@ -494,14 +494,14 @@ internal class RepoRepositoryTest {
         repoRepository = RepoRepositoryImpl(repoApiDataSource, repoStarApiDataSource, repositoryLocalDataSource, remoteKeyLocalDataSource)
     }
 
-    private fun getRepoDtoListForPage(page : Int, loadSize: Int) : List<RepoDto> =
-        mutableListOf<RepoDto>().apply {
+    private fun getRepoDtoListForPage(page : Int, loadSize: Int) : List<RepoResponse> =
+        mutableListOf<RepoResponse>().apply {
             repeat(loadSize) {
                 add(
-                    RepoDto(
+                    RepoResponse(
                         id = it + (10 * page),
                         name = "test ${it + (10 * page)}",
-                        owner = OwnerDto(
+                        owner = OwnerResponse(
                             login = "login ${it + (10 * page)}",
                             avatarUrl = "avatarUrl ${it + (10 * page)}"),
                         stargazersCount = 0,

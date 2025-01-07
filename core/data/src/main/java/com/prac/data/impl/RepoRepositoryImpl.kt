@@ -21,7 +21,7 @@ import com.prac.local.room.entity.RemoteKey
 import com.prac.local.room.entity.Repository
 import com.prac.network.RepoApiDataSource
 import com.prac.network.RepoStarApiDataSource
-import com.prac.network.model.RepoDetailDto
+import com.prac.network.model.response.RepoDetailResponse
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -62,7 +62,7 @@ internal class RepoRepositoryImpl @Inject constructor(
         try {
             val issueCount: Int
             val pullCount: Int
-            val repoDetailDto: RepoDetailDto
+            val repoDetailResponse: RepoDetailResponse
             val readme: String
 
             val deferredIssueCount = async { repoApiDataSource.getRepoIssueCount(userName, repoName) }
@@ -72,13 +72,13 @@ internal class RepoRepositoryImpl @Inject constructor(
 
             issueCount = deferredIssueCount.await()
             pullCount = deferredPullCount.await()
-            repoDetailDto = deferredRepoDetailDto.await()
+            repoDetailResponse = deferredRepoDetailDto.await()
             readme = deferredReadme.await()
 
-            repositoryLocalDataSource.updateStarCount(repoDetailDto.id, repoDetailDto.stargazersCount)
+            repositoryLocalDataSource.updateStarCount(repoDetailResponse.id, repoDetailResponse.stargazersCount)
 
             Result.success(
-                repoDetailDto.toRepoDetailModel(
+                repoDetailResponse.toRepoDetailModel(
                     issueCount = issueCount,
                     pullCount = pullCount,
                     readme = readme

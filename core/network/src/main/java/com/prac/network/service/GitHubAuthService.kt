@@ -1,7 +1,7 @@
 package com.prac.network.service
 
 import com.prac.network.BuildConfig
-import com.prac.network.model.TokenDto
+import com.prac.network.model.response.TokenResponse
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -13,7 +13,7 @@ interface GitHubAuthService {
         @Query("client_id") clientID: String = BuildConfig.CLIENT_ID,
         @Query("client_secret") clientSecret: String = BuildConfig.CLIENT_SECRET,
         @Query("code") code: String,
-    ): TokenDto
+    ): TokenResponse
 
     @POST("login/oauth/access_token")
     suspend fun refreshAccessToken(
@@ -22,5 +22,5 @@ interface GitHubAuthService {
         @Query("client_secret") clientSecret: String = BuildConfig.CLIENT_SECRET,
         @Query("grant_type") grantType: String = "refresh_token",
         @Query("refresh_token") refreshToken: String
-    ): TokenDto
+    ): TokenResponse
 }

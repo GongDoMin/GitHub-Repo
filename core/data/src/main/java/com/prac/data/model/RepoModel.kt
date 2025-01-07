@@ -1,7 +1,7 @@
 package com.prac.data.model
 
 import com.prac.local.room.entity.Repository
-import com.prac.network.model.RepoDto
+import com.prac.network.model.response.RepoResponse
 
 data class RepoModel(
     val id: Int = 0,
@@ -13,7 +13,7 @@ data class RepoModel(
     val isStarred: Boolean? = null
 )
 
-fun RepoDto.toRepoModel() =
+fun RepoResponse.toRepoModel() =
     RepoModel(
         id = id,
         name = name,

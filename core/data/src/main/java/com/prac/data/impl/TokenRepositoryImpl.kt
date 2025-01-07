@@ -4,7 +4,7 @@ import com.prac.data.repository.TokenRepository
 import com.prac.local.TokenLocalDataSource
 import com.prac.local.datastore.token.TokenLocalDto
 import com.prac.network.AuthApiDataSource
-import com.prac.network.model.TokenDto
+import com.prac.network.model.response.TokenResponse
 import java.time.ZonedDateTime
 import javax.inject.Inject
 
@@ -28,7 +28,7 @@ internal class TokenRepositoryImpl @Inject constructor(
         tokenLocalDataSource.clearToken()
     }
 
-    private suspend fun setToken(token: TokenDto) {
+    private suspend fun setToken(token: TokenResponse) {
         tokenLocalDataSource.setToken(
             TokenLocalDto(
                 token.accessToken,

@@ -1,20 +1,20 @@
 package com.prac.shared_test.network
 
 import com.prac.network.RepoApiDataSource
-import com.prac.network.model.OwnerDto
-import com.prac.network.model.RepoDetailDto
-import com.prac.network.model.RepoDto
+import com.prac.network.model.response.OwnerResponse
+import com.prac.network.model.response.RepoDetailResponse
+import com.prac.network.model.response.RepoResponse
 
 class FakeRepoApiDataSource : RepoApiDataSource {
 
-    private val repoDtoList: MutableList<RepoDto> = mutableListOf()
+    private val repoResponseList: MutableList<RepoResponse> = mutableListOf()
     private var starCount: Int? = 0
     private lateinit var throwable: Throwable
 
-    fun setRepoDtoList(repoDtoList: List<RepoDto>) {
-        this.repoDtoList.clear() // paging fake 이기 때문에 이전의 존재했던 리스트를 초기화
+    fun setRepoDtoList(repoResponseList: List<RepoResponse>) {
+        this.repoResponseList.clear() // paging fake 이기 때문에 이전의 존재했던 리스트를 초기화
 
-        this.repoDtoList.addAll(repoDtoList)
+        this.repoResponseList.addAll(repoResponseList)
     }
 
     fun setStarCount(starCount: Int) {
@@ -25,21 +25,21 @@ class FakeRepoApiDataSource : RepoApiDataSource {
         this.throwable = throwable
     }
 
-    override suspend fun getRepositories(userName: String, perPage: Int, page: Int): List<RepoDto> {
+    override suspend fun getRepositories(userName: String, perPage: Int, page: Int): List<RepoResponse> {
         if (::throwable.isInitialized) throw throwable
 
-        return repoDtoList
+        return repoResponseList
     }
 
-    override suspend fun getRepository(userName: String, repoName: String): RepoDetailDto {
+    override suspend fun getRepository(userName: String, repoName: String): RepoDetailResponse {
         if (::throwable.isInitialized) throw throwable
 
-        val repoDto = repoDtoList.find { it.owner.login == userName && it.name == repoName } ?: throw Exception("repository is not found")
+        val repoDto = repoResponseList.find { it.owner.login == userName && it.name == repoName } ?: throw Exception("repository is not found")
 
-        return RepoDetailDto(
+        return RepoDetailResponse(
             id = repoDto.id,
             name = repoDto.name,
-            owner = OwnerDto(
+            owner = OwnerResponse(
                 login = repoDto.owner.login,
                 avatarUrl = repoDto.owner.avatarUrl),
             stargazersCount = starCount ?: repoDto.stargazersCount,
