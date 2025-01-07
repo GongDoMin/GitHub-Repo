@@ -1,11 +1,9 @@
 package com.prac.data.repository
 
 import com.prac.data.impl.TokenRepositoryImpl
-import com.prac.local.datastore.token.TokenLocalDto
+import com.prac.local.model.TokenEntity
 import com.prac.shared_test.local.source.FakeTokenLocalDataSource
-import com.prac.shared_test.local.source.FakeUserLocalDataSource
 import com.prac.shared_test.network.FakeAuthApiDataSource
-import com.prac.shared_test.network.FakeUserApiDataSource
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -15,14 +13,14 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-class TokenRepositoryTest {
+class TokenEntityRepositoryTest {
 
     private lateinit var tokenLocalDataSource: FakeTokenLocalDataSource
     private lateinit var authApiDataSource: FakeAuthApiDataSource
 
     private lateinit var tokenRepository: TokenRepository
 
-    private val token = TokenLocalDto(
+    private val token = TokenEntity(
         accessToken = "accessToken",
         refreshToken = "refreshToken",
         expiresInSeconds = 3600,
@@ -34,7 +32,7 @@ class TokenRepositoryTest {
     @Test
     fun authorizeOAuth_apiCallIsSuccess_successAndUpdateTokenAndUserName() = runTest {
         makeTokenRepository()
-        val expectedToken = TokenLocalDto(
+        val expectedToken = TokenEntity(
             accessToken = "accessToken",
             refreshToken = "refreshToken",
             expiresInSeconds = 3600,

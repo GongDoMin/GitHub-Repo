@@ -1,8 +1,8 @@
-package com.prac.local.datastore.token
+package com.prac.local.model
 
 import java.time.ZonedDateTime
 
-data class TokenLocalDto(
+data class TokenEntity(
     val accessToken: String,
     val refreshToken: String,
     val expiresInSeconds: Int,

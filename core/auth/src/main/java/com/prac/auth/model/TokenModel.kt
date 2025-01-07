@@ -1,6 +1,6 @@
 package com.prac.auth.model
 
-import com.prac.local.datastore.token.TokenLocalDto
+import com.prac.local.model.TokenEntity
 import java.time.ZonedDateTime
 
 data class TokenModel(
@@ -12,7 +12,7 @@ data class TokenModel(
 )
 
 fun TokenModel.toTokenLocalDto() =
-    TokenLocalDto(
+    TokenEntity(
         accessToken = accessToken,
         refreshToken = refreshToken,
         expiresInSeconds = expiredIn,

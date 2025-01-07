@@ -1,11 +1,11 @@
 package com.prac.local
 
-import com.prac.local.datastore.token.TokenLocalDto
+import com.prac.local.model.TokenEntity
 
 interface TokenLocalDataSource {
-    fun getToken(): TokenLocalDto
+    fun getToken(): TokenEntity
 
-    suspend fun setToken(token: TokenLocalDto)
+    suspend fun setToken(token: TokenEntity)
 
     suspend fun clearToken()
 }

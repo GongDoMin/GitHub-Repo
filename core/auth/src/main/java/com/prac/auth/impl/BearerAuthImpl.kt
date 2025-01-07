@@ -4,7 +4,6 @@ import com.prac.auth.AuthManager
 import com.prac.auth.model.TokenModel
 import com.prac.auth.model.toTokenLocalDto
 import com.prac.local.TokenLocalDataSource
-import com.prac.local.datastore.token.TokenLocalDto
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 

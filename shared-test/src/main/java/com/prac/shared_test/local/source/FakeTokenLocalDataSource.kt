@@ -1,12 +1,12 @@
 package com.prac.shared_test.local.source
 
 import com.prac.local.TokenLocalDataSource
-import com.prac.local.datastore.token.TokenLocalDto
+import com.prac.local.model.TokenEntity
 import java.time.Instant
 import java.time.ZoneId
 
 class FakeTokenLocalDataSource(
-    private var token: TokenLocalDto = TokenLocalDto(
+    private var token: TokenEntity = TokenEntity(
         accessToken = "",
         refreshToken = "",
         expiresInSeconds = 0,
@@ -15,16 +15,16 @@ class FakeTokenLocalDataSource(
     )
 ) : TokenLocalDataSource {
 
-    override suspend fun setToken(token: TokenLocalDto) {
+    override suspend fun setToken(token: TokenEntity) {
         this.token = token
     }
 
-    override fun getToken(): TokenLocalDto {
+    override fun getToken(): TokenEntity {
         return token
     }
 
     override suspend fun clearToken() {
-        this.token = TokenLocalDto(
+        this.token = TokenEntity(
             accessToken = "",
             refreshToken = "",
             expiresInSeconds = 0,

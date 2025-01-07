@@ -1,9 +1,11 @@
 package com.prac.local.datastore.token
 
-interface TokenDataStoreManager {
-    suspend fun getToken(): TokenLocalDto
+import com.prac.local.model.TokenEntity
 
-    suspend fun setToken(token: TokenLocalDto)
+interface TokenDataStoreManager {
+    suspend fun getToken(): TokenEntity
+
+    suspend fun setToken(token: TokenEntity)
 
     suspend fun clearToken()
 }

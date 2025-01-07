@@ -97,7 +97,7 @@ internal class TokenDataStoreManagerImpl(
         }
     )
 
-    override suspend fun setToken(token: TokenLocalDto) {
+    override suspend fun setToken(token: com.prac.local.model.TokenEntity) {
         mContext.tokenDataStore.updateData { pref ->
             pref.toBuilder()
                 .setAccessToken(token.accessToken)
@@ -109,14 +109,15 @@ internal class TokenDataStoreManagerImpl(
         }
     }
 
-    override suspend fun getToken(): TokenLocalDto {
+    override suspend fun getToken(): com.prac.local.model.TokenEntity {
         return mContext.tokenDataStore.data.first().let {
-            TokenLocalDto(
+            com.prac.local.model.TokenEntity(
                 accessToken = it.accessToken,
                 refreshToken = it.refreshToken,
                 expiresInSeconds = it.accessTokenExpiresInSeconds,
                 refreshTokenExpiresInSeconds = it.refreshTokenExpiresInSeconds,
-                updatedAt = Instant.ofEpochMilli(it.accessTokenUpdatedAt).atZone(ZoneId.systemDefault())
+                updatedAt = Instant.ofEpochMilli(it.accessTokenUpdatedAt)
+                    .atZone(ZoneId.systemDefault())
             )
         }
     }

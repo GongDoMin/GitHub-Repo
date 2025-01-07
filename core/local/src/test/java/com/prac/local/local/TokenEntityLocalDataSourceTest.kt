@@ -1,7 +1,7 @@
 package com.prac.local.local
 
 import com.prac.local.TokenLocalDataSource
-import com.prac.local.datastore.token.TokenLocalDto
+import com.prac.local.model.TokenEntity
 import com.prac.local.impl.TokenLocalDataSourceImpl
 import com.prac.shared_test.local.datastore.FakeTokenDataStoreManager
 import kotlinx.coroutines.test.runTest
@@ -13,12 +13,12 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-internal class TokenLocalDataSourceTest {
+internal class TokenEntityLocalDataSourceTest {
 
     private lateinit var tokenDataStoreManager: FakeTokenDataStoreManager
     private lateinit var tokenLocalDataSource: TokenLocalDataSource
 
-    private val initialToken = TokenLocalDto(
+    private val initialToken = TokenEntity(
         accessToken = "accessToken",
         refreshToken = "refreshToken",
         expiresInSeconds = 3600,
@@ -55,7 +55,7 @@ internal class TokenLocalDataSourceTest {
 
     @Test
     fun setToken_updateNewToken_localAndCachedNotEmptyToken() = runTest {
-        val token = TokenLocalDto(
+        val token = TokenEntity(
             accessToken = "accessToken",
             refreshToken = "refreshToken",
             expiresInSeconds = 3600,

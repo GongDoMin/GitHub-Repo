@@ -2,7 +2,7 @@ package com.prac.local.impl
 
 import com.prac.local.TokenLocalDataSource
 import com.prac.local.datastore.token.TokenDataStoreManager
-import com.prac.local.datastore.token.TokenLocalDto
+import com.prac.local.model.TokenEntity
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
@@ -11,7 +11,7 @@ internal class TokenLocalDataSourceImpl @Inject constructor(
     private val tokenDataStoreManager: TokenDataStoreManager
 ) : TokenLocalDataSource {
 
-    private val cachedToken: AtomicReference<TokenLocalDto> = AtomicReference()
+    private val cachedToken: AtomicReference<TokenEntity> = AtomicReference()
 
     init {
         runBlocking {
@@ -21,16 +21,16 @@ internal class TokenLocalDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun setToken(token: TokenLocalDto) {
+    override suspend fun setToken(token: TokenEntity) {
         tokenDataStoreManager.setToken(token)
         updateToken(token)
     }
 
-    override fun getToken(): TokenLocalDto {
+    override fun getToken(): TokenEntity {
         return cachedToken.get()
     }
 
-    private fun updateToken(newToken: TokenLocalDto) {
+    private fun updateToken(newToken: TokenEntity) {
         cachedToken.set(newToken)
     }
 
