@@ -10,8 +10,8 @@ import com.prac.data.exception.RepositoryException
 import com.prac.feature.detail.model.Action
 import com.prac.feature.detail.model.Event
 import com.prac.feature.detail.model.Mutation
-import com.prac.feature.detail.model.Owner
-import com.prac.feature.detail.model.RepositoryDetail
+import com.prac.data.model.Owner
+import com.prac.data.model.RepositoryDetail
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow

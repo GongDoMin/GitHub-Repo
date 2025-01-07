@@ -13,7 +13,7 @@ import com.prac.domain.ClearLocalDataUseCase
 import com.prac.feature.detail.model.Action
 import com.prac.feature.detail.model.Event
 import com.prac.feature.detail.model.Mutation
-import com.prac.feature.detail.model.RepositoryDetail
+import com.prac.data.model.RepositoryDetail
 import com.prac.feature.detail.model.toRepositoryDetail
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector

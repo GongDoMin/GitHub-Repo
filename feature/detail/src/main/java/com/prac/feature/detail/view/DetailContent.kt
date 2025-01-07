@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.sp
 import com.prac.core.common.ui.DrawableImage
 import com.prac.core.common.ui.UserProfile
 import com.prac.core.designsystem.R
-import com.prac.feature.detail.model.RepositoryDetail
+import com.prac.data.model.RepositoryDetail
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable

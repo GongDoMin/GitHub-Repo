@@ -2,7 +2,6 @@ package com.prac.feature.detail
 
 import com.prac.data.model.RepositoryDetail
 import com.prac.feature.detail.model.Mutation
-import com.prac.feature.detail.model.RepositoryDetail
 import com.prac.feature.detail.view.UiState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

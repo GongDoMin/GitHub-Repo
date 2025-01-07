@@ -9,7 +9,7 @@ import com.prac.data.exception.RepositoryException
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
 import com.prac.feature.main.model.Mutation
-import com.prac.feature.main.model.Repository
+import com.prac.data.model.Repository
 import com.prac.feature.main.refresh.RefreshState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector

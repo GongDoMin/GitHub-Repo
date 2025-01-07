@@ -17,7 +17,7 @@ import com.prac.feature.main.di.MainReducerAnnotation
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
 import com.prac.feature.main.model.Mutation
-import com.prac.feature.main.model.Repository
+import com.prac.data.model.Repository
 import com.prac.feature.main.model.toRepository
 import com.prac.feature.main.view.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel

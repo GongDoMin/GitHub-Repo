@@ -1,5 +1,7 @@
 package com.prac.feature.detail.model
 
+import com.prac.data.model.RepositoryDetail
+
 sealed interface Action {
     data object UserAction {
         data class OnClickUnStar(val repository: RepositoryDetail) : Action

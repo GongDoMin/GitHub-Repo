@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import com.prac.core.common.ui.DrawableImage
 import com.prac.core.common.ui.UserProfile
 import com.prac.core.designsystem.R
-import com.prac.feature.main.model.Owner
-import com.prac.feature.main.model.Repository
+import com.prac.data.model.Owner
+import com.prac.data.model.Repository
 
 @Composable
 internal fun RepositoryItem(

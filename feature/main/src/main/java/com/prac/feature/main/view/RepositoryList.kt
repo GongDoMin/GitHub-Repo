@@ -20,7 +20,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.prac.core.designsystem.R
-import com.prac.feature.main.model.Repository
+import com.prac.data.model.Repository
 import kotlinx.coroutines.flow.flowOf
 
 @Composable

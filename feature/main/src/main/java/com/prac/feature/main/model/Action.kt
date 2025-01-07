@@ -1,6 +1,7 @@
 package com.prac.feature.main.model
 
 import com.prac.feature.main.refresh.RefreshState
+import com.prac.data.model.Repository
 
 sealed interface Action {
     data object UserAction {

@@ -1,6 +1,6 @@
 package com.prac.feature.detail.view
 
-import com.prac.feature.detail.model.RepositoryDetail
+import com.prac.data.model.RepositoryDetail
 
 sealed interface UiState {
     data object Loading : UiState

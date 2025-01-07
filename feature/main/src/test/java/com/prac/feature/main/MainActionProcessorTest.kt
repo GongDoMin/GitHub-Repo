@@ -4,14 +4,12 @@ import app.cash.turbine.test
 import com.prac.core.common.constants.INVALID_TOKEN
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
+import com.prac.data.model.Repository
 import com.prac.data.repository.RepoRepository
-import com.prac.domain.ClearLocalDataUseCase
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
 import com.prac.feature.main.model.Mutation
-import com.prac.feature.main.model.Repository
 import com.prac.shared_test.common.FakeBackOffWorkManager
-import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.shared_test.domain.FakeClearLocalDataUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle

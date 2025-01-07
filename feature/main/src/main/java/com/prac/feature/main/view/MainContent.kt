@@ -15,7 +15,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.prac.core.designsystem.R
-import com.prac.feature.main.model.Repository
+import com.prac.data.model.Repository
 import com.prac.feature.main.refresh.PullToRefreshLayout
 import com.prac.feature.main.refresh.RefreshState
 import kotlinx.coroutines.flow.flowOf
