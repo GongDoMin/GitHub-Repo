@@ -2,19 +2,19 @@ package com.prac.shared_test.network
 
 import com.prac.network.RepoApiDataSource
 import com.prac.network.model.response.OwnerResponse
-import com.prac.network.model.response.RepoDetailResponse
-import com.prac.network.model.response.RepoResponse
+import com.prac.network.model.response.RepositoryDetailResponse
+import com.prac.network.model.response.RepositoryResponse
 
 class FakeRepoApiDataSource : RepoApiDataSource {
 
-    private val repoResponseList: MutableList<RepoResponse> = mutableListOf()
+    private val repositoryResponseList: MutableList<RepositoryResponse> = mutableListOf()
     private var starCount: Int? = 0
     private lateinit var throwable: Throwable
 
-    fun setRepoDtoList(repoResponseList: List<RepoResponse>) {
-        this.repoResponseList.clear() // paging fake 이기 때문에 이전의 존재했던 리스트를 초기화
+    fun setRepoDtoList(repositoryResponseList: List<RepositoryResponse>) {
+        this.repositoryResponseList.clear() // paging fake 이기 때문에 이전의 존재했던 리스트를 초기화
 
-        this.repoResponseList.addAll(repoResponseList)
+        this.repositoryResponseList.addAll(repositoryResponseList)
     }
 
     fun setStarCount(starCount: Int) {
@@ -25,18 +25,18 @@ class FakeRepoApiDataSource : RepoApiDataSource {
         this.throwable = throwable
     }
 
-    override suspend fun getRepositories(userName: String, perPage: Int, page: Int): List<RepoResponse> {
+    override suspend fun getRepositories(userName: String, perPage: Int, page: Int): List<RepositoryResponse> {
         if (::throwable.isInitialized) throw throwable
 
-        return repoResponseList
+        return repositoryResponseList
     }
 
-    override suspend fun getRepository(userName: String, repoName: String): RepoDetailResponse {
+    override suspend fun getRepository(userName: String, repoName: String): RepositoryDetailResponse {
         if (::throwable.isInitialized) throw throwable
 
-        val repoDto = repoResponseList.find { it.owner.login == userName && it.name == repoName } ?: throw Exception("repository is not found")
+        val repoDto = repositoryResponseList.find { it.owner.login == userName && it.name == repoName } ?: throw Exception("repository is not found")
 
-        return RepoDetailResponse(
+        return RepositoryDetailResponse(
             id = repoDto.id,
             name = repoDto.name,
             owner = OwnerResponse(

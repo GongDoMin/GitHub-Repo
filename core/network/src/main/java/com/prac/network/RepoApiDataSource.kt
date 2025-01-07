@@ -1,12 +1,12 @@
 package com.prac.network
 
-import com.prac.network.model.response.RepoDetailResponse
-import com.prac.network.model.response.RepoResponse
+import com.prac.network.model.response.RepositoryDetailResponse
+import com.prac.network.model.response.RepositoryResponse
 
 interface RepoApiDataSource {
-    suspend fun getRepositories(userName: String, perPage:Int, page: Int) : List<RepoResponse>
+    suspend fun getRepositories(userName: String, perPage:Int, page: Int) : List<RepositoryResponse>
 
-    suspend fun getRepository(userName: String, repoName: String) : RepoDetailResponse
+    suspend fun getRepository(userName: String, repoName: String) : RepositoryDetailResponse
 
     suspend fun getRepoIssueCount(userName: String, repoName: String) : Int
 

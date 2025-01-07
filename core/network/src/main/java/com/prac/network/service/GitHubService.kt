@@ -3,8 +3,8 @@ package com.prac.network.service
 import com.prac.network.model.response.IssueResponse
 import com.prac.network.model.response.PullResponse
 import com.prac.network.model.response.ReadmeResponse
-import com.prac.network.model.response.RepoDetailResponse
-import com.prac.network.model.response.RepoResponse
+import com.prac.network.model.response.RepositoryDetailResponse
+import com.prac.network.model.response.RepositoryResponse
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PUT
@@ -17,13 +17,13 @@ interface GitHubService {
         @Path("userName") userName: String,
         @Query("per_page") perPage: Int,
         @Query("page") page: Int
-    ): List<RepoResponse>
+    ): List<RepositoryResponse>
 
     @GET("repos/{userName}/{repoName}")
     suspend fun getRepo(
         @Path("userName") userName: String,
         @Path("repoName") repoName: String
-    ): RepoDetailResponse
+    ): RepositoryDetailResponse
 
     @GET("user/starred/{userName}/{repoName}")
     suspend fun isStarred(

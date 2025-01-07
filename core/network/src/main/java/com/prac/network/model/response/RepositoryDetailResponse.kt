@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RepoDetailResponse(
+data class RepositoryDetailResponse(
     @SerialName("id") val id: Int = 0,
     @SerialName("name") val name: String = "",
     @SerialName("owner") val owner: OwnerResponse = OwnerResponse(),

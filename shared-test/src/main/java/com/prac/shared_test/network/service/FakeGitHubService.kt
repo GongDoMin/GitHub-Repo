@@ -3,25 +3,25 @@ package com.prac.shared_test.network.service
 import com.prac.network.model.response.IssueResponse
 import com.prac.network.model.response.PullResponse
 import com.prac.network.model.response.ReadmeResponse
-import com.prac.network.model.response.RepoDetailResponse
-import com.prac.network.model.response.RepoResponse
+import com.prac.network.model.response.RepositoryDetailResponse
+import com.prac.network.model.response.RepositoryResponse
 import com.prac.network.service.GitHubService
 
 class FakeGitHubService(
-    private val repoList: List<RepoResponse> = emptyList(),
+    private val repoList: List<RepositoryResponse> = emptyList(),
     private val readMe: String = ""
 ): GitHubService {
 
-    override suspend fun getRepos(userName: String, perPage: Int, page: Int): List<RepoResponse> {
+    override suspend fun getRepos(userName: String, perPage: Int, page: Int): List<RepositoryResponse> {
         return repoList
     }
 
-    override suspend fun getRepo(userName: String, repoName: String): RepoDetailResponse {
+    override suspend fun getRepo(userName: String, repoName: String): RepositoryDetailResponse {
         val repository = repoList.find {
             it.name == repoName && it.owner.login == userName
         } ?: throw Exception("repository is not found")
 
-        return RepoDetailResponse(
+        return RepositoryDetailResponse(
             id = repository.id,
             name = repository.name,
             owner = repository.owner,
