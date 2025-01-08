@@ -6,17 +6,18 @@ import com.prac.core.common.constants.UNKNOWN
 import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
+import com.prac.data.model.Repository
 import com.prac.feature.main.model.Action
 import com.prac.feature.main.model.Event
 import com.prac.feature.main.model.Mutation
-import com.prac.data.model.Repository
 import com.prac.feature.main.refresh.RefreshState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 
-class FakeMainActionProcessor : ActionProcessor<Action, Mutation, Event> {
-    private lateinit var throwable: Throwable
+class FakeMainActionProcessor(
+    private val throwable: Throwable? = null
+) : ActionProcessor<Action, Mutation, Event> {
 
     override fun invoke(action: Action): Flow<Pair<Mutation?, Event?>> =
         flow {
@@ -51,18 +52,11 @@ class FakeMainActionProcessor : ActionProcessor<Action, Mutation, Event> {
     }
 
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleClickUnStar() {
-        if (!::throwable.isInitialized) {
-            throw NotImplementedError("throwable is not initialized")
-        }
-        handleStarRepositoryFailure(throwable)
+        throwable?.let { handleStarRepositoryFailure(it) }
     }
 
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleClickStar() {
-        if (!::throwable.isInitialized) {
-            throw NotImplementedError("throwable is not initialized")
-        }
-
-        handleUnStarRepositoryFailure(throwable)
+        throwable?.let { handleUnStarRepositoryFailure(it) }
     }
 
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleUpdateRefreshState(refreshState: RefreshState) {
@@ -102,12 +96,5 @@ class FakeMainActionProcessor : ActionProcessor<Action, Mutation, Event> {
 
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.logout() {
         emit(Mutation.ShowError(INVALID_TOKEN) to null)
-    }
-
-    /*
-    * this method is only for test
-    */
-    fun setThrowable(throwable: Throwable) {
-        this.throwable = throwable
     }
 }

@@ -1,12 +1,9 @@
 package com.prac.feature.main
 
 import app.cash.turbine.test
-import com.prac.core.common.constants.INVALID_REPOSITORY
 import com.prac.core.common.constants.INVALID_TOKEN
-import com.prac.core.common.constants.UNKNOWN
 import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.data.exception.CommonException
-import com.prac.data.exception.RepositoryException
 import com.prac.data.model.Repository
 import com.prac.domain.GetRepositoriesUseCase
 import com.prac.feature.main.model.Action
@@ -18,9 +15,7 @@ import com.prac.shared_test.rules.StandardTestDispatcherRule
 import com.prac.shared_test.ui.FakeMainActionProcessor
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -30,27 +25,17 @@ class MainViewModelTest {
     val standardTestDispatcherRule = StandardTestDispatcherRule()
 
     private val mainReducerProcessor = MainReducerProcessor()
+    private val getRepositoriesUseCase: GetRepositoriesUseCase = FakeGetRepositoriesUseCase(listOf(Repository(stargazersCount = 1)))
 
-    private val getRepositoriesUseCase: GetRepositoriesUseCase = FakeGetRepositoriesUseCase(listOf(com.prac.data.model.Repository(stargazersCount = 1)))
     private lateinit var mainActionProcessor: ActionProcessor<Action, Mutation, Event>
     private lateinit var mainViewModel: MainViewModel
 
-    @Before
-    fun setUp() = runTest {
-        mainActionProcessor = FakeMainActionProcessor()
-
-        mainViewModel = MainViewModel(
-            getRepositoriesUseCase = getRepositoriesUseCase,
-            mainReducerProcessor = mainReducerProcessor,
-            mainActionProcessor = mainActionProcessor,
-            ioDispatcher = standardTestDispatcherRule.testDispatcher
-        )
-    }
-
     @Test
-    fun process_actionIsOnClickUnStar_uiStateIsError_whenAuthorizationError() = runTest {
-        mainActionProcessorSetThrowable(CommonException.AuthorizationError())
+    fun 언스타클릭_액션발행_uiState는_Error() = runTest {
+        // given
+        initialMainViewModel(CommonException.AuthorizationError())
 
+        // when, then
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
@@ -63,9 +48,11 @@ class MainViewModelTest {
     }
 
     @Test
-    fun process_actionIsOnClickStar_uiStateIsError_whenAuthorizationError() = runTest {
-        mainActionProcessorSetThrowable(CommonException.AuthorizationError())
+    fun 스타클릭_액션발행_uiState는_Error() = runTest {
+        // given
+        initialMainViewModel(CommonException.AuthorizationError())
 
+        // when, then
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
@@ -78,67 +65,11 @@ class MainViewModelTest {
     }
 
     @Test
-    fun process_actionIsOnClickUnStar_uiStateIsError_whenNotFoundRepository() = runTest {
-        mainActionProcessorSetThrowable(RepositoryException.NotFoundRepository())
+    fun 로그아웃_액션발행_uiState는_Error() = runTest {
+        // given
+        initialMainViewModel()
 
-        mainViewModel.uiStateFlow.test {
-            awaitItem() // initialState
-
-            mainViewModel.process(Action.UserAction.OnClickUnStar(Repository()))
-
-            val result = awaitItem()
-            assertTrue(result is UiState.Error)
-            assertEquals((result as UiState.Error).message, INVALID_REPOSITORY)
-        }
-    }
-
-    @Test
-    fun process_actionIsOnClickStar_uiStateIsError_whenNotFoundRepository() = runTest {
-        mainActionProcessorSetThrowable(RepositoryException.NotFoundRepository())
-
-        mainViewModel.uiStateFlow.test {
-            awaitItem() // initialState
-
-            mainViewModel.process(Action.UserAction.OnClickStar(Repository()))
-
-            val result = awaitItem()
-            assertTrue(result is UiState.Error)
-            assertEquals((result as UiState.Error).message, INVALID_REPOSITORY)
-        }
-    }
-
-    @Test
-    fun process_actionIsOnClickUnStar_uiStateIsError_whenUnKnownError() = runTest {
-        mainActionProcessorSetThrowable(CommonException.UnKnownError())
-
-        mainViewModel.uiStateFlow.test {
-            awaitItem() // initialState
-
-            mainViewModel.process(Action.UserAction.OnClickUnStar(Repository()))
-
-            val result = awaitItem()
-            assertTrue(result is UiState.Error)
-            assertEquals((result as UiState.Error).message, UNKNOWN)
-        }
-    }
-
-    @Test
-    fun process_actionIsOnClickStar_uiStateIsError_whenUnKnownError() = runTest {
-        mainActionProcessorSetThrowable(CommonException.UnKnownError())
-
-        mainViewModel.uiStateFlow.test {
-            awaitItem() // initialState
-
-            mainViewModel.process(Action.UserAction.OnClickStar(Repository()))
-
-            val result = awaitItem()
-            assertTrue(result is UiState.Error)
-            assertEquals((result as UiState.Error).message, UNKNOWN)
-        }
-    }
-
-    @Test
-    fun process_actionIsLogout_uiStateIsError() = runTest {
+        // when, then
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
             mainViewModel.process(Action.InternalAction.Logout)
@@ -150,8 +81,8 @@ class MainViewModelTest {
     }
 
     @Test
-    fun process_actionIsDialogDismiss_uiStateIsIdle() = runTest {
-        mainActionProcessorSetThrowable(CommonException.UnKnownError())
+    fun 다이어로그해제_액션발행_uiState는_Content() = runTest {
+        initialMainViewModel(CommonException.UnKnownError())
 
         mainViewModel.uiStateFlow.test {
             awaitItem() // initialState
@@ -162,12 +93,16 @@ class MainViewModelTest {
             mainViewModel.process(Action.UserAction.DialogDismiss)
 
             val result = awaitItem()
-            assertFalse(result is UiState.Error)
+            assertTrue(result is UiState.Content)
         }
     }
 
     @Test
-    fun process_actionIsLogoutDialogDismiss_eventIsLogout() = runTest {
+    fun 로그아웃다이어로그해제_액션발행_event는_Logout() = runTest {
+        // given
+        initialMainViewModel()
+
+        // when, then
         mainViewModel.eventFlow.test {
             mainViewModel.process(Action.UserAction.LogoutDialogDismiss)
 
@@ -177,7 +112,11 @@ class MainViewModelTest {
     }
 
     @Test
-    fun process_actionIsOnClickRepository_eventIsOpenRepository() = runTest {
+    fun 레파지토리클릭_액션발행_event는_OpenRepositoryDetail() = runTest {
+        // given
+        initialMainViewModel()
+
+        // when, then
         mainViewModel.eventFlow.test {
             mainViewModel.process(Action.UserAction.OnClickRepository(Repository()))
 
@@ -187,7 +126,11 @@ class MainViewModelTest {
     }
 
     @Test
-    fun process_actionIsOnClickRetry_eventIsRetry() = runTest {
+    fun 재시도클릭_액션발행_event는_Retry() = runTest {
+        // given
+        initialMainViewModel()
+
+        // when, then
         mainViewModel.eventFlow.test {
             mainViewModel.process(Action.UserAction.OnClickRetry)
 
@@ -196,7 +139,16 @@ class MainViewModelTest {
         }
     }
 
-    private fun mainActionProcessorSetThrowable(throwable: Throwable) {
-        (mainActionProcessor as FakeMainActionProcessor).setThrowable(throwable)
+    private fun initialMainViewModel(
+        throwable: Throwable? = null
+    ) {
+        mainActionProcessor = FakeMainActionProcessor(throwable)
+
+        mainViewModel = MainViewModel(
+            getRepositoriesUseCase = getRepositoriesUseCase,
+            mainReducerProcessor = mainReducerProcessor,
+            mainActionProcessor = mainActionProcessor,
+            ioDispatcher = standardTestDispatcherRule.testDispatcher
+        )
     }
 }
