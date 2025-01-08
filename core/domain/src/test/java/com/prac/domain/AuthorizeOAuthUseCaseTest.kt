@@ -1,5 +1,7 @@
 package com.prac.domain
 
+import com.prac.data.repository.TokenRepository
+import com.prac.data.repository.UserRepository
 import com.prac.domain.impl.AuthorizeOAuthUseCaseImpl
 import com.prac.shared_test.data.FakeTokenRepository
 import com.prac.shared_test.data.FakeUserRepository
@@ -11,33 +13,29 @@ import org.junit.Test
 
 class AuthorizeOAuthUseCaseTest {
 
-    private val userName = "test"
+    private val userName = "son"
 
-    private lateinit var tokenRepository: FakeTokenRepository
-    private lateinit var userRepository: FakeUserRepository
+    private val tokenRepository: TokenRepository = FakeTokenRepository("accessToken")
+    private val userRepository: UserRepository = FakeUserRepository(userName)
 
-    private lateinit var authorizeOAuthUseCase: AuthorizeOAuthUseCase
-
-    @Before
-    fun setUp() {
-        tokenRepository = FakeTokenRepository("accessToken")
-        userRepository = FakeUserRepository(userName)
-
-        authorizeOAuthUseCase = AuthorizeOAuthUseCaseImpl(tokenRepository, userRepository)
-    }
+    private val authorizeOAuthUseCase: AuthorizeOAuthUseCase =AuthorizeOAuthUseCaseImpl(tokenRepository, userRepository)
 
     @Test
-    fun invoke_whenNotError_returnIsSuccess_and_updateUserName() = runTest {
+    fun 에러없을때_성공_반환() = runTest {
+        // when
         val result = authorizeOAuthUseCase.invoke("success")
 
+        // then
         assertTrue(result.isSuccess)
         assertEquals(userRepository.getLocalUserName(), userName)
     }
 
     @Test
-    fun invoke_whenError_returnIsFail() = runTest {
+    fun 에러발생시_실패_반환() = runTest {
+        // when
         val result = authorizeOAuthUseCase.invoke("ioException")
 
+        // then
         assertTrue(result.isFailure)
         assertTrue(userRepository.getLocalUserName().isEmpty())
     }
