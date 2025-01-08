@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.flow
 
 class FakeRepositoryLocalDataSource : RepositoryLocalDataSource {
 
-    private val repos = mutableListOf<RepositoryEntity>()
+    private val repositories = mutableListOf<RepositoryEntity>()
 
     override fun getRepositories(): PagingSource<Int, RepositoryEntity> {
         return object : PagingSource<Int, RepositoryEntity>() {
@@ -17,12 +17,12 @@ class FakeRepositoryLocalDataSource : RepositoryLocalDataSource {
                 val key = params.key ?: 1
                 val pageSize = params.loadSize
                 val startIndex = (key - 1) * pageSize
-                val endIndex = minOf(startIndex + pageSize, repos.size)
+                val endIndex = minOf(startIndex + pageSize, repositories.size)
 
                 return LoadResult.Page(
-                    data = repos.subList(startIndex, endIndex),
+                    data = repositories.subList(startIndex, endIndex),
                     prevKey = if (key == 1) null else key - 1,
-                    nextKey = if (endIndex < repos.size) null else key + 1
+                    nextKey = if (endIndex < repositories.size) null else key + 1
                 )
             }
 
@@ -36,35 +36,35 @@ class FakeRepositoryLocalDataSource : RepositoryLocalDataSource {
     }
 
     override fun getRepository(id: Int): Flow<RepositoryEntity?> {
-        return flow { emit(repos.find { it.id == id }) }
+        return flow { emit(repositories.find { it.id == id }) }
     }
 
     override suspend fun insertRepositories(repos: List<RepositoryEntity>) {
-        this.repos.addAll(repos)
+        this.repositories.addAll(repos)
     }
 
     override suspend fun updateStarStateAndStarCount(id: Int, isStarred: Boolean, updatedCount: Int) {
-        val index = repos.indexOfFirst { it.id == id }
+        val index = repositories.indexOfFirst { it.id == id }
         if (index != -1) {
-            repos[index] = repos[index].copy(isStarred = isStarred, stargazersCount = updatedCount)
+            repositories[index] = repositories[index].copy(isStarred = isStarred, stargazersCount = updatedCount)
         }
     }
 
     override suspend fun updateStarState(id: Int, isStarred: Boolean) {
-        val index = repos.indexOfFirst { it.id == id }
+        val index = repositories.indexOfFirst { it.id == id }
         if (index != -1) {
-            repos[index] = repos[index].copy(isStarred = isStarred)
+            repositories[index] = repositories[index].copy(isStarred = isStarred)
         }
     }
 
     override suspend fun updateStarCount(id: Int, updatedCount: Int) {
-        val index = repos.indexOfFirst { it.id == id }
+        val index = repositories.indexOfFirst { it.id == id }
         if (index != -1) {
-            repos[index] = repos[index].copy(stargazersCount = updatedCount)
+            repositories[index] = repositories[index].copy(stargazersCount = updatedCount)
         }
     }
 
     override suspend fun clearRepositories() {
-        repos.clear()
+        repositories.clear()
     }
 }
