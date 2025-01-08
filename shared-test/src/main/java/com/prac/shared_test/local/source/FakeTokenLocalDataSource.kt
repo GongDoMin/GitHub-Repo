@@ -6,13 +6,7 @@ import java.time.Instant
 import java.time.ZoneId
 
 class FakeTokenLocalDataSource(
-    private var token: TokenEntity = TokenEntity(
-        accessToken = "",
-        refreshToken = "",
-        expiresInSeconds = 0,
-        refreshTokenExpiresInSeconds = 0,
-        updatedAt = Instant.ofEpochMilli(0).atZone(ZoneId.systemDefault())
-    )
+    private var token: TokenEntity = TokenEntity()
 ) : TokenLocalDataSource {
 
     override suspend fun setToken(token: TokenEntity) {
