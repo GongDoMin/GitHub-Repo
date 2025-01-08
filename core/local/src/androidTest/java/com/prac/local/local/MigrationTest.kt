@@ -22,19 +22,23 @@ class MigrationTest {
     )
 
     @Test
-    fun test_migration_1_to_2() {
+    fun 데이터베이스_1에서_2로_마이그레이션_테스트() {
+        // given
+        val expectedCount = 1
+        val expectedColumnCount = 8
+        val expectedDefaultBranch = ""
         var database = helper.createDatabase(dbName, 1).apply {
             execSQL("INSERT INTO repository VALUES('0', 'test 0', 'test 0', 'test 0', 0, 'test 0', false)")
             close()
         }
 
+        // when
         database = helper.runMigrationsAndValidate(dbName, 2, true, MIGRATION_1_2)
 
-        val expectedDefaultBranch = ""
-        val cursor = database.query("SELECT * FROM repository")
-        cursor.moveToFirst()
-        assertEquals(cursor.count, 1)
-        assertEquals(cursor.columnCount, 8)
-        assertEquals(expectedDefaultBranch, cursor.getString(cursor.getColumnIndex("defaultBranch")))
+        // then
+        val cursor = database.query("SELECT * FROM repository").apply { moveToFirst() }
+        assertEquals(cursor.count, expectedCount)
+        assertEquals(cursor.columnCount, expectedColumnCount)
+        assertEquals(cursor.getString(cursor.getColumnIndex("defaultBranch")), expectedDefaultBranch)
     }
 }
