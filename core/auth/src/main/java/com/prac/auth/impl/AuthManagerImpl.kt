@@ -7,7 +7,7 @@ import com.prac.local.TokenLocalDataSource
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
-internal class BearerAuthImpl @Inject constructor(
+internal class AuthManagerImpl @Inject constructor(
     private val tokenLocalDataSource: TokenLocalDataSource
 ) : AuthManager {
     override fun getAccessToken(refreshAccessToken: suspend (refreshToken: String) -> TokenModel): String {

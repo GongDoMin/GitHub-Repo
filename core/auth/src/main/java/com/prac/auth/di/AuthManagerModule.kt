@@ -1,7 +1,7 @@
 package com.prac.auth.di
 
 import com.prac.auth.AuthManager
-import com.prac.auth.impl.BearerAuthImpl
+import com.prac.auth.impl.AuthManagerImpl
 import com.prac.local.TokenLocalDataSource
 import dagger.Module
 import dagger.Provides
@@ -15,5 +15,5 @@ internal class AuthManagerModule {
     fun provideAuthManager(
         tokenLocalDataSource: TokenLocalDataSource
     ) : AuthManager =
-        BearerAuthImpl(tokenLocalDataSource)
+        AuthManagerImpl(tokenLocalDataSource)
 }
