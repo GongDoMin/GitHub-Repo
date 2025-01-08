@@ -36,6 +36,9 @@ internal class RepoApiDataSourceImpl @Inject constructor(
     }
 
     override suspend fun getRepoReadme(userName: String, repoName: String): String {
+        /*
+            Readme 가 존재하지 않을 경우 HttpException 발생
+         */
         return try {
             val response = gitHubService.getRepoReadme(userName, repoName)
 
