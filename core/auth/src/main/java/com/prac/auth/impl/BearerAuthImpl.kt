@@ -2,7 +2,7 @@ package com.prac.auth.impl
 
 import com.prac.auth.AuthManager
 import com.prac.auth.model.TokenModel
-import com.prac.auth.model.toTokenLocalDto
+import com.prac.auth.model.toLocalModel
 import com.prac.local.TokenLocalDataSource
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -24,7 +24,7 @@ internal class BearerAuthImpl @Inject constructor(
                     runBlocking {
                         try {
                             tokenLocalDataSource.setToken(
-                                refreshAccessToken(tokenLocalDataSource.getToken().refreshToken).toTokenLocalDto()
+                                refreshAccessToken(tokenLocalDataSource.getToken().refreshToken).toLocalModel()
                             )
                         } catch (e: Exception) {
                             tokenLocalDataSource.clearToken()

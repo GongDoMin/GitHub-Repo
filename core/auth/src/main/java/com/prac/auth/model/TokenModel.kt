@@ -8,16 +8,16 @@ import java.time.ZonedDateTime
 data class TokenModel(
     val accessToken: String = "",
     val refreshToken: String = "",
-    val expiredIn: Int = 0,
-    val refreshExpiredIn: Int = 0,
+    val expiresInSeconds: Int = 0,
+    val refreshTokenExpiresInSeconds: Int = 0,
     val updatedAt: ZonedDateTime = Instant.ofEpochMilli(0).atZone(ZoneId.systemDefault())
 )
 
-fun TokenModel.toTokenLocalDto() =
+internal fun TokenModel.toLocalModel() =
     TokenEntity(
         accessToken = accessToken,
         refreshToken = refreshToken,
-        expiresInSeconds = expiredIn,
-        refreshTokenExpiresInSeconds = refreshExpiredIn,
+        expiresInSeconds = expiresInSeconds,
+        refreshTokenExpiresInSeconds = refreshTokenExpiresInSeconds,
         updatedAt = updatedAt
     )

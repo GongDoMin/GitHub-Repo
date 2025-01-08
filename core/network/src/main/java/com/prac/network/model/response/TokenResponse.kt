@@ -19,7 +19,7 @@ internal fun TokenResponse.toTokenModel() =
     TokenModel(
         accessToken = accessToken,
         refreshToken = refreshToken,
-        expiredIn = expiresIn,
-        refreshExpiredIn = refreshTokenExpiresIn,
+        expiresInSeconds = expiresIn,
+        refreshTokenExpiresInSeconds = refreshTokenExpiresIn,
         updatedAt = ZonedDateTime.now()
     )
