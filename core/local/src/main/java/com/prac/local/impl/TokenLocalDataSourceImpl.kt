@@ -26,9 +26,8 @@ internal class TokenLocalDataSourceImpl @Inject constructor(
         updateToken(token)
     }
 
-    override fun getToken(): TokenEntity {
-        return cachedToken.get()
-    }
+    override fun getToken(): TokenEntity =
+        cachedToken.get()
 
     private fun updateToken(newToken: TokenEntity) {
         cachedToken.set(newToken)

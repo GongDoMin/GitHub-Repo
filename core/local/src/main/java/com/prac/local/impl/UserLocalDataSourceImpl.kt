@@ -22,9 +22,8 @@ internal class UserLocalDataSourceImpl @Inject constructor(
         cachedUserName = userName
     }
 
-    override suspend fun getUserName(): String {
-        return cachedUserName
-    }
+    override suspend fun getUserName(): String =
+        cachedUserName
 
     override suspend fun clearUserName() {
         userDataStoreManager.clearUserName()
