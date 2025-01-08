@@ -10,6 +10,7 @@ import androidx.datastore.migrations.SharedPreferencesMigration
 import androidx.datastore.migrations.SharedPreferencesView
 import com.google.protobuf.InvalidProtocolBufferException
 import com.prac.local.datastore.Token
+import com.prac.local.model.TokenEntity
 import kotlinx.coroutines.flow.first
 import java.io.InputStream
 import java.io.OutputStream
@@ -97,7 +98,7 @@ internal class TokenDataStoreManagerImpl(
         }
     )
 
-    override suspend fun setToken(token: com.prac.local.model.TokenEntity) {
+    override suspend fun setToken(token: TokenEntity) {
         mContext.tokenDataStore.updateData { pref ->
             pref.toBuilder()
                 .setAccessToken(token.accessToken)
@@ -109,9 +110,9 @@ internal class TokenDataStoreManagerImpl(
         }
     }
 
-    override suspend fun getToken(): com.prac.local.model.TokenEntity {
+    override suspend fun getToken(): TokenEntity {
         return mContext.tokenDataStore.data.first().let {
-            com.prac.local.model.TokenEntity(
+            TokenEntity(
                 accessToken = it.accessToken,
                 refreshToken = it.refreshToken,
                 expiresInSeconds = it.accessTokenExpiresInSeconds,
