@@ -1,0 +1,11 @@
+{
+  "id": 0,
+  "name": "Repository 0",
+  "owner": {
+    "login": "login 0",
+    "avatar_url": "avatar 0"
+  },
+  "stargazers_count": "5",
+  "forks_count": "5",
+  "subscribers_count": "5"
+}
