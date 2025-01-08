@@ -11,29 +11,17 @@ import javax.inject.Inject
 internal class RepoApiDataSourceImpl @Inject constructor(
     private val gitHubService: GitHubService
 ) : RepoApiDataSource {
-    override suspend fun getRepositories(userName: String, perPage: Int, page: Int): List<RepositoryResponse> {
-        val response = gitHubService.getRepos(userName, perPage, page)
+    override suspend fun getRepositories(userName: String, perPage: Int, page: Int): List<RepositoryResponse> =
+        gitHubService.getRepos(userName, perPage, page)
 
-        return response
-    }
+    override suspend fun getRepository(userName: String, repoName: String): RepositoryDetailResponse =
+        gitHubService.getRepo(userName, repoName)
 
-    override suspend fun getRepository(userName: String, repoName: String): RepositoryDetailResponse {
-        val response = gitHubService.getRepo(userName, repoName)
+    override suspend fun getRepoIssueCount(userName: String, repoName: String): Int =
+        gitHubService.getRepoIssues(userName, repoName).size
 
-        return response
-    }
-
-    override suspend fun getRepoIssueCount(userName: String, repoName: String): Int {
-        val issueSize = gitHubService.getRepoIssues(userName, repoName).size
-
-        return issueSize
-    }
-
-    override suspend fun getRepoPullCount(userName: String, repoName: String): Int {
-        val pullSize = gitHubService.getRepoPulls(userName, repoName).size
-
-        return pullSize
-    }
+    override suspend fun getRepoPullCount(userName: String, repoName: String): Int =
+        gitHubService.getRepoPulls(userName, repoName).size
 
     override suspend fun getRepoReadme(userName: String, repoName: String): String {
         /*

@@ -8,15 +8,9 @@ import javax.inject.Inject
 internal class AuthApiDataSourceImpl @Inject constructor(
     private val gitHubAuthService: GitHubAuthService
 ) : AuthApiDataSource {
-    override suspend fun authorizeOAuth(code: String): TokenResponse {
-        val response = gitHubAuthService.authorizeOAuth(code = code)
+    override suspend fun authorizeOAuth(code: String): TokenResponse =
+        gitHubAuthService.authorizeOAuth(code = code)
 
-        return response
-    }
-
-    override suspend fun refreshAccessToken(refreshToken: String): TokenResponse {
-        val response = gitHubAuthService.refreshAccessToken(refreshToken = refreshToken)
-
-        return response
-    }
+    override suspend fun refreshAccessToken(refreshToken: String): TokenResponse =
+        gitHubAuthService.refreshAccessToken(refreshToken = refreshToken)
 }

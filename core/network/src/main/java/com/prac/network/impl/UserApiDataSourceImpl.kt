@@ -8,9 +8,6 @@ import javax.inject.Inject
 internal class UserApiDataSourceImpl @Inject constructor(
     private val githubUserService: GitHubUserService
 ) : UserApiDataSource {
-    override suspend fun getUserName(accessToken: String): String {
-        return githubUserService.getUserInformation(
-            accessToken = AccessTokenRequest(accessToken)
-        ).user.login
-    }
+    override suspend fun getUserName(accessToken: String): String =
+        githubUserService.getUserInformation(accessToken = AccessTokenRequest(accessToken)).user.login
 }
