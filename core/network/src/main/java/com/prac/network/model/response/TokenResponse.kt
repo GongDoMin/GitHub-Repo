@@ -15,7 +15,7 @@ data class TokenResponse(
     @SerialName("token_type") val tokenType: String = ""
 )
 
-fun TokenResponse.toTokenModel() =
+internal fun TokenResponse.toTokenModel() =
     TokenModel(
         accessToken = accessToken,
         refreshToken = refreshToken,
