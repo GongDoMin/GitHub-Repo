@@ -1,38 +1,27 @@
 package com.prac.network
 
-import com.prac.network.model.response.OwnerResponse
-import com.prac.network.model.response.UserResponse
-import com.prac.shared_test.network.service.FakeGitHubUserService
 import com.prac.network.impl.UserApiDataSourceImpl
+import com.prac.network.model.response.OwnerResponse
+import com.prac.network.service.GitHubUserService
+import com.prac.shared_test.network.service.FakeGitHubUserService
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
 
 class UserApiDataSourceTest {
 
-    private lateinit var gitHubUserService: FakeGitHubUserService
-    private lateinit var repoStarApiDataSource: UserApiDataSource
-
-    private val user = UserResponse(
-        user = OwnerResponse(
-            login = "test",
-            avatarUrl = "test"
-        )
-    )
-
-    @Before
-    fun setUp() {
-        gitHubUserService = FakeGitHubUserService(user)
-        repoStarApiDataSource = UserApiDataSourceImpl(gitHubUserService)
-    }
+    private val gitHubUserService: GitHubUserService = FakeGitHubUserService()
+    private val repoStarApiDataSource: UserApiDataSource = UserApiDataSourceImpl(gitHubUserService)
 
     @Test
-    fun getUser_whenCalled_user() = runTest {
-        val accessToken = "test"
+    fun 사용자_요청시_사용자_반환() = runTest {
+        // given
+        val expectedUserName = "login 0"
 
-        val result = repoStarApiDataSource.getUserName(accessToken)
+        // when
+        val result = repoStarApiDataSource.getUserName("accessToken")
 
-        assertEquals(result, user.user.login)
+        // then
+        assertEquals(result, expectedUserName)
     }
 }
