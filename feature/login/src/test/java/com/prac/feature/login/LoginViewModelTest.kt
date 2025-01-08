@@ -28,9 +28,11 @@ class LoginViewModelTest {
     private lateinit var loginViewModel: LoginViewModel
 
     @Test
-    fun process_actionIsCheckAutoLogin_eventIsSuccessLogin() = runTest {
-        initViewModel(isLoggedIn = true)
+    fun 자동로그인_성공이벤트_발행() = runTest {
+        // given
+        initialLoginViewModel(isLoggedIn = true)
 
+        // when, then
         loginViewModel.eventFlow.test {
             val result = awaitItem()
             assertTrue(result is Event.SuccessLogin)
@@ -38,18 +40,22 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun process_actionIsCheckAutoLogin_emitNothing() = runTest {
-        initViewModel()
+    fun 자동로그인_이벤트발생없음() = runTest {
+        // given
+        initialLoginViewModel()
 
+        // when, thne
         loginViewModel.eventFlow.test {
             expectNoEvents()
         }
     }
 
     @Test
-    fun process_actionIsOAuthAuthenticated_eventIsLoginSuccess() = runTest {
-        initViewModel()
+    fun OAuth_인증성공_로그인이벤트_발행() = runTest {
+        // given
+        initialLoginViewModel()
 
+        // when, then
         loginViewModel.eventFlow.test {
             loginViewModel.process(Action.InternalAction.AuthenticateOAuth(""))
 
@@ -59,10 +65,13 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun process_actionIsOAuthAuthenticated_uiStateIsError() = runTest {
-        initViewModel()
-        setLoginActionProcessorThrowable(CommonException.NetworkError())
+    fun OAuth_인증실패_에러상태_발행() = runTest {
+        // given
+        initialLoginViewModel(
+            throwable = CommonException.NetworkError()
+        )
 
+        // when, then
         loginViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
@@ -77,10 +86,13 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun process_actionIsDialogDismiss_emitIdle() = runTest {
-        initViewModel()
-        setLoginActionProcessorThrowable(CommonException.NetworkError())
+    fun 다이얼로그해제_아이들상태_발행() = runTest {
+        // given
+        initialLoginViewModel(
+            throwable = CommonException.NetworkError()
+        )
 
+        // when, then
         loginViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
@@ -96,16 +108,18 @@ class LoginViewModelTest {
         }
     }
 
-    private fun initViewModel(isLoggedIn: Boolean = false) {
-        loginActionProcessor = FakeLoginActionProcessor(isLoggedIn)
+    private fun initialLoginViewModel(
+        isLoggedIn: Boolean = false,
+        throwable: Throwable? = null
+    ) {
+        loginActionProcessor = FakeLoginActionProcessor(
+            isLoggedIn = isLoggedIn,
+            throwable = throwable
+        )
         loginViewModel = LoginViewModel(
             loginReducerProcessor = loginReducerProcessor,
             loginActionProcessor = loginActionProcessor,
             ioDispatcher = standardTestDispatcherRule.testDispatcher
         )
-    }
-
-    private fun setLoginActionProcessorThrowable(throwable: Throwable) {
-        (loginActionProcessor as FakeLoginActionProcessor).setThrowable(throwable)
     }
 }

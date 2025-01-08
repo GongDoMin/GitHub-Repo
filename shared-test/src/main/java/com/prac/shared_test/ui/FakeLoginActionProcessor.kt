@@ -11,8 +11,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 
-class FakeLoginActionProcessor(val isLoggedIn: Boolean = false) : ActionProcessor<Action, Mutation, Event> {
-    private lateinit var throwable: Throwable
+class FakeLoginActionProcessor(
+    private val isLoggedIn: Boolean = false,
+    private val throwable: Throwable? = null
+) : ActionProcessor<Action, Mutation, Event> {
 
     override fun invoke(action: Action): Flow<Pair<Mutation?, Event?>> =
         flow {
@@ -35,12 +37,13 @@ class FakeLoginActionProcessor(val isLoggedIn: Boolean = false) : ActionProcesso
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.authenticateOAuth(code: String) {
         emit(Mutation.ShowLoading to null)
 
-        if (!::throwable.isInitialized) {
-            emit(null to Event.SuccessLogin)
-        } else {
+        throwable?.let {
             val errorMessage = handleLoginErrorMessage(throwable)
             emit(Mutation.ShowError(errorMessage) to null)
+            return
         }
+
+        emit(null to Event.SuccessLogin)
     }
 
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.checkAuthLogin() {
@@ -52,11 +55,4 @@ class FakeLoginActionProcessor(val isLoggedIn: Boolean = false) : ActionProcesso
             is CommonException.NetworkError -> CONNECTION_FAIL
             else -> LOGIN_FAIL
         }
-
-    /*
-    * this method is only for test
-    */
-    fun setThrowable(throwable: Throwable) {
-        this.throwable = throwable
-    }
 }
