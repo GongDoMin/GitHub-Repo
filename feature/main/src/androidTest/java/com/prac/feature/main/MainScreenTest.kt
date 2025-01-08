@@ -44,71 +44,78 @@ class MainScreenTest {
     }
 
     @Test
-    fun clickStarImageView_starImageDrawableToUnStarImageDrawable_starCountMinusOne() {
+    fun 스타이미지클릭_언스타이미지_및_스타개수변경() {
+        // given
         val clickPosition = 0 // position 이 짝수일 경우 repository is starred
         val expectedStarCount = 4
-
         composeTestRule
             .onNode(hasContentDescription(activity.getString(R.string.lazy_column_description)))
             .performScrollToIndex(clickPosition)
             .assertIsDisplayed()
 
+        // when
         composeTestRule
-            .onNodeWithText("test $clickPosition")
+            .onNodeWithText(getRepositoryName(clickPosition))
             .onChild()
             .assert(hasContentDescription(activity.getString(R.string.star_image_description)))
             .performClick()
 
+        // then
         composeTestRule.waitUntil {
             composeTestRule
-                .onNodeWithText("test $clickPosition")
+                .onNodeWithText(getRepositoryName(clickPosition))
                 .onChild()
                 .isChangedStarStateAndCount(hasContentDescription(activity.getString(R.string.unstar_image_description)), expectedStarCount)
         }
     }
 
     @Test
-    fun clickUnStarImageView_unStarImageDrawableToStarImageDrawable_starCountPlusOne() {
-        val clickPosition = 1 // position 이 짝수일 경우 repository is starred
+    fun 언스타이미지클릭_스타이미지_및_스타개수변경() {
+        // given
+        val clickPosition = 1 // position 이 홀수일 경우 repository is unStarred
         val expectedStarCount = 6
-
         composeTestRule
             .onNode(hasContentDescription(activity.getString(R.string.lazy_column_description)))
             .performScrollToIndex(clickPosition)
             .assertIsDisplayed()
 
+        // when
         composeTestRule
-            .onNodeWithText("test $clickPosition")
+            .onNodeWithText(getRepositoryName(clickPosition))
             .onChild()
             .assert(hasContentDescription(activity.getString(R.string.unstar_image_description)))
             .performClick()
 
+        // then
         composeTestRule.waitUntil {
             composeTestRule
-                .onNodeWithText("test $clickPosition")
+                .onNodeWithText(getRepositoryName(clickPosition))
                 .onChild()
                 .isChangedStarStateAndCount(hasContentDescription(activity.getString(R.string.star_image_description)), expectedStarCount)
         }
     }
 
     @Test
-    fun clickRepository_navigateToDetailActivity() = runTest {
+    fun 레파지토리클릭_레파지토리상세화면으로이동() = runTest {
+        // given
         val clickPosition = 0
-
+        val expectedUserName = "login 0"
+        val expectedRepoName = "test 0"
         composeTestRule
             .onNode(hasContentDescription(activity.getString(R.string.lazy_column_description)))
             .performScrollToIndex(clickPosition)
             .assertIsDisplayed()
 
+        // when
         composeTestRule
-            .onNodeWithText("test $clickPosition")
+            .onNodeWithText(getRepositoryName(clickPosition))
             .performClick()
 
+        // then
         composeTestRule.awaitIdle()
-
         assertTrue(isDetailScreen)
-        assertEquals(userName, "login 0")
-        assertEquals(repoName, "test 0")
+        assertEquals(userName, expectedUserName)
+        assertEquals(repoName, expectedRepoName)
     }
 
     private fun setContent() {
@@ -123,6 +130,8 @@ class MainScreenTest {
             )
         }
     }
+
+    private fun getRepositoryName(position: Int) = "test $position"
 
     private fun SemanticsNodeInteraction.isChangedStarStateAndCount(starMatcher: SemanticsMatcher, expectedStarCount: Int) : Boolean {
         val node = fetchSemanticsNode()
