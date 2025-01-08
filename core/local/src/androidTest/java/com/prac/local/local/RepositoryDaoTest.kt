@@ -17,8 +17,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import kotlin.random.Random
-import kotlin.random.nextInt
 
 @RunWith(AndroidJUnit4::class)
 class RepositoryDaoTest {
@@ -48,11 +46,13 @@ class RepositoryDaoTest {
             repositoryDao
                 .getRepositories()
                 .load(
-                    PagingSource.LoadParams.Refresh(
-                        key = null,
-                        loadSize = 10,
-                        placeholdersEnabled = false
-                    )
+                    PagingSource
+                        .LoadParams
+                        .Refresh(
+                            key = null,
+                            loadSize = 10,
+                            placeholdersEnabled = false
+                        )
                 )
         val result =  (repositories as? PagingSource.LoadResult.Page)?.data
 
@@ -71,11 +71,13 @@ class RepositoryDaoTest {
             repositoryDao
                 .getRepositories()
                 .load(
-                    PagingSource.LoadParams.Refresh(
-                        key = null,
-                        loadSize = 10,
-                        placeholdersEnabled = false
-                    )
+                    PagingSource
+                        .LoadParams
+                        .Refresh(
+                            key = null,
+                            loadSize = 10,
+                            placeholdersEnabled = false
+                        )
                 )
         val result = (repositories as? PagingSource.LoadResult.Page)?.data
         assertEquals(result, fakeRepositories)
@@ -84,7 +86,7 @@ class RepositoryDaoTest {
     @Test
     fun 존재하는_레파지토리_조회후_레파지토리_반환() = runTest {
         // given
-        val index = fakeRepositories.size - 1
+        val index = fakeRepositories.indices.first
         val id = fakeRepositories[index].id
         repositoryDao.insertRepositories(fakeRepositories)
 
@@ -98,11 +100,11 @@ class RepositoryDaoTest {
     @Test
     fun 존재하는않는_레파지토리_조회후_널_반환() = runTest {
         // given
-        val randomID = Random.nextInt(IntRange(100, 1000))
+        val id = fakeRepositories.maxOf { it.id } + 1
         repositoryDao.insertRepositories(fakeRepositories)
 
         // when
-        val result = repositoryDao.getRepository(randomID).first()
+        val result = repositoryDao.getRepository(id).first()
 
         // then
         assertNull(result)
@@ -111,7 +113,7 @@ class RepositoryDaoTest {
     @Test
     fun 별상태와카운트_업데이트_정상적으로_업데이트() = runTest {
         // given
-        val index = fakeRepositories.size - 1
+        val index = fakeRepositories.indices.first
         val id = fakeRepositories[index].id
         val expectedIsStarred = true
         val expectedUpdatedCount = 1
@@ -129,7 +131,7 @@ class RepositoryDaoTest {
     @Test
     fun 별상태_업데이트_정상적으로_업데이트() = runTest {
         // given
-        val index = fakeRepositories.size - 1
+        val index = fakeRepositories.indices.first
         val id = fakeRepositories[index].id
         val expectedIsStarred = true
         repositoryDao.insertRepositories(fakeRepositories)
@@ -145,7 +147,7 @@ class RepositoryDaoTest {
     @Test
     fun 별카운드_업데이트_정상적으로_업데이트() = runTest {
         // given
-        val index = fakeRepositories.size - 1
+        val index = fakeRepositories.indices.first
         val id = fakeRepositories[index].id
         val expectedUpdatedCount = true
         repositoryDao.insertRepositories(fakeRepositories)

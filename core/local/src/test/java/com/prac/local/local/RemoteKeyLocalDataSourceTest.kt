@@ -10,8 +10,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
-import kotlin.random.Random
-import kotlin.random.nextInt
 
 class RemoteKeyLocalDataSourceTest {
 
@@ -38,7 +36,7 @@ class RemoteKeyLocalDataSourceTest {
     @Test
     fun 존재하는_키_조회_키_반환() = runTest {
         // given
-        val index = 0
+        val index = fakeRemoteKeys.indices.first
         val expectedRemoteKey = fakeRemoteKeys[index]
         remoteKeyLocalDataSource.insertRemoteKeys(fakeRemoteKeys)
 
@@ -52,11 +50,11 @@ class RemoteKeyLocalDataSourceTest {
     @Test
     fun 존재하지_않는_키_조회_널_반환() = runTest {
         // given
-        val randomID = Random.nextInt(IntRange(100, 1000))
+        val id = fakeRemoteKeys.maxOf { it.repoId } + 1
         remoteKeyLocalDataSource.insertRemoteKeys(fakeRemoteKeys)
 
         // when
-        val result = remoteKeyLocalDataSource.remoteKey(randomID)
+        val result = remoteKeyLocalDataSource.remoteKey(id)
 
         // then
         assertNull(result)
