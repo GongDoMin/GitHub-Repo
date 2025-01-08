@@ -5,64 +5,53 @@ import com.prac.network.model.response.OwnerResponse
 import com.prac.network.model.response.RepositoryDetailResponse
 import com.prac.network.model.response.RepositoryResponse
 
-class FakeRepoApiDataSource : RepoApiDataSource {
-
-    private val repositoryResponseList: MutableList<RepositoryResponse> = mutableListOf()
-    private var starCount: Int? = 0
-    private lateinit var throwable: Throwable
-
-    fun setRepoDtoList(repositoryResponseList: List<RepositoryResponse>) {
-        this.repositoryResponseList.clear() // paging fake 이기 때문에 이전의 존재했던 리스트를 초기화
-
-        this.repositoryResponseList.addAll(repositoryResponseList)
-    }
-
-    fun setStarCount(starCount: Int) {
-        this.starCount = starCount
-    }
-
-    fun setThrowable(throwable: Throwable) {
-        this.throwable = throwable
-    }
+class FakeRepoApiDataSource(
+    private val repositories: List<RepositoryResponse> = emptyList(),
+    private val starCount: Int? = null,
+    private val issueCount: Int = 0,
+    private val pullCount: Int = 0,
+    private val readme: String = "",
+    private val throwable: Throwable? = null
+) : RepoApiDataSource {
 
     override suspend fun getRepositories(userName: String, perPage: Int, page: Int): List<RepositoryResponse> {
-        if (::throwable.isInitialized) throw throwable
+        throwable?.let { throw it }
 
-        return repositoryResponseList
+        return repositories
     }
 
     override suspend fun getRepository(userName: String, repoName: String): RepositoryDetailResponse {
-        if (::throwable.isInitialized) throw throwable
+        throwable?.let { throw it }
 
-        val repoDto = repositoryResponseList.find { it.owner.login == userName && it.name == repoName } ?: throw Exception("repository is not found")
+        val repository = repositories.find { it.owner.login == userName && it.name == repoName } ?: throw Exception("repository is not found")
 
         return RepositoryDetailResponse(
-            id = repoDto.id,
-            name = repoDto.name,
+            id = repository.id,
+            name = repository.name,
             owner = OwnerResponse(
-                login = repoDto.owner.login,
-                avatarUrl = repoDto.owner.avatarUrl),
-            stargazersCount = starCount ?: repoDto.stargazersCount,
+                login = repository.owner.login,
+                avatarUrl = repository.owner.avatarUrl),
+            stargazersCount = starCount ?: repository.stargazersCount,
             forksCount = 0,
             subscribersCount = 0
         )
     }
 
     override suspend fun getRepoIssueCount(userName: String, repoName: String): Int {
-        if (::throwable.isInitialized) throw throwable
+        throwable?.let { throw it }
 
-        return 5
+        return issueCount
     }
 
     override suspend fun getRepoPullCount(userName: String, repoName: String): Int {
-        if (::throwable.isInitialized) throw throwable
+        throwable?.let { throw it }
 
-        return 5
+        return pullCount
     }
 
     override suspend fun getRepoReadme(userName: String, repoName: String): String {
-        if (::throwable.isInitialized) throw throwable
+        throwable?.let { throw it }
 
-        return "hi!"
+        return readme
     }
 }
