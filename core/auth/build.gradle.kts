@@ -4,6 +4,10 @@ plugins {
 
 android {
     namespace = "com.prac.auth"
+
+    defaultConfig {
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
 }
 
 dependencies {

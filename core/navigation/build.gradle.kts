@@ -7,6 +7,10 @@ plugins {
 
 android {
     namespace = "com.prac.core.navigation"
+
+    defaultConfig {
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
 }
 
 dependencies {

@@ -5,6 +5,10 @@ plugins {
 
 android {
     namespace = "com.prac.data"
+
+    defaultConfig {
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
 }
 
 dependencies {

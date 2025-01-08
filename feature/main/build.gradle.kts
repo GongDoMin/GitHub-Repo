@@ -6,6 +6,10 @@ plugins {
 
 android {
     namespace = "com.prac.feature.main"
+
+    defaultConfig {
+        testInstrumentationRunner = "com.prac.shared_test.CustomTestRunner"
+    }
 }
 
 dependencies {

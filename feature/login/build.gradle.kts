@@ -13,6 +13,10 @@ plugins {
 android {
     namespace = "com.prac.feature.login"
 
+    defaultConfig {
+        testInstrumentationRunner = "com.prac.shared_test.CustomTestRunner"
+    }
+
     buildTypes {
         debug {
             buildConfigField("String", "GITHUB_OAUTH_URI", "" + localProperties["GITHUB_OAUTH_URI"] + "")

@@ -6,6 +6,10 @@ plugins {
 android {
     namespace = "com.prac.shared_test"
 
+    defaultConfig {
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
     sourceSets {
         getByName("debug") {
             java.srcDirs("src/debug/java")

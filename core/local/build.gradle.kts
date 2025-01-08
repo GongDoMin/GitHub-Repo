@@ -10,6 +10,7 @@ android {
     namespace = "com.prac.local"
 
     defaultConfig {
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments(

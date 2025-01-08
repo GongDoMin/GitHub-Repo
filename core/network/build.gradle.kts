@@ -14,6 +14,10 @@ plugins {
 android {
     namespace = "com.prac.network"
 
+    defaultConfig {
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
     buildTypes {
         debug {
             buildConfigField("String", "GITHUB_URL", "\"https://github.com/\"")
