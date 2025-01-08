@@ -33,6 +33,8 @@ import org.junit.Test
 @HiltAndroidTest
 class LoginScreenTest {
 
+    private var isMainScreen: Boolean = false
+
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
 
@@ -40,27 +42,28 @@ class LoginScreenTest {
     val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
     private val activity get() = composeTestRule.activity
 
-    private var isMainScreen: Boolean = false
-
     @Before
-    fun setUp() {
+    fun 초기화() {
         hiltRule.inject()
         Intents.init()
         setContent()
     }
 
     @After
-    fun tearDown() {
+    fun 정리() {
         Intents.release()
     }
 
     @Test
-    fun loginButtonClick_openBrowser() = runTest {
+    fun 로그인버튼클릭_브라우저오픈() = runTest {
+        // given
         intending(not(isInternal()))
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
+        // when
         composeTestRule.onNodeWithText(activity.getString(R.string.login)).performClick()
 
+        // then
         intended(
             allOf(
                 hasAction(Intent.ACTION_VIEW),
@@ -70,58 +73,72 @@ class LoginScreenTest {
     }
 
     @Test
-    fun onNewIntent_validIntent_navigateToMainActivity() = runTest {
+    fun 유효한인텐트_메인액티비티로_이동() = runTest {
+        // given
         val scheme = "test"
         val host = "test"
         val code = "success"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("$scheme://$host?code=$code"))
+
+        // when
         activity.startActivity(intent)
 
+        // then
         composeTestRule.waitUntil {
             isMainScreen
         }
     }
 
     @Test
-    fun onNewIntent_invalidIntent_showNetworkErrorAlertDialog() = runTest {
+    fun IOException으로인해_다이어로그를_보여줌() = runTest {
+        // given
         val scheme = "test"
         val host = "test"
         val code = "ioException"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("$scheme://$host?code=$code"))
+
+        // when
         activity.startActivity(intent)
 
+        // then
         composeTestRule.waitUntil {
             composeTestRule.onNodeWithText(CONNECTION_FAIL).isDisplayed()
         }
     }
 
     @Test
-    fun onNewIntent_invalidIntent_showLoginFailureAlertDialog() = runTest {
+    fun 에러로인해_다이어로그를_보여줌() = runTest {
+        // given
         val scheme = "test"
         val host = "test"
         val code = "else"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("$scheme://$host?code=$code"))
+
+        // when
         activity.startActivity(intent)
 
+        // then
         composeTestRule.waitUntil {
             composeTestRule.onNodeWithText(LOGIN_FAIL).isDisplayed()
         }
     }
 
     @Test
-    fun dismissDialog_showIdle() = runTest {
+    fun 다이어로그해제_아이들상태를_보여줌() = runTest {
+        // given
         val scheme = "test"
         val host = "test"
         val code = "else"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("$scheme://$host?code=$code"))
         activity.startActivity(intent)
-
         composeTestRule.waitUntil {
             composeTestRule.onNodeWithText(LOGIN_FAIL).isDisplayed()
         }
 
+        // when
         composeTestRule.onNodeWithText(activity.getString(R.string.check)).performClick()
 
+        // then
         composeTestRule.onNodeWithText(LOGIN_FAIL).assertIsNotDisplayed()
     }
 
