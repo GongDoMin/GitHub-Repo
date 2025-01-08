@@ -1,87 +1,88 @@
 package com.prac.network
 
-import com.prac.network.model.response.OwnerResponse
-import com.prac.network.model.response.RepositoryResponse
 import com.prac.network.impl.RepoApiDataSourceImpl
+import com.prac.network.model.response.OwnerResponse
+import com.prac.network.model.response.RepositoryDetailResponse
+import com.prac.network.model.response.RepositoryResponse
+import com.prac.network.service.GitHubService
 import com.prac.shared_test.network.service.FakeGitHubService
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
-import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 
-@OptIn(ExperimentalEncodingApi::class)
 class RepoApiDataSourceTest {
 
-    private lateinit var gitHubService: FakeGitHubService
-    private lateinit var repoApiDatasource: RepoApiDataSource
-
-    private val repoList = listOf(
-        RepositoryResponse(0, "test1", OwnerResponse("test1", "test1"), 0, "master", "test1"),
-        RepositoryResponse(1, "test2", OwnerResponse("test2", "test2"), 0, "master", "test1"),
-        RepositoryResponse(2, "test3", OwnerResponse("test3", "test3"), 0, "master", "test1"),
-        RepositoryResponse(3, "test4", OwnerResponse("test4", "test4"), 0, "master", "test1"),
-    )
-    private val content = "hi!!"
-    private val encoded = Base64.encode(content.toByteArray())
-
-    @Before
-    fun setUp() {
-        gitHubService = FakeGitHubService(repoList, encoded)
-        repoApiDatasource = RepoApiDataSourceImpl(gitHubService)
-    }
+    private val gitHubService: GitHubService = FakeGitHubService()
+    private val repoApiDatasource: RepoApiDataSource = RepoApiDataSourceImpl(gitHubService)
 
     @Test
-    fun getRepositories_whenCalled_repoDtoList() = runTest {
-        val userName = "test"
-        val perPage = 10
-        val page = 1
+    fun 레파지토리목록_요청시_레파지토리목록_반환() = runTest {
+        // given
+        val expectedRepositories = listOf(
+            RepositoryResponse(0, "Repository 0", OwnerResponse("login 0", "avatar 0"), 5, "develop", "2023.01.05"),
+            RepositoryResponse(1, "Repository 1", OwnerResponse("login 1", "avatar 1"), 5, "develop", "2023.01.05"),
+            RepositoryResponse(2, "Repository 2", OwnerResponse("login 2", "avatar 2"), 5, "develop", "2023.01.05"),
+            RepositoryResponse(3, "Repository 3", OwnerResponse("login 3", "avatar 3"), 5, "develop", "2023.01.05"),
+            RepositoryResponse(4, "Repository 4", OwnerResponse("login 4", "avatar 4"), 5, "develop", "2023.01.05"),
+            RepositoryResponse(5, "Repository 5", OwnerResponse("login 5", "avatar 5"), 5, "develop", "2023.01.05")
+        )
 
-        val result = repoApiDatasource.getRepositories(userName, perPage, page)
+        // when
+        val result = repoApiDatasource.getRepositories("test", 1, 10)
 
-        assertEquals(result.size, repoList.size)
+        // then
+        assertEquals(result.size, expectedRepositories.size)
         result.indices.forEach {
-            assertEquals(result[it].id, repoList[it].id)
-            assertEquals(result[it].name, repoList[it].name)
-            assertEquals(result[it].owner.login, repoList[it].owner.login)
-            assertEquals(result[it].owner.avatarUrl, repoList[it].owner.avatarUrl)
-            assertEquals(result[it].stargazersCount, repoList[it].stargazersCount)
-            assertEquals(result[it].updatedAt, repoList[it].updatedAt)
+            assertEquals(result[it], expectedRepositories[it])
         }
     }
 
     @Test
-    fun getRepository_whenCalled_repoDetailDto() = runTest {
-        val expectedRepo = repoList[0]
+    fun 레파지토리상세_요청시_레파지토리상세_반환() = runTest {
+        // given
+        val expectedRepositoryDetail =
+            RepositoryDetailResponse(0, "Repository 0", OwnerResponse("login 0", "avatar 0"), 5, 5, 5)
 
-        val result = repoApiDatasource.getRepository(expectedRepo.owner.login, expectedRepo.name)
+        // when
+        val result = repoApiDatasource.getRepository("login 0", "Repository 0")
 
-        assertEquals(result.id, expectedRepo.id)
-        assertEquals(result.name, expectedRepo.name)
-        assertEquals(result.owner.login, expectedRepo.owner.login)
-        assertEquals(result.owner.avatarUrl, expectedRepo.owner.avatarUrl)
-        assertEquals(result.stargazersCount, expectedRepo.stargazersCount)
+        // then
+        assertEquals(result, expectedRepositoryDetail)
     }
 
     @Test
-    fun getIssueCount_whenCalled_returnInt() = runTest {
-        val result = repoApiDatasource.getRepoIssueCount("", "")
+    fun 이슈카운트_요청시_정수_반환() = runTest {
+        // given
+        val expectedIssueCount = 2
 
-        assertEquals(result, 2)
+        // when
+        val result = repoApiDatasource.getRepoIssueCount("login 0", "Repository 0")
+
+        // then
+        assertEquals(result, expectedIssueCount)
     }
 
     @Test
-    fun getPullCount_whenCalled_returnInt() = runTest {
-        val result = repoApiDatasource.getRepoPullCount("", "")
+    fun 풀카운트_요청시_정수_반환() = runTest {
+        // given
+        val expectedIssueCount = 2
 
-        assertEquals(result, 2)
+        // when
+        val result = repoApiDatasource.getRepoPullCount("login 0", "Repository 0")
+
+        // then
+        assertEquals(result, expectedIssueCount)
     }
 
     @Test
-    fun getRepoReadme_whenCalled_returnInt() = runTest {
-        val result = repoApiDatasource.getRepoReadme("", "")
+    fun 리드미컨텐트_요청시_Base64를_통해_디코딩하고_문자열_반환() = runTest {
+        // given
+        val expectedContent = "hello world!!"
 
-        assertEquals(result, content)
+        // when
+        val result = repoApiDatasource.getRepoReadme("login 0", "Repository 0")
+
+        // then
+        assertEquals(result, expectedContent)
     }
 }
