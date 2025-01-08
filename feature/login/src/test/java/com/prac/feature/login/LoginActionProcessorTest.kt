@@ -21,7 +21,7 @@ class LoginActionProcessorTest {
     private lateinit var loginActionProcessor: LoginActionProcessor
 
     @Test
-    fun 액션이_onClickLoginButton일때_event는_OpenBrowser() = runTest {
+    fun 로그인버튼_액션발행_event는_OpenBrowser() = runTest {
         // given
         initialLoginActionProcessorWithNothing()
 
@@ -35,7 +35,7 @@ class LoginActionProcessorTest {
     }
 
     @Test
-    fun 액션이_DialogDismiss일때_mutation은_ShowIdle() = runTest {
+    fun 다이어로그해제_액션발행_mutation은_ShowIdle() = runTest {
         // given
         initialLoginActionProcessorWithNothing()
 
@@ -49,7 +49,7 @@ class LoginActionProcessorTest {
     }
 
     @Test
-    fun 액션이_AuthenticateOAuth일때_event는_SuccessLogin() = runTest {
+    fun OAuth인증_액션발행_event는_SuccessLogin() = runTest {
         // given
         initialLoginActionProcessorWithNothing()
 
@@ -65,7 +65,7 @@ class LoginActionProcessorTest {
     }
 
     @Test
-    fun 액션이_AuthenticateOAuth이지만_IOException에러가_발생할때_mutation은_ShowError() = runTest {
+    fun OAuth인증_액션발행_IOException에러가_발생할때_mutation은_ShowError() = runTest {
         // given
         initialLoginActionProcessorWithNothing()
 
@@ -82,7 +82,7 @@ class LoginActionProcessorTest {
     }
 
     @Test
-    fun 액션이_AuthenticateOAuth이지만_else에러가_발생할때_mutation은_ShowError() = runTest {
+    fun OAuth인증_액션발행_else에러가_발생할때_mutation은_ShowError() = runTest {
         // given
         initialLoginActionProcessorWithNothing()
 
@@ -99,7 +99,7 @@ class LoginActionProcessorTest {
     }
 
     @Test
-    fun 액션이_CheckAutoLogin일때_이미로그인되어있다면_event는_SuccessLogin() = runTest {
+    fun 자동로그인_액션발행_이미로그인되어있다면_event는_SuccessLogin() = runTest {
         // given
         initialLoginActionProcessorWithFakeToken()
 
@@ -113,7 +113,7 @@ class LoginActionProcessorTest {
     }
 
     @Test
-    fun 액션이_CheckAutoLogin일때_이미로그인되어있다면_아무것도emit하지않음() = runTest {
+    fun 자동로그인_액션발행_이미로그인되어있다면_아무것도emit하지않음() = runTest {
         // given
         initialLoginActionProcessorWithNothing()
 
