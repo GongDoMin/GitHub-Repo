@@ -2,17 +2,11 @@ package com.prac.shared_test.network
 
 import com.prac.network.UserApiDataSource
 
-class FakeUserApiDataSource : UserApiDataSource {
-
-    private lateinit var throwable: Throwable
-
-    fun setThrowable(throwable: Throwable) {
-        this.throwable = throwable
-    }
+class FakeUserApiDataSource(
+    private val userName: String = ""
+) : UserApiDataSource {
 
     override suspend fun getUserName(accessToken: String): String {
-        if (::throwable.isInitialized) throw throwable
-
-        return "test"
+        return userName
     }
 }
