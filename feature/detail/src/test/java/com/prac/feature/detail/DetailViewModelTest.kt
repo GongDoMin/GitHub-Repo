@@ -16,7 +16,6 @@ import com.prac.data.model.RepositoryDetail
 import com.prac.feature.detail.model.Action
 import com.prac.feature.detail.model.Event
 import com.prac.feature.detail.model.Mutation
-import com.prac.feature.detail.model.toRepositoryDetail
 import com.prac.feature.detail.view.UiState
 import com.prac.shared_test.rules.StandardTestDispatcherRule
 import com.prac.shared_test.ui.FakeDetailActionProcessor
@@ -46,7 +45,7 @@ class DetailViewModelTest {
             owner = Owner(login = "test"),
             stargazersCount = 10,
             isStarred = true,
-        ).toRepositoryDetail()
+        )
     private val userName = repository.owner.login
     private val repoName = repository.name
 

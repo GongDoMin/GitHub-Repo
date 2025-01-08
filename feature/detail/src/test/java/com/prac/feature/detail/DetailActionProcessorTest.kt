@@ -8,7 +8,6 @@ import com.prac.data.repository.RepoRepository
 import com.prac.feature.detail.model.Action
 import com.prac.feature.detail.model.Event
 import com.prac.feature.detail.model.Mutation
-import com.prac.feature.detail.model.toRepositoryDetail
 import com.prac.shared_test.common.FakeBackOffWorkManager
 import com.prac.shared_test.domain.FakeClearLocalDataUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -123,7 +122,7 @@ class DetailActionProcessorTest {
         whenever(mockRepoRepository.starRepository(userName, repoName))
             .thenReturn(Result.success(Unit))
 
-        detailActionProcessor(Action.UserAction.OnClickUnStar(repoDetailEntity.toRepositoryDetail())).test {
+        detailActionProcessor(Action.UserAction.OnClickUnStar(repoDetailEntity)).test {
             awaitComplete()
         }
         advanceUntilIdle()
@@ -137,7 +136,7 @@ class DetailActionProcessorTest {
         whenever(mockRepoRepository.unStarRepository(userName, repoName))
             .thenReturn(Result.success(Unit))
 
-        detailActionProcessor(Action.UserAction.OnClickStar(repoDetailEntity.toRepositoryDetail())).test {
+        detailActionProcessor(Action.UserAction.OnClickStar(repoDetailEntity)).test {
             awaitComplete()
         }
         advanceUntilIdle()
@@ -156,7 +155,7 @@ class DetailActionProcessorTest {
         whenever(mockRepoRepository.starRepository(repoModel.owner.login, repoModel.name))
             .thenReturn(Result.failure(CommonException.NetworkError()))
 
-        detailActionProcessor(Action.UserAction.OnClickUnStar(repoModel.toRepositoryDetail())).test {
+        detailActionProcessor(Action.UserAction.OnClickUnStar(repoModel)).test {
             awaitComplete()
         }
 
@@ -176,7 +175,7 @@ class DetailActionProcessorTest {
         whenever(mockRepoRepository.unStarRepository(repoModel.owner.login, repoModel.name))
             .thenReturn(Result.failure(CommonException.NetworkError()))
 
-        detailActionProcessor(Action.UserAction.OnClickStar(repoModel.toRepositoryDetail())).test {
+        detailActionProcessor(Action.UserAction.OnClickStar(repoModel)).test {
             awaitComplete()
         }
 
@@ -191,7 +190,7 @@ class DetailActionProcessorTest {
         whenever(mockRepoRepository.starRepository(userName, repoName))
             .thenReturn(Result.failure(CommonException.AuthorizationError()))
 
-        detailActionProcessor(Action.UserAction.OnClickUnStar(repoDetailEntity.toRepositoryDetail())).test {
+        detailActionProcessor(Action.UserAction.OnClickUnStar(repoDetailEntity)).test {
             val (mutation, event) = awaitItem()
             awaitComplete()
             assertTrue(mutation is Mutation.ShowError)
@@ -207,7 +206,7 @@ class DetailActionProcessorTest {
         whenever(mockRepoRepository.unStarRepository(userName, repoName))
             .thenReturn(Result.failure(CommonException.AuthorizationError()))
 
-        detailActionProcessor(Action.UserAction.OnClickStar(repoDetailEntity.toRepositoryDetail())).test {
+        detailActionProcessor(Action.UserAction.OnClickStar(repoDetailEntity)).test {
             val (mutation, event) = awaitItem()
             awaitComplete()
             assertTrue(mutation is Mutation.ShowError)
