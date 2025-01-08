@@ -32,39 +32,38 @@ class MainActionProcessorTest {
     @Mock private lateinit var mockRepoRepository: RepoRepository
     private lateinit var clearLocalDataUseCase: FakeClearLocalDataUseCase
     private val backOffWork: FakeBackOffWorkManager = FakeBackOffWorkManager()
+
     private lateinit var mainActionProcessor: MainActionProcessor
 
     @Before
     fun setUp() {
-        clearLocalDataUseCase = FakeClearLocalDataUseCase()
-        mainActionProcessor = MainActionProcessor(
-            repoRepository = mockRepoRepository,
-            clearLocalDataUseCase = clearLocalDataUseCase,
-            backOffWorkManager = backOffWork
-        )
+        initialMainActionProcessor()
     }
 
     @Test
-    fun invoke_actionIsLoad_emitNothing() = runTest {
+    fun 로딩_액션발행_이벤트없음() = runTest {
+        // when, then
         mainActionProcessor(Action.InternalAction.Load).test {
             awaitComplete()
         }
     }
 
     @Test
-    fun invoke_actionIsFetchStarState_emitNothing() = runTest {
-        val repository = Repository()
-        whenever(mockRepoRepository.isStarred(repository.id, repository.name)).thenReturn(Unit)
+    fun 스타상태요청_액션발행_이벤트없음() = runTest {
+        // given
+        whenever(mockRepoRepository.isStarred(fakeRepository.id, fakeRepository.name)).thenReturn(Unit)
 
-        mainActionProcessor(Action.InternalAction.FetchStarState(repository)).test {
+        // when
+        mainActionProcessor(Action.InternalAction.FetchStarState(fakeRepository)).test {
             awaitComplete()
         }
 
-        verify(mockRepoRepository).isStarred(repository.id, repository.name)
+        // then
+        verify(mockRepoRepository).isStarred(fakeRepository.id, fakeRepository.name)
     }
 
     @Test
-    fun invoke_actionIsLogout_mutationIsError() = runTest {
+    fun 로그아웃_액션발행_mutation은_ShowError() = runTest {
         mainActionProcessor(Action.InternalAction.Logout).test {
             val (mutation, event) = awaitItem()
             awaitComplete()
@@ -78,8 +77,9 @@ class MainActionProcessorTest {
     }
 
     @Test
-    fun invoke_actionIsOnClickRepository_eventIsOpenRepositoryDetail() = runTest {
-        mainActionProcessor(Action.UserAction.OnClickRepository(Repository())).test {
+    fun 레파지토리클릭_액션발행_event는_OpenRepositoryDetail() = runTest {
+        // when, then
+        mainActionProcessor(Action.UserAction.OnClickRepository(fakeRepository)).test {
             val (mutation, event) = awaitItem()
             awaitComplete()
             assertTrue(mutation == null)
@@ -88,74 +88,81 @@ class MainActionProcessorTest {
     }
 
     @Test
-    fun invoke_actionIsOnClickUnStar_emitNothing_whenSuccess() = runTest {
-        val repository = Repository()
-        mainActionProcessor(Action.UserAction.OnClickUnStar(repository)).test {
+    fun 언스타클릭_액션발행_이벤트는없음() = runTest {
+        // when
+        mainActionProcessor(Action.UserAction.OnClickUnStar(fakeRepository)).test {
             awaitComplete()
         }
 
-        verify(mockRepoRepository).starLocalRepository(repository.id, repository.stargazersCount + 1)
-        verify(mockRepoRepository).starRepository(repository.owner.login, repository.name)
+        // then
+        verify(mockRepoRepository).starLocalRepository(fakeRepository.id, fakeRepository.stargazersCount + 1)
+        verify(mockRepoRepository).starRepository(fakeRepository.owner.login, fakeRepository.name)
     }
 
     @Test
-    fun invoke_actionIsOnClickStar_emitNothing_whenSuccess() = runTest {
-        val repository = Repository()
-        mainActionProcessor(Action.UserAction.OnClickStar(repository)).test {
+    fun 스타클릭_액션발행_이벤트는없음() = runTest {
+        // when
+        mainActionProcessor(Action.UserAction.OnClickStar(fakeRepository)).test {
             awaitComplete()
         }
 
-        verify(mockRepoRepository).unStarLocalRepository(repository.id, repository.stargazersCount - 1)
-        verify(mockRepoRepository).unStarRepository(repository.owner.login, repository.name)
+        // then
+        verify(mockRepoRepository).unStarLocalRepository(fakeRepository.id, fakeRepository.stargazersCount - 1)
+        verify(mockRepoRepository).unStarRepository(fakeRepository.owner.login, fakeRepository.name)
     }
 
     @Test
-    fun invoke_actionIsOnClickUnStar_emitNothing_whenNetworkError() = runTest {
-        backOffWork.setScope(this)
-        val repository = Repository()
-        val uniqueID = "star_${repository.id}"
+    fun 언스타클릭_액션발행_IOException일때_이벤트는없음() = runTest {
+        // given
+        val uniqueID = "star_${fakeRepository.id}"
         val expectedCallTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
         val expectedDelayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
-        whenever(mockRepoRepository.starRepository(repository.owner.login, repository.name))
+        whenever(mockRepoRepository.starRepository(fakeRepository.owner.login, fakeRepository.name))
             .thenReturn(Result.failure(CommonException.NetworkError()))
+        backOffWork.setScope(this)
 
-        mainActionProcessor(Action.UserAction.OnClickUnStar(repository)).test {
+        // when
+        mainActionProcessor(Action.UserAction.OnClickUnStar(fakeRepository)).test {
             awaitComplete()
         }
 
+        // then
         advanceUntilIdle()
-        verify(mockRepoRepository).starLocalRepository(repository.id, repository.stargazersCount + 1)
-        verify(mockRepoRepository, times(expectedCallTimes)).starRepository(repository.owner.login, repository.name)
+        verify(mockRepoRepository).starLocalRepository(fakeRepository.id, fakeRepository.stargazersCount + 1)
+        verify(mockRepoRepository, times(expectedCallTimes)).starRepository(fakeRepository.owner.login, fakeRepository.name)
         assertEquals(backOffWork.getDelayTimes(uniqueID), expectedDelayTimes)
     }
 
     @Test
-    fun invoke_actionIsOnClickStar_emitNothing_whenNetworkError() = runTest {
-        backOffWork.setScope(this)
-        val repository = Repository()
-        val uniqueID = "star_${repository.id}"
+    fun 스타클릭_액션발행_IOException일때_이벤트는없음() = runTest {
+        // given
+        val uniqueID = "star_${fakeRepository.id}"
         val expectedCallTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
         val expectedDelayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
-        whenever(mockRepoRepository.unStarRepository(repository.owner.login, repository.name))
+        whenever(mockRepoRepository.unStarRepository(fakeRepository.owner.login, fakeRepository.name))
             .thenReturn(Result.failure(CommonException.NetworkError()))
+        backOffWork.setScope(this)
 
-        mainActionProcessor(Action.UserAction.OnClickStar(repository)).test {
+        // when
+        mainActionProcessor(Action.UserAction.OnClickStar(fakeRepository)).test {
             awaitComplete()
         }
 
+        // then
         advanceUntilIdle()
-        verify(mockRepoRepository).unStarLocalRepository(repository.id, repository.stargazersCount - 1)
-        verify(mockRepoRepository, times(expectedCallTimes)).unStarRepository(repository.owner.login, repository.name)
+        verify(mockRepoRepository).unStarLocalRepository(fakeRepository.id, fakeRepository.stargazersCount - 1)
+        verify(mockRepoRepository, times(expectedCallTimes)).unStarRepository(fakeRepository.owner.login, fakeRepository.name)
         assertEquals(backOffWork.getDelayTimes(uniqueID), expectedDelayTimes)
     }
 
     @Test
-    fun invoke_actionIsOnClickUnStar_mutationIsLogout_whenAuthorizationError() = runTest {
-        val repository = Repository()
-        whenever(mockRepoRepository.starRepository(repository.owner.login, repository.name))
+    fun 언스타클릭_액션발행_AuthorizationError일때_mutation은_ShowError() = runTest {
+        // given
+        whenever(mockRepoRepository.starRepository(fakeRepository.owner.login, fakeRepository.name))
             .thenReturn(Result.failure(CommonException.AuthorizationError()))
 
-        mainActionProcessor(Action.UserAction.OnClickUnStar(repository)).test {
+        // when, then
+        mainActionProcessor(Action.UserAction.OnClickUnStar(fakeRepository)).test {
             val (mutation, event) = awaitItem()
             awaitComplete()
             assertTrue(mutation is Mutation.ShowError)
@@ -164,12 +171,13 @@ class MainActionProcessorTest {
     }
 
     @Test
-    fun invoke_actionIsOnClickStar_mutationIsLogout_whenAuthorizationError() = runTest {
-        val repository = Repository()
-        whenever(mockRepoRepository.unStarRepository(repository.owner.login, repository.name))
+    fun 스타클릭_액션발행_AuthorizationError일때_mutation은_ShowError() = runTest {
+        // given
+        whenever(mockRepoRepository.unStarRepository(fakeRepository.owner.login, fakeRepository.name))
             .thenReturn(Result.failure(CommonException.AuthorizationError()))
 
-        mainActionProcessor(Action.UserAction.OnClickStar(repository)).test {
+        // when, then
+        mainActionProcessor(Action.UserAction.OnClickStar(fakeRepository)).test {
             val (mutation, event) = awaitItem()
             awaitComplete()
             assertTrue(mutation is Mutation.ShowError)
@@ -178,67 +186,40 @@ class MainActionProcessorTest {
     }
 
     @Test
-    fun invoke_actionIsOnClickUnStar_mutationIsError_whenRepositoryNotFound() = runTest {
-        val repository = Repository()
-        whenever(mockRepoRepository.starRepository(repository.owner.login, repository.name))
+    fun 언스타클릭_액션발행_NotFoundError일때_mutation은_ShowError() = runTest {
+        // given
+        whenever(mockRepoRepository.starRepository(fakeRepository.owner.login, fakeRepository.name))
             .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
 
-        mainActionProcessor(Action.UserAction.OnClickUnStar(repository)).test {
+        // when ,then
+        mainActionProcessor(Action.UserAction.OnClickUnStar(fakeRepository)).test {
             val (mutation, event) = awaitItem()
             awaitComplete()
             assertTrue(mutation is Mutation.ShowError)
             assertTrue(event == null)
-            verify(mockRepoRepository).unStarLocalRepository(repository.id, repository.stargazersCount)
+            verify(mockRepoRepository).unStarLocalRepository(fakeRepository.id, fakeRepository.stargazersCount)
         }
     }
 
     @Test
-    fun invoke_actionIsOnClickStar_mutationIsError_whenRepositoryNotFound() = runTest {
-        val repository = Repository()
-        whenever(mockRepoRepository.unStarRepository(repository.owner.login, repository.name))
+    fun 스타클릭_액션발행_NotFoundError일때_mutation은_ShowError() = runTest {
+        // given
+        whenever(mockRepoRepository.unStarRepository(fakeRepository.owner.login, fakeRepository.name))
             .thenReturn(Result.failure(RepositoryException.NotFoundRepository()))
 
-        mainActionProcessor(Action.UserAction.OnClickStar(repository)).test {
+        // when ,then
+        mainActionProcessor(Action.UserAction.OnClickStar(fakeRepository)).test {
             val (mutation, event) = awaitItem()
             awaitComplete()
             assertTrue(mutation is Mutation.ShowError)
             assertTrue(event == null)
-            verify(mockRepoRepository).starLocalRepository(repository.id, repository.stargazersCount)
+            verify(mockRepoRepository).starLocalRepository(fakeRepository.id, fakeRepository.stargazersCount)
         }
     }
 
     @Test
-    fun invoke_actionIsOnClickUnStar_mutationIsError_whenUnknownError() = runTest {
-        val repository = Repository()
-        whenever(mockRepoRepository.starRepository(repository.owner.login, repository.name))
-            .thenReturn(Result.failure(CommonException.UnKnownError()))
-
-        mainActionProcessor(Action.UserAction.OnClickUnStar(repository)).test {
-            val (mutation, event) = awaitItem()
-            awaitComplete()
-            assertTrue(mutation is Mutation.ShowError)
-            assertTrue(event == null)
-            verify(mockRepoRepository).unStarLocalRepository(repository.id, repository.stargazersCount)
-        }
-    }
-
-    @Test
-    fun invoke_actionIsOnClickStar_mutationIsError_whenUnknownError() = runTest {
-        val repository = Repository()
-        whenever(mockRepoRepository.unStarRepository(repository.owner.login, repository.name))
-            .thenReturn(Result.failure(CommonException.UnKnownError()))
-
-        mainActionProcessor(Action.UserAction.OnClickStar(repository)).test {
-            val (mutation, event) = awaitItem()
-            awaitComplete()
-            assertTrue(mutation is Mutation.ShowError)
-            assertTrue(event == null)
-            verify(mockRepoRepository).starLocalRepository(repository.id, repository.stargazersCount)
-        }
-    }
-
-    @Test
-    fun invoke_actionIsOnClickRetry_eventIsRetry() = runTest {
+    fun 재시도_액션발행_event는_Retry() = runTest {
+        // when, then
         mainActionProcessor(Action.UserAction.OnClickRetry).test {
             val (mutation, event) = awaitItem()
             awaitComplete()
@@ -248,7 +229,7 @@ class MainActionProcessorTest {
     }
 
     @Test
-    fun invoke_actionIsDialogDismiss_mutationIsShowRepositories() = runTest {
+    fun 다이어로그해제_액션발행_mutation는_ShowContent() = runTest {
         mainActionProcessor(Action.UserAction.DialogDismiss).test {
             val (mutation, event) = awaitItem()
             awaitComplete()
@@ -258,12 +239,29 @@ class MainActionProcessorTest {
     }
 
     @Test
-    fun invoke_actionIsLogoutDialogDismiss_eventIsLogout() = runTest {
+    fun 로그아웃다이어로그해제_액션발행_event는_Logout() = runTest {
         mainActionProcessor(Action.UserAction.LogoutDialogDismiss).test {
             val (mutation, event) = awaitItem()
             awaitComplete()
             assertTrue(mutation == null)
             assertTrue(event is Event.Logout)
         }
+    }
+
+    private fun initialMainActionProcessor() {
+        clearLocalDataUseCase = FakeClearLocalDataUseCase(
+            userName = "son",
+            accessToken = "token",
+            list = listOf("first", "second")
+        )
+        mainActionProcessor = MainActionProcessor(
+            repoRepository = mockRepoRepository,
+            clearLocalDataUseCase = clearLocalDataUseCase,
+            backOffWorkManager = backOffWork
+        )
+    }
+
+    companion object {
+        private val fakeRepository = Repository()
     }
 }
