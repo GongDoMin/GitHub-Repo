@@ -17,16 +17,14 @@ import org.mockito.kotlin.verify
 @RunWith(MockitoJUnitRunner::class)
 class ClearLocalDataUseCaseTest {
 
-    private val userName = "test"
-
     private val tokenRepository = FakeTokenRepository("accessToken")
-    private val userRepository = FakeUserRepository(userName)
+    private val userRepository = FakeUserRepository("kane")
     @Mock private lateinit var repoRepository: RepoRepository
 
     private lateinit var clearLocalDataUseCase: ClearLocalDataUseCase
 
     @Test
-    fun invoke_clearToken_and_userName() = runTest {
+    fun 토큰_사용자이름_레파지토리_데이터_초기화() = runTest {
         clearLocalDataUseCase = ClearLocalDataUseCaseImpl(tokenRepository, userRepository, repoRepository)
 
         clearLocalDataUseCase.invoke()
