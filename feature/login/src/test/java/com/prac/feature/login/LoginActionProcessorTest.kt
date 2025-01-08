@@ -21,10 +21,11 @@ class LoginActionProcessorTest {
     private lateinit var loginActionProcessor: LoginActionProcessor
 
     @Test
-    fun invoke_actionIsOnClickLoginButton_eventIsOpenBrowser() = runTest {
-        tokenRepository = FakeTokenRepository()
-        loginActionProcessor = LoginActionProcessor(tokenRepository, authorizeOAuthUseCase)
+    fun 액션이_onClickLoginButton일때_event는_OpenBrowser() = runTest {
+        // given
+        initialLoginActionProcessorWithNothing()
 
+        // when, then
         loginActionProcessor(Action.UserAction.OnClickLoginButton).test {
             val (mutation, event) = awaitItem()
             awaitComplete()
@@ -34,10 +35,11 @@ class LoginActionProcessorTest {
     }
 
     @Test
-    fun invoke_actionIsDialogDismiss_mutationIsShowIdle() = runTest {
-        tokenRepository = FakeTokenRepository()
-        loginActionProcessor = LoginActionProcessor(tokenRepository, authorizeOAuthUseCase)
+    fun 액션이_DialogDismiss일때_mutation은_ShowIdle() = runTest {
+        // given
+        initialLoginActionProcessorWithNothing()
 
+        // when, then
         loginActionProcessor(Action.UserAction.DialogDismiss).test {
             val (mutation, event) = awaitItem()
             awaitComplete()
@@ -47,10 +49,11 @@ class LoginActionProcessorTest {
     }
 
     @Test
-    fun invoke_actionIsAuthenticateOAuth_eventIsSuccessLogin() = runTest {
-        tokenRepository = FakeTokenRepository()
-        loginActionProcessor = LoginActionProcessor(tokenRepository, authorizeOAuthUseCase)
+    fun 액션이_AuthenticateOAuth일때_event는_SuccessLogin() = runTest {
+        // given
+        initialLoginActionProcessorWithNothing()
 
+        // when, then
         loginActionProcessor(Action.InternalAction.AuthenticateOAuth("success")).test {
             awaitItem() // loadingState
 
@@ -62,10 +65,11 @@ class LoginActionProcessorTest {
     }
 
     @Test
-    fun invoke_actionIsAuthenticateOAuth_mutationIsError_whenNetworkError() = runTest {
-        tokenRepository = FakeTokenRepository()
-        loginActionProcessor = LoginActionProcessor(tokenRepository, authorizeOAuthUseCase)
+    fun 액션이_AuthenticateOAuth이지만_IOException에러가_발생할때_mutation은_ShowError() = runTest {
+        // given
+        initialLoginActionProcessorWithNothing()
 
+        // when, then
         loginActionProcessor(Action.InternalAction.AuthenticateOAuth("ioException")).test {
             awaitItem() // loadingState
 
@@ -78,10 +82,11 @@ class LoginActionProcessorTest {
     }
 
     @Test
-    fun invoke_actionIsAuthenticateOAuth_mutationIsError_whenUnknownError() = runTest {
-        tokenRepository = FakeTokenRepository()
-        loginActionProcessor = LoginActionProcessor(tokenRepository, authorizeOAuthUseCase)
+    fun 액션이_AuthenticateOAuth이지만_else에러가_발생할때_mutation은_ShowError() = runTest {
+        // given
+        initialLoginActionProcessorWithNothing()
 
+        // when, then
         loginActionProcessor(Action.InternalAction.AuthenticateOAuth("else")).test {
             awaitItem() // loadingState
 
@@ -94,10 +99,11 @@ class LoginActionProcessorTest {
     }
 
     @Test
-    fun invoke_actionIsCheckAutoLogin_eventIsSuccessLogin_whenTokenIsExist() = runTest {
-        tokenRepository = FakeTokenRepository("test")
-        loginActionProcessor = LoginActionProcessor(tokenRepository, authorizeOAuthUseCase)
+    fun 액션이_CheckAutoLogin일때_이미로그인되어있다면_event는_SuccessLogin() = runTest {
+        // given
+        initialLoginActionProcessorWithFakeToken()
 
+        // when, then
         loginActionProcessor(Action.InternalAction.CheckAutoLogin).test {
             val (mutation, event) = awaitItem()
             awaitComplete()
@@ -107,12 +113,27 @@ class LoginActionProcessorTest {
     }
 
     @Test
-    fun invoke_actionIsCheckAutoLogin_emitNothing_whenTokenIsNotExist() = runTest {
-        tokenRepository = FakeTokenRepository()
-        loginActionProcessor = LoginActionProcessor(tokenRepository, authorizeOAuthUseCase)
+    fun 액션이_CheckAutoLogin일때_이미로그인되어있다면_아무것도emit하지않음() = runTest {
+        // given
+        initialLoginActionProcessorWithNothing()
 
+        // when, then
         loginActionProcessor(Action.InternalAction.CheckAutoLogin).test {
             awaitComplete()
         }
+    }
+
+    private fun initialLoginActionProcessorWithNothing() {
+        tokenRepository = FakeTokenRepository()
+        loginActionProcessor = LoginActionProcessor(tokenRepository, authorizeOAuthUseCase)
+    }
+
+    private fun initialLoginActionProcessorWithFakeToken() {
+        tokenRepository = FakeTokenRepository(FAKE_TOKEN)
+        loginActionProcessor = LoginActionProcessor(tokenRepository, authorizeOAuthUseCase)
+    }
+
+    companion object {
+        private const val FAKE_TOKEN = "fakeToken"
     }
 }
