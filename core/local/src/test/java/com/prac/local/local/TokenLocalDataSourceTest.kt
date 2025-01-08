@@ -11,6 +11,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.Instant
 import java.time.ZoneId
+import java.time.ZonedDateTime
 
 internal class TokenLocalDataSourceTest {
 
@@ -52,7 +53,7 @@ internal class TokenLocalDataSourceTest {
             refreshToken = "refreshToken",
             expiresInSeconds = 3600,
             refreshTokenExpiresInSeconds = 3600,
-            updatedAt = Instant.now().atZone(ZoneId.systemDefault())
+            updatedAt = ZonedDateTime.now()
         )
         initialTokenLocalDataSourceWithNoting()
 
@@ -97,7 +98,7 @@ internal class TokenLocalDataSourceTest {
             refreshToken = "refreshToken",
             expiresInSeconds = 3600,
             refreshTokenExpiresInSeconds = 3600,
-            updatedAt = Instant.now().atZone(ZoneId.systemDefault())
+            updatedAt = ZonedDateTime.now()
         )
     }
 }

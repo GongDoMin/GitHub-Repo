@@ -25,7 +25,7 @@ class TokenEntityRepositoryEntityTest {
         refreshToken = "refreshToken",
         expiresInSeconds = 3600,
         refreshTokenExpiresInSeconds = 3600,
-        updatedAt = Instant.now().atZone(ZoneId.systemDefault())
+        updatedAt = ZonedDateTime.now()
     )
     private val code = "code"
 
