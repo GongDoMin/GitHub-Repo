@@ -12,29 +12,36 @@ class DetailReducerProcessorTest {
     private val detailReducerProcessorTest = DetailReducerProcessor()
 
     @Test
-    fun invoke_mutationIsShowLoading_uiStateIsLoading() {
-
+    fun 로딩상태_변환테스트() {
+        // when
         val result = detailReducerProcessorTest.invoke(Mutation.ShowLoading, UiState.Loading)
 
+        // then
         assertTrue(result is UiState.Loading)
     }
 
     @Test
-    fun invoke_mutationIsShowError_uiStateIsError() {
-        val errorMessage = "test"
+    fun 에러상태_변환테스트() {
+        // given
+        val expectedErrorMessage = "test"
 
-        val result = detailReducerProcessorTest.invoke(Mutation.ShowError(errorMessage), UiState.Loading)
+        // when
+        val result = detailReducerProcessorTest.invoke(Mutation.ShowError(expectedErrorMessage), UiState.Loading)
 
+        // then
         assertTrue(result is UiState.Error)
-        assertEquals((result as UiState.Error).message, errorMessage)
+        assertEquals((result as UiState.Error).message, expectedErrorMessage)
     }
 
     @Test
-    fun invoke_mutationIsShowRepository_uiStateIsShowRepository() {
+    fun 레파지토리상태_변환테스트() {
+        // given
         val repository = RepositoryDetail()
 
+        // when
         val result = detailReducerProcessorTest.invoke(Mutation.ShowRepository(repository), UiState.Loading)
 
+        // then
         assertEquals((result as UiState.Content).repository, repository)
     }
 }
