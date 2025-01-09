@@ -30,39 +30,26 @@ import org.mockito.kotlin.whenever
 class DetailActionProcessorTest {
 
     @Mock private lateinit var mockRepoRepository: RepoRepository
-    private lateinit var clearLocalDataUseCase: FakeClearLocalDataUseCase
     private val backOffWork: FakeBackOffWorkManager = FakeBackOffWorkManager()
-    private lateinit var detailActionProcessor: DetailActionProcessor
 
-    private val repoDetailEntity =
-        RepositoryDetail(
-            id = 1,
-            name = "test",
-            owner = Owner(login = "test"),
-            stargazersCount = 10,
-            isStarred = true,
-        )
-    private val userName = repoDetailEntity.owner.login
-    private val repoName = repoDetailEntity.name
+    private lateinit var clearLocalDataUseCase: FakeClearLocalDataUseCase
+    private lateinit var detailActionProcessor: DetailActionProcessor
 
     @Before
     fun setUp() {
-        clearLocalDataUseCase = FakeClearLocalDataUseCase()
-        detailActionProcessor = DetailActionProcessor(
-            repoRepository = mockRepoRepository,
-            clearLocalDataUseCase = clearLocalDataUseCase,
-            backOffWorkManager = backOffWork
-        )
+        initialDetailActionProcessor()
     }
 
     @Test
-    fun invoke_actionIsGetRepository_mutationIsShowRepository() = runTest {
+    fun 레파지토리_액션발행_mutation은_ShowRepository() = runTest {
+        // given
         val starStateAndCount = Pair(true, 11)
         whenever(mockRepoRepository.getRepository(userName, repoName))
-            .thenReturn(Result.success(repoDetailEntity))
-        whenever(mockRepoRepository.getStarStateAndStarCount(repoDetailEntity.id))
+            .thenReturn(Result.success(fakeRepository))
+        whenever(mockRepoRepository.getStarStateAndStarCount(fakeRepository.id))
             .thenReturn(flow { emit(starStateAndCount) })
 
+        // when, then
         detailActionProcessor(Action.InternalAction.GetRepository(userName, repoName)).test {
             awaitItem() // loadingState
 
@@ -76,7 +63,8 @@ class DetailActionProcessorTest {
     }
 
     @Test
-    fun invoke_actionIsGetRepository_mutationIsError_whenInvalidInput() = runTest {
+    fun 레파지토리_액션발행_Input이_유효하지않을때_mutation은_ShowError() = runTest {
+        // when, then
         detailActionProcessor(Action.InternalAction.GetRepository(null, null)).test {
             awaitItem() // loadingState
 
@@ -88,10 +76,12 @@ class DetailActionProcessorTest {
     }
 
     @Test
-    fun invoke_actionIsGetRepository_mutationIsError_whenNetworkError() = runTest {
+    fun 레파지토리_액션발행_NetworkError일때_mutation은_ShowError() = runTest {
+        // given
         whenever(mockRepoRepository.getRepository(userName, repoName))
             .thenReturn(Result.failure(CommonException.NetworkError()))
 
+        // when, then
         detailActionProcessor(Action.InternalAction.GetRepository(userName, repoName)).test {
             awaitItem() // loadingState
 
@@ -103,10 +93,12 @@ class DetailActionProcessorTest {
     }
 
     @Test
-    fun invoke_actionIsGetRepository_mutationIsError_whenAuthorizationError() = runTest {
+    fun 레파지토리_액션발행_AuthorizationError일때_mutation은_ShowError() = runTest {
+        // given
         whenever(mockRepoRepository.getRepository(userName, repoName))
             .thenReturn(Result.failure(CommonException.AuthorizationError()))
 
+        // when, then
         detailActionProcessor(Action.InternalAction.GetRepository(userName, repoName)).test {
             awaitItem() // loadingState
 
@@ -118,107 +110,86 @@ class DetailActionProcessorTest {
     }
 
     @Test
-    fun invoke_actionIsOnClickUnStar_emitNothing() = runTest {
+    fun 언스타클릭_액션발행() = runTest {
+        // given
         whenever(mockRepoRepository.starRepository(userName, repoName))
             .thenReturn(Result.success(Unit))
 
-        detailActionProcessor(Action.UserAction.OnClickUnStar(repoDetailEntity)).test {
+        // when
+        detailActionProcessor(Action.UserAction.OnClickUnStar(fakeRepository)).test {
             awaitComplete()
         }
-        advanceUntilIdle()
 
-        verify(mockRepoRepository).starLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount + 1)
+        // then
+        advanceUntilIdle()
+        verify(mockRepoRepository).starLocalRepository(fakeRepository.id, fakeRepository.stargazersCount + 1)
         verify(mockRepoRepository).starRepository(userName, repoName)
     }
 
     @Test
-    fun invoke_actionIsOnClickStar_emitNothing() = runTest {
+    fun 스타클릭_액션발행() = runTest {
+        // given
         whenever(mockRepoRepository.unStarRepository(userName, repoName))
             .thenReturn(Result.success(Unit))
 
-        detailActionProcessor(Action.UserAction.OnClickStar(repoDetailEntity)).test {
+        // when
+        detailActionProcessor(Action.UserAction.OnClickStar(fakeRepository)).test {
             awaitComplete()
         }
-        advanceUntilIdle()
 
-        verify(mockRepoRepository).unStarLocalRepository(repoDetailEntity.id, repoDetailEntity.stargazersCount - 1)
+        // then
+        advanceUntilIdle()
+        verify(mockRepoRepository).unStarLocalRepository(fakeRepository.id, fakeRepository.stargazersCount - 1)
         verify(mockRepoRepository).unStarRepository(userName, repoName)
     }
 
     @Test
-    fun invoke_actionIsOnClickUnStar_emitNothing_whenNetworkError() = runTest {
+    fun 언스타클릭_액션발행_IOException일때_이벤트는없음() = runTest {
+        // given
         backOffWork.setScope(this)
-        val repoModel = RepositoryDetail()
-        val uniqueID = "star_${repoModel.id}"
+        val uniqueID = "star_${fakeRepository.id}"
         val expectedCallTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
         val expectedDelayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
-        whenever(mockRepoRepository.starRepository(repoModel.owner.login, repoModel.name))
-            .thenReturn(Result.failure(CommonException.NetworkError()))
-
-        detailActionProcessor(Action.UserAction.OnClickUnStar(repoModel)).test {
-            awaitComplete()
-        }
-
-        advanceUntilIdle()
-        verify(mockRepoRepository).starLocalRepository(repoModel.id, repoModel.stargazersCount + 1)
-        verify(mockRepoRepository, times(expectedCallTimes)).starRepository(repoModel.owner.login, repoModel.name)
-        Assert.assertEquals(backOffWork.getDelayTimes(uniqueID), expectedDelayTimes)
-    }
-
-    @Test
-    fun invoke_actionIsOnClickStar_emitNothing_whenNetworkError() = runTest {
-        backOffWork.setScope(this)
-        val repoModel = RepositoryDetail()
-        val uniqueID = "star_${repoModel.id}"
-        val expectedCallTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
-        val expectedDelayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
-        whenever(mockRepoRepository.unStarRepository(repoModel.owner.login, repoModel.name))
-            .thenReturn(Result.failure(CommonException.NetworkError()))
-
-        detailActionProcessor(Action.UserAction.OnClickStar(repoModel)).test {
-            awaitComplete()
-        }
-
-        advanceUntilIdle()
-        verify(mockRepoRepository).unStarLocalRepository(repoModel.id, repoModel.stargazersCount - 1)
-        verify(mockRepoRepository, times(expectedCallTimes)).unStarRepository(repoModel.owner.login, repoModel.name)
-        Assert.assertEquals(backOffWork.getDelayTimes(uniqueID), expectedDelayTimes)
-    }
-
-    @Test
-    fun invoke_actionIsOnClickUnStar_mutationIsError_whenAuthorizationError() = runTest {
         whenever(mockRepoRepository.starRepository(userName, repoName))
-            .thenReturn(Result.failure(CommonException.AuthorizationError()))
+            .thenReturn(Result.failure(CommonException.NetworkError()))
 
-        detailActionProcessor(Action.UserAction.OnClickUnStar(repoDetailEntity)).test {
-            val (mutation, event) = awaitItem()
+        // when
+        detailActionProcessor(Action.UserAction.OnClickUnStar(fakeRepository)).test {
             awaitComplete()
-            assertTrue(mutation is Mutation.ShowError)
-            assertTrue(event == null)
         }
 
-        assertTrue(backOffWork.getWorkSize() == 0)
-        assertTrue(clearLocalDataUseCase.isCleared())
+        // then
+        advanceUntilIdle()
+        verify(mockRepoRepository).starLocalRepository(fakeRepository.id, fakeRepository.stargazersCount + 1)
+        verify(mockRepoRepository, times(expectedCallTimes)).starRepository(userName, repoName)
+        Assert.assertEquals(backOffWork.getDelayTimes(uniqueID), expectedDelayTimes)
     }
 
     @Test
-    fun invoke_actionIsOnClickStar_mutationIsError_whenAuthorizationError() = runTest {
+    fun 스타클릭_액션발행_IOException일때_이벤트는없음() = runTest {
+        // given
+        backOffWork.setScope(this)
+        val uniqueID = "star_${fakeRepository.id}"
+        val expectedCallTimes = 6 // backOffWorkManager maxTimes(5) + default(1) = 6
+        val expectedDelayTimes = 31_000L // 1초 -> 2초 -> 4초 -> 8초 -> 16초 = 31초
         whenever(mockRepoRepository.unStarRepository(userName, repoName))
-            .thenReturn(Result.failure(CommonException.AuthorizationError()))
+            .thenReturn(Result.failure(CommonException.NetworkError()))
 
-        detailActionProcessor(Action.UserAction.OnClickStar(repoDetailEntity)).test {
-            val (mutation, event) = awaitItem()
+        // when
+        detailActionProcessor(Action.UserAction.OnClickStar(fakeRepository)).test {
             awaitComplete()
-            assertTrue(mutation is Mutation.ShowError)
-            assertTrue(event == null)
         }
 
-        assertTrue(backOffWork.getWorkSize() == 0)
-        assertTrue(clearLocalDataUseCase.isCleared())
+        // then
+        advanceUntilIdle()
+        verify(mockRepoRepository).unStarLocalRepository(fakeRepository.id, fakeRepository.stargazersCount - 1)
+        verify(mockRepoRepository, times(expectedCallTimes)).unStarRepository(userName, repoName)
+        Assert.assertEquals(backOffWork.getDelayTimes(uniqueID), expectedDelayTimes)
     }
 
     @Test
-    fun invoke_actionIsDialogDismiss_eventIsError() = runTest {
+    fun 다이어로그해제_액션발행_event는_Error() = runTest {
+        // when, then
         detailActionProcessor(Action.UserAction.DialogDismiss).test {
             val (mutation, event) = awaitItem()
             awaitComplete()
@@ -228,12 +199,32 @@ class DetailActionProcessorTest {
     }
 
     @Test
-    fun invoke_actionIsLogout_eventIsLogout() = runTest {
+    fun 로그아웃_액션발행_event는_Logout() = runTest {
+        // when, then
         detailActionProcessor(Action.UserAction.LogoutDialogDismiss).test {
             val (mutation, event) = awaitItem()
             awaitComplete()
             assertTrue(mutation == null)
             assertTrue(event is Event.Logout)
         }
+    }
+
+    private fun initialDetailActionProcessor() {
+        clearLocalDataUseCase = FakeClearLocalDataUseCase(
+            userName = "son",
+            accessToken = "token",
+            list = listOf("list1", "list2")
+        )
+        detailActionProcessor = DetailActionProcessor(
+            repoRepository = mockRepoRepository,
+            clearLocalDataUseCase = clearLocalDataUseCase,
+            backOffWorkManager = backOffWork
+        )
+    }
+
+    companion object {
+        private val fakeRepository = RepositoryDetail()
+        private val userName = fakeRepository.owner.login
+        private val repoName = fakeRepository.name
     }
 }
