@@ -7,18 +7,18 @@ import com.prac.core.common.constants.UNKNOWN
 import com.prac.core.common.mvi.action.ActionProcessor
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
+import com.prac.data.model.Owner
+import com.prac.data.model.RepositoryDetail
 import com.prac.feature.detail.model.Action
 import com.prac.feature.detail.model.Event
 import com.prac.feature.detail.model.Mutation
-import com.prac.data.model.Owner
-import com.prac.data.model.RepositoryDetail
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 
-class FakeDetailActionProcessor : ActionProcessor<Action, Mutation, Event> {
-    private lateinit var throwable: Throwable
-
+class FakeDetailActionProcessor(
+    private var throwable: Throwable? = null
+) : ActionProcessor<Action, Mutation, Event> {
     override fun invoke(action: Action): Flow<Pair<Mutation?, Event?>> =
         flow {
             when (action) {
@@ -38,23 +38,20 @@ class FakeDetailActionProcessor : ActionProcessor<Action, Mutation, Event> {
             return
         }
 
-        if (!::throwable.isInitialized) {
-            emit(Mutation.ShowRepository(repository = RepositoryDetail(name = repoName, owner = Owner(login = userName))) to null)
-        } else {
-            handleGetRepositoryFailure(throwable)
+        throwable?.let {
+            handleGetRepositoryFailure(it)
+            return
         }
+
+        emit(Mutation.ShowRepository(repository = RepositoryDetail(name = repoName, owner = Owner(login = userName))) to null)
     }
 
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleClickUnStar() {
-        if (::throwable.isInitialized) {
-            handleStarRepositoryFailure(throwable)
-        }
+        throwable?.let { handleStarRepositoryFailure(it) }
     }
 
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleClickStar() {
-        if (::throwable.isInitialized) {
-            handleUnStarRepositoryFailure(throwable)
-        }
+        throwable?.let { handleStarRepositoryFailure(it) }
     }
 
     private suspend fun FlowCollector<Pair<Mutation?, Event?>>.handleDialogDismiss() {
@@ -97,9 +94,6 @@ class FakeDetailActionProcessor : ActionProcessor<Action, Mutation, Event> {
         emit(Mutation.ShowError(INVALID_TOKEN) to null)
     }
 
-    /*
-    * this method is only for test
-    */
     fun setThrowable(throwable: Throwable) {
         this.throwable = throwable
     }

@@ -11,7 +11,6 @@ import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.REPO_NAME
 import com.prac.core.navigation.Routes.HOME.DETAIL.Companion.USER_NAME
 import com.prac.data.exception.CommonException
 import com.prac.data.exception.RepositoryException
-import com.prac.data.model.Owner
 import com.prac.data.model.RepositoryDetail
 import com.prac.feature.detail.model.Action
 import com.prac.feature.detail.model.Event
@@ -38,23 +37,13 @@ class DetailViewModelTest {
 
     private lateinit var detailViewModel: DetailViewModel
 
-    private val repository =
-        RepositoryDetail(
-            id = 1,
-            name = "test",
-            owner = Owner(login = "test"),
-            stargazersCount = 10,
-            isStarred = true,
-        )
-    private val userName = repository.owner.login
-    private val repoName = repository.name
-
     @Test
-    fun process_actionIsGetRepository_uiStateHasRepository_whenValidInput() = runTest {
-        initViewModel(userName, repoName)
+    fun 레파지토리_액션발행_uiState는_Content() = runTest {
+        // given
+        initialViewModel(userName, repoName)
 
+        // when, then
         detailViewModel.uiStateFlow.test {
-            awaitItem() // initialState
             awaitItem() // loadingState
 
             val result = awaitItem()
@@ -64,11 +53,12 @@ class DetailViewModelTest {
     }
 
     @Test
-    fun process_actionIsGetRepository_uiStateIsError_whenInvalidInput() = runTest {
-        initViewModel(null, null)
+    fun 레파지토리_액션발행_Input이_유효하지않을때_uiState는_Error() = runTest {
+        // given
+        initialViewModel(null, null)
 
+        // when, then
         detailViewModel.uiStateFlow.test {
-            awaitItem() // initialState
             awaitItem() // loadingState
 
             val result = awaitItem()
@@ -78,22 +68,12 @@ class DetailViewModelTest {
     }
 
     @Test
-    fun process_actionIsGetRepository_uiStateIsError_whenNetworkError() = runTest {
-        detailActionProcessor = FakeDetailActionProcessor().apply {
-            setThrowable(CommonException.NetworkError())
-        }
-        detailViewModel = DetailViewModel(
-            detailReducerProcessor = detailReducerProcessor,
-            detailActionProcessor = detailActionProcessor,
-            ioDispatcher = standardTestDispatcherRule.testDispatcher,
-            savedStateHandle = SavedStateHandle().apply {
-                set(USER_NAME, userName)
-                set(REPO_NAME, repoName)
-            }
-        )
+    fun 레파지토리_액션발행_NetworkError일때_uiState는_Error() = runTest {
+        // given
+        initialViewModel(userName, repoName, CommonException.NetworkError())
 
+        // when, then
         detailViewModel.uiStateFlow.test {
-            awaitItem() // initialState
             awaitItem() // loadingState
 
             val result = awaitItem()
@@ -103,22 +83,12 @@ class DetailViewModelTest {
     }
 
     @Test
-    fun process_actionIsGetRepository_uiStateIsError_whenAuthorizationError() = runTest {
-        detailActionProcessor = FakeDetailActionProcessor().apply {
-            setThrowable(CommonException.AuthorizationError())
-        }
-        detailViewModel = DetailViewModel(
-            detailReducerProcessor = detailReducerProcessor,
-            detailActionProcessor = detailActionProcessor,
-            ioDispatcher = standardTestDispatcherRule.testDispatcher,
-            savedStateHandle = SavedStateHandle().apply {
-                set(USER_NAME, userName)
-                set(REPO_NAME, repoName)
-            }
-        )
+    fun 레파지토리_액션발행_AuthorizationError일때_uiState는_Error() = runTest {
+        //given
+        initialViewModel(userName, repoName, CommonException.AuthorizationError())
 
+        // when, then
         detailViewModel.uiStateFlow.test {
-            awaitItem() // initialState
             awaitItem() // loadingState
 
             val result = awaitItem()
@@ -128,16 +98,17 @@ class DetailViewModelTest {
     }
 
     @Test
-    fun process_actionIsOnClickUnStar_uiStateHasDialogMessage_whenAuthorizationError() = runTest {
-        initViewModel(userName, repoName)
+    fun 언스타클릭_액션발행_AuthorizationError일때_uiState는_Error() = runTest {
+        // given
+        initialViewModel(userName, repoName)
 
+        // when, then
         detailViewModel.uiStateFlow.test {
-            awaitItem() // initialState
             awaitItem() // loadingState
             awaitItem() // showRepository
 
             detailActionProcessorSetThrowable(CommonException.AuthorizationError())
-            detailViewModel.process(Action.UserAction.OnClickUnStar(repository))
+            detailViewModel.process(Action.UserAction.OnClickUnStar(fakeRepository))
 
             val result = awaitItem()
             assertTrue(result is UiState.Error)
@@ -146,16 +117,17 @@ class DetailViewModelTest {
     }
 
     @Test
-    fun process_actionIsOnClickStar_uiStateHasDialogMessage_whenAuthorizationError() = runTest {
-        initViewModel(userName, repoName)
+    fun 스타클릭_액션발행_AuthorizationError일때_uiState는_Error() = runTest {
+        // given
+        initialViewModel(userName, repoName)
 
+        // when, then
         detailViewModel.uiStateFlow.test {
-            awaitItem() // initialState
             awaitItem() // loadingState
             awaitItem() // showRepository
 
             detailActionProcessorSetThrowable(CommonException.AuthorizationError())
-            detailViewModel.process(Action.UserAction.OnClickStar(repository))
+            detailViewModel.process(Action.UserAction.OnClickStar(fakeRepository))
 
             val result = awaitItem()
             assertTrue(result is UiState.Error)
@@ -164,16 +136,17 @@ class DetailViewModelTest {
     }
 
     @Test
-    fun process_actionIsOnClickUnStar_uiStateHasDialogMessage_whenNotFoundRepository() = runTest {
-        initViewModel(userName, repoName)
+    fun 언스타클릭_액션발행_NotFoundRepositoryError일때_uiState는_Error() = runTest {
+        // given
+        initialViewModel(userName, repoName)
 
+        // when, then
         detailViewModel.uiStateFlow.test {
-            awaitItem() // initialState
             awaitItem() // loadingState
             awaitItem() // showRepository
 
             detailActionProcessorSetThrowable(RepositoryException.NotFoundRepository())
-            detailViewModel.process(Action.UserAction.OnClickUnStar(repository))
+            detailViewModel.process(Action.UserAction.OnClickUnStar(fakeRepository))
 
             val result = awaitItem()
             assertTrue(result is UiState.Error)
@@ -182,16 +155,17 @@ class DetailViewModelTest {
     }
 
     @Test
-    fun process_actionIsOnClickStar_uiStateHasDialogMessage_whenNotFoundRepository() = runTest {
-        initViewModel(userName, repoName)
+    fun 스타클릭_액션발행_NotFoundRepositoryError일때_uiState는_Error() = runTest {
+        // given
+        initialViewModel(userName, repoName)
 
+        // when, then
         detailViewModel.uiStateFlow.test {
-            awaitItem() // initialState
             awaitItem() // loadingState
             awaitItem() // showRepository
 
             detailActionProcessorSetThrowable(RepositoryException.NotFoundRepository())
-            detailViewModel.process(Action.UserAction.OnClickStar(repository))
+            detailViewModel.process(Action.UserAction.OnClickStar(fakeRepository))
 
             val result = awaitItem()
             assertTrue(result is UiState.Error)
@@ -200,16 +174,17 @@ class DetailViewModelTest {
     }
 
     @Test
-    fun process_actionIsOnClickUnStar_uiStateHasDialogMessage_whenNotUnKnownError() = runTest {
-        initViewModel(userName, repoName)
+    fun 언스타클릭_액션발행_UnKnownError일때_uiState는_Error() = runTest {
+        // given
+        initialViewModel(userName, repoName)
 
+        // when, then
         detailViewModel.uiStateFlow.test {
-            awaitItem() // initialState
             awaitItem() // loadingState
             awaitItem() // showRepository
 
             detailActionProcessorSetThrowable(CommonException.UnKnownError())
-            detailViewModel.process(Action.UserAction.OnClickUnStar(repository))
+            detailViewModel.process(Action.UserAction.OnClickUnStar(fakeRepository))
 
             val result = awaitItem()
             assertTrue(result is UiState.Error)
@@ -218,16 +193,17 @@ class DetailViewModelTest {
     }
 
     @Test
-    fun process_actionIsOnClickStar_uiStateHasDialogMessage_whenNotUnKnownError() = runTest {
-        initViewModel(userName, repoName)
+    fun 스타클릭_액션발행_UnKnownError일때_uiState는_Error() = runTest {
+        // given
+        initialViewModel(userName, repoName)
 
+        // when, then
         detailViewModel.uiStateFlow.test {
-            awaitItem() // initialState
             awaitItem() // loadingState
             awaitItem() // showRepository
 
             detailActionProcessorSetThrowable(CommonException.UnKnownError())
-            detailViewModel.process(Action.UserAction.OnClickStar(repository))
+            detailViewModel.process(Action.UserAction.OnClickStar(fakeRepository))
 
             val result = awaitItem()
             assertTrue(result is UiState.Error)
@@ -236,11 +212,14 @@ class DetailViewModelTest {
     }
 
     @Test
-    fun process_actionIsDialogDismiss_eventIsError() = runTest {
-        initViewModel(null, null)
+    fun 다이어로그해제_액션발행_event는_Error() = runTest {
+        // given
+        initialViewModel(userName, repoName)
 
+        // when
         detailViewModel.process(Action.UserAction.DialogDismiss)
 
+        // then
         detailViewModel.eventFlow.test {
             val result = awaitItem()
             assertTrue(result is Event.Error)
@@ -248,19 +227,27 @@ class DetailViewModelTest {
     }
 
     @Test
-    fun process_actionIsLogoutDialogDismiss_eventIsLogout() = runTest {
-        initViewModel(null, null)
+    fun 로그아웃다이어로그해제_액션발행_event는_Logout() = runTest {
+        // given
+        initialViewModel(userName, repoName)
 
+        // when
         detailViewModel.process(Action.UserAction.LogoutDialogDismiss)
 
+        // then
         detailViewModel.eventFlow.test {
             val result = awaitItem()
             assertTrue(result is Event.Logout)
         }
     }
 
-    private fun initViewModel(userName: String?, repoName: String?) {
-        detailActionProcessor = FakeDetailActionProcessor()
+    private fun initialViewModel(
+        userName: String?,
+        repoName: String?,
+        throwable: Throwable? = null
+    ) {
+        detailActionProcessor = FakeDetailActionProcessor(throwable)
+
         detailViewModel = DetailViewModel(
             detailReducerProcessor = detailReducerProcessor,
             detailActionProcessor = detailActionProcessor,
@@ -274,5 +261,11 @@ class DetailViewModelTest {
 
     private fun detailActionProcessorSetThrowable(throwable: Throwable) {
         (detailActionProcessor as FakeDetailActionProcessor).setThrowable(throwable)
+    }
+
+    companion object {
+        private val fakeRepository = RepositoryDetail()
+        private val userName = fakeRepository.owner.login
+        private val repoName = fakeRepository.name
     }
 }
