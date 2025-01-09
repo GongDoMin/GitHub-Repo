@@ -34,7 +34,8 @@ class ProfileViewModelTest {
     )
 
     @Test
-    fun process_actionIsOnClickLogoutButton_uiStateIsDialog() = runTest {
+    fun 로그아웃버튼클릭_액션발행_uiState는_Dialog() = runTest {
+        // when, then
         profileViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
@@ -46,7 +47,8 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun process_actionIsDialogDismiss_uiStateIsIdle() = runTest {
+    fun 다이어로그해제_액션발행_uiState는_Idle() = runTest {
+        // when, then
         profileViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
@@ -61,7 +63,8 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun process_actionIsOnClickNegativeButton_uiStateIsIdle() = runTest {
+    fun 다이어로그취소버튼클릭_액션발행_uiState는_Idle() = runTest {
+        // when, then
         profileViewModel.uiStateFlow.test {
             awaitItem() // initialState
 
@@ -76,7 +79,8 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun process_actionIsOnClickPositiveButton_EventIsLogout() = runTest {
+    fun 다이어로그확인버튼클릭_액션발행_event는_logout() = runTest {
+        // when, then
         profileViewModel.eventFlow.test {
             profileViewModel.process(Action.UserAction.OnClickPositiveButton)
 
