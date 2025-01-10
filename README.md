@@ -16,7 +16,8 @@
 
 이 프로젝트는 android app architecture 를 기반으로 참고하여 설계했습니다.
 
-![Architecture](https://github.com/user-attachments/assets/cc382dc2-f5ea-4505-b141-d5118503de53)
+![Architecture](https://github.com/user-attachments/assets/432e1d29-cbaa-4cb7-ace8-78779281ed08)
+
 
 - **`UI layer` ( user interface, presentation )** : `UI layer` 는 사용자와 상호 작용할 수 있는 화면을 구성하는 UI 요소들과 앱 상태를 저장하고 configuration change 의 경우 데이터를 복원하는 ViewModel 로 구성되어 있습니다.
 
